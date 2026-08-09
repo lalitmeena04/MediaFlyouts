@@ -86,8 +86,20 @@ Window {
                 height: 76
                 radius: 8
                 color: "#333333"
+                clip: true
+
+                Image {
+                    anchors.fill: parent
+                    source: nowPlaying.artSource
+                    visible: nowPlaying.hasArt
+                    fillMode: Image.PreserveAspectCrop
+                    cache: false
+                    asynchronous: true
+                }
+
                 Text {
                     anchors.centerIn: parent
+                    visible: !nowPlaying.hasArt
                     text: "\u266A"
                     color: "#9AA0A6"
                     font.pixelSize: 30

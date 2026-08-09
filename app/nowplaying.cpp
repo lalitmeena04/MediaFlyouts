@@ -1,5 +1,7 @@
 #include "nowplaying.h"
 
+#include "albumartprovider.h"
+
 NowPlaying::NowPlaying(QObject* parent)
     : QObject(parent)
 {
@@ -17,6 +19,11 @@ NowPlaying::NowPlaying(QObject* parent)
 void NowPlaying::setController(mf::IPlaybackController* controller)
 {
     m_controller = controller;
+}
+
+void NowPlaying::setArtProvider(AlbumArtProvider* provider)
+{
+    m_artProvider = provider;
 }
 
 qint64 NowPlaying::currentPositionMs() const
@@ -53,6 +60,15 @@ bool NowPlaying::hasMedia() const
     return !m_track.title.isEmpty() || !m_track.artist.isEmpty();
 }
 
+QString NowPlaying::artSource() const
+{
+    if (!m_hasArt)
+        return QString();
+    return QStringLiteral("image://albumart/cover?rev=%1").arg(m_artRevision);
+}
+
+bool NowPlaying::hasArt() const { return m_hasArt; }
+
 void NowPlaying::playPause()
 {
     if (m_controller)
@@ -77,4 +93,13 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track)
     m_sinceUpdate.restart();
     emit changed();
     emit trackUpdated();
+}
+
+void NowPlaying::applyArt(const QImage& art)
+{
+    if (m_artProvider)
+        m_artProvider->setImage(art);
+    m_hasArt = !art.isNull();
+    ++m_artRevision;
+    emit changed();
 }

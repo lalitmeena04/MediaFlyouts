@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#include "albumartprovider.h"
 #include "nowplaying.h"
 
 #ifdef Q_OS_WIN
@@ -20,15 +21,23 @@ int main(int argc, char* argv[])
 
     NowPlaying nowPlaying;
 
+    QQmlApplicationEngine engine;
+
+    // engine takes ownership of the image provider
+    auto* artProvider = new AlbumArtProvider();
+    engine.addImageProvider(QStringLiteral("albumart"), artProvider);
+    nowPlaying.setArtProvider(artProvider);
+
 #ifdef Q_OS_WIN
     WinMediaProvider provider;
     nowPlaying.setController(&provider);
     QObject::connect(&provider, &WinMediaProvider::trackChanged,
                      &nowPlaying, &NowPlaying::applyTrack);
+    QObject::connect(&provider, &WinMediaProvider::artChanged,
+                     &nowPlaying, &NowPlaying::applyArt);
     provider.start();
 #endif
 
-    QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
     engine.loadFromModule("MediaFlyouts", "Main");
 

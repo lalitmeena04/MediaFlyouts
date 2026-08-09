@@ -1,6 +1,7 @@
 qt_add_executable(MediaFlyouts WIN32
     main.cpp
     nowplaying.h nowplaying.cpp
+    albumartprovider.h albumartprovider.cpp
 )
 
 qt_add_qml_module(MediaFlyouts

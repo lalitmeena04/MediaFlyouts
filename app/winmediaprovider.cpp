@@ -2,13 +2,17 @@
 
 #include <chrono>
 
+#include <QByteArray>
+#include <QImage>
 #include <QMetaObject>
 #include <QString>
 
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Storage.Streams.h>
 
 using namespace winrt::Windows::Media::Control;
 using PlaybackStatus = GlobalSystemMediaTransportControlsSessionPlaybackStatus;
+namespace streams = winrt::Windows::Storage::Streams;
 
 WinMediaProvider::WinMediaProvider(QObject* parent)
     : QObject(parent)
@@ -98,8 +102,9 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session)
 
     mf::TrackInfo track;
 
+    GlobalSystemMediaTransportControlsSessionMediaProperties props{ nullptr };
     try {
-        auto props = co_await session.TryGetMediaPropertiesAsync();
+        props = co_await session.TryGetMediaPropertiesAsync();
         track.title = QString::fromWCharArray(props.Title().c_str());
         track.artist = QString::fromWCharArray(props.Artist().c_str());
         track.album = QString::fromWCharArray(props.AlbumTitle().c_str());
@@ -132,7 +137,36 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session)
     } catch (...) {
     }
 
-    QMetaObject::invokeMethod(this, [this, track] { emit trackChanged(track); }, Qt::QueuedConnection);
+    QImage art;
+    if (props) {
+        try {
+            auto thumbRef = props.Thumbnail();
+            if (thumbRef) {
+                auto stream = co_await thumbRef.OpenReadAsync();
+                const uint32_t size = static_cast<uint32_t>(stream.Size());
+                if (size > 0) {
+                    streams::Buffer buffer(size);
+                    auto readBuffer = co_await stream.ReadAsync(buffer, size, streams::InputStreamOptions::None);
+                    QByteArray bytes;
+                    bytes.resize(static_cast<int>(readBuffer.Length()));
+                    auto reader = streams::DataReader::FromBuffer(readBuffer);
+                    reader.ReadBytes(winrt::array_view<uint8_t>(
+                        reinterpret_cast<uint8_t*>(bytes.data()),
+                        reinterpret_cast<uint8_t*>(bytes.data()) + bytes.size()));
+                    art.loadFromData(bytes);
+                }
+            }
+        } catch (...) {
+        }
+    }
+
+    QMetaObject::invokeMethod(
+        this,
+        [this, track, art] {
+            emit trackChanged(track);
+            emit artChanged(art);
+        },
+        Qt::QueuedConnection);
 }
 
 WinMediaProvider::Session WinMediaProvider::currentSession()

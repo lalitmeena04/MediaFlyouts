@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QImage>
 #include <QObject>
 #include <mutex>
 
@@ -26,6 +27,7 @@ public:
 
 signals:
     void trackChanged(const mf::TrackInfo& track);
+    void artChanged(const QImage& art);
 
 private:
     using SessionManager = winrt::Windows::Media::Control::GlobalSystemMediaTransportControlsSessionManager;
