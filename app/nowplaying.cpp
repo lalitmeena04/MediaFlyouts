@@ -89,10 +89,19 @@ void NowPlaying::previous()
 
 void NowPlaying::applyTrack(const mf::TrackInfo& track)
 {
+    // only a new track identity or a play/pause change should reveal the flyout;
+    // frequent timeline/position updates must not keep resetting the auto-hide timer
+    const bool identityChanged = track.title != m_track.title
+        || track.artist != m_track.artist
+        || track.album != m_track.album;
+    const bool stateChanged = track.state != m_track.state;
+
     m_track = track;
     m_sinceUpdate.restart();
     emit changed();
-    emit trackUpdated();
+
+    if (identityChanged || stateChanged)
+        emit trackUpdated();
 }
 
 void NowPlaying::applyArt(const QImage& art)

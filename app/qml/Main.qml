@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Window
+import MediaFlyouts
 
 Window {
     id: root
@@ -101,7 +102,7 @@ Window {
                     anchors.centerIn: parent
                     visible: !nowPlaying.hasArt
                     text: Fluent.musicNote
-                    font.family: iconFontFamily
+                    font.family: Fluent.fontFamily
                     color: "#9AA0A6"
                     font.pixelSize: 34
                 }

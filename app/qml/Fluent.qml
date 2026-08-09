@@ -4,6 +4,11 @@ import QtQuick
 
 // Fluent System Icons (Filled) glyph codepoints — same icon set MediaFlyouts uses.
 QtObject {
+    property FontLoader _loader: FontLoader {
+        source: "qrc:/qt/qml/MediaFlyouts/assets/fonts/FluentSystemIcons-Filled.ttf"
+    }
+    readonly property string fontFamily: _loader.name
+
     readonly property string previous: "\uF633"
     readonly property string next: "\uF574"
     readonly property string play: "\uF610"
