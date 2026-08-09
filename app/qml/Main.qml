@@ -100,9 +100,10 @@ Window {
                 Text {
                     anchors.centerIn: parent
                     visible: !nowPlaying.hasArt
-                    text: "\u266A"
+                    text: Fluent.musicNote
+                    font.family: iconFontFamily
                     color: "#9AA0A6"
-                    font.pixelSize: 30
+                    font.pixelSize: 34
                 }
             }
 
@@ -160,23 +161,23 @@ Window {
                         id: controls
                         spacing: 12
 
-                        Text {
-                            text: "\u23EE"
-                            color: "#E0E0E0"
-                            font.pixelSize: 14
-                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.previous() }
+                        IconLabel {
+                            glyph: Fluent.previous
+                            size: 18
+                            color: previousArea.containsMouse ? "white" : "#C8C8C8"
+                            MouseArea { id: previousArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.previous() }
                         }
-                        Text {
-                            text: nowPlaying.isPlaying ? "\u23F8" : "\u25B6"
+                        IconLabel {
+                            glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
+                            size: 20
                             color: "white"
-                            font.pixelSize: 14
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.playPause() }
                         }
-                        Text {
-                            text: "\u23ED"
-                            color: "#E0E0E0"
-                            font.pixelSize: 14
-                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.next() }
+                        IconLabel {
+                            glyph: Fluent.next
+                            size: 18
+                            color: nextArea.containsMouse ? "white" : "#C8C8C8"
+                            MouseArea { id: nextArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.next() }
                         }
                     }
 

@@ -4,11 +4,17 @@ qt_add_executable(MediaFlyouts WIN32
     albumartprovider.h albumartprovider.cpp
 )
 
+set_source_files_properties(qml/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+
 qt_add_qml_module(MediaFlyouts
     URI MediaFlyouts
     VERSION 1.0
     QML_FILES
         qml/Main.qml
+        qml/Fluent.qml
+        qml/IconLabel.qml
+    RESOURCES
+        assets/fonts/FluentSystemIcons-Filled.ttf
 )
 
 target_link_libraries(MediaFlyouts PRIVATE

@@ -1,3 +1,4 @@
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -22,6 +23,12 @@ int main(int argc, char* argv[])
     NowPlaying nowPlaying;
 
     QQmlApplicationEngine engine;
+
+    const int iconFontId = QFontDatabase::addApplicationFont(
+        QStringLiteral(":/qt/qml/MediaFlyouts/assets/fonts/FluentSystemIcons-Filled.ttf"));
+    const QStringList iconFamilies = QFontDatabase::applicationFontFamilies(iconFontId);
+    engine.rootContext()->setContextProperty(
+        "iconFontFamily", iconFamilies.isEmpty() ? QString() : iconFamilies.first());
 
     // engine takes ownership of the image provider
     auto* artProvider = new AlbumArtProvider();
