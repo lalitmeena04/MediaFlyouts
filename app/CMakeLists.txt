@@ -33,6 +33,7 @@ if (WIN32)
         winmediaprovider.h winmediaprovider.cpp
         volumecontroller.h volumecontroller.cpp
         nativeflyoutsuppressor.h nativeflyoutsuppressor.cpp
+        fullscreendetector.h fullscreendetector.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)

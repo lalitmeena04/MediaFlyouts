@@ -10,6 +10,7 @@
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
 
+#include "fullscreendetector.h"
 #include "nativeflyoutsuppressor.h"
 #include "volumecontroller.h"
 #include "winmediaprovider.h"
@@ -54,8 +55,14 @@ int main(int argc, char* argv[]) {
     // replace the native Windows volume OSD with our flyout
     NativeFlyoutSuppressor nativeSuppressor;
     nativeSuppressor.start();
-    QObject::connect(&volumeController, &VolumeController::volumeChangedExternally, &nativeSuppressor,
-                     &NativeFlyoutSuppressor::arm);
+
+    // skip flyouts (and native-OSD suppression) while a fullscreen/exclusive-D3D app is foreground
+    FullscreenDetector fullscreen;
+    engine.rootContext()->setContextProperty("fullscreen", &fullscreen);
+    QObject::connect(&volumeController, &VolumeController::volumeChangedExternally, &nativeSuppressor, [&] {
+        if(!fullscreen.isActive())
+            nativeSuppressor.arm();
+    });
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);

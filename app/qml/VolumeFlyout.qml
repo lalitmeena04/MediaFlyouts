@@ -20,6 +20,8 @@ Window {
     }
 
     function showFlyout() {
+        if(fullscreen.isActive())
+            return
         x = Screen.virtualX + Math.round((Screen.width - width) / 2)
         y = Screen.virtualY + Screen.height - height - 120
         hideTimer.restart()

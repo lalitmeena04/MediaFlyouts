@@ -18,6 +18,8 @@ Window {
     }
 
     function showFlyout() {
+        if(fullscreen.isActive())
+            return
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()
