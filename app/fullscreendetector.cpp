@@ -5,9 +5,29 @@
 #include <shellapi.h>
 #include <shlobj.h>
 
+namespace {
+
+// true when the secure / lock screen is the active input desktop
+bool isWorkstationLocked() {
+    HDESK desk = OpenInputDesktop(0, FALSE, DESKTOP_READOBJECTS);
+    if(!desk)
+        return true;
+    wchar_t name[128] = {};
+    DWORD needed = 0;
+    const bool ok = GetUserObjectInformationW(desk, UOI_NAME, name, sizeof(name), &needed);
+    CloseDesktop(desk);
+    return ok && lstrcmpiW(name, L"Default") != 0;
+}
+
+} // namespace
+
 FullscreenDetector::FullscreenDetector(QObject* parent) : QObject(parent) {}
 
 bool FullscreenDetector::isActive() const {
+    // don't pop flyouts on the lock screen
+    if(isWorkstationLocked())
+        return true;
+
     // exclusive-D3D / presentation / generic fullscreen — the states that cause a game to minimize
     QUERY_USER_NOTIFICATION_STATE state = QUNS_ACCEPTS_NOTIFICATIONS;
     if(SUCCEEDED(SHQueryUserNotificationState(&state))) {

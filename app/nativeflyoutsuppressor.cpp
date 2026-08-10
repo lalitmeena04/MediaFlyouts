@@ -12,18 +12,13 @@ namespace {
 HWINEVENTHOOK g_hookShow = nullptr;
 HWINEVENTHOOK g_hookUncloak = nullptr;
 std::atomic<qint64> g_armedUntilMs{0};
+DWORD g_shellPid = 0;
 
+// cheap check: the OSD host belongs to the shell (explorer) process
 bool isExplorer(HWND hwnd) {
     DWORD pid = 0;
     GetWindowThreadProcessId(hwnd, &pid);
-    HANDLE h = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
-    if(!h)
-        return false;
-    wchar_t buf[MAX_PATH] = {};
-    DWORD sz = MAX_PATH;
-    const bool ok = QueryFullProcessImageNameW(h, 0, buf, &sz);
-    CloseHandle(h);
-    return ok && QString::fromWCharArray(buf, sz).endsWith(QStringLiteral("\\explorer.exe"), Qt::CaseInsensitive);
+    return pid != 0 && pid == g_shellPid;
 }
 
 // the volume OSD is a small, explorer-owned XAML island on Win11, or the legacy NativeHWNDHost on Win10
@@ -83,6 +78,7 @@ NativeFlyoutSuppressor::~NativeFlyoutSuppressor() {
 }
 
 void NativeFlyoutSuppressor::start() {
+    GetWindowThreadProcessId(GetShellWindow(), &g_shellPid);
     const DWORD flags = WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS;
     g_hookShow = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, nullptr, winEventProc, 0, 0, flags);
     g_hookUncloak = SetWinEventHook(EVENT_OBJECT_UNCLOAKED, EVENT_OBJECT_UNCLOAKED, nullptr, winEventProc, 0, 0, flags);
