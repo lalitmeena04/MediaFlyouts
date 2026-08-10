@@ -1,9 +1,11 @@
-#include <QGuiApplication>
+#include <QApplication>
+#include <QFontDatabase>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
 #include "albumartprovider.h"
 #include "nowplaying.h"
+#include "traycontroller.h"
 
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
@@ -16,7 +18,14 @@ int main(int argc, char* argv[]) {
     winrt::init_apartment(winrt::apartment_type::single_threaded);
 #endif
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
+
+    // load the icon font in C++ too so the tray glyph can be rendered (QML loads it via FontLoader)
+    const int fontId = QFontDatabase::addApplicationFont(
+        QStringLiteral(":/qt/qml/MediaFlyouts/assets/fonts/FluentSystemIcons-Filled.ttf"));
+    const QStringList families = QFontDatabase::applicationFontFamilies(fontId);
+    const QString iconFamily = families.isEmpty() ? QString() : families.first();
 
     NowPlaying nowPlaying;
 
@@ -27,6 +36,8 @@ int main(int argc, char* argv[]) {
     engine.addImageProvider(QStringLiteral("albumart"), artProvider);
     nowPlaying.setArtProvider(artProvider);
 
+    TrayController tray(iconFamily);
+
 #ifdef Q_OS_WIN
     WinMediaProvider provider;
     nowPlaying.setController(&provider);
@@ -36,10 +47,12 @@ int main(int argc, char* argv[]) {
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
-    engine.loadFromModule("MediaFlyouts", "Main");
+    engine.rootContext()->setContextProperty("tray", &tray);
+    engine.loadFromModule("MediaFlyouts", "App");
 
     if(engine.rootObjects().isEmpty())
         return -1;
 
+    tray.show();
     return app.exec();
 }
