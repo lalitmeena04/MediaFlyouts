@@ -10,6 +10,7 @@
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
 
+#include "volumecontroller.h"
 #include "winmediaprovider.h"
 #endif
 
@@ -44,6 +45,10 @@ int main(int argc, char* argv[]) {
     QObject::connect(&provider, &WinMediaProvider::trackChanged, &nowPlaying, &NowPlaying::applyTrack);
     QObject::connect(&provider, &WinMediaProvider::artChanged, &nowPlaying, &NowPlaying::applyArt);
     provider.start();
+
+    VolumeController volumeController;
+    volumeController.start();
+    engine.rootContext()->setContextProperty("volumeController", &volumeController);
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);

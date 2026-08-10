@@ -4,6 +4,7 @@ import MediaFlyouts
 // Non-visual app root: owns the flyout + dashboard windows and reacts to tray intents.
 QtObject {
     property MediaFlyout flyout: MediaFlyout {}
+    property VolumeFlyout volumeFlyout: VolumeFlyout {}
     property Dashboard dashboard: Dashboard {}
 
     property Connections trayConnection: Connections {

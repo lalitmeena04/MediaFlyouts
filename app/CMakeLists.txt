@@ -13,6 +13,7 @@ qt_add_qml_module(MediaFlyouts
     QML_FILES
         qml/App.qml
         qml/MediaFlyout.qml
+        qml/VolumeFlyout.qml
         qml/Dashboard.qml
         qml/Fluent.qml
         qml/IconLabel.qml
@@ -28,7 +29,10 @@ target_link_libraries(MediaFlyouts PRIVATE
 )
 
 if (WIN32)
-    target_sources(MediaFlyouts PRIVATE winmediaprovider.h winmediaprovider.cpp)
+    target_sources(MediaFlyouts PRIVATE
+        winmediaprovider.h winmediaprovider.cpp
+        volumecontroller.h volumecontroller.cpp
+    )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)
 endif()
