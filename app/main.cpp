@@ -11,6 +11,7 @@
 #include <winrt/base.h>
 
 #include "fullscreendetector.h"
+#include "lockkeyscontroller.h"
 #include "nativeflyoutsuppressor.h"
 #include "volumecontroller.h"
 #include "winmediaprovider.h"
@@ -63,6 +64,10 @@ int main(int argc, char* argv[]) {
         if(!fullscreen.isActive())
             nativeSuppressor.arm();
     });
+
+    LockKeysController lockKeys;
+    lockKeys.start();
+    engine.rootContext()->setContextProperty("lockKeys", &lockKeys);
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
