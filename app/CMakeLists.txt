@@ -32,6 +32,7 @@ if (WIN32)
     target_sources(MediaFlyouts PRIVATE
         winmediaprovider.h winmediaprovider.cpp
         volumecontroller.h volumecontroller.cpp
+        nativeflyoutsuppressor.h nativeflyoutsuppressor.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)

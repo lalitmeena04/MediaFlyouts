@@ -10,6 +10,7 @@
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
 
+#include "nativeflyoutsuppressor.h"
 #include "volumecontroller.h"
 #include "winmediaprovider.h"
 #endif
@@ -49,6 +50,12 @@ int main(int argc, char* argv[]) {
     VolumeController volumeController;
     volumeController.start();
     engine.rootContext()->setContextProperty("volumeController", &volumeController);
+
+    // replace the native Windows volume OSD with our flyout
+    NativeFlyoutSuppressor nativeSuppressor;
+    nativeSuppressor.start();
+    QObject::connect(&volumeController, &VolumeController::volumeChangedExternally, &nativeSuppressor,
+                     &NativeFlyoutSuppressor::arm);
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
