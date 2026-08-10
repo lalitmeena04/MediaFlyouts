@@ -5,19 +5,15 @@
 
 namespace mf {
 
-enum class PlaybackState {
-    Stopped,
-    Playing,
-    Paused
-};
+enum class PlaybackState { Stopped, Playing, Paused };
 
 struct TrackInfo {
-    QString title;
-    QString artist;
-    QString album;
-    PlaybackState state = PlaybackState::Stopped;
-    qint64 positionMs = 0;
-    qint64 durationMs = 0;
+        QString title;
+        QString artist;
+        QString album;
+        PlaybackState state = PlaybackState::Stopped;
+        qint64 positionMs = 0;
+        qint64 durationMs = 0;
 };
 
 // Formats milliseconds as m:ss, or h:mm:ss when at least one hour.

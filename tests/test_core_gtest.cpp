@@ -7,24 +7,21 @@
 
 using namespace mf;
 
-TEST(FlyoutPositioner, BottomRightRespectsMargins)
-{
+TEST(FlyoutPositioner, BottomRightRespectsMargins) {
     const QRect work(0, 0, 1920, 1080);
     const QRect r = computeFlyoutRect(work, QSize(360, 120), FlyoutPosition::BottomRight, 24);
     EXPECT_EQ(r.x(), 1920 - 360 - 24);
     EXPECT_EQ(r.y(), 1080 - 120 - 24);
 }
 
-TEST(FlyoutPositioner, TopLeftRespectsMargins)
-{
+TEST(FlyoutPositioner, TopLeftRespectsMargins) {
     const QRect work(0, 0, 1920, 1080);
     const QRect r = computeFlyoutRect(work, QSize(360, 120), FlyoutPosition::TopLeft, 24);
     EXPECT_EQ(r.x(), 24);
     EXPECT_EQ(r.y(), 24);
 }
 
-TEST(TrackInfo, ProgressClampedToUnitInterval)
-{
+TEST(TrackInfo, ProgressClampedToUnitInterval) {
     TrackInfo t;
     t.durationMs = 1000;
     t.positionMs = 5000;
@@ -32,23 +29,21 @@ TEST(TrackInfo, ProgressClampedToUnitInterval)
 }
 
 class MockController : public IPlaybackController {
-public:
-    MOCK_METHOD(void, play, (), (override));
-    MOCK_METHOD(void, pause, (), (override));
-    MOCK_METHOD(void, next, (), (override));
-    MOCK_METHOD(void, previous, (), (override));
+    public:
+        MOCK_METHOD(void, play, (), (override));
+        MOCK_METHOD(void, pause, (), (override));
+        MOCK_METHOD(void, next, (), (override));
+        MOCK_METHOD(void, previous, (), (override));
 };
 
-TEST(PlaybackToggler, PausesWhenPlaying)
-{
+TEST(PlaybackToggler, PausesWhenPlaying) {
     MockController controller;
     EXPECT_CALL(controller, pause()).Times(1);
     EXPECT_CALL(controller, play()).Times(0);
     togglePlayPause(controller, PlaybackState::Playing);
 }
 
-TEST(PlaybackToggler, PlaysWhenPausedOrStopped)
-{
+TEST(PlaybackToggler, PlaysWhenPausedOrStopped) {
     MockController controller;
     EXPECT_CALL(controller, play()).Times(2);
     togglePlayPause(controller, PlaybackState::Paused);

@@ -2,14 +2,13 @@
 
 namespace mf {
 
-QRect computeFlyoutRect(const QRect& workArea, const QSize& flyoutSize, FlyoutPosition position, int margin)
-{
+QRect computeFlyoutRect(const QRect& workArea, const QSize& flyoutSize, FlyoutPosition position, int margin) {
     const int w = flyoutSize.width();
     const int h = flyoutSize.height();
     int x = workArea.left();
     int y = workArea.top();
 
-    switch (position) {
+    switch(position) {
     case FlyoutPosition::TopLeft:
     case FlyoutPosition::BottomLeft:
         x = workArea.left() + margin;
@@ -24,7 +23,7 @@ QRect computeFlyoutRect(const QRect& workArea, const QSize& flyoutSize, FlyoutPo
         break;
     }
 
-    switch (position) {
+    switch(position) {
     case FlyoutPosition::TopLeft:
     case FlyoutPosition::TopCenter:
     case FlyoutPosition::TopRight:
