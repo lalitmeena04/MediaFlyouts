@@ -1,3 +1,6 @@
 /build/
 *.user
 CMakeUserPresets.json
+
+# local dev-only notes (not for distribution)
+dev-notes/
