@@ -3,20 +3,20 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include "albumartprovider.h"
-#include "nowplaying.h"
-#include "settings.h"
-#include "traycontroller.h"
+#include "AlbumArtProvider.h"
+#include "NowPlaying.h"
+#include "Settings.h"
+#include "TrayController.h"
 
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
 
-#include "fullscreendetector.h"
-#include "lockkeyscontroller.h"
-#include "mediakeycontroller.h"
-#include "nativeflyoutsuppressor.h"
-#include "volumecontroller.h"
-#include "winmediaprovider.h"
+#include "FullscreenDetector.h"
+#include "LockKeysController.h"
+#include "MediaKeyController.h"
+#include "NativeFlyoutSuppressor.h"
+#include "VolumeController.h"
+#include "WinMediaProvider.h"
 #endif
 
 int main(int argc, char* argv[]) {

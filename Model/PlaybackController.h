@@ -1,6 +1,6 @@
 #pragma once
 
-#include "trackinfo.h"
+#include "TrackInfo.h"
 
 namespace mf {
 

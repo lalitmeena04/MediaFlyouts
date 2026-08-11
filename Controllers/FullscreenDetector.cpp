@@ -1,4 +1,4 @@
-#include "fullscreendetector.h"
+#include "FullscreenDetector.h"
 
 #include <windows.h>
 

@@ -1,4 +1,4 @@
-#include "lockkeyscontroller.h"
+#include "LockKeysController.h"
 
 #include <windows.h>
 

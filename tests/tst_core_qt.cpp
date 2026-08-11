@@ -1,7 +1,7 @@
 #include <QtTest>
 
-#include "flyoutpositioner.h"
-#include "trackinfo.h"
+#include "FlyoutPositioner.h"
+#include "TrackInfo.h"
 
 using namespace mf;
 

@@ -1,4 +1,4 @@
-#include "playbackcontroller.h"
+#include "PlaybackController.h"
 
 namespace mf {
 

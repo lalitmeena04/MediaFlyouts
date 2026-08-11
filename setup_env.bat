@@ -88,7 +88,7 @@ if not exist "%APP_EXE%" (
 
 if exist "%APP_EXE%" (
     echo [DEPLOY] Running windeployqt to deploy Qt runtime and QML modules...
-    "%QT_DIR%\bin\windeployqt.exe" --qmldir "%~dp0app\qml" "%APP_EXE%"
+    "%QT_DIR%\bin\windeployqt.exe" --qmldir "%~dp0Views" "%APP_EXE%"
     if errorlevel 1 (
         echo [WARNING] windeployqt finished with warnings or non-zero exit code.
     )

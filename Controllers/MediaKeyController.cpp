@@ -1,4 +1,4 @@
-#include "mediakeycontroller.h"
+#include "MediaKeyController.h"
 
 #include <windows.h>
 

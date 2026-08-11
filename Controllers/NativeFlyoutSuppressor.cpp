@@ -1,4 +1,4 @@
-#include "nativeflyoutsuppressor.h"
+#include "NativeFlyoutSuppressor.h"
 
 #include <windows.h>
 

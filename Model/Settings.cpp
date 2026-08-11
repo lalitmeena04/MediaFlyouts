@@ -1,4 +1,4 @@
-#include "settings.h"
+#include "Settings.h"
 
 Settings::Settings(QObject* parent)
     : QObject(parent), m_store(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),

@@ -1,4 +1,4 @@
-#include "volumecontroller.h"
+#include "VolumeController.h"
 
 #include <cmath>
 

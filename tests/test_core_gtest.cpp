@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "flyoutpositioner.h"
-#include "playbackcontroller.h"
-#include "trackinfo.h"
+#include "FlyoutPositioner.h"
+#include "PlaybackController.h"
+#include "TrackInfo.h"
 
 using namespace mf;
 

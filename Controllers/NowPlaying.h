@@ -6,8 +6,8 @@
 #include <QString>
 #include <QTimer>
 
-#include "playbackcontroller.h"
-#include "trackinfo.h"
+#include "PlaybackController.h"
+#include "TrackInfo.h"
 
 class AlbumArtProvider;
 

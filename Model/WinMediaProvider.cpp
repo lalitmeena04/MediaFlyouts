@@ -1,4 +1,4 @@
-#include "winmediaprovider.h"
+#include "WinMediaProvider.h"
 
 #include <chrono>
 

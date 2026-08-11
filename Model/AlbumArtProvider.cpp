@@ -1,4 +1,4 @@
-#include "albumartprovider.h"
+#include "AlbumArtProvider.h"
 
 #include <QMutexLocker>
 

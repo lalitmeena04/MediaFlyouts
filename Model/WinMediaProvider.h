@@ -6,8 +6,8 @@
 
 #include <winrt/Windows.Media.Control.h>
 
-#include "playbackcontroller.h"
-#include "trackinfo.h"
+#include "PlaybackController.h"
+#include "TrackInfo.h"
 
 // Bridges Windows System Media Transport Controls (SMTC) to Qt, and drives the active session.
 class WinMediaProvider : public QObject, public mf::IPlaybackController {

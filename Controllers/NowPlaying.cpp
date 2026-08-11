@@ -1,8 +1,8 @@
-#include "nowplaying.h"
+#include "NowPlaying.h"
 
 #include <QDateTime>
 
-#include "albumartprovider.h"
+#include "AlbumArtProvider.h"
 
 NowPlaying::NowPlaying(QObject* parent) : QObject(parent) {
     m_sinceUpdate.start();
