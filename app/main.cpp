@@ -74,6 +74,9 @@ int main(int argc, char* argv[]) {
     MediaKeyController mediaKeys;
     mediaKeys.start();
     QObject::connect(&mediaKeys, &MediaKeyController::mediaKeyPressed, &nowPlaying, &NowPlaying::noteMediaKey);
+    // volume keys show the flyout even at min/max, where the audio callback doesn't fire
+    QObject::connect(&mediaKeys, &MediaKeyController::volumeKeyPressed, &volumeController,
+                     &VolumeController::handleVolumeKey);
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);

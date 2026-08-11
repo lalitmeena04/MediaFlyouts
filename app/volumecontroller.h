@@ -24,6 +24,9 @@ class VolumeController : public QObject {
         Q_INVOKABLE void setVolume(int percent);
         Q_INVOKABLE void toggleMute();
 
+        // re-reads the endpoint and always signals, so the flyout shows even at min/max
+        void handleVolumeKey();
+
     signals:
         void changed();
         void volumeChangedExternally();

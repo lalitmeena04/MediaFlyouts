@@ -119,6 +119,16 @@ void VolumeController::toggleMute() {
     m_endpoint->SetMute(m_muted ? FALSE : TRUE, &kVolumeEventContext);
 }
 
+void VolumeController::handleVolumeKey() {
+    if(!m_endpoint)
+        return;
+    float level = 0.0f;
+    BOOL muted = FALSE;
+    m_endpoint->GetMasterVolumeLevelScalar(&level);
+    m_endpoint->GetMute(&muted);
+    applyState(static_cast<int>(std::lround(level * 100.0f)), muted != FALSE, true);
+}
+
 void VolumeController::applyState(int percent, bool muted, bool external) {
     const bool valueChanged = (percent != m_volume) || (muted != m_muted);
     m_volume = percent;

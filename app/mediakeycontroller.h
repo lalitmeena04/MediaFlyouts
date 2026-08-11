@@ -14,7 +14,9 @@ class MediaKeyController : public QObject {
 
         // internal: invoked by the keyboard hook on the main thread
         void notifyPressed();
+        void notifyVolumePressed();
 
     signals:
         void mediaKeyPressed();
+        void volumeKeyPressed();
 };

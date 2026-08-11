@@ -8,12 +8,12 @@ MediaKeyController* g_instance = nullptr;
 HHOOK g_hook = nullptr;
 
 LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
-    if(nCode == HC_ACTION && wParam == WM_KEYDOWN) {
+    if(nCode == HC_ACTION && wParam == WM_KEYDOWN && g_instance) {
         const DWORD vk = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam)->vkCode;
-        if((vk == VK_MEDIA_PLAY_PAUSE || vk == VK_MEDIA_NEXT_TRACK || vk == VK_MEDIA_PREV_TRACK ||
-            vk == VK_MEDIA_STOP) &&
-           g_instance)
+        if(vk == VK_MEDIA_PLAY_PAUSE || vk == VK_MEDIA_NEXT_TRACK || vk == VK_MEDIA_PREV_TRACK || vk == VK_MEDIA_STOP)
             g_instance->notifyPressed();
+        else if(vk == VK_VOLUME_UP || vk == VK_VOLUME_DOWN || vk == VK_VOLUME_MUTE)
+            g_instance->notifyVolumePressed();
     }
     return CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
@@ -39,4 +39,8 @@ void MediaKeyController::start() {
 
 void MediaKeyController::notifyPressed() {
     emit mediaKeyPressed();
+}
+
+void MediaKeyController::notifyVolumePressed() {
+    emit volumeKeyPressed();
 }
