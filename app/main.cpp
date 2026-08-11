@@ -12,6 +12,7 @@
 
 #include "fullscreendetector.h"
 #include "lockkeyscontroller.h"
+#include "mediakeycontroller.h"
 #include "nativeflyoutsuppressor.h"
 #include "volumecontroller.h"
 #include "winmediaprovider.h"
@@ -68,6 +69,11 @@ int main(int argc, char* argv[]) {
     LockKeysController lockKeys;
     lockKeys.start();
     engine.rootContext()->setContextProperty("lockKeys", &lockKeys);
+
+    // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
+    MediaKeyController mediaKeys;
+    mediaKeys.start();
+    QObject::connect(&mediaKeys, &MediaKeyController::mediaKeyPressed, &nowPlaying, &NowPlaying::noteMediaKey);
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);

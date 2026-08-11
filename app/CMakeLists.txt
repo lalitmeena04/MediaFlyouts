@@ -15,6 +15,7 @@ qt_add_qml_module(MediaFlyouts
         qml/MediaFlyout.qml
         qml/VolumeFlyout.qml
         qml/LockKeysFlyout.qml
+        qml/NextUpFlyout.qml
         qml/Dashboard.qml
         qml/Fluent.qml
         qml/IconLabel.qml
@@ -36,6 +37,7 @@ if (WIN32)
         nativeflyoutsuppressor.h nativeflyoutsuppressor.cpp
         fullscreendetector.h fullscreendetector.cpp
         lockkeyscontroller.h lockkeyscontroller.cpp
+        mediakeycontroller.h mediakeycontroller.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)

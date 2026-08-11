@@ -47,10 +47,12 @@ class NowPlaying : public QObject {
     public slots:
         void applyTrack(const mf::TrackInfo& track);
         void applyArt(const QImage& art);
+        void noteMediaKey();
 
     signals:
         void changed();
         void trackUpdated();
+        void nextUpRequested();
 
     private:
         qint64 currentPositionMs() const;
@@ -62,4 +64,6 @@ class NowPlaying : public QObject {
         AlbumArtProvider* m_artProvider = nullptr;
         int m_artRevision = 0;
         bool m_hasArt = false;
+        qint64 m_lastMediaKeyMs = 0;
+        bool m_seenFirstUpdate = false;
 };

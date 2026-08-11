@@ -1,5 +1,7 @@
 #include "nowplaying.h"
 
+#include <QDateTime>
+
 #include "albumartprovider.h"
 
 NowPlaying::NowPlaying(QObject* parent) : QObject(parent) {
@@ -99,8 +101,28 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     m_sinceUpdate.restart();
     emit changed();
 
-    if(identityChanged || stateChanged)
+    // don't pop any flyout for the initial media state sync at launch
+    if(!m_seenFirstUpdate) {
+        m_seenFirstUpdate = true;
+        return;
+    }
+
+    if(identityChanged) {
+        const bool stopped = track.title.isEmpty() && track.artist.isEmpty();
+        // a title change within the manual window means the user pressed next/prev -> media flyout;
+        // otherwise the track auto-advanced -> Next Up flyout
+        const bool manual = (QDateTime::currentMSecsSinceEpoch() - m_lastMediaKeyMs) < 1500;
+        if(stopped || manual)
+            emit trackUpdated();
+        else
+            emit nextUpRequested();
+    } else if(stateChanged) {
         emit trackUpdated();
+    }
+}
+
+void NowPlaying::noteMediaKey() {
+    m_lastMediaKeyMs = QDateTime::currentMSecsSinceEpoch();
 }
 
 void NowPlaying::applyArt(const QImage& art) {
