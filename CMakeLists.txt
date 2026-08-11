@@ -33,6 +33,11 @@ target_include_directories(MediaFlyouts PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Model
 )
 
+# Emit the runnable app (and its windeployqt runtime) into <root>/bin instead of the build tree.
+set_target_properties(MediaFlyouts PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
+
 set_source_files_properties(Views/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 # keep the font at a stable resource path regardless of its source folder
 set_source_files_properties(Views/assets/fonts/FluentSystemIcons-Filled.ttf

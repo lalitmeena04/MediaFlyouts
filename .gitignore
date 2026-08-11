@@ -1,6 +1,52 @@
+# --- Build output ---
 /build/
-*.user
-CMakeUserPresets.json
+/bin/
+cmake-build-*/
 
-# local dev-only notes (not for distribution)
+# --- CMake ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+CMakeUserPresets.json
+Testing/
+_deps/
+
+# --- Qt generated files ---
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.qmlc
+*.jsc
+.qmake.stash
+.qmake.cache
+*_qmltyperegistrations.cpp
+
+# --- MSVC / compiler artifacts ---
+*.obj
+*.o
+*.pdb
+*.ilk
+*.idb
+*.exp
+*.lib
+*.dll
+*.exe
+
+# --- Visual Studio / IDE ---
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+
+# --- OS cruft ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Local dev-only notes (not for distribution) ---
 dev-notes/
