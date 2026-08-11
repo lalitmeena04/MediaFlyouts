@@ -20,7 +20,7 @@ Window {
     }
 
     function showFlyout() {
-        if(fullscreen.isActive())
+        if(!settings.volumeFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         x = Screen.virtualX + Math.round((Screen.width - width) / 2)
         y = Screen.virtualY + Screen.height - height - 120

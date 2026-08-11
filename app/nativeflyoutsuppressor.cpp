@@ -42,6 +42,10 @@ void NativeFlyoutSuppressor::arm() {
         parkOsd();
 }
 
+void NativeFlyoutSuppressor::restore() {
+    restoreOsd();
+}
+
 bool NativeFlyoutSuppressor::parkOsd() {
     HWND host = findOsdHost();
     if(!host)

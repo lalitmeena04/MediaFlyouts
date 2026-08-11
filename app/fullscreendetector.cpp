@@ -23,11 +23,15 @@ bool isWorkstationLocked() {
 
 FullscreenDetector::FullscreenDetector(QObject* parent) : QObject(parent) {}
 
-bool FullscreenDetector::isActive() const {
-    // don't pop flyouts on the lock screen
-    if(isWorkstationLocked())
-        return true;
+bool FullscreenDetector::isLocked() const {
+    return isWorkstationLocked();
+}
 
+bool FullscreenDetector::shouldBlock(bool disableOnFullscreen) const {
+    return isLocked() || (disableOnFullscreen && isFullscreen());
+}
+
+bool FullscreenDetector::isFullscreen() const {
     // exclusive-D3D / presentation / generic fullscreen — the states that cause a game to minimize
     QUERY_USER_NOTIFICATION_STATE state = QUNS_ACCEPTS_NOTIFICATIONS;
     if(SUCCEEDED(SHQueryUserNotificationState(&state))) {

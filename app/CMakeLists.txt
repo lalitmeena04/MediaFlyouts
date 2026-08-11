@@ -3,6 +3,7 @@ qt_add_executable(MediaFlyouts WIN32
     nowplaying.h nowplaying.cpp
     albumartprovider.h albumartprovider.cpp
     traycontroller.h traycontroller.cpp
+    settings.h settings.cpp
 )
 
 set_source_files_properties(qml/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
@@ -19,6 +20,7 @@ qt_add_qml_module(MediaFlyouts
         qml/Dashboard.qml
         qml/Fluent.qml
         qml/IconLabel.qml
+        qml/SettingRow.qml
     RESOURCES
         assets/fonts/FluentSystemIcons-Filled.ttf
 )

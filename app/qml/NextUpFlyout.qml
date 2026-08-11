@@ -12,7 +12,7 @@ Window {
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
 
     function showFlyout() {
-        if(fullscreen.isActive() || !nowPlaying.hasMedia)
+        if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         x = Screen.virtualX + Math.round((Screen.width - width) / 2)
         y = Screen.virtualY + Screen.height - height - 48

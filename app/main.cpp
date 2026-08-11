@@ -5,6 +5,7 @@
 
 #include "albumartprovider.h"
 #include "nowplaying.h"
+#include "settings.h"
 #include "traycontroller.h"
 
 #ifdef Q_OS_WIN
@@ -34,6 +35,8 @@ int main(int argc, char* argv[]) {
 
     NowPlaying nowPlaying;
 
+    Settings settings;
+
     QQmlApplicationEngine engine;
 
     // engine takes ownership of the image provider
@@ -54,16 +57,24 @@ int main(int argc, char* argv[]) {
     volumeController.start();
     engine.rootContext()->setContextProperty("volumeController", &volumeController);
 
-    // replace the native Windows volume OSD with our flyout
+    // replace the native Windows volume OSD with our flyout (when enabled)
     NativeFlyoutSuppressor nativeSuppressor;
-    nativeSuppressor.start();
+    if(settings.overrideNativeOsd())
+        nativeSuppressor.start();
 
     // skip flyouts (and native-OSD suppression) while a fullscreen/exclusive-D3D app is foreground
     FullscreenDetector fullscreen;
     engine.rootContext()->setContextProperty("fullscreen", &fullscreen);
     QObject::connect(&volumeController, &VolumeController::volumeChangedExternally, &nativeSuppressor, [&] {
-        if(!fullscreen.isActive())
+        if(settings.overrideNativeOsd() && !fullscreen.shouldBlock(settings.disableOnFullscreen()))
             nativeSuppressor.arm();
+    });
+    // apply the override-native-OSD toggle at runtime
+    QObject::connect(&settings, &Settings::changed, &nativeSuppressor, [&] {
+        if(settings.overrideNativeOsd())
+            nativeSuppressor.arm();
+        else
+            nativeSuppressor.restore();
     });
 
     LockKeysController lockKeys;
@@ -80,6 +91,7 @@ int main(int argc, char* argv[]) {
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
+    engine.rootContext()->setContextProperty("settings", &settings);
     engine.rootContext()->setContextProperty("tray", &tray);
     engine.loadFromModule("MediaFlyouts", "App");
 

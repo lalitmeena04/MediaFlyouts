@@ -16,8 +16,8 @@ Window {
     readonly property var pages: [
         { "icon": Fluent.musicNote, "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
-        { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Volume flyout and per-app mixer (coming soon)." },
-        { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicators (coming soon)." },
+        { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
+        { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
         { "icon": Fluent.settings,  "name": "About",        "desc": "MediaFlyouts — a Fluent-style media overlay built with Qt 6." }
     ]
 
@@ -175,6 +175,87 @@ Window {
                                 font.pixelSize: 13
                             }
                         }
+                    }
+                }
+
+                // Media Flyout page
+                Column {
+                    visible: dash.currentIndex === 1
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Media flyout"
+                        description: "Show the now-playing flyout on media key presses."
+                        value: settings.mediaFlyoutEnabled
+                        onToggled: settings.mediaFlyoutEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Up next flyout"
+                        description: "Show a compact card when a track auto-advances."
+                        value: settings.nextUpEnabled
+                        onToggled: settings.nextUpEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Hide during fullscreen"
+                        description: "Suppress flyouts while a fullscreen or exclusive app is in the foreground."
+                        value: settings.disableOnFullscreen
+                        onToggled: settings.disableOnFullscreen = value
+                    }
+                }
+
+                // Volume page
+                Column {
+                    visible: dash.currentIndex === 2
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Volume flyout"
+                        description: "Show the volume flyout on volume key presses."
+                        value: settings.volumeFlyoutEnabled
+                        onToggled: settings.volumeFlyoutEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Override native volume OSD"
+                        description: "Replace the built-in Windows volume overlay with this one."
+                        value: settings.overrideNativeOsd
+                        onToggled: settings.overrideNativeOsd = value
+                    }
+                }
+
+                // Lock Keys page
+                Column {
+                    visible: dash.currentIndex === 3
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Lock key indicators"
+                        description: "Show a flyout when Caps, Num, or Scroll lock is toggled."
+                        value: settings.lockKeysEnabled
+                        onToggled: settings.lockKeysEnabled = value
+                    }
+                }
+
+                // About page
+                Column {
+                    visible: dash.currentIndex === 4
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Launch on startup"
+                        description: "Start MediaFlyouts automatically when you sign in."
+                        value: settings.launchOnStartup
+                        onToggled: settings.launchOnStartup = value
                     }
                 }
             }

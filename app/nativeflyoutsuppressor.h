@@ -16,6 +16,8 @@ class NativeFlyoutSuppressor : public QObject {
     public slots:
         // ensure the native OSD host has been parked off-screen (idempotent)
         void arm();
+        // restore the native OSD (e.g. when the override setting is turned off)
+        void restore();
 
     private:
         bool parkOsd();

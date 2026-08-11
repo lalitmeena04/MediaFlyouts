@@ -18,7 +18,7 @@ Window {
     }
 
     function showFlyout() {
-        if(fullscreen.isActive())
+        if(!settings.mediaFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         hideTimer.restart()
         root.visible = true
