@@ -2,7 +2,8 @@
 
 #include <QObject>
 
-// Suppresses the native Windows volume OSD so our VolumeFlyout replaces it.
+// Parks the native Windows volume OSD host off-screen (gpkgpk/HideVolumeOSD technique) so our
+// VolumeFlyout fully replaces it without any flash. Restores it on shutdown.
 class NativeFlyoutSuppressor : public QObject {
         Q_OBJECT
 
@@ -13,6 +14,14 @@ class NativeFlyoutSuppressor : public QObject {
         void start();
 
     public slots:
-        // called when our volume changes; hides the native OSD now and briefly after
+        // ensure the native OSD host has been parked off-screen (idempotent)
         void arm();
+
+    private:
+        bool parkOsd();
+        void restoreOsd();
+
+        void* m_osdHost = nullptr; // HWND, kept as void* so windows.h stays out of the header
+        long m_originalExStyle = 0;
+        bool m_parked = false;
 };
