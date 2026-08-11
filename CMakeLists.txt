@@ -8,7 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Qml Quick Test Widgets)
 qt_standard_project_setup(REQUIRES 6.5)
 
-enable_testing()
+option(MEDIAFLYOUTS_BUILD_TESTS "Build the unit tests" ON)
+if(MEDIAFLYOUTS_BUILD_TESTS)
+    enable_testing()
+endif()
 
 # --- Model: cross-platform domain logic, shared by the app and the tests ---
 qt_add_library(mediaflyout_core STATIC
@@ -80,4 +83,6 @@ if (WIN32)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)
 endif()
 
-add_subdirectory(tests)
+if(MEDIAFLYOUTS_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

@@ -4,20 +4,42 @@
 .PARAMETER Config
     Build configuration: 'debug' (default) or 'release'.
 .PARAMETER Clean
-    Delete the build directory before configuring.
+    Wipe the build (and bin) output before configuring, i.e. a clean build.
+.PARAMETER CleanOnly
+    Remove the build and bin output and exit without building.
+.PARAMETER Test
+    Run the test suite (ctest) after building.
+.PARAMETER NoTests
+    Configure with tests disabled so only the app is built (faster).
 .EXAMPLE
-    .\build.ps1
-    .\build.ps1 -Config release
-    .\build.ps1 -Clean
+    .\build.ps1                     # debug build
+    .\build.ps1 -Config release     # release build
+    .\build.ps1 -Clean              # clean build
+    .\build.ps1 -CleanOnly          # just delete build/ and bin/
+    .\build.ps1 -Test               # build, then run the tests
+    .\build.ps1 -NoTests            # build only the app, skip tests
+    .\build.ps1 -Clean -Test        # clean build and run tests
 #>
 [CmdletBinding()]
 param(
     [ValidateSet('debug', 'release')]
     [string]$Config = 'debug',
-    [switch]$Clean
+    [switch]$Clean,
+    [switch]$CleanOnly,
+    [switch]$Test,
+    [switch]$NoTests
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ($Test -and $NoTests) {
+    throw '-Test and -NoTests are mutually exclusive.'
+}
+
+$preset = "msvc-$Config"
+$buildDir = Join-Path $PSScriptRoot "build\$preset"
+$binDir = Join-Path $PSScriptRoot 'bin'
+$appExe = Join-Path $binDir 'MediaFlyouts.exe'
 
 # Ensure the MSVC (cl.exe/ninja) toolchain is on PATH for the Ninja generator.
 function Enter-MsvcEnv {
@@ -50,29 +72,65 @@ function Enter-MsvcEnv {
     }
 }
 
-$preset = "msvc-$Config"
-$buildDir = Join-Path $PSScriptRoot "build\$preset"
+function Remove-Outputs {
+    foreach ($dir in @($buildDir, $binDir)) {
+        if (Test-Path $dir) {
+            Write-Host "[CLEAN] Removing $dir ..."
+            Remove-Item -Recurse -Force $dir
+        }
+    }
+}
+
+# Run a native command, checking its exit code. Runs with Continue so that tool
+# stderr (e.g. CMake warnings) isn't turned into a terminating error when the
+# caller redirects output with 2>&1.
+function Invoke-Native {
+    param(
+        [Parameter(Mandatory)][scriptblock]$Command,
+        [Parameter(Mandatory)][string]$FailureMessage
+    )
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        & $Command
+    } finally {
+        $ErrorActionPreference = $previous
+    }
+    if ($LASTEXITCODE -ne 0) { throw $FailureMessage }
+}
 
 Write-Host '==================================================='
 Write-Host "Building MediaFlyouts ($Config)"
 Write-Host '==================================================='
 
-Enter-MsvcEnv
-
-if ($Clean -and (Test-Path $buildDir)) {
-    Write-Host "[CLEAN] Removing $buildDir ..."
-    Remove-Item -Recurse -Force $buildDir
+# clean-only: no toolchain needed, just wipe and exit
+if ($CleanOnly) {
+    Remove-Outputs
+    Write-Host '[CLEAN] Done.'
+    return
 }
 
-Write-Host "[CONFIGURE] cmake --preset $preset"
-cmake --preset $preset
-if ($LASTEXITCODE -ne 0) { throw 'CMake configuration failed.' }
+Enter-MsvcEnv
+
+if ($Clean) {
+    Remove-Outputs
+}
+
+# Flip the test build on/off so switching modes reconfigures cleanly.
+$testsFlag = if ($NoTests) { 'OFF' } else { 'ON' }
+
+Write-Host "[CONFIGURE] cmake --preset $preset -DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag"
+Invoke-Native { cmake --preset $preset "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag" } 'CMake configuration failed.'
 
 Write-Host "[BUILD] cmake --build $buildDir"
-cmake --build $buildDir
-if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
+Invoke-Native { cmake --build $buildDir } 'Build failed.'
 
-$appExe = Join-Path $PSScriptRoot 'bin\MediaFlyouts.exe'
 Write-Host '==================================================='
 Write-Host "Build succeeded: $appExe"
 Write-Host '==================================================='
+
+if ($Test) {
+    Write-Host "[TEST] ctest --test-dir $buildDir --output-on-failure"
+    Invoke-Native { ctest --test-dir $buildDir --output-on-failure } 'Tests failed.'
+    Write-Host '[TEST] All tests passed.'
+}
