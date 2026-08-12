@@ -19,6 +19,7 @@ class Settings : public QObject {
         Q_PROPERTY(int flyoutPosition READ flyoutPosition WRITE setFlyoutPosition NOTIFY changed)
         Q_PROPERTY(int flyoutMonitor READ flyoutMonitor WRITE setFlyoutMonitor NOTIFY changed)
         Q_PROPERTY(int flyoutDuration READ flyoutDuration WRITE setFlyoutDuration NOTIFY changed)
+        Q_PROPERTY(int taskbarWidgetOffset READ taskbarWidgetOffset WRITE setTaskbarWidgetOffset NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -35,6 +36,7 @@ class Settings : public QObject {
         int flyoutPosition() const;
         int flyoutMonitor() const;
         int flyoutDuration() const;
+        int taskbarWidgetOffset() const;
 
         void setMediaFlyoutEnabled(bool v);
         void setVolumeFlyoutEnabled(bool v);
@@ -48,6 +50,7 @@ class Settings : public QObject {
         void setFlyoutPosition(int v);
         void setFlyoutMonitor(int v);
         void setFlyoutDuration(int v);
+        void setTaskbarWidgetOffset(int v);
 
     signals:
         void changed();
@@ -69,4 +72,5 @@ class Settings : public QObject {
         int m_flyoutPosition;
         int m_flyoutMonitor;
         int m_flyoutDuration;
+        int m_taskbarWidgetOffset;
 };

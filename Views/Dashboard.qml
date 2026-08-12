@@ -293,6 +293,17 @@ Window {
                         value: settings.taskbarWidgetControlsEnabled
                         onToggled: settings.taskbarWidgetControlsEnabled = value
                     }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Widget offset"
+                        description: "Shift the widget left to clear third-party taskbar widgets (e.g. speed meters)."
+                        from: 0
+                        to: 600
+                        stepSize: 10
+                        value: settings.taskbarWidgetOffset
+                        valueText: settings.taskbarWidgetOffset + " px"
+                        onMoved: settings.taskbarWidgetOffset = Math.round(value)
+                    }
                 }
 
                 // About page
