@@ -13,6 +13,9 @@ class Settings : public QObject {
         Q_PROPERTY(bool nextUpEnabled READ nextUpEnabled WRITE setNextUpEnabled NOTIFY changed)
         Q_PROPERTY(bool disableOnFullscreen READ disableOnFullscreen WRITE setDisableOnFullscreen NOTIFY changed)
         Q_PROPERTY(bool launchOnStartup READ launchOnStartup WRITE setLaunchOnStartup NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetEnabled READ taskbarWidgetEnabled WRITE setTaskbarWidgetEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetControlsEnabled READ taskbarWidgetControlsEnabled WRITE
+                       setTaskbarWidgetControlsEnabled NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -24,6 +27,8 @@ class Settings : public QObject {
         bool nextUpEnabled() const;
         bool disableOnFullscreen() const;
         bool launchOnStartup() const;
+        bool taskbarWidgetEnabled() const;
+        bool taskbarWidgetControlsEnabled() const;
 
         void setMediaFlyoutEnabled(bool v);
         void setVolumeFlyoutEnabled(bool v);
@@ -32,6 +37,8 @@ class Settings : public QObject {
         void setNextUpEnabled(bool v);
         void setDisableOnFullscreen(bool v);
         void setLaunchOnStartup(bool v);
+        void setTaskbarWidgetEnabled(bool v);
+        void setTaskbarWidgetControlsEnabled(bool v);
 
     signals:
         void changed();
@@ -47,4 +54,6 @@ class Settings : public QObject {
         bool m_nextUpEnabled;
         bool m_disableOnFullscreen;
         bool m_launchOnStartup;
+        bool m_taskbarWidgetEnabled;
+        bool m_taskbarWidgetControlsEnabled;
 };

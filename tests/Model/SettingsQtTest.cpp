@@ -37,6 +37,8 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.nextUpEnabled());
     QVERIFY(s.disableOnFullscreen());
     QVERIFY(!s.launchOnStartup());
+    QVERIFY(!s.taskbarWidgetEnabled());
+    QVERIFY(s.taskbarWidgetControlsEnabled());
 }
 
 void SettingsQtTest::setterEmitsChanged() {

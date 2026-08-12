@@ -56,6 +56,7 @@ qt_add_qml_module(MediaFlyouts
         Views/LockKeysFlyout.qml
         Views/NextUpFlyout.qml
         Views/Dashboard.qml
+        Views/TaskbarWidget.qml
         Views/Fluent.qml
         Views/IconLabel.qml
         Views/SettingRow.qml

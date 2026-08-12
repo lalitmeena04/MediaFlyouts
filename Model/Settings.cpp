@@ -10,6 +10,8 @@ Settings::Settings(QObject* parent)
     m_nextUpEnabled = m_store.value(QStringLiteral("nextUpEnabled"), true).toBool();
     m_disableOnFullscreen = m_store.value(QStringLiteral("disableOnFullscreen"), true).toBool();
     m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), false).toBool();
+    m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), false).toBool();
+    m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
 }
 
 void Settings::assign(const char* key, bool& field, bool v) {
@@ -41,6 +43,12 @@ bool Settings::disableOnFullscreen() const {
 bool Settings::launchOnStartup() const {
     return m_launchOnStartup;
 }
+bool Settings::taskbarWidgetEnabled() const {
+    return m_taskbarWidgetEnabled;
+}
+bool Settings::taskbarWidgetControlsEnabled() const {
+    return m_taskbarWidgetControlsEnabled;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -62,4 +70,10 @@ void Settings::setDisableOnFullscreen(bool v) {
 }
 void Settings::setLaunchOnStartup(bool v) {
     assign("launchOnStartup", m_launchOnStartup, v);
+}
+void Settings::setTaskbarWidgetEnabled(bool v) {
+    assign("taskbarWidgetEnabled", m_taskbarWidgetEnabled, v);
+}
+void Settings::setTaskbarWidgetControlsEnabled(bool v) {
+    assign("taskbarWidgetControlsEnabled", m_taskbarWidgetControlsEnabled, v);
 }

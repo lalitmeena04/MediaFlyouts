@@ -18,6 +18,7 @@ Window {
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
         { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
+        { "icon": Fluent.musicNote, "name": "Taskbar Widget", "desc": "A compact now-playing widget docked on the taskbar." },
         { "icon": Fluent.settings,  "name": "About",        "desc": "MediaFlyouts — a Fluent-style media overlay built with Qt 6." }
     ]
 
@@ -244,9 +245,31 @@ Window {
                     }
                 }
 
-                // About page
+                // Taskbar Widget page
                 Column {
                     visible: dash.currentIndex === 4
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Taskbar widget"
+                        description: "Dock a compact now-playing widget on the taskbar near the tray."
+                        value: settings.taskbarWidgetEnabled
+                        onToggled: settings.taskbarWidgetEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Widget transport controls"
+                        description: "Show previous / play-pause / next buttons on the widget."
+                        value: settings.taskbarWidgetControlsEnabled
+                        onToggled: settings.taskbarWidgetControlsEnabled = value
+                    }
+                }
+
+                // About page
+                Column {
+                    visible: dash.currentIndex === 5
                     width: parent.width
                     spacing: 12
 

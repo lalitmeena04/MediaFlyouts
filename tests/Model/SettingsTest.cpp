@@ -28,6 +28,8 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.nextUpEnabled());
     EXPECT_TRUE(s.disableOnFullscreen());
     EXPECT_FALSE(s.launchOnStartup());
+    EXPECT_FALSE(s.taskbarWidgetEnabled());
+    EXPECT_TRUE(s.taskbarWidgetControlsEnabled());
 }
 
 TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {

@@ -8,6 +8,9 @@ QtObject {
     property LockKeysFlyout lockKeysFlyout: LockKeysFlyout {}
     property NextUpFlyout nextUpFlyout: NextUpFlyout {}
     property Dashboard dashboard: Dashboard {}
+    property TaskbarWidget taskbarWidget: TaskbarWidget {
+        onActivated: flyout.showFlyout()
+    }
 
     property Connections trayConnection: Connections {
         target: tray
