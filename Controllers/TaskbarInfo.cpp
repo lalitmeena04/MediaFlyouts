@@ -2,6 +2,7 @@
 
 #include <QGuiApplication>
 #include <QScreen>
+#include <QWindow>
 #include <windows.h>
 
 namespace {
@@ -35,4 +36,14 @@ QRect TaskbarInfo::trayGeometry() const {
     if(!taskbar)
         return QRect();
     return toLogical(FindWindowExW(taskbar, nullptr, L"TrayNotifyWnd", nullptr));
+}
+
+void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
+    if(!window)
+        return;
+    HWND hwnd = reinterpret_cast<HWND>(window->winId());
+    if(!hwnd)
+        return;
+    // move to the top of the topmost band (above the taskbar) without stealing focus
+    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 }

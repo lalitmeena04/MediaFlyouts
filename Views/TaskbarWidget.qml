@@ -10,8 +10,9 @@ Window {
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
-    // shown only when enabled and something is playing
+    // shown only when enabled, something is playing, and not blocked by fullscreen / lock screen
     visible: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
+             && !fullscreen.shouldBlock(settings.disableOnFullscreen)
 
     signal activated()
 
@@ -35,6 +36,9 @@ Window {
                 ? Screen.virtualY + Screen.desktopAvailableHeight + Math.max(0, (taskbarHeight - height) / 2)
                 : Screen.virtualY + Screen.height - height - 4
         }
+        // keep the widget above the (possibly transparent) taskbar so it stays clickable
+        if(root.visible)
+            taskbar.pinAboveTaskbar(root)
     }
 
     Component.onCompleted: updatePosition()
@@ -46,9 +50,9 @@ Window {
         function onChanged() { root.updatePosition() }
     }
 
-    // re-evaluate placement periodically to follow resolution / taskbar changes
+    // re-evaluate placement (and re-assert z-order) periodically to survive taskbar/z-order changes
     Timer {
-        interval: 2000
+        interval: 1000
         running: root.visible
         repeat: true
         onTriggered: root.updatePosition()
