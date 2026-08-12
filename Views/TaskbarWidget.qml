@@ -19,14 +19,20 @@ Window {
     readonly property int trayPadding: 200
 
     function updatePosition() {
-        const taskbarHeight = Screen.height - Screen.desktopAvailableHeight
-        root.x = Screen.virtualX + Screen.width - width - trayPadding
-        if(taskbarHeight > 0) {
-            // bottom taskbar: center the widget within the taskbar strip
-            root.y = Screen.virtualY + Screen.desktopAvailableHeight + Math.max(0, (taskbarHeight - height) / 2)
+        var tb = taskbar.taskbarGeometry()
+        var tray = taskbar.trayGeometry()
+        if(tb.width > 0) {
+            // anchor just left of the real system-tray boundary so we never overlap it
+            var rightEdge = (tray.width > 0) ? tray.x : (tb.x + tb.width - trayPadding)
+            root.x = rightEdge - width - 8
+            root.y = tb.y + Math.max(0, (tb.height - height) / 2)
         } else {
-            // taskbar hidden/side-docked: fall back to the bottom edge
-            root.y = Screen.virtualY + Screen.height - height - 4
+            // fallback when the taskbar can't be located
+            var taskbarHeight = Screen.height - Screen.desktopAvailableHeight
+            root.x = Screen.virtualX + Screen.width - width - trayPadding
+            root.y = (taskbarHeight > 0)
+                ? Screen.virtualY + Screen.desktopAvailableHeight + Math.max(0, (taskbarHeight - height) / 2)
+                : Screen.virtualY + Screen.height - height - 4
         }
     }
 

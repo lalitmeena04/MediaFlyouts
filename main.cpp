@@ -17,6 +17,7 @@
 #include "MediaKeyController.h"
 #include "NativeFlyoutSuppressor.h"
 #include "StartupController.h"
+#include "TaskbarInfo.h"
 #include "VolumeController.h"
 #include "WinMediaProvider.h"
 #endif
@@ -88,6 +89,10 @@ int main(int argc, char* argv[]) {
     StartupController startup;
     startup.setEnabled(settings.launchOnStartup());
     QObject::connect(&settings, &Settings::changed, &startup, [&] { startup.setEnabled(settings.launchOnStartup()); });
+
+    // locates the taskbar / tray so the taskbar widget can dock without overlapping the tray
+    TaskbarInfo taskbar;
+    engine.rootContext()->setContextProperty("taskbar", &taskbar);
 
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;
