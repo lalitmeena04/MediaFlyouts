@@ -78,6 +78,7 @@ if (WIN32)
         Controllers/FullscreenDetector.h     Controllers/FullscreenDetector.cpp
         Controllers/LockKeysController.h     Controllers/LockKeysController.cpp
         Controllers/MediaKeyController.h     Controllers/MediaKeyController.cpp
+        Controllers/StartupController.h      Controllers/StartupController.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)

@@ -15,6 +15,7 @@
 #include "LockKeysController.h"
 #include "MediaKeyController.h"
 #include "NativeFlyoutSuppressor.h"
+#include "StartupController.h"
 #include "VolumeController.h"
 #include "WinMediaProvider.h"
 #endif
@@ -80,6 +81,11 @@ int main(int argc, char* argv[]) {
     LockKeysController lockKeys;
     lockKeys.start();
     engine.rootContext()->setContextProperty("lockKeys", &lockKeys);
+
+    // keep the Windows startup (Run) entry in sync with the saved setting
+    StartupController startup;
+    startup.setEnabled(settings.launchOnStartup());
+    QObject::connect(&settings, &Settings::changed, &startup, [&] { startup.setEnabled(settings.launchOnStartup()); });
 
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;
