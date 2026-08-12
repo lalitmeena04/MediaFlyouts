@@ -15,7 +15,7 @@ Window {
         if(!settings.lockKeysEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         x = Screen.virtualX + Math.round((Screen.width - width) / 2)
-        y = Screen.virtualY + Math.round(Screen.height * 0.62)
+        y = Screen.virtualY + Screen.height - height - 120
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()
