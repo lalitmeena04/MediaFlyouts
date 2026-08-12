@@ -1,0 +1,39 @@
+#include "FlyoutPlacement.h"
+
+#include <QGuiApplication>
+#include <QScreen>
+
+#include "FlyoutPositioner.h"
+#include "Settings.h"
+
+FlyoutPlacement::FlyoutPlacement(Settings* settings, QObject* parent) : QObject(parent), m_settings(settings) {}
+
+QPoint FlyoutPlacement::position(int width, int height) const {
+    const QList<QScreen*> screens = QGuiApplication::screens();
+    if(screens.isEmpty())
+        return QPoint(0, 0);
+
+    int monitor = m_settings ? m_settings->flyoutMonitor() : 0;
+    if(monitor < 0 || monitor >= screens.size())
+        monitor = 0;
+
+    // availableGeometry already excludes the taskbar, so a small uniform margin is enough
+    const QRect work = screens.at(monitor)->availableGeometry();
+    const int index = m_settings ? m_settings->flyoutPosition() : int(mf::FlyoutPosition::BottomCenter);
+    const auto pos = mf::FlyoutPosition(qBound(0, index, int(mf::FlyoutPosition::BottomRight)));
+    return mf::computeFlyoutRect(work, QSize(width, height), pos, 24).topLeft();
+}
+
+QStringList FlyoutPlacement::monitorNames() const {
+    QStringList names;
+    const QList<QScreen*> screens = QGuiApplication::screens();
+    for(int i = 0; i < screens.size(); ++i) {
+        const QScreen* s = screens.at(i);
+        names << QStringLiteral("%1. %2 (%3x%4)")
+                     .arg(i + 1)
+                     .arg(s->name())
+                     .arg(s->geometry().width())
+                     .arg(s->geometry().height());
+    }
+    return names;
+}
