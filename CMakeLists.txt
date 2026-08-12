@@ -27,6 +27,7 @@ qt_add_executable(MediaFlyouts WIN32
     main.cpp
     Controllers/NowPlaying.h     Controllers/NowPlaying.cpp
     Controllers/TrayController.h Controllers/TrayController.cpp
+    Controllers/FlyoutPlacement.h Controllers/FlyoutPlacement.cpp
     Model/AlbumArtProvider.h     Model/AlbumArtProvider.cpp
     Model/Settings.h             Model/Settings.cpp
 )
@@ -60,6 +61,8 @@ qt_add_qml_module(MediaFlyouts
         Views/Fluent.qml
         Views/IconLabel.qml
         Views/SettingRow.qml
+        Views/SettingCombo.qml
+        Views/SettingSlider.qml
     RESOURCES
         Views/assets/fonts/FluentSystemIcons-Filled.ttf
 )

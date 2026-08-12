@@ -4,6 +4,7 @@
 #include <QQmlContext>
 
 #include "AlbumArtProvider.h"
+#include "FlyoutPlacement.h"
 #include "NowPlaying.h"
 #include "Settings.h"
 #include "TrayController.h"
@@ -37,6 +38,7 @@ int main(int argc, char* argv[]) {
     NowPlaying nowPlaying;
 
     Settings settings;
+    FlyoutPlacement placement(&settings);
 
     QQmlApplicationEngine engine;
 
@@ -98,6 +100,7 @@ int main(int argc, char* argv[]) {
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
     engine.rootContext()->setContextProperty("settings", &settings);
+    engine.rootContext()->setContextProperty("placement", &placement);
     engine.rootContext()->setContextProperty("tray", &tray);
     engine.loadFromModule("MediaFlyouts", "App");
 

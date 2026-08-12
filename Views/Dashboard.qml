@@ -206,6 +206,34 @@ Window {
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
+
+                    SettingCombo {
+                        width: parent.width
+                        label: "Flyout position"
+                        description: "Where flyouts appear on the selected monitor."
+                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right"]
+                        currentIndex: settings.flyoutPosition
+                        onActivated: settings.flyoutPosition = index
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Monitor"
+                        description: "Which display flyouts are shown on."
+                        model: placement.monitorNames()
+                        currentIndex: settings.flyoutMonitor
+                        onActivated: settings.flyoutMonitor = index
+                    }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Flyout duration"
+                        description: "How long the media flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.flyoutDuration
+                        valueText: (settings.flyoutDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.flyoutDuration = Math.round(value)
+                    }
                 }
 
                 // Volume page

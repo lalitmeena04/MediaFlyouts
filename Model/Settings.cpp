@@ -12,6 +12,18 @@ Settings::Settings(QObject* parent)
     m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), false).toBool();
     m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), false).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
+    // flyoutPosition indexes mf::FlyoutPosition (4 = BottomCenter); duration in milliseconds
+    m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
+    m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
+    m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
+}
+
+void Settings::assignInt(const char* key, int& field, int v) {
+    if(field == v)
+        return;
+    field = v;
+    m_store.setValue(QString::fromLatin1(key), v);
+    emit changed();
 }
 
 void Settings::assign(const char* key, bool& field, bool v) {
@@ -49,6 +61,15 @@ bool Settings::taskbarWidgetEnabled() const {
 bool Settings::taskbarWidgetControlsEnabled() const {
     return m_taskbarWidgetControlsEnabled;
 }
+int Settings::flyoutPosition() const {
+    return m_flyoutPosition;
+}
+int Settings::flyoutMonitor() const {
+    return m_flyoutMonitor;
+}
+int Settings::flyoutDuration() const {
+    return m_flyoutDuration;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -76,4 +97,13 @@ void Settings::setTaskbarWidgetEnabled(bool v) {
 }
 void Settings::setTaskbarWidgetControlsEnabled(bool v) {
     assign("taskbarWidgetControlsEnabled", m_taskbarWidgetControlsEnabled, v);
+}
+void Settings::setFlyoutPosition(int v) {
+    assignInt("flyoutPosition", m_flyoutPosition, v);
+}
+void Settings::setFlyoutMonitor(int v) {
+    assignInt("flyoutMonitor", m_flyoutMonitor, v);
+}
+void Settings::setFlyoutDuration(int v) {
+    assignInt("flyoutDuration", m_flyoutDuration, v);
 }

@@ -39,6 +39,9 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.launchOnStartup());
     QVERIFY(!s.taskbarWidgetEnabled());
     QVERIFY(s.taskbarWidgetControlsEnabled());
+    QCOMPARE(s.flyoutPosition(), 4);
+    QCOMPARE(s.flyoutMonitor(), 0);
+    QCOMPARE(s.flyoutDuration(), 4500);
 }
 
 void SettingsQtTest::setterEmitsChanged() {

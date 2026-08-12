@@ -13,13 +13,17 @@ Window {
 
     // place bottom-center of the primary screen with a small bottom margin
     Component.onCompleted: {
-        x = Screen.virtualX + Math.round((Screen.width - width) / 2)
-        y = Screen.virtualY + Screen.height - height - 48
+        var p = placement.position(width, height)
+        x = p.x
+        y = p.y
     }
 
     function showFlyout() {
         if(!settings.mediaFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
+        var p = placement.position(width, height)
+        x = p.x
+        y = p.y
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()
@@ -41,7 +45,7 @@ Window {
 
     Timer {
         id: hideTimer
-        interval: 4500
+        interval: settings.flyoutDuration
         onTriggered: root.hideFlyout()
     }
 

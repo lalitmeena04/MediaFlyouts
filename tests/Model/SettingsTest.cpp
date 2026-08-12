@@ -30,6 +30,9 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_FALSE(s.launchOnStartup());
     EXPECT_FALSE(s.taskbarWidgetEnabled());
     EXPECT_TRUE(s.taskbarWidgetControlsEnabled());
+    EXPECT_EQ(s.flyoutPosition(), 4);
+    EXPECT_EQ(s.flyoutMonitor(), 0);
+    EXPECT_EQ(s.flyoutDuration(), 4500);
 }
 
 TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {

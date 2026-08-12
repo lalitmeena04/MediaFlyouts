@@ -14,8 +14,9 @@ Window {
     function showFlyout() {
         if(!settings.lockKeysEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
-        x = Screen.virtualX + Math.round((Screen.width - width) / 2)
-        y = Screen.virtualY + Screen.height - height - 120
+        var p = placement.position(width, height)
+        x = p.x
+        y = p.y
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()

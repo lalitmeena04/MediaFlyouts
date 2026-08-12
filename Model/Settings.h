@@ -16,6 +16,9 @@ class Settings : public QObject {
         Q_PROPERTY(bool taskbarWidgetEnabled READ taskbarWidgetEnabled WRITE setTaskbarWidgetEnabled NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetControlsEnabled READ taskbarWidgetControlsEnabled WRITE
                        setTaskbarWidgetControlsEnabled NOTIFY changed)
+        Q_PROPERTY(int flyoutPosition READ flyoutPosition WRITE setFlyoutPosition NOTIFY changed)
+        Q_PROPERTY(int flyoutMonitor READ flyoutMonitor WRITE setFlyoutMonitor NOTIFY changed)
+        Q_PROPERTY(int flyoutDuration READ flyoutDuration WRITE setFlyoutDuration NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -29,6 +32,9 @@ class Settings : public QObject {
         bool launchOnStartup() const;
         bool taskbarWidgetEnabled() const;
         bool taskbarWidgetControlsEnabled() const;
+        int flyoutPosition() const;
+        int flyoutMonitor() const;
+        int flyoutDuration() const;
 
         void setMediaFlyoutEnabled(bool v);
         void setVolumeFlyoutEnabled(bool v);
@@ -39,12 +45,16 @@ class Settings : public QObject {
         void setLaunchOnStartup(bool v);
         void setTaskbarWidgetEnabled(bool v);
         void setTaskbarWidgetControlsEnabled(bool v);
+        void setFlyoutPosition(int v);
+        void setFlyoutMonitor(int v);
+        void setFlyoutDuration(int v);
 
     signals:
         void changed();
 
     private:
         void assign(const char* key, bool& field, bool v);
+        void assignInt(const char* key, int& field, int v);
 
         QSettings m_store;
         bool m_mediaFlyoutEnabled;
@@ -56,4 +66,7 @@ class Settings : public QObject {
         bool m_launchOnStartup;
         bool m_taskbarWidgetEnabled;
         bool m_taskbarWidgetControlsEnabled;
+        int m_flyoutPosition;
+        int m_flyoutMonitor;
+        int m_flyoutDuration;
 };
