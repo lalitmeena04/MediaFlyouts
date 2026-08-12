@@ -43,6 +43,7 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.flyoutMonitor(), 0);
     QCOMPARE(s.flyoutDuration(), 4500);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
+    QCOMPARE(s.taskbarWidgetSide(), 1);
 }
 
 void SettingsQtTest::setterEmitsChanged() {

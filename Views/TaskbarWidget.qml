@@ -22,19 +22,26 @@ Window {
     function updatePosition() {
         var tb = taskbar.taskbarGeometry()
         var tray = taskbar.trayGeometry()
+        var onLeft = settings.taskbarWidgetSide === 0
         if(tb.width > 0) {
-            // anchor just left of the real system-tray boundary so we never overlap it,
-            // plus a user offset to clear third-party taskbar widgets (speed meters, etc.)
-            var rightEdge = (tray.width > 0) ? tray.x : (tb.x + tb.width - trayPadding)
-            root.x = rightEdge - width - 8 - settings.taskbarWidgetOffset
             root.y = tb.y + Math.max(0, (tb.height - height) / 2)
+            if(onLeft) {
+                // left edge of the taskbar; offset nudges it further right
+                root.x = tb.x + 8 + settings.taskbarWidgetOffset
+            } else {
+                // right side, just left of the real tray boundary; offset nudges it further left
+                var rightEdge = (tray.width > 0) ? tray.x : (tb.x + tb.width - trayPadding)
+                root.x = rightEdge - width - 8 - settings.taskbarWidgetOffset
+            }
         } else {
             // fallback when the taskbar can't be located
             var taskbarHeight = Screen.height - Screen.desktopAvailableHeight
-            root.x = Screen.virtualX + Screen.width - width - trayPadding - settings.taskbarWidgetOffset
             root.y = (taskbarHeight > 0)
                 ? Screen.virtualY + Screen.desktopAvailableHeight + Math.max(0, (taskbarHeight - height) / 2)
                 : Screen.virtualY + Screen.height - height - 4
+            root.x = onLeft
+                ? Screen.virtualX + 8 + settings.taskbarWidgetOffset
+                : Screen.virtualX + Screen.width - width - trayPadding - settings.taskbarWidgetOffset
         }
         // keep the widget above the (possibly transparent) taskbar so it stays clickable
         if(root.visible)
