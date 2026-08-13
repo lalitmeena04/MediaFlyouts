@@ -11,19 +11,9 @@ Window {
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
 
-    // place bottom-center of the primary screen with a small bottom margin
-    Component.onCompleted: {
-        var p = placement.position(width, height)
-        x = p.x
-        y = p.y
-    }
-
     function showFlyout() {
         if(!settings.mediaFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
-        var p = placement.position(width, height)
-        x = p.x
-        y = p.y
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()

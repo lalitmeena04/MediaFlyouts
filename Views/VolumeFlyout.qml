@@ -22,9 +22,6 @@ Window {
     function showFlyout() {
         if(!settings.volumeFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
-        var p = placement.position(width, height)
-        x = p.x
-        y = p.y
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()
