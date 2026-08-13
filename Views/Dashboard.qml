@@ -293,10 +293,20 @@ Window {
                         value: settings.taskbarWidgetControlsEnabled
                         onToggled: settings.taskbarWidgetControlsEnabled = value
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Widget side"
+                        description: "Which end of the taskbar the widget docks to."
+                        model: ["Left", "Right"]
+                        currentIndex: settings.taskbarWidgetSide
+                        onActivated: settings.taskbarWidgetSide = index
+                    }
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"
-                        description: "Shift the widget left to clear third-party taskbar widgets (e.g. speed meters)."
+                        description: settings.taskbarWidgetSide === 0
+                            ? "Shift the widget right, away from the left edge."
+                            : "Shift the widget left to clear third-party taskbar widgets (e.g. speed meters)."
                         from: 0
                         to: 600
                         stepSize: 10
