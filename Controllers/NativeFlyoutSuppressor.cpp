@@ -4,7 +4,7 @@
 
 namespace {
 
-// Walks the shell's window tree to the volume OSD host, matching MediaFlyouts / gpkgpk/HideVolumeOSD:
+// Walks the shell's window tree to the volume OSD host, then parks it off-screen:
 //   XamlExplorerHostIslandWindow > DesktopWindowContentBridge("DesktopWindowXamlSource") > InputSite.WindowClass
 // The OSD island is the one whose InputSite child has a non-empty rect.
 HWND findOsdHost() {
