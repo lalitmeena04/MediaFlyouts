@@ -31,12 +31,15 @@ QtObject {
         var cumulative = 0
         for(var i = 0; i < flyoutStack.length; i++) {
             var f = flyoutStack[i]
-            if(!f.visible)
+            if(!f.visible) {
+                f.positioned = false // next appearance snaps in without sliding
                 continue
+            }
             var p = placement.position(f.width, f.height)
             f.x = p.x
             f.y = topAligned ? (p.y + cumulative) : (p.y - cumulative)
             cumulative += f.height + gap
+            f.positioned = true // subsequent shifts animate
         }
     }
 

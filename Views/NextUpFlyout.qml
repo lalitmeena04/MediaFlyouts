@@ -11,6 +11,13 @@ Window {
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
 
+    // true once App has placed this flyout, so re-stacking animates while the first show snaps
+    property bool positioned: false
+    Behavior on y {
+        enabled: root.positioned
+        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
+    }
+
     function showFlyout() {
         if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
