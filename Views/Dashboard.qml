@@ -301,6 +301,14 @@ Window {
                         currentIndex: settings.taskbarWidgetSide
                         onActivated: settings.taskbarWidgetSide = index
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Widget monitor"
+                        description: "Which display's taskbar the widget docks to."
+                        model: placement.monitorNames()
+                        currentIndex: settings.taskbarWidgetMonitor
+                        onActivated: settings.taskbarWidgetMonitor = index
+                    }
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"

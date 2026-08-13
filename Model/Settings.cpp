@@ -18,6 +18,7 @@ Settings::Settings(QObject* parent)
     m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 1).toInt();
+    m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
 }
 
 void Settings::assignInt(const char* key, int& field, int v) {
@@ -78,6 +79,9 @@ int Settings::taskbarWidgetOffset() const {
 int Settings::taskbarWidgetSide() const {
     return m_taskbarWidgetSide;
 }
+int Settings::taskbarWidgetMonitor() const {
+    return m_taskbarWidgetMonitor;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -120,4 +124,7 @@ void Settings::setTaskbarWidgetOffset(int v) {
 }
 void Settings::setTaskbarWidgetSide(int v) {
     assignInt("taskbarWidgetSide", m_taskbarWidgetSide, v);
+}
+void Settings::setTaskbarWidgetMonitor(int v) {
+    assignInt("taskbarWidgetMonitor", m_taskbarWidgetMonitor, v);
 }

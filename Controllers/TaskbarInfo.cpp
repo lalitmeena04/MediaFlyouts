@@ -38,6 +38,46 @@ QRect TaskbarInfo::trayGeometry() const {
     return toLogical(FindWindowExW(taskbar, nullptr, L"TrayNotifyWnd", nullptr));
 }
 
+QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width, int height) const {
+    const QList<QScreen*> screens = QGuiApplication::screens();
+    if(screens.isEmpty())
+        return QPoint(0, 0);
+    if(monitor < 0 || monitor >= screens.size())
+        monitor = 0;
+    const QScreen* screen = screens.at(monitor);
+
+    // QScreen geometry is already logical and per-monitor DPI aware
+    const QRect full = screen->geometry();
+    const QRect avail = screen->availableGeometry();
+
+    // taskbar strip height for a bottom taskbar; fall back to 40px if none is docked here
+    int taskbarHeight = full.bottom() - avail.bottom();
+    int taskbarTop;
+    if(taskbarHeight > 0) {
+        taskbarTop = avail.bottom() + 1;
+    } else {
+        taskbarHeight = 40;
+        taskbarTop = full.bottom() + 1 - taskbarHeight;
+    }
+    const int y = taskbarTop + qMax(0, (taskbarHeight - height) / 2);
+
+    int x;
+    if(side == 0) {
+        // left edge; offset nudges it right
+        x = full.left() + 8 + offset;
+    } else {
+        int rightEdge = full.right() + 1 - 200;
+        // use the precise tray boundary only on the monitor that hosts the primary tray
+        if(screen == QGuiApplication::primaryScreen()) {
+            const QRect tray = trayGeometry();
+            if(!tray.isEmpty())
+                rightEdge = tray.left();
+        }
+        x = rightEdge - width - 8 - offset;
+    }
+    return QPoint(x, y);
+}
+
 void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
     if(!window)
         return;

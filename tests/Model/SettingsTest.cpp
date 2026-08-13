@@ -35,6 +35,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.flyoutDuration(), 4500);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
     EXPECT_EQ(s.taskbarWidgetSide(), 1);
+    EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
 }
 
 TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {
