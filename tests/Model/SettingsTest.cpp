@@ -29,6 +29,9 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_FALSE(s.mediaFlyoutAlwaysDisplay());
     EXPECT_FALSE(s.centerTitleArtist());
     EXPECT_FALSE(s.compactLayout());
+    EXPECT_TRUE(s.playerInfoEnabled());
+    EXPECT_FALSE(s.repeatEnabled());
+    EXPECT_FALSE(s.shuffleEnabled());
     EXPECT_TRUE(s.volumeFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
     EXPECT_TRUE(s.lockKeysEnabled());

@@ -75,6 +75,37 @@ bool NowPlaying::hasArt() const {
     return m_hasArt;
 }
 
+QString NowPlaying::playerName() const {
+    QString id = m_track.sourceApp;
+    // AUMIDs look like "Family!AppId" for packaged apps, or "Spotify.exe" for desktop apps
+    const int bang = id.lastIndexOf(QLatin1Char('!'));
+    if(bang >= 0)
+        id = id.mid(bang + 1);
+    if(id.endsWith(QStringLiteral(".exe"), Qt::CaseInsensitive))
+        id.chop(4);
+    return id;
+}
+
+int NowPlaying::repeatMode() const {
+    return m_track.repeatMode;
+}
+
+bool NowPlaying::shuffle() const {
+    return m_track.shuffle;
+}
+
+bool NowPlaying::canSeek() const {
+    return m_track.canSeek;
+}
+
+bool NowPlaying::canRepeat() const {
+    return m_track.canRepeat;
+}
+
+bool NowPlaying::canShuffle() const {
+    return m_track.canShuffle;
+}
+
 void NowPlaying::playPause() {
     if(m_controller)
         mf::togglePlayPause(*m_controller, m_track.state);
@@ -88,6 +119,23 @@ void NowPlaying::next() {
 void NowPlaying::previous() {
     if(m_controller)
         m_controller->previous();
+}
+
+void NowPlaying::seekToFraction(double fraction) {
+    if(m_controller && m_track.durationMs > 0) {
+        const double clamped = fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction);
+        m_controller->seek(static_cast<qint64>(clamped * m_track.durationMs));
+    }
+}
+
+void NowPlaying::cycleRepeat() {
+    if(m_controller)
+        m_controller->setRepeatMode((m_track.repeatMode + 1) % 3);
+}
+
+void NowPlaying::toggleShuffle() {
+    if(m_controller)
+        m_controller->setShuffle(!m_track.shuffle);
 }
 
 void NowPlaying::applyTrack(const mf::TrackInfo& track) {

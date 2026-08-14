@@ -12,6 +12,9 @@ void Settings::reload() {
     m_mediaFlyoutAlwaysDisplay = m_store.value(QStringLiteral("mediaFlyoutAlwaysDisplay"), false).toBool();
     m_centerTitleArtist = m_store.value(QStringLiteral("centerTitleArtist"), false).toBool();
     m_compactLayout = m_store.value(QStringLiteral("compactLayout"), false).toBool();
+    m_playerInfoEnabled = m_store.value(QStringLiteral("playerInfoEnabled"), true).toBool();
+    m_repeatEnabled = m_store.value(QStringLiteral("repeatEnabled"), false).toBool();
+    m_shuffleEnabled = m_store.value(QStringLiteral("shuffleEnabled"), false).toBool();
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
     m_lockKeysEnabled = m_store.value(QStringLiteral("lockKeysEnabled"), true).toBool();
@@ -90,6 +93,15 @@ bool Settings::centerTitleArtist() const {
 }
 bool Settings::compactLayout() const {
     return m_compactLayout;
+}
+bool Settings::playerInfoEnabled() const {
+    return m_playerInfoEnabled;
+}
+bool Settings::repeatEnabled() const {
+    return m_repeatEnabled;
+}
+bool Settings::shuffleEnabled() const {
+    return m_shuffleEnabled;
 }
 bool Settings::volumeFlyoutEnabled() const {
     return m_volumeFlyoutEnabled;
@@ -179,6 +191,15 @@ void Settings::setCenterTitleArtist(bool v) {
 }
 void Settings::setCompactLayout(bool v) {
     assign("compactLayout", m_compactLayout, v);
+}
+void Settings::setPlayerInfoEnabled(bool v) {
+    assign("playerInfoEnabled", m_playerInfoEnabled, v);
+}
+void Settings::setRepeatEnabled(bool v) {
+    assign("repeatEnabled", m_repeatEnabled, v);
+}
+void Settings::setShuffleEnabled(bool v) {
+    assign("shuffleEnabled", m_shuffleEnabled, v);
 }
 void Settings::setVolumeFlyoutEnabled(bool v) {
     assign("volumeFlyoutEnabled", m_volumeFlyoutEnabled, v);

@@ -24,6 +24,9 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         void pause() override;
         void next() override;
         void previous() override;
+        void seek(qint64 positionMs) override;
+        void setRepeatMode(int mode) override;
+        void setShuffle(bool on) override;
 
     signals:
         void trackChanged(const mf::TrackInfo& track);

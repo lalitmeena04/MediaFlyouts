@@ -35,6 +35,9 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.mediaFlyoutAlwaysDisplay());
     QVERIFY(!s.centerTitleArtist());
     QVERIFY(!s.compactLayout());
+    QVERIFY(s.playerInfoEnabled());
+    QVERIFY(!s.repeatEnabled());
+    QVERIFY(!s.shuffleEnabled());
     QVERIFY(s.volumeFlyoutEnabled());
     QVERIFY(s.overrideNativeOsd());
     QVERIFY(s.lockKeysEnabled());

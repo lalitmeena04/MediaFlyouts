@@ -8,6 +8,7 @@
 #include <QString>
 
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Media.h>
 #include <winrt/Windows.Storage.Streams.h>
 
 using namespace winrt::Windows::Media::Control;
@@ -104,7 +105,8 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
     }
 
     try {
-        switch(session.GetPlaybackInfo().PlaybackStatus()) {
+        auto info = session.GetPlaybackInfo();
+        switch(info.PlaybackStatus()) {
         case PlaybackStatus::Playing:
             track.state = mf::PlaybackState::Playing;
             break;
@@ -115,6 +117,20 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
             track.state = mf::PlaybackState::Stopped;
             break;
         }
+
+        auto controls = info.Controls();
+        track.canSeek = controls.IsPlaybackPositionEnabled();
+        track.canRepeat = controls.IsRepeatEnabled();
+        track.canShuffle = controls.IsShuffleEnabled();
+        if(auto repeat = info.AutoRepeatMode())
+            track.repeatMode = static_cast<int>(repeat.Value());
+        if(auto shuffle = info.IsShuffleActive())
+            track.shuffle = shuffle.Value();
+    } catch(...) {
+    }
+
+    try {
+        track.sourceApp = QString::fromWCharArray(session.SourceAppUserModelId().c_str());
     } catch(...) {
     }
 
@@ -182,4 +198,34 @@ void WinMediaProvider::next() {
 void WinMediaProvider::previous() {
     if(auto s = currentSession())
         s.TrySkipPreviousAsync();
+}
+
+void WinMediaProvider::seek(qint64 positionMs) {
+    if(auto s = currentSession()) {
+        try {
+            const auto start = s.GetTimelineProperties().StartTime();
+            s.TryChangePlaybackPositionAsync(start.count() + positionMs * 10000); // 100ns ticks
+        } catch(...) {
+        }
+    }
+}
+
+void WinMediaProvider::setRepeatMode(int mode) {
+    if(auto s = currentSession()) {
+        using RepeatMode = winrt::Windows::Media::MediaPlaybackAutoRepeatMode;
+        const RepeatMode m = mode == 1 ? RepeatMode::Track : mode == 2 ? RepeatMode::List : RepeatMode::None;
+        try {
+            s.TryChangeAutoRepeatModeAsync(m);
+        } catch(...) {
+        }
+    }
+}
+
+void WinMediaProvider::setShuffle(bool on) {
+    if(auto s = currentSession()) {
+        try {
+            s.TryChangeShuffleActiveAsync(on);
+        } catch(...) {
+        }
+    }
 }

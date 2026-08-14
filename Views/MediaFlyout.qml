@@ -140,6 +140,16 @@ Window {
                     horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
                 }
 
+                Text {
+                    visible: settings.playerInfoEnabled && nowPlaying.playerName.length > 0 && !root.compact
+                    width: parent.width
+                    text: nowPlaying.playerName
+                    color: "#8A8A8A"
+                    font.pixelSize: 11
+                    elide: Text.ElideRight
+                    horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
+                }
+
                 // transport controls in their own row so the seekbar can be hidden independently
                 Item {
                     width: parent.width
@@ -150,6 +160,13 @@ Window {
                         anchors.horizontalCenter: settings.centerTitleArtist ? parent.horizontalCenter : undefined
                         spacing: 16
 
+                        IconLabel {
+                            visible: settings.shuffleEnabled && nowPlaying.canShuffle
+                            glyph: Fluent.shuffle
+                            size: root.compact ? 14 : 16
+                            color: nowPlaying.shuffle ? "#4CC2FF" : "#C8C8C8"
+                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.toggleShuffle() }
+                        }
                         IconLabel {
                             glyph: Fluent.previous
                             size: root.compact ? 16 : 18
@@ -168,6 +185,13 @@ Window {
                             color: nextArea.containsMouse ? "white" : "#C8C8C8"
                             MouseArea { id: nextArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.next() }
                         }
+                        IconLabel {
+                            visible: settings.repeatEnabled && nowPlaying.canRepeat
+                            glyph: nowPlaying.repeatMode === 1 ? Fluent.repeatOne : Fluent.repeatAll
+                            size: root.compact ? 14 : 16
+                            color: nowPlaying.repeatMode !== 0 ? "#4CC2FF" : "#C8C8C8"
+                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.cycleRepeat() }
+                        }
                     }
                 }
 
@@ -178,6 +202,7 @@ Window {
                     spacing: 4
 
                     Rectangle {
+                        id: seekTrack
                         width: parent.width
                         height: 4
                         radius: 2
@@ -189,6 +214,15 @@ Window {
                             radius: 2
                             color: "#4CC2FF"
                             Behavior on width { NumberAnimation { duration: 250 } }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            anchors.topMargin: -7
+                            anchors.bottomMargin: -7
+                            enabled: nowPlaying.canSeek
+                            cursorShape: nowPlaying.canSeek ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: (mouse) => nowPlaying.seekToFraction(mouse.x / seekTrack.width)
                         }
                     }
 

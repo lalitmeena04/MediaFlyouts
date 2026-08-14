@@ -13,6 +13,9 @@ class Settings : public QObject {
                        changed)
         Q_PROPERTY(bool centerTitleArtist READ centerTitleArtist WRITE setCenterTitleArtist NOTIFY changed)
         Q_PROPERTY(bool compactLayout READ compactLayout WRITE setCompactLayout NOTIFY changed)
+        Q_PROPERTY(bool playerInfoEnabled READ playerInfoEnabled WRITE setPlayerInfoEnabled NOTIFY changed)
+        Q_PROPERTY(bool repeatEnabled READ repeatEnabled WRITE setRepeatEnabled NOTIFY changed)
+        Q_PROPERTY(bool shuffleEnabled READ shuffleEnabled WRITE setShuffleEnabled NOTIFY changed)
         Q_PROPERTY(bool volumeFlyoutEnabled READ volumeFlyoutEnabled WRITE setVolumeFlyoutEnabled NOTIFY changed)
         Q_PROPERTY(bool overrideNativeOsd READ overrideNativeOsd WRITE setOverrideNativeOsd NOTIFY changed)
         Q_PROPERTY(bool lockKeysEnabled READ lockKeysEnabled WRITE setLockKeysEnabled NOTIFY changed)
@@ -48,6 +51,9 @@ class Settings : public QObject {
         bool mediaFlyoutAlwaysDisplay() const;
         bool centerTitleArtist() const;
         bool compactLayout() const;
+        bool playerInfoEnabled() const;
+        bool repeatEnabled() const;
+        bool shuffleEnabled() const;
         bool volumeFlyoutEnabled() const;
         bool overrideNativeOsd() const;
         bool lockKeysEnabled() const;
@@ -75,6 +81,9 @@ class Settings : public QObject {
         void setMediaFlyoutAlwaysDisplay(bool v);
         void setCenterTitleArtist(bool v);
         void setCompactLayout(bool v);
+        void setPlayerInfoEnabled(bool v);
+        void setRepeatEnabled(bool v);
+        void setShuffleEnabled(bool v);
         void setVolumeFlyoutEnabled(bool v);
         void setOverrideNativeOsd(bool v);
         void setLockKeysEnabled(bool v);
@@ -109,6 +118,9 @@ class Settings : public QObject {
         bool m_mediaFlyoutAlwaysDisplay;
         bool m_centerTitleArtist;
         bool m_compactLayout;
+        bool m_playerInfoEnabled;
+        bool m_repeatEnabled;
+        bool m_shuffleEnabled;
         bool m_volumeFlyoutEnabled;
         bool m_overrideNativeOsd;
         bool m_lockKeysEnabled;

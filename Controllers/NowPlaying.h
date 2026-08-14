@@ -23,6 +23,12 @@ class NowPlaying : public QObject {
         Q_PROPERTY(bool hasMedia READ hasMedia NOTIFY changed)
         Q_PROPERTY(QString artSource READ artSource NOTIFY changed)
         Q_PROPERTY(bool hasArt READ hasArt NOTIFY changed)
+        Q_PROPERTY(QString playerName READ playerName NOTIFY changed)
+        Q_PROPERTY(int repeatMode READ repeatMode NOTIFY changed)
+        Q_PROPERTY(bool shuffle READ shuffle NOTIFY changed)
+        Q_PROPERTY(bool canSeek READ canSeek NOTIFY changed)
+        Q_PROPERTY(bool canRepeat READ canRepeat NOTIFY changed)
+        Q_PROPERTY(bool canShuffle READ canShuffle NOTIFY changed)
 
     public:
         explicit NowPlaying(QObject* parent = nullptr);
@@ -39,10 +45,19 @@ class NowPlaying : public QObject {
         bool hasMedia() const;
         QString artSource() const;
         bool hasArt() const;
+        QString playerName() const;
+        int repeatMode() const;
+        bool shuffle() const;
+        bool canSeek() const;
+        bool canRepeat() const;
+        bool canShuffle() const;
 
         Q_INVOKABLE void playPause();
         Q_INVOKABLE void next();
         Q_INVOKABLE void previous();
+        Q_INVOKABLE void seekToFraction(double fraction);
+        Q_INVOKABLE void cycleRepeat();
+        Q_INVOKABLE void toggleShuffle();
 
     public slots:
         void applyTrack(const mf::TrackInfo& track);

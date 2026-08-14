@@ -224,6 +224,27 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
+                        label: "Show player name"
+                        description: "Show the name of the app playing the media."
+                        value: settings.playerInfoEnabled
+                        onToggled: settings.playerInfoEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Repeat button"
+                        description: "Show a repeat control on the media flyout."
+                        value: settings.repeatEnabled
+                        onToggled: settings.repeatEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Shuffle button"
+                        description: "Show a shuffle control on the media flyout."
+                        value: settings.shuffleEnabled
+                        onToggled: settings.shuffleEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
                         label: "Up next flyout"
                         description: "Show a compact card when a track auto-advances."
                         value: settings.nextUpEnabled
