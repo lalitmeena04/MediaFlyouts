@@ -25,6 +25,10 @@ class SettingsTest : public ::testing::Test {
 TEST_F(SettingsTest, Defaults) {
     Settings s;
     EXPECT_TRUE(s.mediaFlyoutEnabled());
+    EXPECT_TRUE(s.seekbarEnabled());
+    EXPECT_FALSE(s.mediaFlyoutAlwaysDisplay());
+    EXPECT_FALSE(s.centerTitleArtist());
+    EXPECT_FALSE(s.compactLayout());
     EXPECT_TRUE(s.volumeFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
     EXPECT_TRUE(s.lockKeysEnabled());

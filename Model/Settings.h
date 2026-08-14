@@ -8,6 +8,11 @@
 class Settings : public QObject {
         Q_OBJECT
         Q_PROPERTY(bool mediaFlyoutEnabled READ mediaFlyoutEnabled WRITE setMediaFlyoutEnabled NOTIFY changed)
+        Q_PROPERTY(bool seekbarEnabled READ seekbarEnabled WRITE setSeekbarEnabled NOTIFY changed)
+        Q_PROPERTY(bool mediaFlyoutAlwaysDisplay READ mediaFlyoutAlwaysDisplay WRITE setMediaFlyoutAlwaysDisplay NOTIFY
+                       changed)
+        Q_PROPERTY(bool centerTitleArtist READ centerTitleArtist WRITE setCenterTitleArtist NOTIFY changed)
+        Q_PROPERTY(bool compactLayout READ compactLayout WRITE setCompactLayout NOTIFY changed)
         Q_PROPERTY(bool volumeFlyoutEnabled READ volumeFlyoutEnabled WRITE setVolumeFlyoutEnabled NOTIFY changed)
         Q_PROPERTY(bool overrideNativeOsd READ overrideNativeOsd WRITE setOverrideNativeOsd NOTIFY changed)
         Q_PROPERTY(bool lockKeysEnabled READ lockKeysEnabled WRITE setLockKeysEnabled NOTIFY changed)
@@ -39,6 +44,10 @@ class Settings : public QObject {
         Q_INVOKABLE bool importFrom(const QUrl& file);
 
         bool mediaFlyoutEnabled() const;
+        bool seekbarEnabled() const;
+        bool mediaFlyoutAlwaysDisplay() const;
+        bool centerTitleArtist() const;
+        bool compactLayout() const;
         bool volumeFlyoutEnabled() const;
         bool overrideNativeOsd() const;
         bool lockKeysEnabled() const;
@@ -62,6 +71,10 @@ class Settings : public QObject {
         int taskbarWidgetMonitor() const;
 
         void setMediaFlyoutEnabled(bool v);
+        void setSeekbarEnabled(bool v);
+        void setMediaFlyoutAlwaysDisplay(bool v);
+        void setCenterTitleArtist(bool v);
+        void setCompactLayout(bool v);
         void setVolumeFlyoutEnabled(bool v);
         void setOverrideNativeOsd(bool v);
         void setLockKeysEnabled(bool v);
@@ -92,6 +105,10 @@ class Settings : public QObject {
 
         QSettings m_store;
         bool m_mediaFlyoutEnabled;
+        bool m_seekbarEnabled;
+        bool m_mediaFlyoutAlwaysDisplay;
+        bool m_centerTitleArtist;
+        bool m_compactLayout;
         bool m_volumeFlyoutEnabled;
         bool m_overrideNativeOsd;
         bool m_lockKeysEnabled;

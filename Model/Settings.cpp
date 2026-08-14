@@ -8,6 +8,10 @@ Settings::Settings(QObject* parent)
 
 void Settings::reload() {
     m_mediaFlyoutEnabled = m_store.value(QStringLiteral("mediaFlyoutEnabled"), true).toBool();
+    m_seekbarEnabled = m_store.value(QStringLiteral("seekbarEnabled"), true).toBool();
+    m_mediaFlyoutAlwaysDisplay = m_store.value(QStringLiteral("mediaFlyoutAlwaysDisplay"), false).toBool();
+    m_centerTitleArtist = m_store.value(QStringLiteral("centerTitleArtist"), false).toBool();
+    m_compactLayout = m_store.value(QStringLiteral("compactLayout"), false).toBool();
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
     m_lockKeysEnabled = m_store.value(QStringLiteral("lockKeysEnabled"), true).toBool();
@@ -74,6 +78,18 @@ void Settings::assign(const char* key, bool& field, bool v) {
 
 bool Settings::mediaFlyoutEnabled() const {
     return m_mediaFlyoutEnabled;
+}
+bool Settings::seekbarEnabled() const {
+    return m_seekbarEnabled;
+}
+bool Settings::mediaFlyoutAlwaysDisplay() const {
+    return m_mediaFlyoutAlwaysDisplay;
+}
+bool Settings::centerTitleArtist() const {
+    return m_centerTitleArtist;
+}
+bool Settings::compactLayout() const {
+    return m_compactLayout;
 }
 bool Settings::volumeFlyoutEnabled() const {
     return m_volumeFlyoutEnabled;
@@ -151,6 +167,18 @@ int Settings::taskbarWidgetMonitor() const {
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
+}
+void Settings::setSeekbarEnabled(bool v) {
+    assign("seekbarEnabled", m_seekbarEnabled, v);
+}
+void Settings::setMediaFlyoutAlwaysDisplay(bool v) {
+    assign("mediaFlyoutAlwaysDisplay", m_mediaFlyoutAlwaysDisplay, v);
+}
+void Settings::setCenterTitleArtist(bool v) {
+    assign("centerTitleArtist", m_centerTitleArtist, v);
+}
+void Settings::setCompactLayout(bool v) {
+    assign("compactLayout", m_compactLayout, v);
 }
 void Settings::setVolumeFlyoutEnabled(bool v) {
     assign("volumeFlyoutEnabled", m_volumeFlyoutEnabled, v);

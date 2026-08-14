@@ -196,6 +196,34 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
+                        label: "Seekbar"
+                        description: "Show the progress bar and elapsed / total time."
+                        value: settings.seekbarEnabled
+                        onToggled: settings.seekbarEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Compact layout"
+                        description: "Use a smaller, denser media flyout."
+                        value: settings.compactLayout
+                        onToggled: settings.compactLayout = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Center title and artist"
+                        description: "Center-align the track title and artist text."
+                        value: settings.centerTitleArtist
+                        onToggled: settings.centerTitleArtist = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Always display"
+                        description: "Keep the media flyout on screen instead of auto-hiding."
+                        value: settings.mediaFlyoutAlwaysDisplay
+                        onToggled: settings.mediaFlyoutAlwaysDisplay = value
+                    }
+                    SettingRow {
+                        width: parent.width
                         label: "Up next flyout"
                         description: "Show a compact card when a track auto-advances."
                         value: settings.nextUpEnabled

@@ -4,12 +4,15 @@ import MediaFlyouts
 
 Window {
     id: root
-    width: 380
-    height: 132
+    width: settings.compactLayout ? 330 : 380
+    height: settings.compactLayout ? 96 : (settings.seekbarEnabled ? 150 : 112)
     visible: false
     opacity: 0
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
+
+    readonly property bool compact: settings.compactLayout
+    readonly property int artSize: compact ? 52 : 76
 
     // true once App has placed this flyout, so re-stacking animates while the first show snaps
     property bool positioned: false
@@ -21,7 +24,8 @@ Window {
     function showFlyout() {
         if(!settings.mediaFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
-        hideTimer.restart()
+        if(!settings.mediaFlyoutAlwaysDisplay)
+            hideTimer.restart()
         root.visible = true
         fadeIn.restart()
     }
@@ -76,8 +80,8 @@ Window {
             anchors.fill: parent
             hoverEnabled: true
             onEntered: hideTimer.stop()
-            onExited: hideTimer.restart()
-            onClicked: hideTimer.restart()
+            onExited: if(!settings.mediaFlyoutAlwaysDisplay) hideTimer.restart()
+            onClicked: if(!settings.mediaFlyoutAlwaysDisplay) hideTimer.restart()
         }
 
         Row {
@@ -86,8 +90,9 @@ Window {
             spacing: 14
 
             Rectangle {
-                width: 76
-                height: 76
+                width: root.artSize
+                height: root.artSize
+                anchors.verticalCenter: parent.verticalCenter
                 radius: 8
                 color: "#333333"
                 clip: true
@@ -107,95 +112,104 @@ Window {
                     text: Fluent.musicNote
                     font.family: Fluent.fontFamily
                     color: "#9AA0A6"
-                    font.pixelSize: 34
+                    font.pixelSize: root.compact ? 24 : 34
                 }
             }
 
             Column {
-                width: parent.width - 76 - 14
-                spacing: 6
+                width: parent.width - root.artSize - 14
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: root.compact ? 3 : 6
 
                 Text {
                     width: parent.width
                     text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
                     color: "white"
-                    font.pixelSize: 16
+                    font.pixelSize: root.compact ? 14 : 16
                     font.bold: true
                     elide: Text.ElideRight
+                    horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
                 }
 
                 Text {
                     width: parent.width
                     text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media to see it here"
                     color: "#BBBBBB"
-                    font.pixelSize: 13
+                    font.pixelSize: root.compact ? 12 : 13
                     elide: Text.ElideRight
+                    horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
                 }
 
-                Item { width: 1; height: 2 }
-
-                Rectangle {
+                // transport controls in their own row so the seekbar can be hidden independently
+                Item {
                     width: parent.width
-                    height: 4
-                    radius: 2
-                    color: "#3A3A3A"
-
-                    Rectangle {
-                        width: parent.width * nowPlaying.progress
-                        height: parent.height
-                        radius: 2
-                        color: "#4CC2FF"
-                        Behavior on width { NumberAnimation { duration: 250 } }
-                    }
-                }
-
-                Row {
-                    width: parent.width
-                    spacing: 10
-
-                    Text {
-                        text: nowPlaying.elapsed
-                        color: "#9AA0A6"
-                        font.pixelSize: 11
-                    }
-
-                    Item { width: parent.width - elapsedW.width - durationW.width - controls.width - 20; height: 1 }
-
+                    height: controls.height
                     Row {
                         id: controls
-                        spacing: 12
+                        anchors.left: settings.centerTitleArtist ? undefined : parent.left
+                        anchors.horizontalCenter: settings.centerTitleArtist ? parent.horizontalCenter : undefined
+                        spacing: 16
 
                         IconLabel {
                             glyph: Fluent.previous
-                            size: 18
+                            size: root.compact ? 16 : 18
                             color: previousArea.containsMouse ? "white" : "#C8C8C8"
                             MouseArea { id: previousArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.previous() }
                         }
                         IconLabel {
                             glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
-                            size: 20
+                            size: root.compact ? 18 : 20
                             color: "white"
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.playPause() }
                         }
                         IconLabel {
                             glyph: Fluent.next
-                            size: 18
+                            size: root.compact ? 16 : 18
                             color: nextArea.containsMouse ? "white" : "#C8C8C8"
                             MouseArea { id: nextArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.next() }
                         }
                     }
+                }
 
-                    Text {
-                        text: nowPlaying.duration
-                        color: "#9AA0A6"
-                        font.pixelSize: 11
+                // seekbar (hidden in compact layout or when disabled)
+                Column {
+                    width: parent.width
+                    visible: settings.seekbarEnabled && !root.compact
+                    spacing: 4
+
+                    Rectangle {
+                        width: parent.width
+                        height: 4
+                        radius: 2
+                        color: "#3A3A3A"
+
+                        Rectangle {
+                            width: parent.width * nowPlaying.progress
+                            height: parent.height
+                            radius: 2
+                            color: "#4CC2FF"
+                            Behavior on width { NumberAnimation { duration: 250 } }
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: 14
+                        Text {
+                            anchors.left: parent.left
+                            text: nowPlaying.elapsed
+                            color: "#9AA0A6"
+                            font.pixelSize: 11
+                        }
+                        Text {
+                            anchors.right: parent.right
+                            text: nowPlaying.duration
+                            color: "#9AA0A6"
+                            font.pixelSize: 11
+                        }
                     }
                 }
             }
         }
     }
-
-    // hidden metrics helpers for the time row spacer
-    Text { id: elapsedW; visible: false; text: nowPlaying.elapsed; font.pixelSize: 11 }
-    Text { id: durationW; visible: false; text: nowPlaying.duration; font.pixelSize: 11 }
 }
