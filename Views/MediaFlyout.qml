@@ -21,6 +21,9 @@ Window {
         NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
     }
 
+    // tracks the pinned state to detect when the user unpins while the flyout is up
+    property bool prevAlwaysDisplay: settings.mediaFlyoutAlwaysDisplay
+
     function showFlyout() {
         if(!settings.mediaFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
@@ -41,6 +44,16 @@ Window {
                 root.showFlyout()
             else
                 root.hideFlyout()
+        }
+    }
+
+    Connections {
+        target: settings
+        function onChanged() {
+            // unpinned while the flyout is up -> resume the auto-hide countdown
+            if(root.prevAlwaysDisplay && !settings.mediaFlyoutAlwaysDisplay && root.visible)
+                hideTimer.restart()
+            root.prevAlwaysDisplay = settings.mediaFlyoutAlwaysDisplay
         }
     }
 
@@ -82,6 +95,28 @@ Window {
             onEntered: hideTimer.stop()
             onExited: if(!settings.mediaFlyoutAlwaysDisplay) hideTimer.restart()
             onClicked: if(!settings.mediaFlyoutAlwaysDisplay) hideTimer.restart()
+        }
+
+        // dismiss button, shown only when the flyout is pinned (always-display)
+        IconLabel {
+            id: closeButton
+            z: 100
+            visible: settings.mediaFlyoutAlwaysDisplay
+            glyph: Fluent.dismiss
+            size: 13
+            color: closeArea.containsMouse ? "white" : "#9AA0A6"
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.topMargin: 9
+            anchors.rightMargin: 11
+            MouseArea {
+                id: closeArea
+                anchors.fill: parent
+                anchors.margins: -6
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.hideFlyout()
+            }
         }
 
         Row {
