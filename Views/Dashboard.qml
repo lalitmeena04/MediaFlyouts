@@ -242,6 +242,17 @@ Window {
                         currentIndex: settings.flyoutAnimationSpeed
                         onActivated: settings.flyoutAnimationSpeed = index
                     }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Up next duration"
+                        description: "How long the up-next flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.nextUpDuration
+                        valueText: (settings.nextUpDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.nextUpDuration = Math.round(value)
+                    }
                 }
 
                 // Volume page
@@ -263,6 +274,17 @@ Window {
                         description: "Replace the built-in Windows volume overlay with this one."
                         value: settings.overrideNativeOsd
                         onToggled: settings.overrideNativeOsd = value
+                    }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Volume flyout duration"
+                        description: "How long the volume flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.volumeFlyoutDuration
+                        valueText: (settings.volumeFlyoutDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.volumeFlyoutDuration = Math.round(value)
                     }
                 }
 

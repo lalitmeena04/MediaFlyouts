@@ -39,7 +39,7 @@ Window {
 
     Timer {
         id: hideTimer
-        interval: 2000
+        interval: settings.nextUpDuration
         onTriggered: root.hideFlyout()
     }
 

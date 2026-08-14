@@ -47,7 +47,7 @@ Window {
 
     Timer {
         id: hideTimer
-        interval: 1800
+        interval: settings.volumeFlyoutDuration
         onTriggered: root.hideFlyout()
     }
 
