@@ -48,7 +48,7 @@ Window {
         target: root
         property: "opacity"
         to: 1
-        duration: 160
+        duration: settings.flyoutAnimationMs
     }
 
     NumberAnimation {
@@ -56,7 +56,7 @@ Window {
         target: root
         property: "opacity"
         to: 0
-        duration: 220
+        duration: settings.flyoutAnimationMs
         onFinished: root.visible = false
     }
 

@@ -234,6 +234,14 @@ Window {
                         valueText: (settings.flyoutDuration / 1000).toFixed(1) + " s"
                         onMoved: settings.flyoutDuration = Math.round(value)
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Animation speed"
+                        description: "Flyout fade-in / fade-out speed."
+                        model: ["Off", "0.5x", "1x", "1.5x", "2x", "3x"]
+                        currentIndex: settings.flyoutAnimationSpeed
+                        onActivated: settings.flyoutAnimationSpeed = index
+                    }
                 }
 
                 // Volume page

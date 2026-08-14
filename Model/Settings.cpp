@@ -16,6 +16,7 @@ Settings::Settings(QObject* parent)
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
     m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
+    m_flyoutAnimationSpeed = m_store.value(QStringLiteral("flyoutAnimationSpeed"), 2).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 1).toInt();
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
@@ -73,6 +74,25 @@ int Settings::flyoutMonitor() const {
 int Settings::flyoutDuration() const {
     return m_flyoutDuration;
 }
+int Settings::flyoutAnimationSpeed() const {
+    return m_flyoutAnimationSpeed;
+}
+int Settings::flyoutAnimationMs() const {
+    switch(m_flyoutAnimationSpeed) {
+    case 0:
+        return 0; // off
+    case 1:
+        return 150; // 0.5x
+    case 2:
+        return 300; // 1x
+    case 3:
+        return 450; // 1.5x
+    case 4:
+        return 600; // 2x
+    default:
+        return 900; // 3x
+    }
+}
 int Settings::taskbarWidgetOffset() const {
     return m_taskbarWidgetOffset;
 }
@@ -118,6 +138,9 @@ void Settings::setFlyoutMonitor(int v) {
 }
 void Settings::setFlyoutDuration(int v) {
     assignInt("flyoutDuration", m_flyoutDuration, v);
+}
+void Settings::setFlyoutAnimationSpeed(int v) {
+    assignInt("flyoutAnimationSpeed", m_flyoutAnimationSpeed, v);
 }
 void Settings::setTaskbarWidgetOffset(int v) {
     assignInt("taskbarWidgetOffset", m_taskbarWidgetOffset, v);
