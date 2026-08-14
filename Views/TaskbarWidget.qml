@@ -11,8 +11,10 @@ Window {
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
     // shown only when enabled, something is playing, and not blocked by fullscreen / lock screen
-    visible: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
-             && !fullscreen.shouldBlock(settings.disableOnFullscreen)
+    visible: settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
+
+    // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
+    property bool blocked: false
 
     signal activated()
 
@@ -35,12 +37,17 @@ Window {
         function onChanged() { root.updatePosition() }
     }
 
-    // re-evaluate placement (and re-assert z-order) periodically to survive taskbar/z-order changes
+    // poll fullscreen/lock state and re-assert placement/z-order while media is playing,
+    // even when hidden, so the widget reappears once the fullscreen app is gone
     Timer {
-        interval: 1000
-        running: root.visible
+        interval: 500
+        running: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
         repeat: true
-        onTriggered: root.updatePosition()
+        triggeredOnStart: true
+        onTriggered: {
+            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen)
+            root.updatePosition()
+        }
     }
 
     Rectangle {
