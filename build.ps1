@@ -129,6 +129,23 @@ Write-Host '==================================================='
 Write-Host "Build succeeded: $appExe"
 Write-Host '==================================================='
 
+# Deploy the Qt runtime into bin so the app runs standalone (a clean build wipes it).
+$qtBin = $null
+foreach ($candidate in @($env:QT_DIR, 'C:\Qt\6.11.2\msvc2022_64', 'C:\Qt\6.11.0\msvc2022_64')) {
+    if ($candidate -and (Test-Path (Join-Path $candidate 'bin\windeployqt.exe'))) {
+        $qtBin = Join-Path $candidate 'bin'
+        break
+    }
+}
+if ($qtBin) {
+    Write-Host "[DEPLOY] windeployqt -> $binDir"
+    $deployMode = if ($Config -eq 'debug') { '--debug' } else { '--release' }
+    Invoke-Native { & (Join-Path $qtBin 'windeployqt.exe') $deployMode --qmldir (Join-Path $PSScriptRoot 'Views') $appExe } `
+        'windeployqt failed.'
+} else {
+    Write-Warning 'windeployqt not found; bin may be missing the Qt runtime.'
+}
+
 if ($Test) {
     Write-Host "[TEST] ctest --test-dir $buildDir --output-on-failure"
     Invoke-Native { ctest --test-dir $buildDir --output-on-failure } 'Tests failed.'
