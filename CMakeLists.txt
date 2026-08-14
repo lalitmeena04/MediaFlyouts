@@ -5,7 +5,7 @@ project(MediaFlyouts VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Qml Quick Test Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Network Qml Quick Test Widgets)
 qt_standard_project_setup(REQUIRES 6.5)
 
 option(MEDIAFLYOUTS_BUILD_TESTS "Build the unit tests" ON)
@@ -28,6 +28,7 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/NowPlaying.h     Controllers/NowPlaying.cpp
     Controllers/TrayController.h Controllers/TrayController.cpp
     Controllers/FlyoutPlacement.h Controllers/FlyoutPlacement.cpp
+    Controllers/SingleInstance.h Controllers/SingleInstance.cpp
     Model/AlbumArtProvider.h     Model/AlbumArtProvider.cpp
     Model/Settings.h             Model/Settings.cpp
 )
@@ -69,6 +70,7 @@ qt_add_qml_module(MediaFlyouts
 
 target_link_libraries(MediaFlyouts PRIVATE
     Qt6::Gui
+    Qt6::Network
     Qt6::Quick
     Qt6::Widgets
     mediaflyout_core

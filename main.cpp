@@ -7,6 +7,7 @@
 #include "FlyoutPlacement.h"
 #include "NowPlaying.h"
 #include "Settings.h"
+#include "SingleInstance.h"
 #include "TrayController.h"
 
 #ifdef Q_OS_WIN
@@ -29,6 +30,11 @@ int main(int argc, char* argv[]) {
 
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
+
+    // a second launch signals the running instance to show its dashboard, then exits
+    SingleInstance instance(QStringLiteral("MediaFlyouts.singleInstance"));
+    if(!instance.isPrimary())
+        return 0;
 
     // load the icon font in C++ too so the tray glyph can be rendered (QML loads it via FontLoader)
     const int fontId = QFontDatabase::addApplicationFont(
@@ -106,6 +112,7 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
     engine.rootContext()->setContextProperty("settings", &settings);
     engine.rootContext()->setContextProperty("placement", &placement);
+    engine.rootContext()->setContextProperty("instance", &instance);
     engine.rootContext()->setContextProperty("tray", &tray);
     engine.loadFromModule("MediaFlyouts", "App");
 

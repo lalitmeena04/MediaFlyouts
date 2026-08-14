@@ -62,4 +62,14 @@ QtObject {
             flyout.showFlyout()
         }
     }
+
+    // a second launch asks us to surface the dashboard
+    property Connections instanceConnection: Connections {
+        target: instance
+        function onActivated() {
+            dashboard.show()
+            dashboard.raise()
+            dashboard.requestActivate()
+        }
+    }
 }
