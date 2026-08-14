@@ -3,6 +3,10 @@
 Settings::Settings(QObject* parent)
     : QObject(parent), m_store(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
                                QStringLiteral("MediaFlyouts")) {
+    reload();
+}
+
+void Settings::reload() {
     m_mediaFlyoutEnabled = m_store.value(QStringLiteral("mediaFlyoutEnabled"), true).toBool();
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
@@ -22,6 +26,32 @@ Settings::Settings(QObject* parent)
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 1).toInt();
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
+}
+
+bool Settings::exportTo(const QUrl& file) const {
+    const QString path = file.isLocalFile() ? file.toLocalFile() : file.toString();
+    QSettings out(path, QSettings::IniFormat);
+    if(out.status() != QSettings::NoError)
+        return false;
+    const QStringList keys = m_store.allKeys();
+    for(const QString& key : keys)
+        out.setValue(key, m_store.value(key));
+    out.sync();
+    return out.status() == QSettings::NoError;
+}
+
+bool Settings::importFrom(const QUrl& file) {
+    const QString path = file.isLocalFile() ? file.toLocalFile() : file.toString();
+    QSettings in(path, QSettings::IniFormat);
+    if(in.status() != QSettings::NoError)
+        return false;
+    const QStringList keys = in.allKeys();
+    for(const QString& key : keys)
+        m_store.setValue(key, in.value(key));
+    m_store.sync();
+    reload();
+    emit changed();
+    return true;
 }
 
 void Settings::assignInt(const char* key, int& field, int v) {

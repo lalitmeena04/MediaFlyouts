@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <QDir>
+#include <QFile>
 #include <QSettings>
 #include <QSignalSpy>
 #include <QStandardPaths>
+#include <QUrl>
 
 #include "Settings.h"
 
@@ -77,4 +80,25 @@ TEST_F(SettingsTest, ValuesPersistAcrossInstances) {
     Settings second;
     EXPECT_FALSE(second.overrideNativeOsd());
     EXPECT_TRUE(second.launchOnStartup());
+}
+
+TEST_F(SettingsTest, ExportImportRoundTrip) {
+    const QString path = QDir::temp().filePath(QStringLiteral("mf_settings_export.ini"));
+    QFile::remove(path);
+    {
+        Settings s;
+        s.setMediaFlyoutEnabled(false);
+        s.setFlyoutDuration(7000);
+        EXPECT_TRUE(s.exportTo(QUrl::fromLocalFile(path)));
+    }
+    // wipe the live store so defaults come back, then restore from the export
+    QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
+              QStringLiteral("MediaFlyouts"))
+        .clear();
+    Settings restored;
+    EXPECT_TRUE(restored.mediaFlyoutEnabled());
+    EXPECT_TRUE(restored.importFrom(QUrl::fromLocalFile(path)));
+    EXPECT_FALSE(restored.mediaFlyoutEnabled());
+    EXPECT_EQ(restored.flyoutDuration(), 7000);
+    QFile::remove(path);
 }

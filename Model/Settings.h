@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QUrl>
 
 // Persistent user settings, stored per-user (MSIX-safe) via QSettings. Exposed to QML.
 class Settings : public QObject {
@@ -29,6 +30,10 @@ class Settings : public QObject {
 
     public:
         explicit Settings(QObject* parent = nullptr);
+
+        // write / read every setting to a portable ini file (for backup & restore)
+        Q_INVOKABLE bool exportTo(const QUrl& file) const;
+        Q_INVOKABLE bool importFrom(const QUrl& file);
 
         bool mediaFlyoutEnabled() const;
         bool volumeFlyoutEnabled() const;
@@ -76,6 +81,7 @@ class Settings : public QObject {
     private:
         void assign(const char* key, bool& field, bool v);
         void assignInt(const char* key, int& field, int v);
+        void reload();
 
         QSettings m_store;
         bool m_mediaFlyoutEnabled;

@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Window
+import QtQuick.Controls.Basic
+import QtQuick.Dialogs
 import MediaFlyouts
 
 Window {
@@ -367,8 +369,37 @@ Window {
                         value: settings.launchOnStartup
                         onToggled: settings.launchOnStartup = value
                     }
+
+                    Row {
+                        spacing: 12
+                        topPadding: 8
+                        Button {
+                            text: "Export settings…"
+                            onClicked: exportDialog.open()
+                        }
+                        Button {
+                            text: "Import settings…"
+                            onClicked: importDialog.open()
+                        }
+                    }
                 }
             }
         }
+    }
+
+    FileDialog {
+        id: exportDialog
+        title: "Export settings"
+        fileMode: FileDialog.SaveFile
+        nameFilters: ["Settings files (*.ini)"]
+        defaultSuffix: "ini"
+        onAccepted: settings.exportTo(selectedFile)
+    }
+    FileDialog {
+        id: importDialog
+        title: "Import settings"
+        fileMode: FileDialog.OpenFile
+        nameFilters: ["Settings files (*.ini)"]
+        onAccepted: settings.importFrom(selectedFile)
     }
 }
