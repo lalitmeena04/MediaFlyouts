@@ -369,6 +369,20 @@ Window {
                         value: settings.launchOnStartup
                         onToggled: settings.launchOnStartup = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Tray left-click shows media flyout"
+                        description: "Left-clicking the tray icon shows the media flyout instead of the dashboard."
+                        value: settings.trayLeftClickShowsFlyout
+                        onToggled: settings.trayLeftClickShowsFlyout = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Hide tray icon"
+                        description: "Hide the notification-area icon (re-launch the app to reopen the dashboard)."
+                        value: settings.trayIconHidden
+                        onToggled: settings.trayIconHidden = value
+                    }
 
                     Row {
                         spacing: 12

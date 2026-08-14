@@ -9,6 +9,8 @@
 #include <QPixmap>
 #include <QSystemTrayIcon>
 
+#include "Settings.h"
+
 namespace {
 
 // renders a Fluent glyph to a tray-sized icon so we don't need a separate PNG asset
@@ -28,7 +30,8 @@ QIcon renderGlyphIcon(const QString& family, QChar glyph) {
 
 } // namespace
 
-TrayController::TrayController(const QString& iconFamily, QObject* parent) : QObject(parent), m_iconFamily(iconFamily) {
+TrayController::TrayController(const QString& iconFamily, Settings* settings, QObject* parent)
+    : QObject(parent), m_iconFamily(iconFamily), m_settings(settings) {
     m_menu = new QMenu();
     QAction* dashAction = m_menu->addAction(QStringLiteral("Dashboard"));
     QAction* flyoutAction = m_menu->addAction(QStringLiteral("Show Media Flyout"));
@@ -44,9 +47,21 @@ TrayController::TrayController(const QString& iconFamily, QObject* parent) : QOb
     m_tray->setContextMenu(m_menu);
 
     connect(m_tray, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
-        if(reason == QSystemTrayIcon::Trigger)
+        if(reason != QSystemTrayIcon::Trigger)
+            return;
+        if(m_settings && m_settings->trayLeftClickShowsFlyout())
+            emit showFlyoutRequested();
+        else
             emit openDashboardRequested();
     });
+
+    if(m_settings)
+        connect(m_settings, &Settings::changed, this, &TrayController::applyVisibility);
+}
+
+void TrayController::applyVisibility() {
+    if(m_tray)
+        m_tray->setVisible(!(m_settings && m_settings->trayIconHidden()));
 }
 
 TrayController::~TrayController() {
@@ -54,5 +69,5 @@ TrayController::~TrayController() {
 }
 
 void TrayController::show() {
-    m_tray->show();
+    applyVisibility();
 }

@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     engine.addImageProvider(QStringLiteral("albumart"), artProvider);
     nowPlaying.setArtProvider(artProvider);
 
-    TrayController tray(iconFamily);
+    TrayController tray(iconFamily, &settings);
 
 #ifdef Q_OS_WIN
     WinMediaProvider provider;

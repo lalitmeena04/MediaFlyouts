@@ -14,6 +14,9 @@ class Settings : public QObject {
         Q_PROPERTY(bool nextUpEnabled READ nextUpEnabled WRITE setNextUpEnabled NOTIFY changed)
         Q_PROPERTY(bool disableOnFullscreen READ disableOnFullscreen WRITE setDisableOnFullscreen NOTIFY changed)
         Q_PROPERTY(bool launchOnStartup READ launchOnStartup WRITE setLaunchOnStartup NOTIFY changed)
+        Q_PROPERTY(bool trayIconHidden READ trayIconHidden WRITE setTrayIconHidden NOTIFY changed)
+        Q_PROPERTY(bool trayLeftClickShowsFlyout READ trayLeftClickShowsFlyout WRITE setTrayLeftClickShowsFlyout NOTIFY
+                       changed)
         Q_PROPERTY(bool taskbarWidgetEnabled READ taskbarWidgetEnabled WRITE setTaskbarWidgetEnabled NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetControlsEnabled READ taskbarWidgetControlsEnabled WRITE
                        setTaskbarWidgetControlsEnabled NOTIFY changed)
@@ -42,6 +45,8 @@ class Settings : public QObject {
         bool nextUpEnabled() const;
         bool disableOnFullscreen() const;
         bool launchOnStartup() const;
+        bool trayIconHidden() const;
+        bool trayLeftClickShowsFlyout() const;
         bool taskbarWidgetEnabled() const;
         bool taskbarWidgetControlsEnabled() const;
         int flyoutPosition() const;
@@ -63,6 +68,8 @@ class Settings : public QObject {
         void setNextUpEnabled(bool v);
         void setDisableOnFullscreen(bool v);
         void setLaunchOnStartup(bool v);
+        void setTrayIconHidden(bool v);
+        void setTrayLeftClickShowsFlyout(bool v);
         void setTaskbarWidgetEnabled(bool v);
         void setTaskbarWidgetControlsEnabled(bool v);
         void setFlyoutPosition(int v);
@@ -91,6 +98,8 @@ class Settings : public QObject {
         bool m_nextUpEnabled;
         bool m_disableOnFullscreen;
         bool m_launchOnStartup;
+        bool m_trayIconHidden;
+        bool m_trayLeftClickShowsFlyout;
         bool m_taskbarWidgetEnabled;
         bool m_taskbarWidgetControlsEnabled;
         int m_flyoutPosition;

@@ -37,6 +37,8 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.nextUpEnabled());
     QVERIFY(s.disableOnFullscreen());
     QVERIFY(!s.launchOnStartup());
+    QVERIFY(!s.trayIconHidden());
+    QVERIFY(!s.trayLeftClickShowsFlyout());
     QVERIFY(!s.taskbarWidgetEnabled());
     QVERIFY(s.taskbarWidgetControlsEnabled());
     QCOMPARE(s.flyoutPosition(), 4);

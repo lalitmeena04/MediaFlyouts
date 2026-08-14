@@ -31,6 +31,8 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.nextUpEnabled());
     EXPECT_TRUE(s.disableOnFullscreen());
     EXPECT_FALSE(s.launchOnStartup());
+    EXPECT_FALSE(s.trayIconHidden());
+    EXPECT_FALSE(s.trayLeftClickShowsFlyout());
     EXPECT_FALSE(s.taskbarWidgetEnabled());
     EXPECT_TRUE(s.taskbarWidgetControlsEnabled());
     EXPECT_EQ(s.flyoutPosition(), 4);

@@ -14,6 +14,8 @@ void Settings::reload() {
     m_nextUpEnabled = m_store.value(QStringLiteral("nextUpEnabled"), true).toBool();
     m_disableOnFullscreen = m_store.value(QStringLiteral("disableOnFullscreen"), true).toBool();
     m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), false).toBool();
+    m_trayIconHidden = m_store.value(QStringLiteral("trayIconHidden"), false).toBool();
+    m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), false).toBool();
     m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), false).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
     // flyoutPosition indexes mf::FlyoutPosition (4 = BottomCenter); duration in milliseconds
@@ -91,6 +93,12 @@ bool Settings::disableOnFullscreen() const {
 bool Settings::launchOnStartup() const {
     return m_launchOnStartup;
 }
+bool Settings::trayIconHidden() const {
+    return m_trayIconHidden;
+}
+bool Settings::trayLeftClickShowsFlyout() const {
+    return m_trayLeftClickShowsFlyout;
+}
 bool Settings::taskbarWidgetEnabled() const {
     return m_taskbarWidgetEnabled;
 }
@@ -161,6 +169,12 @@ void Settings::setDisableOnFullscreen(bool v) {
 }
 void Settings::setLaunchOnStartup(bool v) {
     assign("launchOnStartup", m_launchOnStartup, v);
+}
+void Settings::setTrayIconHidden(bool v) {
+    assign("trayIconHidden", m_trayIconHidden, v);
+}
+void Settings::setTrayLeftClickShowsFlyout(bool v) {
+    assign("trayLeftClickShowsFlyout", m_trayLeftClickShowsFlyout, v);
 }
 void Settings::setTaskbarWidgetEnabled(bool v) {
     assign("taskbarWidgetEnabled", m_taskbarWidgetEnabled, v);

@@ -5,13 +5,14 @@
 
 class QSystemTrayIcon;
 class QMenu;
+class Settings;
 
 // Owns the notification-area icon and its menu; emits intents the QML app root reacts to.
 class TrayController : public QObject {
         Q_OBJECT
 
     public:
-        explicit TrayController(const QString& iconFamily, QObject* parent = nullptr);
+        explicit TrayController(const QString& iconFamily, Settings* settings, QObject* parent = nullptr);
         ~TrayController() override;
 
         void show();
@@ -21,7 +22,10 @@ class TrayController : public QObject {
         void showFlyoutRequested();
 
     private:
+        void applyVisibility();
+
         QSystemTrayIcon* m_tray = nullptr;
         QMenu* m_menu = nullptr;
         QString m_iconFamily;
+        Settings* m_settings = nullptr;
 };
