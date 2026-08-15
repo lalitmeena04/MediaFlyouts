@@ -35,6 +35,12 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.volumeFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
     EXPECT_TRUE(s.lockKeysEnabled());
+    EXPECT_TRUE(s.lockKeysCapsEnabled());
+    EXPECT_TRUE(s.lockKeysNumEnabled());
+    EXPECT_TRUE(s.lockKeysScrollEnabled());
+    EXPECT_FALSE(s.lockKeysInsertEnabled());
+    EXPECT_TRUE(s.lockKeysBoldUi());
+    EXPECT_EQ(s.lockKeysDuration(), 2000);
     EXPECT_TRUE(s.nextUpEnabled());
     EXPECT_TRUE(s.disableOnFullscreen());
     EXPECT_FALSE(s.launchOnStartup());

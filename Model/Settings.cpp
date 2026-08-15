@@ -18,6 +18,12 @@ void Settings::reload() {
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
     m_lockKeysEnabled = m_store.value(QStringLiteral("lockKeysEnabled"), true).toBool();
+    m_lockKeysCapsEnabled = m_store.value(QStringLiteral("lockKeysCapsEnabled"), true).toBool();
+    m_lockKeysNumEnabled = m_store.value(QStringLiteral("lockKeysNumEnabled"), true).toBool();
+    m_lockKeysScrollEnabled = m_store.value(QStringLiteral("lockKeysScrollEnabled"), true).toBool();
+    m_lockKeysInsertEnabled = m_store.value(QStringLiteral("lockKeysInsertEnabled"), false).toBool();
+    m_lockKeysBoldUi = m_store.value(QStringLiteral("lockKeysBoldUi"), true).toBool();
+    m_lockKeysDuration = m_store.value(QStringLiteral("lockKeysDuration"), 2000).toInt();
     m_nextUpEnabled = m_store.value(QStringLiteral("nextUpEnabled"), true).toBool();
     m_disableOnFullscreen = m_store.value(QStringLiteral("disableOnFullscreen"), true).toBool();
     m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), false).toBool();
@@ -111,6 +117,24 @@ bool Settings::overrideNativeOsd() const {
 }
 bool Settings::lockKeysEnabled() const {
     return m_lockKeysEnabled;
+}
+bool Settings::lockKeysCapsEnabled() const {
+    return m_lockKeysCapsEnabled;
+}
+bool Settings::lockKeysNumEnabled() const {
+    return m_lockKeysNumEnabled;
+}
+bool Settings::lockKeysScrollEnabled() const {
+    return m_lockKeysScrollEnabled;
+}
+bool Settings::lockKeysInsertEnabled() const {
+    return m_lockKeysInsertEnabled;
+}
+bool Settings::lockKeysBoldUi() const {
+    return m_lockKeysBoldUi;
+}
+int Settings::lockKeysDuration() const {
+    return m_lockKeysDuration;
 }
 bool Settings::nextUpEnabled() const {
     return m_nextUpEnabled;
@@ -209,6 +233,24 @@ void Settings::setOverrideNativeOsd(bool v) {
 }
 void Settings::setLockKeysEnabled(bool v) {
     assign("lockKeysEnabled", m_lockKeysEnabled, v);
+}
+void Settings::setLockKeysCapsEnabled(bool v) {
+    assign("lockKeysCapsEnabled", m_lockKeysCapsEnabled, v);
+}
+void Settings::setLockKeysNumEnabled(bool v) {
+    assign("lockKeysNumEnabled", m_lockKeysNumEnabled, v);
+}
+void Settings::setLockKeysScrollEnabled(bool v) {
+    assign("lockKeysScrollEnabled", m_lockKeysScrollEnabled, v);
+}
+void Settings::setLockKeysInsertEnabled(bool v) {
+    assign("lockKeysInsertEnabled", m_lockKeysInsertEnabled, v);
+}
+void Settings::setLockKeysBoldUi(bool v) {
+    assign("lockKeysBoldUi", m_lockKeysBoldUi, v);
+}
+void Settings::setLockKeysDuration(int v) {
+    assignInt("lockKeysDuration", m_lockKeysDuration, v);
 }
 void Settings::setNextUpEnabled(bool v) {
     assign("nextUpEnabled", m_nextUpEnabled, v);

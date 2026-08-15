@@ -41,6 +41,12 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.volumeFlyoutEnabled());
     QVERIFY(s.overrideNativeOsd());
     QVERIFY(s.lockKeysEnabled());
+    QVERIFY(s.lockKeysCapsEnabled());
+    QVERIFY(s.lockKeysNumEnabled());
+    QVERIFY(s.lockKeysScrollEnabled());
+    QVERIFY(!s.lockKeysInsertEnabled());
+    QVERIFY(s.lockKeysBoldUi());
+    QCOMPARE(s.lockKeysDuration(), 2000);
     QVERIFY(s.nextUpEnabled());
     QVERIFY(s.disableOnFullscreen());
     QVERIFY(!s.launchOnStartup());

@@ -19,6 +19,12 @@ class Settings : public QObject {
         Q_PROPERTY(bool volumeFlyoutEnabled READ volumeFlyoutEnabled WRITE setVolumeFlyoutEnabled NOTIFY changed)
         Q_PROPERTY(bool overrideNativeOsd READ overrideNativeOsd WRITE setOverrideNativeOsd NOTIFY changed)
         Q_PROPERTY(bool lockKeysEnabled READ lockKeysEnabled WRITE setLockKeysEnabled NOTIFY changed)
+        Q_PROPERTY(bool lockKeysCapsEnabled READ lockKeysCapsEnabled WRITE setLockKeysCapsEnabled NOTIFY changed)
+        Q_PROPERTY(bool lockKeysNumEnabled READ lockKeysNumEnabled WRITE setLockKeysNumEnabled NOTIFY changed)
+        Q_PROPERTY(bool lockKeysScrollEnabled READ lockKeysScrollEnabled WRITE setLockKeysScrollEnabled NOTIFY changed)
+        Q_PROPERTY(bool lockKeysInsertEnabled READ lockKeysInsertEnabled WRITE setLockKeysInsertEnabled NOTIFY changed)
+        Q_PROPERTY(bool lockKeysBoldUi READ lockKeysBoldUi WRITE setLockKeysBoldUi NOTIFY changed)
+        Q_PROPERTY(int lockKeysDuration READ lockKeysDuration WRITE setLockKeysDuration NOTIFY changed)
         Q_PROPERTY(bool nextUpEnabled READ nextUpEnabled WRITE setNextUpEnabled NOTIFY changed)
         Q_PROPERTY(bool disableOnFullscreen READ disableOnFullscreen WRITE setDisableOnFullscreen NOTIFY changed)
         Q_PROPERTY(bool launchOnStartup READ launchOnStartup WRITE setLaunchOnStartup NOTIFY changed)
@@ -57,6 +63,12 @@ class Settings : public QObject {
         bool volumeFlyoutEnabled() const;
         bool overrideNativeOsd() const;
         bool lockKeysEnabled() const;
+        bool lockKeysCapsEnabled() const;
+        bool lockKeysNumEnabled() const;
+        bool lockKeysScrollEnabled() const;
+        bool lockKeysInsertEnabled() const;
+        bool lockKeysBoldUi() const;
+        int lockKeysDuration() const;
         bool nextUpEnabled() const;
         bool disableOnFullscreen() const;
         bool launchOnStartup() const;
@@ -87,6 +99,12 @@ class Settings : public QObject {
         void setVolumeFlyoutEnabled(bool v);
         void setOverrideNativeOsd(bool v);
         void setLockKeysEnabled(bool v);
+        void setLockKeysCapsEnabled(bool v);
+        void setLockKeysNumEnabled(bool v);
+        void setLockKeysScrollEnabled(bool v);
+        void setLockKeysInsertEnabled(bool v);
+        void setLockKeysBoldUi(bool v);
+        void setLockKeysDuration(int v);
         void setNextUpEnabled(bool v);
         void setDisableOnFullscreen(bool v);
         void setLaunchOnStartup(bool v);
@@ -124,6 +142,12 @@ class Settings : public QObject {
         bool m_volumeFlyoutEnabled;
         bool m_overrideNativeOsd;
         bool m_lockKeysEnabled;
+        bool m_lockKeysCapsEnabled;
+        bool m_lockKeysNumEnabled;
+        bool m_lockKeysScrollEnabled;
+        bool m_lockKeysInsertEnabled;
+        bool m_lockKeysBoldUi;
+        int m_lockKeysDuration;
         bool m_nextUpEnabled;
         bool m_disableOnFullscreen;
         bool m_launchOnStartup;

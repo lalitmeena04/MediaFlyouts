@@ -11,7 +11,7 @@ HHOOK g_hook = nullptr;
 LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if(nCode == HC_ACTION && wParam == WM_KEYUP) {
         const DWORD vk = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam)->vkCode;
-        if((vk == VK_CAPITAL || vk == VK_NUMLOCK || vk == VK_SCROLL) && g_instance)
+        if((vk == VK_CAPITAL || vk == VK_NUMLOCK || vk == VK_SCROLL || vk == VK_INSERT) && g_instance)
             g_instance->handleToggle(static_cast<int>(vk));
     }
     return CallNextHookEx(nullptr, nCode, wParam, lParam);
@@ -44,16 +44,27 @@ bool LockKeysController::on() const {
     return m_on;
 }
 
+int LockKeysController::keyType() const {
+    return m_keyType;
+}
+
 void LockKeysController::handleToggle(int vk) {
     switch(vk) {
     case VK_CAPITAL:
         m_keyName = QStringLiteral("Caps Lock");
+        m_keyType = 0;
         break;
     case VK_NUMLOCK:
         m_keyName = QStringLiteral("Num Lock");
+        m_keyType = 1;
         break;
     case VK_SCROLL:
         m_keyName = QStringLiteral("Scroll Lock");
+        m_keyType = 2;
+        break;
+    case VK_INSERT:
+        m_keyName = QStringLiteral("Insert");
+        m_keyType = 3;
         break;
     default:
         return;

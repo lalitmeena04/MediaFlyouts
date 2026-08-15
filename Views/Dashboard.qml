@@ -352,6 +352,48 @@ Window {
                         value: settings.lockKeysEnabled
                         onToggled: settings.lockKeysEnabled = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Caps Lock"
+                        value: settings.lockKeysCapsEnabled
+                        onToggled: settings.lockKeysCapsEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Num Lock"
+                        value: settings.lockKeysNumEnabled
+                        onToggled: settings.lockKeysNumEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Scroll Lock"
+                        value: settings.lockKeysScrollEnabled
+                        onToggled: settings.lockKeysScrollEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Insert"
+                        value: settings.lockKeysInsertEnabled
+                        onToggled: settings.lockKeysInsertEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Bold text"
+                        description: "Use a bold font for the key name."
+                        value: settings.lockKeysBoldUi
+                        onToggled: settings.lockKeysBoldUi = value
+                    }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Duration"
+                        description: "How long the lock keys flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.lockKeysDuration
+                        valueText: (settings.lockKeysDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.lockKeysDuration = Math.round(value)
+                    }
                 }
 
                 // Taskbar Widget page

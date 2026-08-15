@@ -18,8 +18,19 @@ Window {
         NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
     }
 
+    // per-key toggle for the currently reported lock key (keyType: 0=Caps,1=Num,2=Scroll,3=Insert)
+    function keyEnabled() {
+        switch(lockKeys.keyType) {
+        case 0: return settings.lockKeysCapsEnabled
+        case 1: return settings.lockKeysNumEnabled
+        case 2: return settings.lockKeysScrollEnabled
+        case 3: return settings.lockKeysInsertEnabled
+        }
+        return true
+    }
+
     function showFlyout() {
-        if(!settings.lockKeysEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
+        if(!settings.lockKeysEnabled || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         hideTimer.restart()
         root.visible = true
@@ -39,7 +50,7 @@ Window {
 
     Timer {
         id: hideTimer
-        interval: 1200
+        interval: settings.lockKeysDuration
         onTriggered: root.hideFlyout()
     }
 
@@ -87,7 +98,7 @@ Window {
                     text: lockKeys.keyName
                     color: "white"
                     font.pixelSize: 15
-                    font.bold: true
+                    font.bold: settings.lockKeysBoldUi
                 }
 
                 Row {
