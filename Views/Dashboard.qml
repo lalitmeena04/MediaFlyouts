@@ -427,10 +427,24 @@ Window {
                     SettingCombo {
                         width: parent.width
                         label: "Widget side"
-                        description: "Which end of the taskbar the widget docks to."
-                        model: ["Left", "Right"]
+                        description: "Which part of the taskbar the widget docks to."
+                        model: ["Left", "Center", "Right"]
                         currentIndex: settings.taskbarWidgetSide
                         onActivated: settings.taskbarWidgetSide = index
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Pause overlay"
+                        description: "Dim the album art with a pause glyph when playback is paused."
+                        value: settings.taskbarWidgetShowPauseOverlay
+                        onToggled: settings.taskbarWidgetShowPauseOverlay = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Scroll long titles"
+                        description: "Marquee-scroll the track title when it is too long to fit."
+                        value: settings.taskbarWidgetScrollingEnabled
+                        onToggled: settings.taskbarWidgetScrollingEnabled = value
                     }
                     SettingCombo {
                         width: parent.width
@@ -443,9 +457,7 @@ Window {
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"
-                        description: settings.taskbarWidgetSide === 0
-                            ? "Shift the widget right, away from the left edge."
-                            : "Shift the widget left to clear third-party taskbar widgets (e.g. speed meters)."
+                        description: "Fine-tune the widget's horizontal position on the taskbar."
                         from: 0
                         to: 600
                         stepSize: 10

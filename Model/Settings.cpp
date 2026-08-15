@@ -40,8 +40,11 @@ void Settings::reload() {
     m_volumeFlyoutDuration = m_store.value(QStringLiteral("volumeFlyoutDuration"), 1800).toInt();
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
-    m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 1).toInt();
+    // widget side: 0 = left, 1 = center, 2 = right
+    m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 2).toInt();
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
+    m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
+    m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), false).toBool();
 }
 
 bool Settings::exportTo(const QUrl& file) const {
@@ -204,6 +207,12 @@ int Settings::taskbarWidgetSide() const {
 int Settings::taskbarWidgetMonitor() const {
     return m_taskbarWidgetMonitor;
 }
+bool Settings::taskbarWidgetShowPauseOverlay() const {
+    return m_taskbarWidgetShowPauseOverlay;
+}
+bool Settings::taskbarWidgetScrollingEnabled() const {
+    return m_taskbarWidgetScrollingEnabled;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -306,4 +315,10 @@ void Settings::setTaskbarWidgetSide(int v) {
 }
 void Settings::setTaskbarWidgetMonitor(int v) {
     assignInt("taskbarWidgetMonitor", m_taskbarWidgetMonitor, v);
+}
+void Settings::setTaskbarWidgetShowPauseOverlay(bool v) {
+    assign("taskbarWidgetShowPauseOverlay", m_taskbarWidgetShowPauseOverlay, v);
+}
+void Settings::setTaskbarWidgetScrollingEnabled(bool v) {
+    assign("taskbarWidgetScrollingEnabled", m_taskbarWidgetScrollingEnabled, v);
 }

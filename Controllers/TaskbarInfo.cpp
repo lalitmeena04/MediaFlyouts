@@ -65,6 +65,9 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
     if(side == 0) {
         // left edge; offset nudges it right
         x = full.left() + 8 + offset;
+    } else if(side == 1) {
+        // centered on the monitor; offset nudges it right
+        x = full.left() + (full.width() - width) / 2 + offset;
     } else {
         int rightEdge = full.right() + 1 - 200;
         // use the precise tray boundary only on the monitor that hosts the primary tray

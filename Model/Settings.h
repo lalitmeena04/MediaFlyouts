@@ -46,6 +46,10 @@ class Settings : public QObject {
         Q_PROPERTY(int taskbarWidgetOffset READ taskbarWidgetOffset WRITE setTaskbarWidgetOffset NOTIFY changed)
         Q_PROPERTY(int taskbarWidgetSide READ taskbarWidgetSide WRITE setTaskbarWidgetSide NOTIFY changed)
         Q_PROPERTY(int taskbarWidgetMonitor READ taskbarWidgetMonitor WRITE setTaskbarWidgetMonitor NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetShowPauseOverlay READ taskbarWidgetShowPauseOverlay WRITE
+                       setTaskbarWidgetShowPauseOverlay NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
+                       setTaskbarWidgetScrollingEnabled NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -90,6 +94,8 @@ class Settings : public QObject {
         int taskbarWidgetOffset() const;
         int taskbarWidgetSide() const;
         int taskbarWidgetMonitor() const;
+        bool taskbarWidgetShowPauseOverlay() const;
+        bool taskbarWidgetScrollingEnabled() const;
 
         void setMediaFlyoutEnabled(bool v);
         void setSeekbarEnabled(bool v);
@@ -125,6 +131,8 @@ class Settings : public QObject {
         void setTaskbarWidgetOffset(int v);
         void setTaskbarWidgetSide(int v);
         void setTaskbarWidgetMonitor(int v);
+        void setTaskbarWidgetShowPauseOverlay(bool v);
+        void setTaskbarWidgetScrollingEnabled(bool v);
 
     signals:
         void changed();
@@ -169,4 +177,6 @@ class Settings : public QObject {
         int m_taskbarWidgetOffset;
         int m_taskbarWidgetSide;
         int m_taskbarWidgetMonitor;
+        bool m_taskbarWidgetShowPauseOverlay;
+        bool m_taskbarWidgetScrollingEnabled;
 };

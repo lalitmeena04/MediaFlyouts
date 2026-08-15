@@ -63,8 +63,10 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.volumeFlyoutDuration(), 1800);
     QCOMPARE(s.nextUpDuration(), 2000);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
-    QCOMPARE(s.taskbarWidgetSide(), 1);
+    QCOMPARE(s.taskbarWidgetSide(), 2);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
+    QVERIFY(s.taskbarWidgetShowPauseOverlay());
+    QVERIFY(!s.taskbarWidgetScrollingEnabled());
 }
 
 void SettingsQtTest::setterEmitsChanged() {

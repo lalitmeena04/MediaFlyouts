@@ -97,6 +97,21 @@ Window {
                     color: "#4CC2FF"
                     font.pixelSize: 18
                 }
+
+                // dim + pause glyph when playback is paused
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 5
+                    visible: settings.taskbarWidgetShowPauseOverlay && nowPlaying.hasMedia && !nowPlaying.isPlaying
+                    color: "#99000000"
+                    Text {
+                        anchors.centerIn: parent
+                        text: Fluent.pause
+                        font.family: Fluent.fontFamily
+                        color: "white"
+                        font.pixelSize: 13
+                    }
+                }
             }
 
             Column {
@@ -104,12 +119,32 @@ Window {
                 spacing: 0
                 width: controlsRow.visible ? 78 : 132
 
-                Text {
+                Item {
+                    id: titleClip
                     width: parent.width
-                    text: nowPlaying.title
-                    color: "white"
-                    font.pixelSize: 12
-                    elide: Text.ElideRight
+                    height: titleText.implicitHeight
+                    clip: true
+
+                    Text {
+                        id: titleText
+                        text: nowPlaying.title
+                        color: "white"
+                        font.pixelSize: 12
+                        // when scrolling, size to content and slide; otherwise elide
+                        property bool overflow: settings.taskbarWidgetScrollingEnabled && implicitWidth > titleClip.width
+                        width: overflow ? implicitWidth : titleClip.width
+                        elide: overflow ? Text.ElideNone : Text.ElideRight
+                        onOverflowChanged: if(!overflow) x = 0
+
+                        SequentialAnimation on x {
+                            running: titleText.overflow
+                            loops: Animation.Infinite
+                            PauseAnimation { duration: 1200 }
+                            NumberAnimation { from: 0; to: Math.min(0, titleClip.width - titleText.implicitWidth); duration: 3200 }
+                            PauseAnimation { duration: 1200 }
+                            NumberAnimation { to: 0; duration: 600 }
+                        }
+                    }
                 }
 
                 Text {
