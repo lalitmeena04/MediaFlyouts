@@ -293,6 +293,14 @@ Window {
                         currentIndex: settings.flyoutAnimationSpeed
                         onActivated: settings.flyoutAnimationSpeed = index
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Animation easing"
+                        description: "The easing curve used for flyout animations."
+                        model: ["Linear", "Sine", "Quadratic", "Cubic"]
+                        currentIndex: settings.flyoutAnimationEasingStyle
+                        onActivated: settings.flyoutAnimationEasingStyle = index
+                    }
                     SettingSlider {
                         width: parent.width
                         label: "Up next duration"

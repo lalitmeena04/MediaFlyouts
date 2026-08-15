@@ -57,6 +57,7 @@ Window {
         property: "opacity"
         to: 1
         duration: settings.flyoutAnimationMs
+        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
     }
 
     NumberAnimation {
@@ -65,6 +66,7 @@ Window {
         property: "opacity"
         to: 0
         duration: settings.flyoutAnimationMs
+        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
         onFinished: root.visible = false
     }
 

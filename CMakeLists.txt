@@ -44,6 +44,7 @@ set_target_properties(MediaFlyouts PROPERTIES
 )
 
 set_source_files_properties(Views/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+set_source_files_properties(Views/Anim.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 # keep the font at a stable resource path regardless of its source folder
 set_source_files_properties(Views/assets/fonts/FluentSystemIcons-Filled.ttf
     PROPERTIES QT_RESOURCE_ALIAS assets/fonts/FluentSystemIcons-Filled.ttf)
@@ -60,6 +61,7 @@ qt_add_qml_module(MediaFlyouts
         Views/Dashboard.qml
         Views/TaskbarWidget.qml
         Views/Fluent.qml
+        Views/Anim.qml
         Views/IconLabel.qml
         Views/SettingRow.qml
         Views/SettingCombo.qml

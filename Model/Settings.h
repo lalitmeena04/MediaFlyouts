@@ -39,6 +39,8 @@ class Settings : public QObject {
         Q_PROPERTY(int flyoutDuration READ flyoutDuration WRITE setFlyoutDuration NOTIFY changed)
         Q_PROPERTY(int flyoutAnimationSpeed READ flyoutAnimationSpeed WRITE setFlyoutAnimationSpeed NOTIFY changed)
         Q_PROPERTY(int flyoutAnimationMs READ flyoutAnimationMs NOTIFY changed)
+        Q_PROPERTY(int flyoutAnimationEasingStyle READ flyoutAnimationEasingStyle WRITE setFlyoutAnimationEasingStyle
+                       NOTIFY changed)
         Q_PROPERTY(int volumeFlyoutDuration READ volumeFlyoutDuration WRITE setVolumeFlyoutDuration NOTIFY changed)
         Q_PROPERTY(int nextUpDuration READ nextUpDuration WRITE setNextUpDuration NOTIFY changed)
         Q_PROPERTY(int taskbarWidgetOffset READ taskbarWidgetOffset WRITE setTaskbarWidgetOffset NOTIFY changed)
@@ -82,6 +84,7 @@ class Settings : public QObject {
         int flyoutAnimationSpeed() const;
         // fade duration in ms derived from flyoutAnimationSpeed
         int flyoutAnimationMs() const;
+        int flyoutAnimationEasingStyle() const;
         int volumeFlyoutDuration() const;
         int nextUpDuration() const;
         int taskbarWidgetOffset() const;
@@ -116,6 +119,7 @@ class Settings : public QObject {
         void setFlyoutMonitor(int v);
         void setFlyoutDuration(int v);
         void setFlyoutAnimationSpeed(int v);
+        void setFlyoutAnimationEasingStyle(int v);
         void setVolumeFlyoutDuration(int v);
         void setNextUpDuration(int v);
         void setTaskbarWidgetOffset(int v);
@@ -159,6 +163,7 @@ class Settings : public QObject {
         int m_flyoutMonitor;
         int m_flyoutDuration;
         int m_flyoutAnimationSpeed;
+        int m_flyoutAnimationEasingStyle;
         int m_volumeFlyoutDuration;
         int m_nextUpDuration;
         int m_taskbarWidgetOffset;

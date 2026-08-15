@@ -36,6 +36,7 @@ void Settings::reload() {
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
     m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
     m_flyoutAnimationSpeed = m_store.value(QStringLiteral("flyoutAnimationSpeed"), 2).toInt();
+    m_flyoutAnimationEasingStyle = m_store.value(QStringLiteral("flyoutAnimationEasingStyle"), 3).toInt();
     m_volumeFlyoutDuration = m_store.value(QStringLiteral("volumeFlyoutDuration"), 1800).toInt();
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
@@ -169,6 +170,9 @@ int Settings::flyoutDuration() const {
 int Settings::flyoutAnimationSpeed() const {
     return m_flyoutAnimationSpeed;
 }
+int Settings::flyoutAnimationEasingStyle() const {
+    return m_flyoutAnimationEasingStyle;
+}
 int Settings::flyoutAnimationMs() const {
     switch(m_flyoutAnimationSpeed) {
     case 0:
@@ -284,6 +288,9 @@ void Settings::setFlyoutDuration(int v) {
 }
 void Settings::setFlyoutAnimationSpeed(int v) {
     assignInt("flyoutAnimationSpeed", m_flyoutAnimationSpeed, v);
+}
+void Settings::setFlyoutAnimationEasingStyle(int v) {
+    assignInt("flyoutAnimationEasingStyle", m_flyoutAnimationEasingStyle, v);
 }
 void Settings::setVolumeFlyoutDuration(int v) {
     assignInt("volumeFlyoutDuration", m_volumeFlyoutDuration, v);
