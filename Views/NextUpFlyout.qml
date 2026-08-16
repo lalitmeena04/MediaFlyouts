@@ -4,12 +4,17 @@ import MediaFlyouts
 
 Window {
     id: root
-    width: 340
+    // widen to fit the track text, clamped to a sensible range
+    readonly property int contentWidth: Math.max(titleMetrics.implicitWidth, artistMetrics.implicitWidth, 80)
+    width: Math.round(Math.max(300, Math.min(560, 100 + contentWidth)))
     height: 96
     visible: false
     opacity: 0
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
+
+    Text { id: titleMetrics; visible: false; text: nowPlaying.title; font.pixelSize: 15; font.bold: true }
+    Text { id: artistMetrics; visible: false; text: nowPlaying.artist; font.pixelSize: 12 }
 
     // true once App has placed this flyout, so re-stacking animates while the first show snaps
     property bool positioned: false
