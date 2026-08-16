@@ -241,25 +241,63 @@ Window {
                     Rectangle {
                         id: seekTrack
                         width: parent.width
-                        height: 4
-                        radius: 2
+                        height: 5
+                        radius: 2.5
                         color: "#3A3A3A"
 
+                        // -1 when not scrubbing; otherwise the dragged position (0..1)
+                        property real dragFraction: -1
+                        readonly property real shownFraction: dragFraction >= 0 ? dragFraction : nowPlaying.progress
+
                         Rectangle {
-                            width: parent.width * nowPlaying.progress
+                            width: seekTrack.width * seekTrack.shownFraction
                             height: parent.height
-                            radius: 2
+                            radius: parent.radius
                             color: "#4CC2FF"
-                            Behavior on width { NumberAnimation { duration: 250 } }
+                            // don't animate the fill while the user is scrubbing
+                            Behavior on width { enabled: seekTrack.dragFraction < 0; NumberAnimation { duration: 250 } }
+                        }
+
+                        Rectangle {
+                            id: seekThumb
+                            visible: nowPlaying.canSeek
+                            width: (seekArea.containsMouse || seekArea.pressed) ? 13 : 10
+                            height: width
+                            radius: width / 2
+                            color: "white"
+                            border.color: "#4CC2FF"
+                            border.width: 2
+                            y: (parent.height - height) / 2
+                            x: Math.max(0, Math.min(seekTrack.width - width,
+                                        seekTrack.width * seekTrack.shownFraction - width / 2))
+                            Behavior on width { NumberAnimation { duration: 100 } }
                         }
 
                         MouseArea {
+                            id: seekArea
                             anchors.fill: parent
-                            anchors.topMargin: -7
-                            anchors.bottomMargin: -7
+                            anchors.topMargin: -8
+                            anchors.bottomMargin: -8
+                            hoverEnabled: true
+                            preventStealing: true
                             enabled: nowPlaying.canSeek
                             cursorShape: nowPlaying.canSeek ? Qt.PointingHandCursor : Qt.ArrowCursor
-                            onClicked: (mouse) => nowPlaying.seekToFraction(mouse.x / seekTrack.width)
+
+                            function fractionAt(px) {
+                                return Math.max(0, Math.min(1, px / seekTrack.width))
+                            }
+
+                            onEntered: hideTimer.stop()
+                            onExited: if(!settings.mediaFlyoutAlwaysDisplay && !pressed) hideTimer.restart()
+                            onPressed: (mouse) => { hideTimer.stop(); seekTrack.dragFraction = fractionAt(mouse.x) }
+                            onPositionChanged: (mouse) => { if(pressed) seekTrack.dragFraction = fractionAt(mouse.x) }
+                            onReleased: {
+                                if(seekTrack.dragFraction >= 0)
+                                    nowPlaying.seekToFraction(seekTrack.dragFraction)
+                                seekTrack.dragFraction = -1
+                                if(!settings.mediaFlyoutAlwaysDisplay)
+                                    hideTimer.restart()
+                            }
                         }
                     }
 
