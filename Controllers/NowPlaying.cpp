@@ -138,6 +138,23 @@ void NowPlaying::toggleShuffle() {
         m_controller->setShuffle(!m_track.shuffle);
 }
 
+int NowPlaying::sessionCount() const {
+    return m_controller ? m_controller->sessionCount() : 1;
+}
+
+int NowPlaying::selectedSessionIndex() const {
+    return m_controller ? m_controller->selectedSessionIndex() : 0;
+}
+
+void NowPlaying::cycleSession(int delta) {
+    if(m_controller)
+        m_controller->cycleSession(delta);
+}
+
+void NowPlaying::noteSessionsChanged() {
+    emit sessionsChanged();
+}
+
 void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     // only a new track identity or a play/pause change should reveal the flyout;
     // frequent timeline/position updates must not keep resetting the auto-hide timer

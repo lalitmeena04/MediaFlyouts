@@ -50,6 +50,14 @@ Window {
         }
     }
 
+    // throttle source-switching so touchpad inertia doesn't skip several sources at once
+    property bool scrollCooldown: false
+    Timer {
+        id: cooldownTimer
+        interval: 280
+        onTriggered: root.scrollCooldown = false
+    }
+
     Rectangle {
         id: card
         anchors.fill: parent
@@ -63,7 +71,45 @@ Window {
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
-            onClicked: root.activated()
+            property real pressX: 0
+            property bool swiped: false
+            onPressed: (mouse) => { pressX = mouse.x; swiped = false }
+            onPositionChanged: (mouse) => {
+                // horizontal drag / touch swipe switches media source
+                if(!swiped && nowPlaying.sessionCount > 1 && Math.abs(mouse.x - pressX) > 40) {
+                    nowPlaying.cycleSession(mouse.x < pressX ? 1 : -1)
+                    swiped = true
+                }
+            }
+            onClicked: if(!swiped) root.activated()
+            onWheel: (wheel) => {
+                // scroll wheel / touchpad scroll switches media source
+                if(nowPlaying.sessionCount > 1 && !root.scrollCooldown) {
+                    nowPlaying.cycleSession(wheel.angleDelta.y > 0 ? -1 : 1)
+                    root.scrollCooldown = true
+                    cooldownTimer.restart()
+                }
+            }
+        }
+
+        // source indicator dots, shown when several apps are playing
+        Row {
+            z: 50
+            visible: nowPlaying.sessionCount > 1
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 2
+            spacing: 3
+            Repeater {
+                model: nowPlaying.sessionCount
+                delegate: Rectangle {
+                    required property int index
+                    width: 4
+                    height: 4
+                    radius: 2
+                    color: index === nowPlaying.selectedSessionIndex ? "#4CC2FF" : "#5A5A5A"
+                }
+            }
         }
 
         Row {

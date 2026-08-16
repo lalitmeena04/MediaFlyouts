@@ -1,8 +1,10 @@
 #pragma once
 
+#include <atomic>
+#include <mutex>
+
 #include <QImage>
 #include <QObject>
-#include <mutex>
 
 #include <winrt/Windows.Media.Control.h>
 
@@ -27,10 +29,14 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         void seek(qint64 positionMs) override;
         void setRepeatMode(int mode) override;
         void setShuffle(bool on) override;
+        int sessionCount() const override;
+        int selectedSessionIndex() const override;
+        void cycleSession(int delta) override;
 
     signals:
         void trackChanged(const mf::TrackInfo& track);
         void artChanged(const QImage& art);
+        void sessionsChanged();
 
     private:
         using SessionManager = winrt::Windows::Media::Control::GlobalSystemMediaTransportControlsSessionManager;
@@ -40,12 +46,17 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         void hookSession(Session session);
         winrt::fire_and_forget refresh(Session session);
         Session currentSession();
+        void refreshSessionMeta();
 
         SessionManager m_manager{nullptr};
         Session m_session{nullptr};
         winrt::event_token m_currentChangedToken{};
+        winrt::event_token m_sessionsChangedToken{};
         winrt::event_token m_mediaPropsToken{};
         winrt::event_token m_playbackToken{};
         winrt::event_token m_timelineToken{};
         std::mutex m_mutex;
+        std::atomic<int> m_sessionCount{1};
+        std::atomic<int> m_selectedIndex{0};
+        bool m_manual = false; // true once the user picked a session to override the OS current one
 };

@@ -29,6 +29,8 @@ class NowPlaying : public QObject {
         Q_PROPERTY(bool canSeek READ canSeek NOTIFY changed)
         Q_PROPERTY(bool canRepeat READ canRepeat NOTIFY changed)
         Q_PROPERTY(bool canShuffle READ canShuffle NOTIFY changed)
+        Q_PROPERTY(int sessionCount READ sessionCount NOTIFY sessionsChanged)
+        Q_PROPERTY(int selectedSessionIndex READ selectedSessionIndex NOTIFY sessionsChanged)
 
     public:
         explicit NowPlaying(QObject* parent = nullptr);
@@ -51,6 +53,8 @@ class NowPlaying : public QObject {
         bool canSeek() const;
         bool canRepeat() const;
         bool canShuffle() const;
+        int sessionCount() const;
+        int selectedSessionIndex() const;
 
         Q_INVOKABLE void playPause();
         Q_INVOKABLE void next();
@@ -58,16 +62,21 @@ class NowPlaying : public QObject {
         Q_INVOKABLE void seekToFraction(double fraction);
         Q_INVOKABLE void cycleRepeat();
         Q_INVOKABLE void toggleShuffle();
+        // cycle the displayed media source (multi-app switcher on the widget)
+        Q_INVOKABLE void cycleSession(int delta);
 
     public slots:
         void applyTrack(const mf::TrackInfo& track);
         void applyArt(const QImage& art);
         void noteMediaKey();
+        // provider reports the set of media sessions changed
+        void noteSessionsChanged();
 
     signals:
         void changed();
         void trackUpdated();
         void nextUpRequested();
+        void sessionsChanged();
 
     private:
         qint64 currentPositionMs() const;

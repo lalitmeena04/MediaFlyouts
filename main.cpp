@@ -61,6 +61,7 @@ int main(int argc, char* argv[]) {
     nowPlaying.setController(&provider);
     QObject::connect(&provider, &WinMediaProvider::trackChanged, &nowPlaying, &NowPlaying::applyTrack);
     QObject::connect(&provider, &WinMediaProvider::artChanged, &nowPlaying, &NowPlaying::applyArt);
+    QObject::connect(&provider, &WinMediaProvider::sessionsChanged, &nowPlaying, &NowPlaying::noteSessionsChanged);
     provider.start();
 
     VolumeController volumeController;
