@@ -171,14 +171,21 @@ Window {
                     height: titleText.implicitHeight
                     clip: true
 
+                    // measure the full (un-elided) title so overflow detection is stable
+                    TextMetrics {
+                        id: titleMetrics
+                        font: titleText.font
+                        text: nowPlaying.title
+                    }
+
                     Text {
                         id: titleText
                         text: nowPlaying.title
                         color: "white"
                         font.pixelSize: 12
                         // when scrolling, size to content and slide; otherwise elide
-                        property bool overflow: settings.taskbarWidgetScrollingEnabled && implicitWidth > titleClip.width
-                        width: overflow ? implicitWidth : titleClip.width
+                        property bool overflow: settings.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
+                        width: overflow ? titleMetrics.width : titleClip.width
                         elide: overflow ? Text.ElideNone : Text.ElideRight
                         onOverflowChanged: if(!overflow) x = 0
 
@@ -186,7 +193,7 @@ Window {
                             running: titleText.overflow
                             loops: Animation.Infinite
                             PauseAnimation { duration: 1200 }
-                            NumberAnimation { from: 0; to: Math.min(0, titleClip.width - titleText.implicitWidth); duration: 3200 }
+                            NumberAnimation { from: 0; to: Math.min(0, titleClip.width - titleMetrics.width); duration: 3200 }
                             PauseAnimation { duration: 1200 }
                             NumberAnimation { to: 0; duration: 600 }
                         }
