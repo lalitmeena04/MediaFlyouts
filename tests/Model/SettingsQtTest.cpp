@@ -32,6 +32,7 @@ void SettingsQtTest::defaults() {
     Settings s;
     QVERIFY(s.mediaFlyoutEnabled());
     QVERIFY(s.seekbarEnabled());
+    QVERIFY(s.seekbarInteractive());
     QVERIFY(!s.mediaFlyoutAlwaysDisplay());
     QVERIFY(!s.centerTitleArtist());
     QVERIFY(!s.compactLayout());

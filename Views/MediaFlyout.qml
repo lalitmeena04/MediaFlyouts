@@ -260,7 +260,7 @@ Window {
 
                         Rectangle {
                             id: seekThumb
-                            visible: nowPlaying.canSeek
+                            visible: nowPlaying.canSeek && settings.seekbarInteractive
                             width: (seekArea.containsMouse || seekArea.pressed) ? 13 : 10
                             height: width
                             radius: width / 2
@@ -280,8 +280,8 @@ Window {
                             anchors.bottomMargin: -8
                             hoverEnabled: true
                             preventStealing: true
-                            enabled: nowPlaying.canSeek
-                            cursorShape: nowPlaying.canSeek ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            enabled: nowPlaying.canSeek && settings.seekbarInteractive
+                            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
 
                             function fractionAt(px) {
                                 return Math.max(0, Math.min(1, px / seekTrack.width))

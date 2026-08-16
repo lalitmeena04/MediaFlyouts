@@ -202,6 +202,16 @@ Window {
                         onToggled: settings.seekbarEnabled = value
                     }
                     SettingRow {
+                        // sub-option, shown only when the seekbar itself is enabled
+                        visible: settings.seekbarEnabled
+                        x: 16
+                        width: parent.width - 16
+                        label: "Interactive seekbar"
+                        description: "Allow clicking and dragging the seekbar to seek."
+                        value: settings.seekbarInteractive
+                        onToggled: settings.seekbarInteractive = value
+                    }
+                    SettingRow {
                         width: parent.width
                         label: "Compact layout"
                         description: "Use a smaller, denser media flyout."

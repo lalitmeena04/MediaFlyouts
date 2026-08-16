@@ -26,6 +26,7 @@ TEST_F(SettingsTest, Defaults) {
     Settings s;
     EXPECT_TRUE(s.mediaFlyoutEnabled());
     EXPECT_TRUE(s.seekbarEnabled());
+    EXPECT_TRUE(s.seekbarInteractive());
     EXPECT_FALSE(s.mediaFlyoutAlwaysDisplay());
     EXPECT_FALSE(s.centerTitleArtist());
     EXPECT_FALSE(s.compactLayout());

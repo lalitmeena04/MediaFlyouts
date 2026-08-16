@@ -9,6 +9,7 @@ class Settings : public QObject {
         Q_OBJECT
         Q_PROPERTY(bool mediaFlyoutEnabled READ mediaFlyoutEnabled WRITE setMediaFlyoutEnabled NOTIFY changed)
         Q_PROPERTY(bool seekbarEnabled READ seekbarEnabled WRITE setSeekbarEnabled NOTIFY changed)
+        Q_PROPERTY(bool seekbarInteractive READ seekbarInteractive WRITE setSeekbarInteractive NOTIFY changed)
         Q_PROPERTY(bool mediaFlyoutAlwaysDisplay READ mediaFlyoutAlwaysDisplay WRITE setMediaFlyoutAlwaysDisplay NOTIFY
                        changed)
         Q_PROPERTY(bool centerTitleArtist READ centerTitleArtist WRITE setCenterTitleArtist NOTIFY changed)
@@ -60,6 +61,7 @@ class Settings : public QObject {
 
         bool mediaFlyoutEnabled() const;
         bool seekbarEnabled() const;
+        bool seekbarInteractive() const;
         bool mediaFlyoutAlwaysDisplay() const;
         bool centerTitleArtist() const;
         bool compactLayout() const;
@@ -99,6 +101,7 @@ class Settings : public QObject {
 
         void setMediaFlyoutEnabled(bool v);
         void setSeekbarEnabled(bool v);
+        void setSeekbarInteractive(bool v);
         void setMediaFlyoutAlwaysDisplay(bool v);
         void setCenterTitleArtist(bool v);
         void setCompactLayout(bool v);
@@ -145,6 +148,7 @@ class Settings : public QObject {
         QSettings m_store;
         bool m_mediaFlyoutEnabled;
         bool m_seekbarEnabled;
+        bool m_seekbarInteractive;
         bool m_mediaFlyoutAlwaysDisplay;
         bool m_centerTitleArtist;
         bool m_compactLayout;

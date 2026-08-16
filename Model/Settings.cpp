@@ -9,6 +9,7 @@ Settings::Settings(QObject* parent)
 void Settings::reload() {
     m_mediaFlyoutEnabled = m_store.value(QStringLiteral("mediaFlyoutEnabled"), true).toBool();
     m_seekbarEnabled = m_store.value(QStringLiteral("seekbarEnabled"), true).toBool();
+    m_seekbarInteractive = m_store.value(QStringLiteral("seekbarInteractive"), true).toBool();
     m_mediaFlyoutAlwaysDisplay = m_store.value(QStringLiteral("mediaFlyoutAlwaysDisplay"), false).toBool();
     m_centerTitleArtist = m_store.value(QStringLiteral("centerTitleArtist"), false).toBool();
     m_compactLayout = m_store.value(QStringLiteral("compactLayout"), false).toBool();
@@ -94,6 +95,9 @@ bool Settings::mediaFlyoutEnabled() const {
 }
 bool Settings::seekbarEnabled() const {
     return m_seekbarEnabled;
+}
+bool Settings::seekbarInteractive() const {
+    return m_seekbarInteractive;
 }
 bool Settings::mediaFlyoutAlwaysDisplay() const {
     return m_mediaFlyoutAlwaysDisplay;
@@ -219,6 +223,9 @@ void Settings::setMediaFlyoutEnabled(bool v) {
 }
 void Settings::setSeekbarEnabled(bool v) {
     assign("seekbarEnabled", m_seekbarEnabled, v);
+}
+void Settings::setSeekbarInteractive(bool v) {
+    assign("seekbarInteractive", m_seekbarInteractive, v);
 }
 void Settings::setMediaFlyoutAlwaysDisplay(bool v) {
     assign("mediaFlyoutAlwaysDisplay", m_mediaFlyoutAlwaysDisplay, v);
