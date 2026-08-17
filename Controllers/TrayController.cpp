@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QSystemTrayIcon>
+#include <QTimer>
 
 #include "Settings.h"
 
@@ -46,11 +47,26 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
 
+    // in flyout mode a single click is held briefly so a double-click can open the dashboard instead
+    m_singleClickTimer = new QTimer(this);
+    m_singleClickTimer->setSingleShot(true);
+    m_singleClickTimer->setInterval(QApplication::doubleClickInterval());
+    connect(m_singleClickTimer, &QTimer::timeout, this, &TrayController::showFlyoutRequested);
+
     connect(m_tray, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+        const bool flyoutMode = m_settings && m_settings->trayLeftClickShowsFlyout();
+        if(reason == QSystemTrayIcon::DoubleClick) {
+            // cancel the pending single-click flyout and show the dashboard
+            if(flyoutMode) {
+                m_singleClickTimer->stop();
+                emit openDashboardRequested();
+            }
+            return;
+        }
         if(reason != QSystemTrayIcon::Trigger)
             return;
-        if(m_settings && m_settings->trayLeftClickShowsFlyout())
-            emit showFlyoutRequested();
+        if(flyoutMode)
+            m_singleClickTimer->start();
         else
             emit openDashboardRequested();
     });
