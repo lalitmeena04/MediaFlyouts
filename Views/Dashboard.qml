@@ -152,58 +152,272 @@ Window {
                     width: pageScroll.availableWidth
                     spacing: 16
 
-                    Rectangle {
+                    Column {
+                        id: homePage
                         visible: dash.currentIndex === 0
-                    width: parent.width
-                    height: 96
-                    radius: 12
-                    color: "#232323"
-                    border.color: "#2E2E2E"
-
-                    Row {
-                        anchors.fill: parent
-                        anchors.margins: 16
+                        width: parent.width
                         spacing: 16
 
-                        Rectangle {
-                            width: 64
-                            height: 64
-                            radius: 8
-                            color: "#333333"
-                            clip: true
-                            Image {
-                                anchors.fill: parent
-                                source: nowPlaying.artSource
-                                visible: nowPlaying.hasArt
-                                fillMode: Image.PreserveAspectCrop
-                                cache: false
+                        // live feature state, kept reactive by reading the settings properties directly
+                        function featureOn(key) {
+                            switch(key) {
+                            case "media": return settings.mediaFlyoutEnabled
+                            case "volume": return settings.volumeFlyoutEnabled
+                            case "lock": return settings.lockKeysEnabled
+                            case "widget": return settings.taskbarWidgetEnabled
+                            case "nextup": return settings.nextUpEnabled
+                            case "osd": return settings.overrideNativeOsd
                             }
-                            IconLabel {
-                                anchors.centerIn: parent
-                                visible: !nowPlaying.hasArt
-                                glyph: Fluent.musicNote
-                                size: 28
-                                color: "#9AA0A6"
+                            return false
+                        }
+
+                        // Now playing hero card
+                        Rectangle {
+                            width: parent.width
+                            height: 176
+                            radius: 12
+                            color: "#232323"
+                            border.color: "#2E2E2E"
+
+                            Row {
+                                anchors.fill: parent
+                                anchors.margins: 18
+                                spacing: 18
+
+                                Rectangle {
+                                    width: 108
+                                    height: 108
+                                    radius: 10
+                                    color: "#333333"
+                                    clip: true
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    Image {
+                                        anchors.fill: parent
+                                        source: nowPlaying.artSource
+                                        visible: nowPlaying.hasArt
+                                        fillMode: Image.PreserveAspectCrop
+                                        cache: false
+                                    }
+                                    IconLabel {
+                                        anchors.centerIn: parent
+                                        visible: !nowPlaying.hasArt
+                                        glyph: Fluent.musicNote
+                                        size: 44
+                                        color: "#9AA0A6"
+                                    }
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        radius: 10
+                                        visible: nowPlaying.hasMedia && !nowPlaying.isPlaying
+                                        color: "#88000000"
+                                        IconLabel {
+                                            anchors.centerIn: parent
+                                            glyph: Fluent.pause
+                                            size: 24
+                                            color: "white"
+                                        }
+                                    }
+                                }
+
+                                Column {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: parent.width - 108 - 18
+                                    spacing: 6
+
+                                    Text {
+                                        width: parent.width
+                                        text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
+                                        color: "white"
+                                        font.pixelSize: 20
+                                        font.bold: true
+                                        elide: Text.ElideRight
+                                    }
+                                    Text {
+                                        width: parent.width
+                                        text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media in any app to control it here"
+                                        color: "#B0B0B0"
+                                        font.pixelSize: 14
+                                        elide: Text.ElideRight
+                                    }
+
+                                    Rectangle {
+                                        visible: nowPlaying.hasMedia && nowPlaying.playerName.length > 0
+                                        radius: 4
+                                        color: "#26333D"
+                                        height: playerText.implicitHeight + 6
+                                        width: playerText.implicitWidth + 14
+                                        Text {
+                                            id: playerText
+                                            anchors.centerIn: parent
+                                            text: nowPlaying.playerName
+                                            color: "#7FD6FF"
+                                            font.pixelSize: 11
+                                        }
+                                    }
+
+                                    // progress bar + times
+                                    Column {
+                                        width: parent.width
+                                        spacing: 4
+                                        topPadding: 6
+                                        visible: nowPlaying.hasMedia
+
+                                        Rectangle {
+                                            width: parent.width
+                                            height: 4
+                                            radius: 2
+                                            color: "#3A3A3A"
+                                            Rectangle {
+                                                width: parent.width * Math.max(0, Math.min(1, nowPlaying.progress))
+                                                height: parent.height
+                                                radius: 2
+                                                color: "#4CC2FF"
+                                            }
+                                        }
+                                        Item {
+                                            width: parent.width
+                                            height: elapsedText.implicitHeight
+                                            Text {
+                                                id: elapsedText
+                                                anchors.left: parent.left
+                                                text: nowPlaying.elapsed
+                                                color: "#9AA0A6"
+                                                font.pixelSize: 11
+                                            }
+                                            Text {
+                                                anchors.right: parent.right
+                                                text: nowPlaying.duration
+                                                color: "#9AA0A6"
+                                                font.pixelSize: 11
+                                            }
+                                        }
+                                    }
+
+                                    // transport controls
+                                    Row {
+                                        spacing: 22
+                                        topPadding: 8
+                                        visible: nowPlaying.hasMedia
+                                        IconLabel {
+                                            glyph: Fluent.previous
+                                            size: 18
+                                            color: prevMa.containsMouse ? "white" : "#C8C8C8"
+                                            MouseArea {
+                                                id: prevMa
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: nowPlaying.previous()
+                                            }
+                                        }
+                                        IconLabel {
+                                            glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
+                                            size: 22
+                                            color: playMa.containsMouse ? "white" : "#4CC2FF"
+                                            MouseArea {
+                                                id: playMa
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: nowPlaying.playPause()
+                                            }
+                                        }
+                                        IconLabel {
+                                            glyph: Fluent.next
+                                            size: 18
+                                            color: nextMa.containsMouse ? "white" : "#C8C8C8"
+                                            MouseArea {
+                                                id: nextMa
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: nowPlaying.next()
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
 
-                        Column {
-                            anchors.verticalCenter: parent.verticalCenter
-                            spacing: 4
-                            Text {
-                                text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
-                                color: "white"
-                                font.pixelSize: 16
-                                font.bold: true
-                            }
-                            Text {
-                                text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media to see it here"
-                                color: "#B0B0B0"
-                                font.pixelSize: 13
+                        Text {
+                            text: "At a glance"
+                            color: "white"
+                            font.pixelSize: 16
+                            font.bold: true
+                            topPadding: 4
+                        }
+
+                        // feature status cards; click to jump to that section
+                        Flow {
+                            width: parent.width
+                            spacing: 12
+
+                            Repeater {
+                                model: [
+                                    { "name": "Media flyout", "icon": Fluent.play, "key": "media", "page": 1 },
+                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 2 },
+                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 3 },
+                                    { "name": "Taskbar widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
+                                    { "name": "Up next", "icon": Fluent.next, "key": "nextup", "page": 1 },
+                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 2 }
+                                ]
+                                delegate: Rectangle {
+                                    required property var modelData
+                                    width: (homePage.width - 24) / 3
+                                    height: 76
+                                    radius: 10
+                                    color: cardMa.containsMouse ? "#282828" : "#232323"
+                                    border.color: "#2E2E2E"
+
+                                    Row {
+                                        anchors.fill: parent
+                                        anchors.margins: 12
+                                        spacing: 10
+                                        IconLabel {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            glyph: modelData.icon
+                                            size: 22
+                                            color: homePage.featureOn(modelData.key) ? "#4CC2FF" : "#6A6A6A"
+                                        }
+                                        Column {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            spacing: 4
+                                            width: parent.width - 32
+                                            Text {
+                                                width: parent.width
+                                                text: modelData.name
+                                                color: "white"
+                                                font.pixelSize: 13
+                                                font.bold: true
+                                                elide: Text.ElideRight
+                                            }
+                                            Text {
+                                                text: homePage.featureOn(modelData.key) ? "On" : "Off"
+                                                color: homePage.featureOn(modelData.key) ? "#6FCF7F" : "#8A8A8A"
+                                                font.pixelSize: 11
+                                            }
+                                        }
+                                    }
+                                    MouseArea {
+                                        id: cardMa
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: dash.currentIndex = modelData.page
+                                    }
+                                }
                             }
                         }
+
+                        Text {
+                            width: parent.width
+                            wrapMode: Text.WordWrap
+                            text: "Tip: press a media or volume key, or click the tray icon, to preview the flyouts."
+                            color: "#7A7A7A"
+                            font.pixelSize: 12
+                            topPadding: 4
+                        }
                     }
-                }
 
                 // Media Flyout page
                 Column {
