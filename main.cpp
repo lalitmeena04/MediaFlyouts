@@ -62,9 +62,6 @@ int main(int argc, char* argv[]) {
     QObject::connect(&provider, &WinMediaProvider::trackChanged, &nowPlaying, &NowPlaying::applyTrack);
     QObject::connect(&provider, &WinMediaProvider::artChanged, &nowPlaying, &NowPlaying::applyArt);
     QObject::connect(&provider, &WinMediaProvider::sessionsChanged, &nowPlaying, &NowPlaying::noteSessionsChanged);
-    nowPlaying.setNextUpLeadMs(settings.nextUpLeadTime());
-    QObject::connect(&settings, &Settings::changed, &nowPlaying,
-                     [&] { nowPlaying.setNextUpLeadMs(settings.nextUpLeadTime()); });
     provider.start();
 
     VolumeController volumeController;
