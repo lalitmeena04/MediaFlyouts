@@ -14,7 +14,7 @@ QtObject {
     property LockKeysFlyout lockKeysFlyout: LockKeysFlyout {
         onVisibleChanged: app.restack()
     }
-    property NextUpFlyout nextUpFlyout: NextUpFlyout {
+    property NowPlayingFlyout nextUpFlyout: NowPlayingFlyout {
         onVisibleChanged: app.restack()
     }
     property Dashboard dashboard: Dashboard {}

@@ -116,7 +116,7 @@ Window {
                 spacing: 3
 
                 Text {
-                    text: "Up next"
+                    text: "Now playing"
                     color: "#4CC2FF"
                     font.pixelSize: 11
                     font.bold: true
