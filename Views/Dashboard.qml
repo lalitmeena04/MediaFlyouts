@@ -108,28 +108,52 @@ Window {
             height: parent.height
             color: "#1B1B1B"
 
-            Column {
-                anchors.fill: parent
+            Text {
+                id: pageTitle
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
                 anchors.margins: 32
-                spacing: 16
+                text: dash.pages[dash.currentIndex].name
+                color: "white"
+                font.pixelSize: 26
+                font.bold: true
+            }
 
-                Text {
-                    text: dash.pages[dash.currentIndex].name
-                    color: "white"
-                    font.pixelSize: 26
-                    font.bold: true
-                }
+            Text {
+                id: pageDesc
+                anchors.top: pageTitle.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 32
+                anchors.rightMargin: 32
+                anchors.topMargin: 12
+                text: dash.pages[dash.currentIndex].desc
+                color: "#B0B0B0"
+                font.pixelSize: 14
+                wrapMode: Text.WordWrap
+            }
 
-                Text {
-                    width: parent.width
-                    text: dash.pages[dash.currentIndex].desc
-                    color: "#B0B0B0"
-                    font.pixelSize: 14
-                    wrapMode: Text.WordWrap
-                }
+            // scrollable so long pages (e.g. the media flyout options) aren't cut off
+            ScrollView {
+                id: pageScroll
+                anchors.top: pageDesc.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.leftMargin: 32
+                anchors.rightMargin: 32
+                anchors.topMargin: 16
+                anchors.bottomMargin: 32
+                clip: true
+                contentWidth: availableWidth
 
-                Rectangle {
-                    visible: dash.currentIndex === 0
+                Column {
+                    width: pageScroll.availableWidth
+                    spacing: 16
+
+                    Rectangle {
+                        visible: dash.currentIndex === 0
                     width: parent.width
                     height: 96
                     radius: 12
@@ -517,6 +541,7 @@ Window {
                             onClicked: importDialog.open()
                         }
                     }
+                }
                 }
             }
         }
