@@ -64,9 +64,9 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
     int x;
     if(side == 0) {
         // left edge; offset nudges it right
-        x = full.left() + 8 + offset;
+        x = full.left() + 8 + qMax(0, offset);
     } else if(side == 1) {
-        // centered on the monitor; offset nudges it right
+        // centered on the monitor; signed offset nudges it left or right
         x = full.left() + (full.width() - width) / 2 + offset;
     } else {
         int rightEdge = full.right() + 1 - 200;
@@ -76,7 +76,7 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
             if(!tray.isEmpty())
                 rightEdge = tray.left();
         }
-        x = rightEdge - width - 8 - offset;
+        x = rightEdge - width - 8 - qMax(0, offset);
     }
     return QPoint(x, y);
 }

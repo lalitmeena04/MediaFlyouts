@@ -491,8 +491,11 @@ Window {
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"
-                        description: "Fine-tune the widget's horizontal position on the taskbar."
-                        from: 0
+                        // centered widgets can be nudged either way; edge-docked only inward
+                        description: settings.taskbarWidgetSide === 1
+                            ? "Shift the centered widget left or right along the taskbar."
+                            : "Fine-tune the widget's horizontal position on the taskbar."
+                        from: settings.taskbarWidgetSide === 1 ? -600 : 0
                         to: 600
                         stepSize: 10
                         value: settings.taskbarWidgetOffset
