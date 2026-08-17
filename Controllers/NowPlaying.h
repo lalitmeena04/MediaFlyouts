@@ -71,6 +71,8 @@ class NowPlaying : public QObject {
         void noteMediaKey();
         // provider reports the set of media sessions changed
         void noteSessionsChanged();
+        // ms before the current track ends that the up-next flyout should appear
+        void setNextUpLeadMs(int ms);
 
     signals:
         void changed();
@@ -90,4 +92,7 @@ class NowPlaying : public QObject {
         bool m_hasArt = false;
         qint64 m_lastMediaKeyMs = 0;
         bool m_seenFirstUpdate = false;
+        // up-next preview state
+        int m_nextUpLeadMs = 3000;
+        bool m_nextUpFired = false;
 };

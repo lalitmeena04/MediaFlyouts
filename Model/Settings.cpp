@@ -40,6 +40,8 @@ void Settings::reload() {
     m_flyoutAnimationEasingStyle = m_store.value(QStringLiteral("flyoutAnimationEasingStyle"), 3).toInt();
     m_volumeFlyoutDuration = m_store.value(QStringLiteral("volumeFlyoutDuration"), 1800).toInt();
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
+    // how long before the current track ends the up-next flyout appears
+    m_nextUpLeadTime = m_store.value(QStringLiteral("nextUpLeadTime"), 3000).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     // widget side: 0 = left, 1 = center, 2 = right
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 2).toInt();
@@ -202,6 +204,9 @@ int Settings::volumeFlyoutDuration() const {
 int Settings::nextUpDuration() const {
     return m_nextUpDuration;
 }
+int Settings::nextUpLeadTime() const {
+    return m_nextUpLeadTime;
+}
 int Settings::taskbarWidgetOffset() const {
     return m_taskbarWidgetOffset;
 }
@@ -313,6 +318,9 @@ void Settings::setVolumeFlyoutDuration(int v) {
 }
 void Settings::setNextUpDuration(int v) {
     assignInt("nextUpDuration", m_nextUpDuration, v);
+}
+void Settings::setNextUpLeadTime(int v) {
+    assignInt("nextUpLeadTime", m_nextUpLeadTime, v);
 }
 void Settings::setTaskbarWidgetOffset(int v) {
     assignInt("taskbarWidgetOffset", m_taskbarWidgetOffset, v);

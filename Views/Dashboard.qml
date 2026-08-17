@@ -284,6 +284,20 @@ Window {
                         value: settings.nextUpEnabled
                         onToggled: settings.nextUpEnabled = value
                     }
+                    SettingSlider {
+                        // sub-option, shown only when the up-next flyout is enabled
+                        visible: settings.nextUpEnabled
+                        x: 16
+                        width: parent.width - 16
+                        label: "Up next lead time"
+                        description: "How long before the current track ends the up-next card appears."
+                        from: 1000
+                        to: 15000
+                        stepSize: 500
+                        value: settings.nextUpLeadTime
+                        valueText: (settings.nextUpLeadTime / 1000).toFixed(1) + " s"
+                        onMoved: settings.nextUpLeadTime = Math.round(value)
+                    }
                     SettingRow {
                         width: parent.width
                         label: "Hide during fullscreen"

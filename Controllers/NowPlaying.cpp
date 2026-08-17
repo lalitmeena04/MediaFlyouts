@@ -10,8 +10,17 @@ NowPlaying::NowPlaying(QObject* parent) : QObject(parent) {
     // repaint interval so the interpolated position advances smoothly between provider updates
     m_timer.setInterval(500);
     connect(&m_timer, &QTimer::timeout, this, [this] {
-        if(m_track.state == mf::PlaybackState::Playing)
-            emit changed();
+        if(m_track.state != mf::PlaybackState::Playing)
+            return;
+        emit changed();
+        // reveal the up-next flyout a lead time before the current track ends
+        if(!m_nextUpFired && m_nextUpLeadMs > 0 && m_track.durationMs > 0) {
+            const qint64 remaining = m_track.durationMs - currentPositionMs();
+            if(remaining >= 0 && remaining <= m_nextUpLeadMs && m_seenFirstUpdate) {
+                m_nextUpFired = true;
+                emit nextUpRequested();
+            }
+        }
     });
     m_timer.start();
 }
@@ -161,9 +170,12 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     const bool identityChanged =
         track.title != m_track.title || track.artist != m_track.artist || track.album != m_track.album;
     const bool stateChanged = track.state != m_track.state;
+    const bool previewedBeforeEnd = m_nextUpFired;
 
     m_track = track;
     m_sinceUpdate.restart();
+    if(identityChanged)
+        m_nextUpFired = false; // re-arm the up-next preview for the new track
     emit changed();
 
     // don't pop any flyout for the initial media state sync at launch
@@ -175,15 +187,19 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     if(identityChanged) {
         const bool stopped = track.title.isEmpty() && track.artist.isEmpty();
         // a title change within the manual window means the user pressed next/prev -> media flyout;
-        // otherwise the track auto-advanced -> Next Up flyout
+        // otherwise the track auto-advanced -> Next Up flyout (unless we already previewed before the end)
         const bool manual = (QDateTime::currentMSecsSinceEpoch() - m_lastMediaKeyMs) < 1500;
         if(stopped || manual)
             emit trackUpdated();
-        else
+        else if(!previewedBeforeEnd)
             emit nextUpRequested();
     } else if(stateChanged) {
         emit trackUpdated();
     }
+}
+
+void NowPlaying::setNextUpLeadMs(int ms) {
+    m_nextUpLeadMs = ms < 0 ? 0 : ms;
 }
 
 void NowPlaying::noteMediaKey() {
