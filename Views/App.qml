@@ -32,9 +32,12 @@ QtObject {
 
         // anchor point (widget top-left) when docking above the taskbar widget
         var anchor = null
-        if(aboveWidget)
+        var screen = null
+        if(aboveWidget) {
             anchor = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
                                             settings.taskbarWidgetOffset, taskbarWidget.width, taskbarWidget.height)
+            screen = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
+        }
 
         var cumulative = 0
         for(var i = 0; i < flyoutStack.length; i++) {
@@ -44,8 +47,10 @@ QtObject {
                 continue
             }
             if(aboveWidget) {
-                // center each flyout over the widget and stack them upward above it
-                f.x = anchor.x + (taskbarWidget.width - f.width) / 2
+                // center each flyout over the widget, clamped so it stays on-screen
+                var fx = anchor.x + (taskbarWidget.width - f.width) / 2
+                fx = Math.max(screen.x + 8, Math.min(fx, screen.x + screen.width - f.width - 8))
+                f.x = fx
                 f.y = anchor.y - f.height - 12 - cumulative
             } else {
                 var p = placement.position(f.width, f.height)

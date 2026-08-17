@@ -81,6 +81,15 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
     return QPoint(x, y);
 }
 
+QRect TaskbarInfo::monitorGeometry(int monitor) const {
+    const QList<QScreen*> screens = QGuiApplication::screens();
+    if(screens.isEmpty())
+        return QRect();
+    if(monitor < 0 || monitor >= screens.size())
+        monitor = 0;
+    return screens.at(monitor)->geometry();
+}
+
 void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
     if(!window)
         return;
