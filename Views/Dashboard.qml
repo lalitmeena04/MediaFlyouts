@@ -191,12 +191,11 @@ Window {
                                     color: "#333333"
                                     clip: true
                                     anchors.verticalCenter: parent.verticalCenter
-                                    Image {
+                                    RoundedArt {
                                         anchors.fill: parent
                                         source: nowPlaying.artSource
                                         visible: nowPlaying.hasArt
-                                        fillMode: Image.PreserveAspectCrop
-                                        cache: false
+                                        radius: 10
                                     }
                                     IconLabel {
                                         anchors.centerIn: parent

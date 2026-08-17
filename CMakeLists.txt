@@ -60,6 +60,7 @@ qt_add_qml_module(MediaFlyouts
         Views/NowPlayingFlyout.qml
         Views/Dashboard.qml
         Views/TaskbarWidget.qml
+        Views/RoundedArt.qml
         Views/Fluent.qml
         Views/Anim.qml
         Views/IconLabel.qml

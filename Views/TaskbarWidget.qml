@@ -126,13 +126,11 @@ Window {
                 clip: true
                 anchors.verticalCenter: parent.verticalCenter
 
-                Image {
+                RoundedArt {
                     anchors.fill: parent
                     source: nowPlaying.artSource
                     visible: nowPlaying.hasArt
-                    fillMode: Image.PreserveAspectCrop
-                    cache: false
-                    asynchronous: true
+                    radius: 5
                 }
 
                 Text {

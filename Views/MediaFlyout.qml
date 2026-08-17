@@ -134,13 +134,11 @@ Window {
                 color: "#333333"
                 clip: true
 
-                Image {
+                RoundedArt {
                     anchors.fill: parent
                     source: nowPlaying.artSource
                     visible: nowPlaying.hasArt
-                    fillMode: Image.PreserveAspectCrop
-                    cache: false
-                    asynchronous: true
+                    radius: 8
                 }
 
                 Text {
