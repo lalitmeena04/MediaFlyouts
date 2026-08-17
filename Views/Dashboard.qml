@@ -271,8 +271,8 @@ Window {
                     SettingCombo {
                         width: parent.width
                         label: "Flyout position"
-                        description: "Where flyouts appear on the selected monitor."
-                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right"]
+                        description: "Which side of the monitor flyouts appear on, or docked above the taskbar widget."
+                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
                         currentIndex: settings.flyoutPosition
                         onActivated: settings.flyoutPosition = index
                     }

@@ -26,8 +26,16 @@ QtObject {
     readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout]
 
     function restack() {
+        var aboveWidget = settings.flyoutPosition === 6 // dock above the taskbar widget
         var topAligned = settings.flyoutPosition <= 2 // 0..2 are the top positions
         var gap = 10
+
+        // anchor point (widget top-left) when docking above the taskbar widget
+        var anchor = null
+        if(aboveWidget)
+            anchor = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
+                                            settings.taskbarWidgetOffset, taskbarWidget.width, taskbarWidget.height)
+
         var cumulative = 0
         for(var i = 0; i < flyoutStack.length; i++) {
             var f = flyoutStack[i]
@@ -35,9 +43,15 @@ QtObject {
                 f.positioned = false // next appearance snaps in without sliding
                 continue
             }
-            var p = placement.position(f.width, f.height)
-            f.x = p.x
-            f.y = topAligned ? (p.y + cumulative) : (p.y - cumulative)
+            if(aboveWidget) {
+                // center each flyout over the widget and stack them upward above it
+                f.x = anchor.x + (taskbarWidget.width - f.width) / 2
+                f.y = anchor.y - f.height - 12 - cumulative
+            } else {
+                var p = placement.position(f.width, f.height)
+                f.x = p.x
+                f.y = topAligned ? (p.y + cumulative) : (p.y - cumulative)
+            }
             cumulative += f.height + gap
             f.positioned = true // subsequent shifts animate
         }
