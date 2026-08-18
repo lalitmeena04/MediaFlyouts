@@ -19,9 +19,13 @@ QtObject {
     }
     property Dashboard dashboard: Dashboard {}
     property VolumeMixerWindow volumeMixer: VolumeMixerWindow {}
+    property OnboardingWindow onboarding: OnboardingWindow {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         onActivated: flyout.showFlyout()
     }
+
+    // show the first-run wizard once
+    Component.onCompleted: if(!settings.onboardingCompleted) onboarding.show()
 
     // stacking order, bottom-most first; visible flyouts are stacked away from the anchor edge
     readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout]

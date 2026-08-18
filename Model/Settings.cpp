@@ -47,6 +47,7 @@ void Settings::reload() {
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), false).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
+    m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
     // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
@@ -249,6 +250,9 @@ bool Settings::taskbarWidgetScrollingEnabled() const {
 bool Settings::taskbarVisualizerEnabled() const {
     return m_taskbarVisualizerEnabled;
 }
+bool Settings::onboardingCompleted() const {
+    return m_onboardingCompleted;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -392,4 +396,7 @@ void Settings::setTaskbarWidgetScrollingEnabled(bool v) {
 }
 void Settings::setTaskbarVisualizerEnabled(bool v) {
     assign("taskbarVisualizerEnabled", m_taskbarVisualizerEnabled, v);
+}
+void Settings::setOnboardingCompleted(bool v) {
+    assign("onboardingCompleted", m_onboardingCompleted, v);
 }

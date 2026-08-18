@@ -63,6 +63,7 @@ qt_add_qml_module(MediaFlyouts
         Views/Dashboard.qml
         Views/TaskbarWidget.qml
         Views/VolumeMixerWindow.qml
+        Views/OnboardingWindow.qml
         Views/RoundedArt.qml
         Views/Fluent.qml
         Views/Anim.qml
