@@ -23,6 +23,12 @@ Window {
         NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
     }
 
+    Component.onCompleted: windowEffects.applyAcrylic(root, settings.acrylicEnabled)
+    property Connections _acrylicConn: Connections {
+        target: settings
+        function onChanged() { windowEffects.applyAcrylic(root, settings.acrylicEnabled) }
+    }
+
     function showFlyout() {
         if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
@@ -73,7 +79,7 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 14
-        color: theme.flyout
+        color: settings.acrylicEnabled ? Qt.rgba(theme.flyout.r, theme.flyout.g, theme.flyout.b, 0.55) : theme.flyout
         border.color: theme.flyoutBorder
         border.width: 1
 

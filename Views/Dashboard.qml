@@ -849,6 +849,13 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
+                        label: "Acrylic backdrop"
+                        description: "Give the flyouts a translucent Windows 11 acrylic background."
+                        value: settings.acrylicEnabled
+                        onToggled: settings.acrylicEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
                         label: "Launch on startup"
                         description: "Start MediaFlyouts automatically when you sign in."
                         value: settings.launchOnStartup

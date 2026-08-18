@@ -71,6 +71,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());
+    QVERIFY(!s.acrylicEnabled());
     QCOMPARE(s.appTheme(), 0);
     QCOMPARE(s.filterMode(), 0);
     QVERIFY(s.filterList().isEmpty());

@@ -23,6 +23,7 @@
 #include "AudioCapture.h"
 #include "VolumeController.h"
 #include "VolumeMixer.h"
+#include "WindowEffects.h"
 #include "WinMediaProvider.h"
 #endif
 
@@ -120,6 +121,10 @@ int main(int argc, char* argv[]) {
         else
             audioCapture.stop();
     });
+
+    // Windows 11 acrylic backdrop for the flyout windows
+    WindowEffects windowEffects;
+    engine.rootContext()->setContextProperty("windowEffects", &windowEffects);
 
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;

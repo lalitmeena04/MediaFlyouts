@@ -49,6 +49,7 @@ void Settings::reload() {
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
+    m_acrylicEnabled = m_store.value(QStringLiteral("acrylicEnabled"), false).toBool();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
     // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
@@ -257,6 +258,9 @@ bool Settings::onboardingCompleted() const {
 bool Settings::accentFromArt() const {
     return m_accentFromArt;
 }
+bool Settings::acrylicEnabled() const {
+    return m_acrylicEnabled;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -406,4 +410,7 @@ void Settings::setOnboardingCompleted(bool v) {
 }
 void Settings::setAccentFromArt(bool v) {
     assign("accentFromArt", m_accentFromArt, v);
+}
+void Settings::setAcrylicEnabled(bool v) {
+    assign("acrylicEnabled", m_acrylicEnabled, v);
 }
