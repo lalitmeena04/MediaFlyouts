@@ -694,6 +694,13 @@ Window {
                         value: settings.taskbarWidgetScrollingEnabled
                         onToggled: settings.taskbarWidgetScrollingEnabled = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Audio visualizer"
+                        description: "Show a live spectrum of the system audio behind the widget."
+                        value: settings.taskbarVisualizerEnabled
+                        onToggled: settings.taskbarVisualizerEnabled = value
+                    }
                     SettingCombo {
                         width: parent.width
                         label: "Widget monitor"

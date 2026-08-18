@@ -69,6 +69,33 @@ Window {
             id: hover
         }
 
+        // spectrum visualizer bars drawn behind the media info
+        Row {
+            id: visualizer
+            visible: settings.taskbarVisualizerEnabled
+            anchors.fill: parent
+            anchors.margins: 3
+            spacing: 2
+            layoutDirection: Qt.LeftToRight
+            Repeater {
+                model: audioCapture.bands
+                delegate: Item {
+                    required property var modelData
+                    width: (visualizer.width - (audioCapture.bands.length - 1) * 2) / Math.max(1, audioCapture.bands.length)
+                    height: visualizer.height
+                    Rectangle {
+                        width: parent.width
+                        anchors.bottom: parent.bottom
+                        height: Math.max(2, parent.height * modelData)
+                        radius: 1
+                        opacity: 0.55
+                        color: "#4CC2FF"
+                        Behavior on height { NumberAnimation { duration: 90 } }
+                    }
+                }
+            }
+        }
+
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor

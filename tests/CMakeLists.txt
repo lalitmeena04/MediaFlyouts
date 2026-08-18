@@ -30,6 +30,7 @@ add_executable(mediaflyout_gtest
     Model/PlaybackControllerTest.cpp
     Model/SettingsTest.cpp
     Model/AlbumArtProviderTest.cpp
+    Model/FftTest.cpp
     Controllers/NowPlayingTest.cpp
 )
 target_link_libraries(mediaflyout_gtest PRIVATE

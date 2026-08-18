@@ -20,6 +20,7 @@
 #include "NativeFlyoutSuppressor.h"
 #include "StartupController.h"
 #include "TaskbarInfo.h"
+#include "AudioCapture.h"
 #include "VolumeController.h"
 #include "VolumeMixer.h"
 #include "WinMediaProvider.h"
@@ -107,6 +108,18 @@ int main(int argc, char* argv[]) {
     // per-application volume control for the mixer window
     VolumeMixer volumeMixer;
     engine.rootContext()->setContextProperty("volumeMixer", &volumeMixer);
+
+    // WASAPI loopback capture -> FFT bands for the taskbar visualizer
+    AudioCapture audioCapture;
+    engine.rootContext()->setContextProperty("audioCapture", &audioCapture);
+    if(settings.taskbarVisualizerEnabled())
+        audioCapture.start();
+    QObject::connect(&settings, &Settings::changed, &audioCapture, [&] {
+        if(settings.taskbarVisualizerEnabled())
+            audioCapture.start();
+        else
+            audioCapture.stop();
+    });
 
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;

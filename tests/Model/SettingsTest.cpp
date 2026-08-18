@@ -62,6 +62,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_FALSE(s.taskbarWidgetScrollingEnabled());
+    EXPECT_FALSE(s.taskbarVisualizerEnabled());
     EXPECT_EQ(s.appTheme(), 0);
     EXPECT_EQ(s.filterMode(), 0);
     EXPECT_TRUE(s.filterList().isEmpty());

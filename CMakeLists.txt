@@ -18,6 +18,7 @@ qt_add_library(mediaflyout_core STATIC
     Model/FlyoutPositioner.h Model/FlyoutPositioner.cpp
     Model/TrackInfo.h        Model/TrackInfo.cpp
     Model/PlaybackController.h Model/PlaybackController.cpp
+    Model/Fft.h              Model/Fft.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
 target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model)
@@ -92,6 +93,7 @@ if (WIN32)
         Controllers/StartupController.h      Controllers/StartupController.cpp
         Controllers/TaskbarInfo.h            Controllers/TaskbarInfo.cpp
         Controllers/VolumeMixer.h            Controllers/VolumeMixer.cpp
+        Controllers/AudioCapture.h           Controllers/AudioCapture.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)

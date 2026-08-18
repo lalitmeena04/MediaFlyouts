@@ -52,6 +52,8 @@ class Settings : public QObject {
                        setTaskbarWidgetShowPauseOverlay NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
                        setTaskbarWidgetScrollingEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarVisualizerEnabled READ taskbarVisualizerEnabled WRITE setTaskbarVisualizerEnabled NOTIFY
+                       changed)
         Q_PROPERTY(int appTheme READ appTheme WRITE setAppTheme NOTIFY changed)
         Q_PROPERTY(int filterMode READ filterMode WRITE setFilterMode NOTIFY changed)
         Q_PROPERTY(QStringList filterList READ filterList NOTIFY changed)
@@ -102,6 +104,7 @@ class Settings : public QObject {
         int taskbarWidgetMonitor() const;
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
+        bool taskbarVisualizerEnabled() const;
         int appTheme() const;
         int filterMode() const;
         QStringList filterList() const;
@@ -145,6 +148,7 @@ class Settings : public QObject {
         void setTaskbarWidgetMonitor(int v);
         void setTaskbarWidgetShowPauseOverlay(bool v);
         void setTaskbarWidgetScrollingEnabled(bool v);
+        void setTaskbarVisualizerEnabled(bool v);
         void setAppTheme(int v);
         void setFilterMode(int v);
         Q_INVOKABLE void addFilterEntry(const QString& name);
@@ -196,6 +200,7 @@ class Settings : public QObject {
         int m_taskbarWidgetMonitor;
         bool m_taskbarWidgetShowPauseOverlay;
         bool m_taskbarWidgetScrollingEnabled;
+        bool m_taskbarVisualizerEnabled;
         int m_appTheme;
         int m_filterMode;
         QStringList m_filterList;
