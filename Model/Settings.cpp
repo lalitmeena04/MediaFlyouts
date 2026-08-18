@@ -48,6 +48,7 @@ void Settings::reload() {
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), false).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
+    m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
     // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
@@ -253,6 +254,9 @@ bool Settings::taskbarVisualizerEnabled() const {
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
+bool Settings::accentFromArt() const {
+    return m_accentFromArt;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -399,4 +403,7 @@ void Settings::setTaskbarVisualizerEnabled(bool v) {
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);
+}
+void Settings::setAccentFromArt(bool v) {
+    assign("accentFromArt", m_accentFromArt, v);
 }

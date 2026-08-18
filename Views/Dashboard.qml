@@ -479,6 +479,13 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
+                        label: "Accent from album art"
+                        description: "Tint the flyout accents using the current album art's dominant color."
+                        value: settings.accentFromArt
+                        onToggled: settings.accentFromArt = value
+                    }
+                    SettingRow {
+                        width: parent.width
                         label: "Repeat button"
                         description: "Show a repeat control on the media flyout."
                         value: settings.repeatEnabled

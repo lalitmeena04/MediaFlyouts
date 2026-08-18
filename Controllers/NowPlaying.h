@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QColor>
 #include <QElapsedTimer>
 #include <QImage>
 #include <QObject>
@@ -23,6 +24,7 @@ class NowPlaying : public QObject {
         Q_PROPERTY(bool hasMedia READ hasMedia NOTIFY changed)
         Q_PROPERTY(QString artSource READ artSource NOTIFY changed)
         Q_PROPERTY(bool hasArt READ hasArt NOTIFY changed)
+        Q_PROPERTY(QColor artAccent READ artAccent NOTIFY changed)
         Q_PROPERTY(QString playerName READ playerName NOTIFY changed)
         Q_PROPERTY(int repeatMode READ repeatMode NOTIFY changed)
         Q_PROPERTY(bool shuffle READ shuffle NOTIFY changed)
@@ -46,6 +48,7 @@ class NowPlaying : public QObject {
         bool isPlaying() const;
         bool hasMedia() const;
         QString artSource() const;
+        QColor artAccent() const;
         bool hasArt() const;
         QString playerName() const;
         int repeatMode() const;
@@ -80,6 +83,7 @@ class NowPlaying : public QObject {
 
     private:
         qint64 currentPositionMs() const;
+        static QColor computeArtAccent(const QImage& art);
 
         mf::TrackInfo m_track;
         QElapsedTimer m_sinceUpdate;
@@ -88,6 +92,7 @@ class NowPlaying : public QObject {
         AlbumArtProvider* m_artProvider = nullptr;
         int m_artRevision = 0;
         bool m_hasArt = false;
+        QColor m_artAccent = QColor("#4CC2FF");
         qint64 m_lastMediaKeyMs = 0;
         bool m_seenFirstUpdate = false;
 };

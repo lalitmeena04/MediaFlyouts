@@ -14,6 +14,10 @@ Window {
     readonly property bool compact: settings.compactLayout
     readonly property int artSize: compact ? 52 : 76
 
+    // accent follows the album art when enabled, else the theme accent
+    readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt
+        ? nowPlaying.artAccent : theme.accent
+
     // true once App has placed this flyout, so re-stacking animates while the first show snaps
     property bool positioned: false
     Behavior on y {
@@ -201,7 +205,7 @@ Window {
                             visible: settings.shuffleEnabled && nowPlaying.canShuffle
                             glyph: Fluent.shuffle
                             size: root.compact ? 14 : 16
-                            color: nowPlaying.shuffle ? theme.accent : theme.textSecondary
+                            color: nowPlaying.shuffle ? root.accentColor : theme.textSecondary
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.toggleShuffle() }
                         }
                         IconLabel {
@@ -226,7 +230,7 @@ Window {
                             visible: settings.repeatEnabled && nowPlaying.canRepeat
                             glyph: nowPlaying.repeatMode === 1 ? Fluent.repeatOne : Fluent.repeatAll
                             size: root.compact ? 14 : 16
-                            color: nowPlaying.repeatMode !== 0 ? theme.accent : theme.textSecondary
+                            color: nowPlaying.repeatMode !== 0 ? root.accentColor : theme.textSecondary
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.cycleRepeat() }
                         }
                     }
@@ -253,7 +257,7 @@ Window {
                             width: seekTrack.width * seekTrack.shownFraction
                             height: parent.height
                             radius: parent.radius
-                            color: theme.accent
+                            color: root.accentColor
                             // don't animate the fill while the user is scrubbing
                             Behavior on width { enabled: seekTrack.dragFraction < 0; NumberAnimation { duration: 250 } }
                         }
@@ -265,7 +269,7 @@ Window {
                             height: width
                             radius: width / 2
                             color: theme.textPrimary
-                            border.color: theme.accent
+                            border.color: root.accentColor
                             border.width: 2
                             y: (parent.height - height) / 2
                             x: Math.max(0, Math.min(seekTrack.width - width,

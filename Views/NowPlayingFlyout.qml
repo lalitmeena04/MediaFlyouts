@@ -118,7 +118,7 @@ Window {
 
                 Text {
                     text: "Now playing"
-                    color: theme.accent
+                    color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
                     font.pixelSize: 11
                     font.bold: true
                 }
