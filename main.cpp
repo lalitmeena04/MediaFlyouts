@@ -21,6 +21,7 @@
 #include "StartupController.h"
 #include "TaskbarInfo.h"
 #include "VolumeController.h"
+#include "VolumeMixer.h"
 #include "WinMediaProvider.h"
 #endif
 
@@ -102,6 +103,10 @@ int main(int argc, char* argv[]) {
     // locates the taskbar / tray so the taskbar widget can dock without overlapping the tray
     TaskbarInfo taskbar;
     engine.rootContext()->setContextProperty("taskbar", &taskbar);
+
+    // per-application volume control for the mixer window
+    VolumeMixer volumeMixer;
+    engine.rootContext()->setContextProperty("volumeMixer", &volumeMixer);
 
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;

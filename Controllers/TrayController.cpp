@@ -36,11 +36,13 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     m_menu = new QMenu();
     QAction* dashAction = m_menu->addAction(QStringLiteral("Dashboard"));
     QAction* flyoutAction = m_menu->addAction(QStringLiteral("Show Media Flyout"));
+    QAction* mixerAction = m_menu->addAction(QStringLiteral("Volume Mixer"));
     m_menu->addSeparator();
     QAction* quitAction = m_menu->addAction(QStringLiteral("Quit MediaFlyouts"));
 
     connect(dashAction, &QAction::triggered, this, &TrayController::openDashboardRequested);
     connect(flyoutAction, &QAction::triggered, this, &TrayController::showFlyoutRequested);
+    connect(mixerAction, &QAction::triggered, this, &TrayController::openMixerRequested);
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
     m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, QChar(0xE863)), this);

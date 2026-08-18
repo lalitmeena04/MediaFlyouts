@@ -61,6 +61,7 @@ qt_add_qml_module(MediaFlyouts
         Views/NowPlayingFlyout.qml
         Views/Dashboard.qml
         Views/TaskbarWidget.qml
+        Views/VolumeMixerWindow.qml
         Views/RoundedArt.qml
         Views/Fluent.qml
         Views/Anim.qml
@@ -90,6 +91,7 @@ if (WIN32)
         Controllers/MediaKeyController.h     Controllers/MediaKeyController.cpp
         Controllers/StartupController.h      Controllers/StartupController.cpp
         Controllers/TaskbarInfo.h            Controllers/TaskbarInfo.cpp
+        Controllers/VolumeMixer.h            Controllers/VolumeMixer.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib)

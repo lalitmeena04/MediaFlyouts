@@ -18,6 +18,7 @@ QtObject {
         onVisibleChanged: app.restack()
     }
     property Dashboard dashboard: Dashboard {}
+    property VolumeMixerWindow volumeMixer: VolumeMixerWindow {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         onActivated: flyout.showFlyout()
     }
@@ -79,6 +80,10 @@ QtObject {
 
         function onShowFlyoutRequested() {
             flyout.showFlyout()
+        }
+
+        function onOpenMixerRequested() {
+            volumeMixer.open()
         }
     }
 
