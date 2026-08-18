@@ -26,6 +26,8 @@ Window {
     function showFlyout() {
         if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
+        if(!settings.playerAllowed(nowPlaying.playerName))
+            return
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()

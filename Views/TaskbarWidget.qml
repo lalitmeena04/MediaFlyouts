@@ -12,6 +12,7 @@ Window {
 
     // shown only when enabled, something is playing, and not blocked by fullscreen / lock screen
     visible: settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
+                && settings.playerAllowed(nowPlaying.playerName)
 
     // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
     property bool blocked: false

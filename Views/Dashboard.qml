@@ -21,6 +21,7 @@ Window {
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
         { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
         { "icon": Fluent.musicNote, "name": "Taskbar Widget", "desc": "A compact now-playing widget docked on the taskbar." },
+        { "icon": Fluent.dismiss,   "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
         { "icon": Fluent.settings,  "name": "About",        "desc": "MediaFlyouts — a Fluent-style media overlay built with Qt 6." }
     ]
 
@@ -717,9 +718,110 @@ Window {
                     }
                 }
 
-                // About page
+                // App Filtering page
                 Column {
                     visible: dash.currentIndex === 5
+                    width: parent.width
+                    spacing: 12
+
+                    SettingCombo {
+                        width: parent.width
+                        label: "Filter mode"
+                        description: "Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps."
+                        model: ["Off", "Blacklist (hide these)", "Whitelist (show only these)"]
+                        currentIndex: settings.filterMode
+                        onActivated: settings.filterMode = index
+                    }
+
+                    Row {
+                        visible: settings.filterMode !== 0
+                        width: parent.width
+                        spacing: 8
+
+                        TextField {
+                            id: filterInput
+                            width: parent.width - addBtn.width - 8
+                            placeholderText: nowPlaying.playerName.length > 0
+                                ? "App name (e.g. " + nowPlaying.playerName + ")"
+                                : "App name (e.g. Spotify, chrome)"
+                            color: theme.textPrimary
+                            placeholderTextColor: theme.textMuted
+                            background: Rectangle {
+                                radius: 6
+                                color: theme.card
+                                border.color: theme.border
+                            }
+                            onAccepted: { settings.addFilterEntry(text); text = "" }
+                        }
+                        Button {
+                            id: addBtn
+                            text: "Add"
+                            onClicked: { settings.addFilterEntry(filterInput.text); filterInput.text = "" }
+                        }
+                    }
+
+                    Text {
+                        visible: settings.filterMode !== 0 && nowPlaying.playerName.length > 0
+                        width: parent.width
+                        text: "Now playing app: " + nowPlaying.playerName
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+
+                    Column {
+                        visible: settings.filterMode !== 0
+                        width: parent.width
+                        spacing: 6
+
+                        Text {
+                            visible: settings.filterList.length === 0
+                            text: "No apps added yet."
+                            color: theme.textMuted
+                            font.pixelSize: 12
+                        }
+
+                        Repeater {
+                            model: settings.filterList
+                            delegate: Rectangle {
+                                required property string modelData
+                                width: parent.width
+                                height: 40
+                                radius: 8
+                                color: theme.card
+                                border.color: theme.border
+
+                                Text {
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 12
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: modelData
+                                    color: theme.textPrimary
+                                    font.pixelSize: 13
+                                }
+                                IconLabel {
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 12
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    glyph: Fluent.dismiss
+                                    size: 14
+                                    color: rmArea.containsMouse ? theme.textPrimary : theme.textTertiary
+                                    MouseArea {
+                                        id: rmArea
+                                        anchors.fill: parent
+                                        anchors.margins: -8
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: settings.removeFilterEntry(modelData)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // About page
+                Column {
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 

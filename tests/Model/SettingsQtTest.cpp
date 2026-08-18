@@ -69,6 +69,8 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.taskbarWidgetShowPauseOverlay());
     QVERIFY(!s.taskbarWidgetScrollingEnabled());
     QCOMPARE(s.appTheme(), 0);
+    QCOMPARE(s.filterMode(), 0);
+    QVERIFY(s.filterList().isEmpty());
 }
 
 void SettingsQtTest::setterEmitsChanged() {

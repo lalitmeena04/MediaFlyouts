@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QStringList>
 #include <QUrl>
 
 // Persistent user settings, stored per-user (MSIX-safe) via QSettings. Exposed to QML.
@@ -52,6 +53,8 @@ class Settings : public QObject {
         Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
                        setTaskbarWidgetScrollingEnabled NOTIFY changed)
         Q_PROPERTY(int appTheme READ appTheme WRITE setAppTheme NOTIFY changed)
+        Q_PROPERTY(int filterMode READ filterMode WRITE setFilterMode NOTIFY changed)
+        Q_PROPERTY(QStringList filterList READ filterList NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -100,6 +103,10 @@ class Settings : public QObject {
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
         int appTheme() const;
+        int filterMode() const;
+        QStringList filterList() const;
+        // true when a player's flyout should be shown given the current filter mode/list
+        Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
         void setMediaFlyoutEnabled(bool v);
         void setSeekbarEnabled(bool v);
@@ -139,6 +146,9 @@ class Settings : public QObject {
         void setTaskbarWidgetShowPauseOverlay(bool v);
         void setTaskbarWidgetScrollingEnabled(bool v);
         void setAppTheme(int v);
+        void setFilterMode(int v);
+        Q_INVOKABLE void addFilterEntry(const QString& name);
+        Q_INVOKABLE void removeFilterEntry(const QString& name);
 
     signals:
         void changed();
@@ -187,4 +197,6 @@ class Settings : public QObject {
         bool m_taskbarWidgetShowPauseOverlay;
         bool m_taskbarWidgetScrollingEnabled;
         int m_appTheme;
+        int m_filterMode;
+        QStringList m_filterList;
 };

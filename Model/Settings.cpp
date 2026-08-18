@@ -48,6 +48,9 @@ void Settings::reload() {
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), false).toBool();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
+    // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
+    m_filterMode = m_store.value(QStringLiteral("filterMode"), 0).toInt();
+    m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
 }
 
 bool Settings::exportTo(const QUrl& file) const {
@@ -210,6 +213,26 @@ int Settings::taskbarWidgetOffset() const {
 int Settings::appTheme() const {
     return m_appTheme;
 }
+int Settings::filterMode() const {
+    return m_filterMode;
+}
+QStringList Settings::filterList() const {
+    return m_filterList;
+}
+bool Settings::playerAllowed(const QString& player) const {
+    if(m_filterMode == 0)
+        return true;
+    bool listed = false;
+    for(const QString& e : m_filterList) {
+        if(!player.isEmpty() &&
+           (player.compare(e, Qt::CaseInsensitive) == 0 || player.contains(e, Qt::CaseInsensitive))) {
+            listed = true;
+            break;
+        }
+    }
+    // blacklist hides listed players; whitelist shows only listed players
+    return m_filterMode == 1 ? !listed : listed;
+}
 int Settings::taskbarWidgetSide() const {
     return m_taskbarWidgetSide;
 }
@@ -324,6 +347,32 @@ void Settings::setTaskbarWidgetOffset(int v) {
 }
 void Settings::setAppTheme(int v) {
     assignInt("appTheme", m_appTheme, v);
+}
+void Settings::setFilterMode(int v) {
+    assignInt("filterMode", m_filterMode, v);
+}
+void Settings::addFilterEntry(const QString& name) {
+    const QString trimmed = name.trimmed();
+    if(trimmed.isEmpty())
+        return;
+    for(const QString& e : m_filterList)
+        if(e.compare(trimmed, Qt::CaseInsensitive) == 0)
+            return;
+    m_filterList.append(trimmed);
+    m_store.setValue(QStringLiteral("filterList"), m_filterList);
+    emit changed();
+}
+void Settings::removeFilterEntry(const QString& name) {
+    bool removed = false;
+    for(int i = m_filterList.size() - 1; i >= 0; --i)
+        if(m_filterList.at(i).compare(name, Qt::CaseInsensitive) == 0) {
+            m_filterList.removeAt(i);
+            removed = true;
+        }
+    if(!removed)
+        return;
+    m_store.setValue(QStringLiteral("filterList"), m_filterList);
+    emit changed();
 }
 void Settings::setTaskbarWidgetSide(int v) {
     assignInt("taskbarWidgetSide", m_taskbarWidgetSide, v);
