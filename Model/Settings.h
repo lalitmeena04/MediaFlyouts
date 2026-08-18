@@ -67,6 +67,8 @@ class Settings : public QObject {
         // write / read every setting to a portable ini file (for backup & restore)
         Q_INVOKABLE bool exportTo(const QUrl& file) const;
         Q_INVOKABLE bool importFrom(const QUrl& file);
+        // folder containing the settings ini, for the "open config folder" action
+        Q_INVOKABLE QString configDir() const;
 
         bool mediaFlyoutEnabled() const;
         bool seekbarEnabled() const;

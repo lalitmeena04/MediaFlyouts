@@ -888,6 +888,29 @@ Window {
                             onClicked: importDialog.open()
                         }
                     }
+
+                    Row {
+                        spacing: 12
+                        topPadding: 8
+                        Button {
+                            text: "Check for updates"
+                            enabled: !updateChecker.checking
+                            onClicked: updateChecker.check()
+                        }
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: updateChecker.status
+                            color: updateChecker.updateAvailable ? theme.accent : theme.textTertiary
+                            font.pixelSize: 13
+                        }
+                    }
+
+                    Text {
+                        text: "Version " + updateChecker.currentVersion
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                        topPadding: 4
+                    }
                 }
                 }
             }

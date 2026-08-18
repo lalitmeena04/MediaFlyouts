@@ -2,6 +2,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QDesktopServices>
 #include <QFont>
 #include <QIcon>
 #include <QMenu>
@@ -9,6 +10,7 @@
 #include <QPixmap>
 #include <QSystemTrayIcon>
 #include <QTimer>
+#include <QUrl>
 
 #include "Settings.h"
 
@@ -37,12 +39,17 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     QAction* dashAction = m_menu->addAction(QStringLiteral("Dashboard"));
     QAction* flyoutAction = m_menu->addAction(QStringLiteral("Show Media Flyout"));
     QAction* mixerAction = m_menu->addAction(QStringLiteral("Volume Mixer"));
+    QAction* configAction = m_menu->addAction(QStringLiteral("Open Config Folder"));
     m_menu->addSeparator();
     QAction* quitAction = m_menu->addAction(QStringLiteral("Quit MediaFlyouts"));
 
     connect(dashAction, &QAction::triggered, this, &TrayController::openDashboardRequested);
     connect(flyoutAction, &QAction::triggered, this, &TrayController::showFlyoutRequested);
     connect(mixerAction, &QAction::triggered, this, &TrayController::openMixerRequested);
+    connect(configAction, &QAction::triggered, this, [this] {
+        if(m_settings)
+            QDesktopServices::openUrl(QUrl::fromLocalFile(m_settings->configDir()));
+    });
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
     m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, QChar(0xE863)), this);

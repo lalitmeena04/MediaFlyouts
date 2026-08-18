@@ -31,6 +31,7 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/FlyoutPlacement.h Controllers/FlyoutPlacement.cpp
     Controllers/SingleInstance.h Controllers/SingleInstance.cpp
     Controllers/ThemeController.h Controllers/ThemeController.cpp
+    Controllers/UpdateChecker.h  Controllers/UpdateChecker.cpp
     Model/AlbumArtProvider.h     Model/AlbumArtProvider.cpp
     Model/Settings.h             Model/Settings.cpp
 )

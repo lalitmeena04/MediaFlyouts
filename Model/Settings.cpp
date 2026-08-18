@@ -1,5 +1,7 @@
 #include "Settings.h"
 
+#include <QFileInfo>
+
 Settings::Settings(QObject* parent)
     : QObject(parent), m_store(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
                                QStringLiteral("MediaFlyouts")) {
@@ -67,6 +69,10 @@ bool Settings::exportTo(const QUrl& file) const {
         out.setValue(key, m_store.value(key));
     out.sync();
     return out.status() == QSettings::NoError;
+}
+
+QString Settings::configDir() const {
+    return QFileInfo(m_store.fileName()).absolutePath();
 }
 
 bool Settings::importFrom(const QUrl& file) {
