@@ -20,14 +20,14 @@ Item {
 
         Text {
             text: row.label
-            color: "white"
+            color: theme.textPrimary
             font.pixelSize: 14
         }
         Text {
             visible: row.description.length > 0
             width: parent.width
             text: row.description
-            color: "#9AA0A6"
+            color: theme.textTertiary
             font.pixelSize: 11
             wrapMode: Text.WordWrap
         }

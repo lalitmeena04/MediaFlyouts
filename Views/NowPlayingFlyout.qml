@@ -71,8 +71,8 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 14
-        color: "#EE1E1E1E"
-        border.color: "#22FFFFFF"
+        color: theme.flyout
+        border.color: theme.flyoutBorder
         border.width: 1
 
         MouseArea {
@@ -91,7 +91,7 @@ Window {
                 width: 64
                 height: 64
                 radius: 8
-                color: "#333333"
+                color: theme.artPlaceholder
                 clip: true
                 anchors.verticalCenter: parent.verticalCenter
                 RoundedArt {
@@ -105,7 +105,7 @@ Window {
                     visible: !nowPlaying.hasArt
                     glyph: Fluent.musicNote
                     size: 26
-                    color: "#9AA0A6"
+                    color: theme.textTertiary
                 }
             }
 
@@ -116,14 +116,14 @@ Window {
 
                 Text {
                     text: "Now playing"
-                    color: "#4CC2FF"
+                    color: theme.accent
                     font.pixelSize: 11
                     font.bold: true
                 }
                 Text {
                     width: parent.width
                     text: nowPlaying.title
-                    color: "white"
+                    color: theme.textPrimary
                     font.pixelSize: 15
                     font.bold: true
                     elide: Text.ElideRight
@@ -131,7 +131,7 @@ Window {
                 Text {
                     width: parent.width
                     text: nowPlaying.artist
-                    color: "#BBBBBB"
+                    color: theme.textSecondary
                     font.pixelSize: 12
                     elide: Text.ElideRight
                 }

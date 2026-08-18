@@ -51,6 +51,7 @@ class Settings : public QObject {
                        setTaskbarWidgetShowPauseOverlay NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
                        setTaskbarWidgetScrollingEnabled NOTIFY changed)
+        Q_PROPERTY(int appTheme READ appTheme WRITE setAppTheme NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -98,6 +99,7 @@ class Settings : public QObject {
         int taskbarWidgetMonitor() const;
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
+        int appTheme() const;
 
         void setMediaFlyoutEnabled(bool v);
         void setSeekbarEnabled(bool v);
@@ -136,6 +138,7 @@ class Settings : public QObject {
         void setTaskbarWidgetMonitor(int v);
         void setTaskbarWidgetShowPauseOverlay(bool v);
         void setTaskbarWidgetScrollingEnabled(bool v);
+        void setAppTheme(int v);
 
     signals:
         void changed();
@@ -183,4 +186,5 @@ class Settings : public QObject {
         int m_taskbarWidgetMonitor;
         bool m_taskbarWidgetShowPauseOverlay;
         bool m_taskbarWidgetScrollingEnabled;
+        int m_appTheme;
 };

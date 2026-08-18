@@ -12,7 +12,7 @@ Window {
     minimumHeight: 480
     visible: false
     title: "MediaFlyouts"
-    color: "#1B1B1B"
+    color: theme.window
 
     property int currentIndex: 0
     readonly property var pages: [
@@ -37,7 +37,7 @@ Window {
             id: sidebar
             width: 240
             height: parent.height
-            color: "#151515"
+            color: theme.sidebar
 
             Column {
                 anchors.fill: parent
@@ -50,11 +50,11 @@ Window {
                     IconLabel {
                         glyph: Fluent.musicNote
                         size: 24
-                        color: "#4CC2FF"
+                        color: theme.accent
                     }
                     Text {
                         text: "MediaFlyouts"
-                        color: "white"
+                        color: theme.textPrimary
                         font.pixelSize: 18
                         font.bold: true
                         anchors.verticalCenter: parent.verticalCenter
@@ -71,7 +71,7 @@ Window {
                         width: sidebar.width - 36
                         height: 40
                         radius: 8
-                        color: dash.currentIndex === index ? "#2A2A2A" : (navMouse.containsMouse ? "#202020" : "transparent")
+                        color: dash.currentIndex === index ? theme.cardHover : (navMouse.containsMouse ? theme.card : "transparent")
 
                         Row {
                             anchors.verticalCenter: parent.verticalCenter
@@ -81,11 +81,11 @@ Window {
                             IconLabel {
                                 glyph: modelData.icon
                                 size: 18
-                                color: dash.currentIndex === index ? "#4CC2FF" : "#C8C8C8"
+                                color: dash.currentIndex === index ? theme.accent : theme.textSecondary
                             }
                             Text {
                                 text: modelData.name
-                                color: "white"
+                                color: theme.textPrimary
                                 font.pixelSize: 14
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -106,7 +106,7 @@ Window {
         Rectangle {
             width: dash.width - sidebar.width
             height: parent.height
-            color: "#1B1B1B"
+            color: theme.window
 
             Text {
                 id: pageTitle
@@ -115,7 +115,7 @@ Window {
                 anchors.right: parent.right
                 anchors.margins: 32
                 text: dash.pages[dash.currentIndex].name
-                color: "white"
+                color: theme.textPrimary
                 font.pixelSize: 26
                 font.bold: true
             }
@@ -129,7 +129,7 @@ Window {
                 anchors.rightMargin: 32
                 anchors.topMargin: 12
                 text: dash.pages[dash.currentIndex].desc
-                color: "#B0B0B0"
+                color: theme.textSecondary
                 font.pixelSize: 14
                 wrapMode: Text.WordWrap
             }
@@ -176,8 +176,8 @@ Window {
                             width: parent.width
                             height: 176
                             radius: 12
-                            color: "#232323"
-                            border.color: "#2E2E2E"
+                            color: theme.card
+                            border.color: theme.border
 
                             Row {
                                 anchors.fill: parent
@@ -188,7 +188,7 @@ Window {
                                     width: 108
                                     height: 108
                                     radius: 10
-                                    color: "#333333"
+                                    color: theme.artPlaceholder
                                     clip: true
                                     anchors.verticalCenter: parent.verticalCenter
                                     RoundedArt {
@@ -202,7 +202,7 @@ Window {
                                         visible: !nowPlaying.hasArt
                                         glyph: Fluent.musicNote
                                         size: 44
-                                        color: "#9AA0A6"
+                                        color: theme.textTertiary
                                     }
                                     Rectangle {
                                         anchors.fill: parent
@@ -226,7 +226,7 @@ Window {
                                     Text {
                                         width: parent.width
                                         text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
-                                        color: "white"
+                                        color: theme.textPrimary
                                         font.pixelSize: 20
                                         font.bold: true
                                         elide: Text.ElideRight
@@ -234,7 +234,7 @@ Window {
                                     Text {
                                         width: parent.width
                                         text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media in any app to control it here"
-                                        color: "#B0B0B0"
+                                        color: theme.textSecondary
                                         font.pixelSize: 14
                                         elide: Text.ElideRight
                                     }
@@ -242,14 +242,14 @@ Window {
                                     Rectangle {
                                         visible: nowPlaying.hasMedia && nowPlaying.playerName.length > 0
                                         radius: 4
-                                        color: "#26333D"
+                                        color: theme.accentBadge
                                         height: playerText.implicitHeight + 6
                                         width: playerText.implicitWidth + 14
                                         Text {
                                             id: playerText
                                             anchors.centerIn: parent
                                             text: nowPlaying.playerName
-                                            color: "#7FD6FF"
+                                            color: theme.accentSoft
                                             font.pixelSize: 11
                                         }
                                     }
@@ -265,12 +265,12 @@ Window {
                                             width: parent.width
                                             height: 4
                                             radius: 2
-                                            color: "#3A3A3A"
+                                            color: theme.track
                                             Rectangle {
                                                 width: parent.width * Math.max(0, Math.min(1, nowPlaying.progress))
                                                 height: parent.height
                                                 radius: 2
-                                                color: "#4CC2FF"
+                                                color: theme.accent
                                             }
                                         }
                                         Item {
@@ -280,13 +280,13 @@ Window {
                                                 id: elapsedText
                                                 anchors.left: parent.left
                                                 text: nowPlaying.elapsed
-                                                color: "#9AA0A6"
+                                                color: theme.textTertiary
                                                 font.pixelSize: 11
                                             }
                                             Text {
                                                 anchors.right: parent.right
                                                 text: nowPlaying.duration
-                                                color: "#9AA0A6"
+                                                color: theme.textTertiary
                                                 font.pixelSize: 11
                                             }
                                         }
@@ -300,7 +300,7 @@ Window {
                                         IconLabel {
                                             glyph: Fluent.previous
                                             size: 18
-                                            color: prevMa.containsMouse ? "white" : "#C8C8C8"
+                                            color: prevMa.containsMouse ? theme.textPrimary : theme.textSecondary
                                             MouseArea {
                                                 id: prevMa
                                                 anchors.fill: parent
@@ -312,7 +312,7 @@ Window {
                                         IconLabel {
                                             glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
                                             size: 22
-                                            color: playMa.containsMouse ? "white" : "#4CC2FF"
+                                            color: playMa.containsMouse ? theme.textPrimary : theme.accent
                                             MouseArea {
                                                 id: playMa
                                                 anchors.fill: parent
@@ -324,7 +324,7 @@ Window {
                                         IconLabel {
                                             glyph: Fluent.next
                                             size: 18
-                                            color: nextMa.containsMouse ? "white" : "#C8C8C8"
+                                            color: nextMa.containsMouse ? theme.textPrimary : theme.textSecondary
                                             MouseArea {
                                                 id: nextMa
                                                 anchors.fill: parent
@@ -340,7 +340,7 @@ Window {
 
                         Text {
                             text: "At a glance"
-                            color: "white"
+                            color: theme.textPrimary
                             font.pixelSize: 16
                             font.bold: true
                             topPadding: 4
@@ -365,8 +365,8 @@ Window {
                                     width: (homePage.width - 24) / 3
                                     height: 76
                                     radius: 10
-                                    color: cardMa.containsMouse ? "#282828" : "#232323"
-                                    border.color: "#2E2E2E"
+                                    color: cardMa.containsMouse ? theme.cardHover : theme.card
+                                    border.color: theme.border
 
                                     Row {
                                         anchors.fill: parent
@@ -376,7 +376,7 @@ Window {
                                             anchors.verticalCenter: parent.verticalCenter
                                             glyph: modelData.icon
                                             size: 22
-                                            color: homePage.featureOn(modelData.key) ? "#4CC2FF" : "#6A6A6A"
+                                            color: homePage.featureOn(modelData.key) ? theme.accent : theme.textMuted
                                         }
                                         Column {
                                             anchors.verticalCenter: parent.verticalCenter
@@ -385,14 +385,14 @@ Window {
                                             Text {
                                                 width: parent.width
                                                 text: modelData.name
-                                                color: "white"
+                                                color: theme.textPrimary
                                                 font.pixelSize: 13
                                                 font.bold: true
                                                 elide: Text.ElideRight
                                             }
                                             Text {
                                                 text: homePage.featureOn(modelData.key) ? "On" : "Off"
-                                                color: homePage.featureOn(modelData.key) ? "#6FCF7F" : "#8A8A8A"
+                                                color: homePage.featureOn(modelData.key) ? "#6FCF7F" : theme.textMuted
                                                 font.pixelSize: 11
                                             }
                                         }
@@ -412,7 +412,7 @@ Window {
                             width: parent.width
                             wrapMode: Text.WordWrap
                             text: "Tip: press a media or volume key, or click the tray icon, to preview the flyouts."
-                            color: "#7A7A7A"
+                            color: theme.textMuted
                             font.pixelSize: 12
                             topPadding: 4
                         }
@@ -723,6 +723,14 @@ Window {
                     width: parent.width
                     spacing: 12
 
+                    SettingCombo {
+                        width: parent.width
+                        label: "Theme"
+                        description: "Match the system theme, or force light or dark."
+                        model: ["Use system setting", "Light", "Dark"]
+                        currentIndex: settings.appTheme
+                        onActivated: settings.appTheme = index
+                    }
                     SettingRow {
                         width: parent.width
                         label: "Launch on startup"

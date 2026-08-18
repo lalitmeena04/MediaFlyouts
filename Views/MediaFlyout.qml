@@ -87,8 +87,8 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 14
-        color: "#EE1E1E1E"
-        border.color: "#22FFFFFF"
+        color: theme.flyout
+        border.color: theme.flyoutBorder
         border.width: 1
 
         MouseArea {
@@ -106,7 +106,7 @@ Window {
             visible: settings.mediaFlyoutAlwaysDisplay
             glyph: Fluent.dismiss
             size: 13
-            color: closeArea.containsMouse ? "white" : "#9AA0A6"
+            color: closeArea.containsMouse ? theme.textPrimary : theme.textTertiary
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.topMargin: 9
@@ -131,7 +131,7 @@ Window {
                 height: root.artSize
                 anchors.verticalCenter: parent.verticalCenter
                 radius: 8
-                color: "#333333"
+                color: theme.artPlaceholder
                 clip: true
 
                 RoundedArt {
@@ -146,7 +146,7 @@ Window {
                     visible: !nowPlaying.hasArt
                     text: Fluent.musicNote
                     font.family: Fluent.fontFamily
-                    color: "#9AA0A6"
+                    color: theme.textTertiary
                     font.pixelSize: root.compact ? 24 : 34
                 }
             }
@@ -159,7 +159,7 @@ Window {
                 Text {
                     width: parent.width
                     text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
-                    color: "white"
+                    color: theme.textPrimary
                     font.pixelSize: root.compact ? 14 : 16
                     font.bold: true
                     elide: Text.ElideRight
@@ -169,7 +169,7 @@ Window {
                 Text {
                     width: parent.width
                     text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media to see it here"
-                    color: "#BBBBBB"
+                    color: theme.textSecondary
                     font.pixelSize: root.compact ? 12 : 13
                     elide: Text.ElideRight
                     horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
@@ -179,7 +179,7 @@ Window {
                     visible: settings.playerInfoEnabled && nowPlaying.playerName.length > 0 && !root.compact
                     width: parent.width
                     text: nowPlaying.playerName
-                    color: "#8A8A8A"
+                    color: theme.textMuted
                     font.pixelSize: 11
                     elide: Text.ElideRight
                     horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
@@ -199,32 +199,32 @@ Window {
                             visible: settings.shuffleEnabled && nowPlaying.canShuffle
                             glyph: Fluent.shuffle
                             size: root.compact ? 14 : 16
-                            color: nowPlaying.shuffle ? "#4CC2FF" : "#C8C8C8"
+                            color: nowPlaying.shuffle ? theme.accent : theme.textSecondary
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.toggleShuffle() }
                         }
                         IconLabel {
                             glyph: Fluent.previous
                             size: root.compact ? 16 : 18
-                            color: previousArea.containsMouse ? "white" : "#C8C8C8"
+                            color: previousArea.containsMouse ? theme.textPrimary : theme.textSecondary
                             MouseArea { id: previousArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.previous() }
                         }
                         IconLabel {
                             glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
                             size: root.compact ? 18 : 20
-                            color: "white"
+                            color: theme.textPrimary
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.playPause() }
                         }
                         IconLabel {
                             glyph: Fluent.next
                             size: root.compact ? 16 : 18
-                            color: nextArea.containsMouse ? "white" : "#C8C8C8"
+                            color: nextArea.containsMouse ? theme.textPrimary : theme.textSecondary
                             MouseArea { id: nextArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.next() }
                         }
                         IconLabel {
                             visible: settings.repeatEnabled && nowPlaying.canRepeat
                             glyph: nowPlaying.repeatMode === 1 ? Fluent.repeatOne : Fluent.repeatAll
                             size: root.compact ? 14 : 16
-                            color: nowPlaying.repeatMode !== 0 ? "#4CC2FF" : "#C8C8C8"
+                            color: nowPlaying.repeatMode !== 0 ? theme.accent : theme.textSecondary
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: nowPlaying.cycleRepeat() }
                         }
                     }
@@ -241,7 +241,7 @@ Window {
                         width: parent.width
                         height: 5
                         radius: 2.5
-                        color: "#3A3A3A"
+                        color: theme.track
 
                         // -1 when not scrubbing; otherwise the dragged position (0..1)
                         property real dragFraction: -1
@@ -251,7 +251,7 @@ Window {
                             width: seekTrack.width * seekTrack.shownFraction
                             height: parent.height
                             radius: parent.radius
-                            color: "#4CC2FF"
+                            color: theme.accent
                             // don't animate the fill while the user is scrubbing
                             Behavior on width { enabled: seekTrack.dragFraction < 0; NumberAnimation { duration: 250 } }
                         }
@@ -262,8 +262,8 @@ Window {
                             width: (seekArea.containsMouse || seekArea.pressed) ? 13 : 10
                             height: width
                             radius: width / 2
-                            color: "white"
-                            border.color: "#4CC2FF"
+                            color: theme.textPrimary
+                            border.color: theme.accent
                             border.width: 2
                             y: (parent.height - height) / 2
                             x: Math.max(0, Math.min(seekTrack.width - width,
@@ -305,13 +305,13 @@ Window {
                         Text {
                             anchors.left: parent.left
                             text: nowPlaying.elapsed
-                            color: "#9AA0A6"
+                            color: theme.textTertiary
                             font.pixelSize: 11
                         }
                         Text {
                             anchors.right: parent.right
                             text: nowPlaying.duration
-                            color: "#9AA0A6"
+                            color: theme.textTertiary
                             font.pixelSize: 11
                         }
                     }

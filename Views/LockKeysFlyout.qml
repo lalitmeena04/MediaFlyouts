@@ -77,8 +77,8 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 12
-        color: "#EE1E1E1E"
-        border.color: "#22FFFFFF"
+        color: theme.flyout
+        border.color: theme.flyoutBorder
         border.width: 1
 
         Row {
@@ -88,7 +88,7 @@ Window {
             IconLabel {
                 glyph: Fluent.keyboard
                 size: 26
-                color: lockKeys.on ? "#4CC2FF" : "#8A8A8A"
+                color: lockKeys.on ? theme.accent : theme.textMuted
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -98,7 +98,7 @@ Window {
 
                 Text {
                     text: lockKeys.keyName
-                    color: "white"
+                    color: theme.textPrimary
                     font.pixelSize: 15
                     font.bold: settings.lockKeysBoldUi
                 }
@@ -114,7 +114,7 @@ Window {
                     }
                     Text {
                         text: lockKeys.on ? "On" : "Off"
-                        color: "#C8C8C8"
+                        color: theme.textSecondary
                         font.pixelSize: 12
                     }
                 }

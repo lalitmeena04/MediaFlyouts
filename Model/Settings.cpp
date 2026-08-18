@@ -46,6 +46,8 @@ void Settings::reload() {
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), false).toBool();
+    // appTheme: 0 = follow system, 1 = light, 2 = dark
+    m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
 }
 
 bool Settings::exportTo(const QUrl& file) const {
@@ -205,6 +207,9 @@ int Settings::nextUpDuration() const {
 int Settings::taskbarWidgetOffset() const {
     return m_taskbarWidgetOffset;
 }
+int Settings::appTheme() const {
+    return m_appTheme;
+}
 int Settings::taskbarWidgetSide() const {
     return m_taskbarWidgetSide;
 }
@@ -316,6 +321,9 @@ void Settings::setNextUpDuration(int v) {
 }
 void Settings::setTaskbarWidgetOffset(int v) {
     assignInt("taskbarWidgetOffset", m_taskbarWidgetOffset, v);
+}
+void Settings::setAppTheme(int v) {
+    assignInt("appTheme", m_appTheme, v);
 }
 void Settings::setTaskbarWidgetSide(int v) {
     assignInt("taskbarWidgetSide", m_taskbarWidgetSide, v);

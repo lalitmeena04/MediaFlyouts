@@ -74,8 +74,8 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 12
-        color: "#EE1E1E1E"
-        border.color: "#22FFFFFF"
+        color: theme.flyout
+        border.color: theme.flyoutBorder
         border.width: 1
 
         MouseArea {
@@ -93,7 +93,7 @@ Window {
             IconLabel {
                 glyph: root.speakerGlyph()
                 size: 22
-                color: "white"
+                color: theme.textPrimary
                 anchors.verticalCenter: parent.verticalCenter
                 MouseArea {
                     anchors.fill: parent
@@ -107,21 +107,21 @@ Window {
                 width: parent.width - 22 - 44 - 24
                 height: 6
                 radius: 3
-                color: "#3A3A3A"
+                color: theme.track
                 anchors.verticalCenter: parent.verticalCenter
 
                 Rectangle {
                     width: track.width * (volumeController.volume / 100)
                     height: parent.height
                     radius: 3
-                    color: volumeController.muted ? "#888888" : "#4CC2FF"
+                    color: volumeController.muted ? theme.textMuted : theme.accent
                 }
 
                 Rectangle {
                     width: 14
                     height: 14
                     radius: 7
-                    color: "white"
+                    color: theme.textPrimary
                     y: (parent.height - height) / 2
                     x: Math.max(0, Math.min(track.width - width, track.width * (volumeController.volume / 100) - width / 2))
                 }
@@ -144,7 +144,7 @@ Window {
 
             Text {
                 text: volumeController.volume + "%"
-                color: "#DDDDDD"
+                color: theme.textSecondary
                 font.pixelSize: 13
                 width: 44
                 horizontalAlignment: Text.AlignRight

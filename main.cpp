@@ -8,6 +8,7 @@
 #include "NowPlaying.h"
 #include "Settings.h"
 #include "SingleInstance.h"
+#include "ThemeController.h"
 #include "TrayController.h"
 
 #ifdef Q_OS_WIN
@@ -46,6 +47,7 @@ int main(int argc, char* argv[]) {
 
     Settings settings;
     FlyoutPlacement placement(&settings);
+    ThemeController theme(&settings);
 
     QQmlApplicationEngine engine;
 
@@ -112,6 +114,7 @@ int main(int argc, char* argv[]) {
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
     engine.rootContext()->setContextProperty("settings", &settings);
+    engine.rootContext()->setContextProperty("theme", &theme);
     engine.rootContext()->setContextProperty("placement", &placement);
     engine.rootContext()->setContextProperty("instance", &instance);
     engine.rootContext()->setContextProperty("tray", &tray);
