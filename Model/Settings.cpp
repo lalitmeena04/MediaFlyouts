@@ -16,8 +16,8 @@ void Settings::reload() {
     m_centerTitleArtist = m_store.value(QStringLiteral("centerTitleArtist"), false).toBool();
     m_compactLayout = m_store.value(QStringLiteral("compactLayout"), false).toBool();
     m_playerInfoEnabled = m_store.value(QStringLiteral("playerInfoEnabled"), true).toBool();
-    m_repeatEnabled = m_store.value(QStringLiteral("repeatEnabled"), false).toBool();
-    m_shuffleEnabled = m_store.value(QStringLiteral("shuffleEnabled"), false).toBool();
+    m_repeatEnabled = m_store.value(QStringLiteral("repeatEnabled"), true).toBool();
+    m_shuffleEnabled = m_store.value(QStringLiteral("shuffleEnabled"), true).toBool();
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
     m_lockKeysEnabled = m_store.value(QStringLiteral("lockKeysEnabled"), true).toBool();
@@ -29,10 +29,10 @@ void Settings::reload() {
     m_lockKeysDuration = m_store.value(QStringLiteral("lockKeysDuration"), 2000).toInt();
     m_nextUpEnabled = m_store.value(QStringLiteral("nextUpEnabled"), true).toBool();
     m_disableOnFullscreen = m_store.value(QStringLiteral("disableOnFullscreen"), true).toBool();
-    m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), false).toBool();
+    m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), true).toBool();
     m_trayIconHidden = m_store.value(QStringLiteral("trayIconHidden"), false).toBool();
-    m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), false).toBool();
-    m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), false).toBool();
+    m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), true).toBool();
+    m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), true).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
     // flyoutPosition indexes mf::FlyoutPosition (4 = BottomCenter); duration in milliseconds
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
@@ -44,10 +44,10 @@ void Settings::reload() {
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     // widget side: 0 = left, 1 = center, 2 = right
-    m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 2).toInt();
+    m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
-    m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), false).toBool();
+    m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();

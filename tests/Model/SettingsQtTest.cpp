@@ -37,8 +37,8 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.centerTitleArtist());
     QVERIFY(!s.compactLayout());
     QVERIFY(s.playerInfoEnabled());
-    QVERIFY(!s.repeatEnabled());
-    QVERIFY(!s.shuffleEnabled());
+    QVERIFY(s.repeatEnabled());
+    QVERIFY(s.shuffleEnabled());
     QVERIFY(s.volumeFlyoutEnabled());
     QVERIFY(s.overrideNativeOsd());
     QVERIFY(s.lockKeysEnabled());
@@ -50,10 +50,10 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.lockKeysDuration(), 2000);
     QVERIFY(s.nextUpEnabled());
     QVERIFY(s.disableOnFullscreen());
-    QVERIFY(!s.launchOnStartup());
+    QVERIFY(s.launchOnStartup());
     QVERIFY(!s.trayIconHidden());
-    QVERIFY(!s.trayLeftClickShowsFlyout());
-    QVERIFY(!s.taskbarWidgetEnabled());
+    QVERIFY(s.trayLeftClickShowsFlyout());
+    QVERIFY(s.taskbarWidgetEnabled());
     QVERIFY(s.taskbarWidgetControlsEnabled());
     QCOMPARE(s.flyoutPosition(), 4);
     QCOMPARE(s.flyoutMonitor(), 0);
@@ -64,10 +64,10 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.volumeFlyoutDuration(), 1800);
     QCOMPARE(s.nextUpDuration(), 2000);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
-    QCOMPARE(s.taskbarWidgetSide(), 2);
+    QCOMPARE(s.taskbarWidgetSide(), 0);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
     QVERIFY(s.taskbarWidgetShowPauseOverlay());
-    QVERIFY(!s.taskbarWidgetScrollingEnabled());
+    QVERIFY(s.taskbarWidgetScrollingEnabled());
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());

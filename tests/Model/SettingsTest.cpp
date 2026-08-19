@@ -31,8 +31,8 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_FALSE(s.centerTitleArtist());
     EXPECT_FALSE(s.compactLayout());
     EXPECT_TRUE(s.playerInfoEnabled());
-    EXPECT_FALSE(s.repeatEnabled());
-    EXPECT_FALSE(s.shuffleEnabled());
+    EXPECT_TRUE(s.repeatEnabled());
+    EXPECT_TRUE(s.shuffleEnabled());
     EXPECT_TRUE(s.volumeFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
     EXPECT_TRUE(s.lockKeysEnabled());
@@ -44,10 +44,10 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.lockKeysDuration(), 2000);
     EXPECT_TRUE(s.nextUpEnabled());
     EXPECT_TRUE(s.disableOnFullscreen());
-    EXPECT_FALSE(s.launchOnStartup());
+    EXPECT_TRUE(s.launchOnStartup());
     EXPECT_FALSE(s.trayIconHidden());
-    EXPECT_FALSE(s.trayLeftClickShowsFlyout());
-    EXPECT_FALSE(s.taskbarWidgetEnabled());
+    EXPECT_TRUE(s.trayLeftClickShowsFlyout());
+    EXPECT_TRUE(s.taskbarWidgetEnabled());
     EXPECT_TRUE(s.taskbarWidgetControlsEnabled());
     EXPECT_EQ(s.flyoutPosition(), 4);
     EXPECT_EQ(s.flyoutMonitor(), 0);
@@ -58,10 +58,10 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.volumeFlyoutDuration(), 1800);
     EXPECT_EQ(s.nextUpDuration(), 2000);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
-    EXPECT_EQ(s.taskbarWidgetSide(), 2);
+    EXPECT_EQ(s.taskbarWidgetSide(), 0);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
-    EXPECT_FALSE(s.taskbarWidgetScrollingEnabled());
+    EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
     EXPECT_FALSE(s.onboardingCompleted());
     EXPECT_FALSE(s.accentFromArt());
