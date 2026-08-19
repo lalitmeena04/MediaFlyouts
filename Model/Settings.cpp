@@ -51,12 +51,17 @@ void Settings::reload() {
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
-    m_acrylicEnabled = m_store.value(QStringLiteral("acrylicEnabled"), false).toBool();
+    // backdropMode: 0 = none, 1 = acrylic, 2 = mica (migrates the old acrylicEnabled bool)
+    m_backdropMode = m_store
+                         .value(QStringLiteral("backdropMode"),
+                                m_store.value(QStringLiteral("acrylicEnabled"), false).toBool() ? 1 : 0)
+                         .toInt();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
     // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
     m_filterMode = m_store.value(QStringLiteral("filterMode"), 0).toInt();
     m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
+    m_autoCheckUpdates = m_store.value(QStringLiteral("autoCheckUpdates"), false).toBool();
 }
 
 bool Settings::exportTo(const QUrl& file) const {
@@ -229,6 +234,9 @@ int Settings::filterMode() const {
 QStringList Settings::filterList() const {
     return m_filterList;
 }
+bool Settings::autoCheckUpdates() const {
+    return m_autoCheckUpdates;
+}
 bool Settings::playerAllowed(const QString& player) const {
     if(m_filterMode == 0)
         return true;
@@ -264,8 +272,8 @@ bool Settings::onboardingCompleted() const {
 bool Settings::accentFromArt() const {
     return m_accentFromArt;
 }
-bool Settings::acrylicEnabled() const {
-    return m_acrylicEnabled;
+int Settings::backdropMode() const {
+    return m_backdropMode;
 }
 
 void Settings::setMediaFlyoutEnabled(bool v) {
@@ -373,6 +381,9 @@ void Settings::setAppTheme(int v) {
 void Settings::setFilterMode(int v) {
     assignInt("filterMode", m_filterMode, v);
 }
+void Settings::setAutoCheckUpdates(bool v) {
+    assign("autoCheckUpdates", m_autoCheckUpdates, v);
+}
 void Settings::addFilterEntry(const QString& name) {
     const QString trimmed = name.trimmed();
     if(trimmed.isEmpty())
@@ -417,6 +428,6 @@ void Settings::setOnboardingCompleted(bool v) {
 void Settings::setAccentFromArt(bool v) {
     assign("accentFromArt", m_accentFromArt, v);
 }
-void Settings::setAcrylicEnabled(bool v) {
-    assign("acrylicEnabled", m_acrylicEnabled, v);
+void Settings::setBackdropMode(int v) {
+    assignInt("backdropMode", m_backdropMode, v);
 }

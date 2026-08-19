@@ -17,6 +17,8 @@ class TrayController : public QObject {
         ~TrayController() override;
 
         void show();
+        // show a balloon notification from the tray icon
+        void notify(const QString& title, const QString& message);
 
     signals:
         void openDashboardRequested();

@@ -12,7 +12,23 @@ Window {
     minimumHeight: 480
     visible: false
     title: "MediaFlyouts"
-    color: theme.window
+    color: settings.backdropMode !== 0 ? "transparent" : theme.window
+
+    // apply the Windows 11 backdrop + themed title bar to the window itself
+    function applyChrome() {
+        windowEffects.applyBackdrop(dash, settings.backdropMode)
+        windowEffects.setDarkFrame(dash, theme.dark)
+    }
+    Component.onCompleted: applyChrome()
+    onVisibleChanged: if(visible) applyChrome()
+    property Connections _chromeConn: Connections {
+        target: settings
+        function onChanged() { dash.applyChrome() }
+    }
+    property Connections _chromeThemeConn: Connections {
+        target: theme
+        function onChanged() { dash.applyChrome() }
+    }
 
     property int currentIndex: 0
     readonly property var pages: [
@@ -72,7 +88,7 @@ Window {
             id: sidebar
             width: 240
             height: parent.height
-            color: theme.sidebar
+            color: settings.backdropMode !== 0 ? Qt.rgba(theme.sidebar.r, theme.sidebar.g, theme.sidebar.b, 0.6) : theme.sidebar
 
             Column {
                 anchors.fill: parent
@@ -205,7 +221,7 @@ Window {
         Rectangle {
             width: dash.width - sidebar.width
             height: parent.height
-            color: theme.window
+            color: settings.backdropMode !== 0 ? "transparent" : theme.window
 
             Text {
                 id: pageTitle
@@ -945,12 +961,13 @@ Window {
                         currentIndex: settings.appTheme
                         onActivated: settings.appTheme = index
                     }
-                    SettingRow {
+                    SettingCombo {
                         width: parent.width
-                        label: "Acrylic backdrop"
-                        description: "Give the flyouts a translucent Windows 11 acrylic background."
-                        value: settings.acrylicEnabled
-                        onToggled: settings.acrylicEnabled = value
+                        label: "Window backdrop"
+                        description: "Give the flyouts and windows a translucent Windows 11 backdrop."
+                        model: ["Off", "Acrylic", "Mica"]
+                        currentIndex: settings.backdropMode
+                        onActivated: settings.backdropMode = index
                     }
                     SettingRow {
                         width: parent.width
@@ -1001,6 +1018,14 @@ Window {
                             color: updateChecker.updateAvailable ? theme.accent : theme.textTertiary
                             font.pixelSize: 13
                         }
+                    }
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Check for updates on launch"
+                        description: "Automatically look for a newer release shortly after startup."
+                        value: settings.autoCheckUpdates
+                        onToggled: settings.autoCheckUpdates = value
                     }
 
                     Text {

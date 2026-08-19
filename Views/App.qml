@@ -27,6 +27,13 @@ QtObject {
     // show the first-run wizard once
     Component.onCompleted: if(!settings.onboardingCompleted) onboarding.show()
 
+    // optional automatic update check shortly after launch
+    property Timer _updateTimer: Timer {
+        interval: 4000
+        running: settings.autoCheckUpdates
+        onTriggered: updateChecker.check()
+    }
+
     // stacking order, bottom-most first; visible flyouts are stacked away from the anchor edge
     readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout]
 

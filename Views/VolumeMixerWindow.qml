@@ -11,8 +11,19 @@ Window {
     minimumWidth: 360
     minimumHeight: 300
     title: "Volume Mixer"
-    color: theme.window
+    color: settings.backdropMode !== 0 ? "transparent" : theme.window
     visible: false
+
+    function applyChrome() {
+        windowEffects.applyBackdrop(root, settings.backdropMode)
+        windowEffects.setDarkFrame(root, theme.dark)
+    }
+    Component.onCompleted: applyChrome()
+    onVisibleChanged: if(visible) applyChrome()
+    property Connections _chromeConn: Connections {
+        target: settings
+        function onChanged() { root.applyChrome() }
+    }
 
     function open() {
         volumeMixer.refresh()

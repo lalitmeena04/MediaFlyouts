@@ -96,3 +96,8 @@ TrayController::~TrayController() {
 void TrayController::show() {
     applyVisibility();
 }
+
+void TrayController::notify(const QString& title, const QString& message) {
+    if(m_tray)
+        m_tray->showMessage(title, message);
+}

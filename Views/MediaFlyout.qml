@@ -14,11 +14,11 @@ Window {
     readonly property bool compact: settings.compactLayout
     readonly property int artSize: compact ? 52 : 76
 
-    // Windows 11 acrylic backdrop, re-applied when the setting changes
-    Component.onCompleted: windowEffects.applyAcrylic(root, settings.acrylicEnabled)
+    // Windows 11 backdrop, re-applied when the setting changes
+    Component.onCompleted: windowEffects.applyBackdrop(root, settings.backdropMode)
     property Connections _acrylicConn: Connections {
         target: settings
-        function onChanged() { windowEffects.applyAcrylic(root, settings.acrylicEnabled) }
+        function onChanged() { windowEffects.applyBackdrop(root, settings.backdropMode) }
     }
 
     // accent follows the album art when enabled, else the theme accent
@@ -100,7 +100,7 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 14
-        color: settings.acrylicEnabled ? Qt.rgba(theme.flyout.r, theme.flyout.g, theme.flyout.b, 0.55) : theme.flyout
+        color: settings.backdropMode !== 0 ? Qt.rgba(theme.flyout.r, theme.flyout.g, theme.flyout.b, 0.55) : theme.flyout
         border.color: theme.flyoutBorder
         border.width: 1
 

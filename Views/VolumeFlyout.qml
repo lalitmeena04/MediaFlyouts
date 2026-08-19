@@ -26,10 +26,10 @@ Window {
         return Fluent.speaker2
     }
 
-    Component.onCompleted: windowEffects.applyAcrylic(root, settings.acrylicEnabled)
+    Component.onCompleted: windowEffects.applyBackdrop(root, settings.backdropMode)
     property Connections _acrylicConn: Connections {
         target: settings
-        function onChanged() { windowEffects.applyAcrylic(root, settings.acrylicEnabled) }
+        function onChanged() { windowEffects.applyBackdrop(root, settings.backdropMode) }
     }
 
     function showFlyout() {
@@ -80,7 +80,7 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 12
-        color: settings.acrylicEnabled ? Qt.rgba(theme.flyout.r, theme.flyout.g, theme.flyout.b, 0.55) : theme.flyout
+        color: settings.backdropMode !== 0 ? Qt.rgba(theme.flyout.r, theme.flyout.g, theme.flyout.b, 0.55) : theme.flyout
         border.color: theme.flyoutBorder
         border.width: 1
 

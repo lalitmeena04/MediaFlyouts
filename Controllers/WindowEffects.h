@@ -11,8 +11,8 @@ class WindowEffects : public QObject {
     public:
         explicit WindowEffects(QObject* parent = nullptr);
 
-        // enable = translucent acrylic backdrop; disable = solid.
-        Q_INVOKABLE void applyAcrylic(QWindow* window, bool enable);
+        // mode: 0 = none (solid), 1 = acrylic (transient), 2 = mica (main window)
+        Q_INVOKABLE void applyBackdrop(QWindow* window, int mode);
         // toggle the dark title bar / frame to match the theme
         Q_INVOKABLE void setDarkFrame(QWindow* window, bool dark);
 };

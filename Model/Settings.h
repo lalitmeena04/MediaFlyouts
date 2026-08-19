@@ -56,10 +56,11 @@ class Settings : public QObject {
                        changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
-        Q_PROPERTY(bool acrylicEnabled READ acrylicEnabled WRITE setAcrylicEnabled NOTIFY changed)
+        Q_PROPERTY(int backdropMode READ backdropMode WRITE setBackdropMode NOTIFY changed)
         Q_PROPERTY(int appTheme READ appTheme WRITE setAppTheme NOTIFY changed)
         Q_PROPERTY(int filterMode READ filterMode WRITE setFilterMode NOTIFY changed)
         Q_PROPERTY(QStringList filterList READ filterList NOTIFY changed)
+        Q_PROPERTY(bool autoCheckUpdates READ autoCheckUpdates WRITE setAutoCheckUpdates NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -112,10 +113,11 @@ class Settings : public QObject {
         bool taskbarVisualizerEnabled() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
-        bool acrylicEnabled() const;
+        int backdropMode() const;
         int appTheme() const;
         int filterMode() const;
         QStringList filterList() const;
+        bool autoCheckUpdates() const;
         // true when a player's flyout should be shown given the current filter mode/list
         Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
@@ -159,9 +161,10 @@ class Settings : public QObject {
         void setTaskbarVisualizerEnabled(bool v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
-        void setAcrylicEnabled(bool v);
+        void setBackdropMode(int v);
         void setAppTheme(int v);
         void setFilterMode(int v);
+        void setAutoCheckUpdates(bool v);
         Q_INVOKABLE void addFilterEntry(const QString& name);
         Q_INVOKABLE void removeFilterEntry(const QString& name);
 
@@ -214,8 +217,9 @@ class Settings : public QObject {
         bool m_taskbarVisualizerEnabled;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
-        bool m_acrylicEnabled;
+        int m_backdropMode;
         int m_appTheme;
         int m_filterMode;
         QStringList m_filterList;
+        bool m_autoCheckUpdates;
 };

@@ -1,6 +1,11 @@
 #include <gtest/gtest.h>
 
 #include <QVariant>
+#include <QVariantMap>
+
+#include <windows.h>
+
+#include <objbase.h>
 
 #include "AudioCapture.h"
 #include "VolumeMixer.h"
@@ -28,8 +33,39 @@ TEST(Win32ControllersTest, VolumeMixerDefaultsEmptyAndIgnoresBadIndices) {
 
 TEST(Win32ControllersTest, WindowEffectsToleratesNullWindow) {
     WindowEffects effects;
-    effects.applyAcrylic(nullptr, true);
-    effects.applyAcrylic(nullptr, false);
+    effects.applyBackdrop(nullptr, 1);
+    effects.applyBackdrop(nullptr, 0);
     effects.setDarkFrame(nullptr, true);
     SUCCEED();
+}
+
+// With COM initialised we can exercise the real enumeration / capture code paths.
+// These degrade gracefully whether or not the CI runner exposes an audio device.
+class Win32ComTest : public ::testing::Test {
+    protected:
+        void SetUp() override {
+            CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        }
+        void TearDown() override {
+            CoUninitialize();
+        }
+};
+
+TEST_F(Win32ComTest, VolumeMixerRefreshProducesValidSessions) {
+    VolumeMixer mixer;
+    mixer.refresh();
+    for(const QVariant& entry : mixer.sessions()) {
+        const QVariantMap m = entry.toMap();
+        EXPECT_GE(m.value(QStringLiteral("volume")).toInt(), 0);
+        EXPECT_LE(m.value(QStringLiteral("volume")).toInt(), 100);
+        EXPECT_FALSE(m.value(QStringLiteral("name")).toString().isEmpty());
+    }
+}
+
+TEST_F(Win32ComTest, AudioCaptureStartStopIsSafe) {
+    AudioCapture capture(16);
+    capture.start();
+    capture.stop();
+    EXPECT_FALSE(capture.active());
+    EXPECT_EQ(capture.bands().size(), 16);
 }

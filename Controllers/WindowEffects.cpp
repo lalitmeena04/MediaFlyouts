@@ -11,6 +11,7 @@ namespace {
 constexpr DWORD kUseImmersiveDarkMode = 20;
 constexpr DWORD kSystemBackdropType = 38;
 constexpr int kBackdropNone = 1;
+constexpr int kBackdropMica = 2;      // mica (main window)
 constexpr int kBackdropTransient = 3; // acrylic
 
 HWND hwndOf(QWindow* window) {
@@ -20,14 +21,19 @@ HWND hwndOf(QWindow* window) {
 
 WindowEffects::WindowEffects(QObject* parent) : QObject(parent) {}
 
-void WindowEffects::applyAcrylic(QWindow* window, bool enable) {
+void WindowEffects::applyBackdrop(QWindow* window, int mode) {
     HWND hwnd = hwndOf(window);
     if(!hwnd)
         return;
+    const bool enable = mode != 0;
     // extend the frame so the backdrop fills the whole window
     MARGINS margins = enable ? MARGINS{-1, -1, -1, -1} : MARGINS{0, 0, 0, 0};
     DwmExtendFrameIntoClientArea(hwnd, &margins);
-    int backdrop = enable ? kBackdropTransient : kBackdropNone;
+    int backdrop = kBackdropNone;
+    if(mode == 1)
+        backdrop = kBackdropTransient;
+    else if(mode == 2)
+        backdrop = kBackdropMica;
     DwmSetWindowAttribute(hwnd, kSystemBackdropType, &backdrop, sizeof(backdrop));
 }
 

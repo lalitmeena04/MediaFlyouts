@@ -62,6 +62,11 @@ int main(int argc, char* argv[]) {
     nowPlaying.setArtProvider(artProvider);
 
     TrayController tray(iconFamily, &settings);
+    // notify from the tray when an update check finds a newer release
+    QObject::connect(&updateChecker, &UpdateChecker::changed, &tray, [&] {
+        if(updateChecker.updateAvailable())
+            tray.notify(QStringLiteral("MediaFlyouts update available"), updateChecker.status());
+    });
 
 #ifdef Q_OS_WIN
     WinMediaProvider provider;
