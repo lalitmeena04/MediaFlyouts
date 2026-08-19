@@ -9,12 +9,14 @@
 
 namespace {
 // GitHub releases endpoint for the project; a 404 simply means "couldn't check".
-constexpr char kReleasesApi[] = "https://api.github.com/repos/mediaflyouts/mediaflyouts/releases/latest";
+constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts/releases/latest";
+} // namespace
 
-// compare dotted numeric versions; returns true if b is strictly newer than a
-bool isNewer(const QString& a, const QString& b) {
-    const QStringList pa = QString(a).remove('v').split('.');
-    const QStringList pb = QString(b).remove('v').split('.');
+UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent), m_net(new QNetworkAccessManager(this)) {}
+
+bool UpdateChecker::isNewerVersion(const QString& current, const QString& latest) {
+    const QStringList pa = QString(current).remove('v').split('.');
+    const QStringList pb = QString(latest).remove('v').split('.');
     const int n = qMax(pa.size(), pb.size());
     for(int i = 0; i < n; ++i) {
         const int va = i < pa.size() ? pa[i].toInt() : 0;
@@ -24,9 +26,6 @@ bool isNewer(const QString& a, const QString& b) {
     }
     return false;
 }
-} // namespace
-
-UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent), m_net(new QNetworkAccessManager(this)) {}
 
 QString UpdateChecker::status() const {
     return m_status;
@@ -73,7 +72,7 @@ void UpdateChecker::check() {
         }
 
         m_latest = tag;
-        m_available = isNewer(m_current, tag);
+        m_available = isNewerVersion(m_current, tag);
         m_status = m_available ? QStringLiteral("Update available: %1").arg(tag)
                                : QStringLiteral("You're on the latest version.");
         emit changed();

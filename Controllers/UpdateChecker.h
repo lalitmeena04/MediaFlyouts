@@ -23,6 +23,9 @@ class UpdateChecker : public QObject {
         bool updateAvailable() const;
         bool checking() const;
 
+        // true when `latest` is a strictly newer dotted-numeric version than `current`
+        static bool isNewerVersion(const QString& current, const QString& latest);
+
     public slots:
         void check();
 

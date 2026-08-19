@@ -1,0 +1,56 @@
+#include <gtest/gtest.h>
+
+#include <QColor>
+#include <QSettings>
+#include <QSignalSpy>
+#include <QStandardPaths>
+
+#include "Settings.h"
+#include "ThemeController.h"
+
+namespace {
+// Redirect QSettings to a throwaway location so appTheme changes don't touch real settings.
+class ThemeControllerTest : public ::testing::Test {
+    protected:
+        void SetUp() override {
+            QStandardPaths::setTestModeEnabled(true);
+            QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
+                      QStringLiteral("MediaFlyouts"))
+                .clear();
+        }
+};
+} // namespace
+
+TEST_F(ThemeControllerTest, DarkPalette) {
+    Settings s;
+    s.setAppTheme(2); // force dark
+    ThemeController t(&s);
+    EXPECT_TRUE(t.dark());
+    EXPECT_EQ(t.window(), QColor("#1B1B1B"));
+    EXPECT_EQ(t.accent(), QColor("#4CC2FF"));
+    EXPECT_EQ(t.textPrimary(), QColor("#FFFFFF"));
+    EXPECT_EQ(t.card(), QColor("#232323"));
+}
+
+TEST_F(ThemeControllerTest, LightPalette) {
+    Settings s;
+    s.setAppTheme(1); // force light
+    ThemeController t(&s);
+    EXPECT_FALSE(t.dark());
+    EXPECT_EQ(t.window(), QColor("#F3F3F3"));
+    EXPECT_EQ(t.accent(), QColor("#0078D4"));
+    EXPECT_EQ(t.textPrimary(), QColor("#1A1A1A"));
+    EXPECT_EQ(t.card(), QColor("#FFFFFF"));
+}
+
+TEST_F(ThemeControllerTest, EmitsChangedWhenModeFlips) {
+    Settings s;
+    s.setAppTheme(1); // light
+    ThemeController t(&s);
+    ASSERT_FALSE(t.dark());
+
+    QSignalSpy spy(&t, &ThemeController::changed);
+    s.setAppTheme(2); // -> dark
+    EXPECT_TRUE(t.dark());
+    EXPECT_GE(spy.count(), 1);
+}

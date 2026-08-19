@@ -147,3 +147,20 @@ TEST(NowPlayingTest, ApplyArtTogglesHasArtAndArtSource) {
     np.applyArt(QImage());
     EXPECT_FALSE(np.hasArt());
 }
+
+TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
+    NowPlaying np;
+    // default accent before any art
+    EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
+
+    QImage red(8, 8, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    np.applyArt(red);
+    const QColor accent = np.artAccent();
+    EXPECT_GT(accent.red(), accent.green());
+    EXPECT_GT(accent.red(), accent.blue());
+
+    // clearing art restores the default accent
+    np.applyArt(QImage());
+    EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
+}

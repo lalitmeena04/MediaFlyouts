@@ -128,3 +128,39 @@ TEST_F(SettingsTest, ExportImportRoundTrip) {
     EXPECT_EQ(restored.flyoutDuration(), 7000);
     QFile::remove(path);
 }
+
+TEST_F(SettingsTest, FilterOffAllowsEveryPlayer) {
+    Settings s;
+    s.addFilterEntry(QStringLiteral("Spotify"));
+    EXPECT_EQ(s.filterMode(), 0);
+    EXPECT_TRUE(s.playerAllowed(QStringLiteral("Spotify")));
+    EXPECT_TRUE(s.playerAllowed(QStringLiteral("chrome")));
+}
+
+TEST_F(SettingsTest, BlacklistHidesListedPlayers) {
+    Settings s;
+    s.setFilterMode(1);
+    s.addFilterEntry(QStringLiteral("chrome"));
+    EXPECT_FALSE(s.playerAllowed(QStringLiteral("chrome")));
+    EXPECT_FALSE(s.playerAllowed(QStringLiteral("Chrome"))); // case-insensitive
+    EXPECT_TRUE(s.playerAllowed(QStringLiteral("Spotify")));
+}
+
+TEST_F(SettingsTest, WhitelistShowsOnlyListedPlayers) {
+    Settings s;
+    s.setFilterMode(2);
+    s.addFilterEntry(QStringLiteral("Spotify"));
+    EXPECT_TRUE(s.playerAllowed(QStringLiteral("Spotify")));
+    EXPECT_FALSE(s.playerAllowed(QStringLiteral("chrome")));
+}
+
+TEST_F(SettingsTest, FilterEntriesAreUniqueAndRemovable) {
+    Settings s;
+    s.addFilterEntry(QStringLiteral("Spotify"));
+    s.addFilterEntry(QStringLiteral("spotify")); // duplicate, case-insensitive
+    s.addFilterEntry(QStringLiteral("  "));      // blank ignored
+    EXPECT_EQ(s.filterList().size(), 1);
+
+    s.removeFilterEntry(QStringLiteral("SPOTIFY"));
+    EXPECT_TRUE(s.filterList().isEmpty());
+}
