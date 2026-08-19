@@ -25,6 +25,40 @@ Window {
         { "icon": Fluent.settings,  "name": "About",        "desc": "MediaFlyouts — a Fluent-style media overlay built with Qt 6." }
     ]
 
+    // searchable index of settings -> the page that hosts them
+    readonly property var searchIndex: [
+        { "label": "Seekbar", "page": 1 }, { "label": "Interactive seekbar", "page": 1 },
+        { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
+        { "label": "Always display", "page": 1 }, { "label": "Show player name", "page": 1 },
+        { "label": "Accent from album art", "page": 1 }, { "label": "Repeat button", "page": 1 },
+        { "label": "Shuffle button", "page": 1 }, { "label": "Up next flyout", "page": 1 },
+        { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
+        { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
+        { "label": "Animation speed", "page": 1 }, { "label": "Animation easing", "page": 1 },
+        { "label": "Volume flyout", "page": 2 }, { "label": "Override native OSD", "page": 2 },
+        { "label": "Volume flyout duration", "page": 2 }, { "label": "Lock keys flyout", "page": 3 },
+        { "label": "Caps lock", "page": 3 }, { "label": "Num lock", "page": 3 },
+        { "label": "Scroll lock", "page": 3 }, { "label": "Insert key", "page": 3 },
+        { "label": "Bold indicator text", "page": 3 }, { "label": "Lock keys duration", "page": 3 },
+        { "label": "Taskbar widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
+        { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
+        { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
+        { "label": "Audio visualizer", "page": 4 }, { "label": "Blacklist", "page": 5 },
+        { "label": "Whitelist", "page": 5 }, { "label": "Filter mode", "page": 5 },
+        { "label": "Theme", "page": 6 }, { "label": "Acrylic backdrop", "page": 6 },
+        { "label": "Launch on startup", "page": 6 }, { "label": "Hide tray icon", "page": 6 },
+        { "label": "Check for updates", "page": 6 }, { "label": "Export settings", "page": 6 },
+        { "label": "Import settings", "page": 6 }
+    ]
+
+    readonly property var searchResults: {
+        var q = searchQuery.toLowerCase()
+        if(q.length === 0)
+            return []
+        return searchIndex.filter(function(e) { return e.label.toLowerCase().indexOf(q) >= 0 })
+    }
+    property string searchQuery: ""
+
     // hide to tray instead of quitting the app
     onClosing: (event) => {
         event.accepted = false
@@ -62,6 +96,69 @@ Window {
                     }
                 }
 
+                TextField {
+                    id: searchField
+                    width: sidebar.width - 36
+                    placeholderText: "Search settings…"
+                    color: theme.textPrimary
+                    placeholderTextColor: theme.textMuted
+                    background: Rectangle {
+                        radius: 6
+                        color: theme.card
+                        border.color: theme.border
+                    }
+                    onTextChanged: dash.searchQuery = text
+                }
+
+                // search results replace the nav list while searching
+                Column {
+                    width: sidebar.width - 36
+                    spacing: 4
+                    visible: dash.searchQuery.length > 0
+                    Repeater {
+                        model: dash.searchResults
+                        delegate: Rectangle {
+                            required property var modelData
+                            width: parent.width
+                            height: 38
+                            radius: 8
+                            color: resMouse.containsMouse ? theme.cardHover : "transparent"
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 12
+                                Text {
+                                    text: modelData.label
+                                    color: theme.textPrimary
+                                    font.pixelSize: 13
+                                }
+                                Text {
+                                    text: dash.pages[modelData.page].name
+                                    color: theme.textMuted
+                                    font.pixelSize: 10
+                                }
+                            }
+                            MouseArea {
+                                id: resMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    dash.currentIndex = modelData.page
+                                    searchField.text = ""
+                                }
+                            }
+                        }
+                    }
+                    Text {
+                        visible: dash.searchResults.length === 0
+                        text: "No matching settings."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                        leftPadding: 12
+                    }
+                }
+
                 Repeater {
                     model: dash.pages
 
@@ -70,7 +167,8 @@ Window {
                         required property var modelData
 
                         width: sidebar.width - 36
-                        height: 40
+                        visible: dash.searchQuery.length === 0
+                        height: visible ? 40 : 0
                         radius: 8
                         color: dash.currentIndex === index ? theme.cardHover : (navMouse.containsMouse ? theme.card : "transparent")
 
