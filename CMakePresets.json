@@ -25,6 +25,7 @@
     { "name": "msvc-release", "configurePreset": "msvc-release" }
   ],
   "testPresets": [
-    { "name": "msvc-debug", "configurePreset": "msvc-debug", "output": { "outputOnFailure": true } }
+    { "name": "msvc-debug", "configurePreset": "msvc-debug", "output": { "outputOnFailure": true } },
+    { "name": "msvc-release", "configurePreset": "msvc-release", "output": { "outputOnFailure": true } }
   ]
 }
