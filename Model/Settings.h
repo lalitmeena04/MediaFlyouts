@@ -58,7 +58,6 @@ class Settings : public QObject {
                        changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
-        Q_PROPERTY(int backdropMode READ backdropMode WRITE setBackdropMode NOTIFY changed)
         Q_PROPERTY(int appTheme READ appTheme WRITE setAppTheme NOTIFY changed)
         Q_PROPERTY(int filterMode READ filterMode WRITE setFilterMode NOTIFY changed)
         Q_PROPERTY(QStringList filterList READ filterList NOTIFY changed)
@@ -116,7 +115,6 @@ class Settings : public QObject {
         bool taskbarVisualizerEnabled() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
-        int backdropMode() const;
         int appTheme() const;
         int filterMode() const;
         QStringList filterList() const;
@@ -165,7 +163,6 @@ class Settings : public QObject {
         void setTaskbarVisualizerEnabled(bool v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
-        void setBackdropMode(int v);
         void setAppTheme(int v);
         void setFilterMode(int v);
         void setAutoCheckUpdates(bool v);
@@ -222,7 +219,6 @@ class Settings : public QObject {
         bool m_taskbarVisualizerEnabled;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
-        int m_backdropMode;
         int m_appTheme;
         int m_filterMode;
         QStringList m_filterList;

@@ -33,9 +33,8 @@ TEST(Win32ControllersTest, VolumeMixerDefaultsEmptyAndIgnoresBadIndices) {
 
 TEST(Win32ControllersTest, WindowEffectsToleratesNullWindow) {
     WindowEffects effects;
-    effects.applyBackdrop(nullptr, 1);
-    effects.applyBackdrop(nullptr, 0);
     effects.setDarkFrame(nullptr, true);
+    effects.setDarkFrame(nullptr, false);
     SUCCEED();
 }
 

@@ -12,19 +12,14 @@ Window {
     minimumHeight: 480
     visible: false
     title: "MediaFlyouts"
-    color: settings.backdropMode !== 0 ? "transparent" : theme.window
+    color: theme.window
 
-    // apply the Windows 11 backdrop + themed title bar to the window itself
+    // keep the title bar matching the theme
     function applyChrome() {
-        windowEffects.applyBackdrop(dash, settings.backdropMode)
         windowEffects.setDarkFrame(dash, theme.dark)
     }
     Component.onCompleted: applyChrome()
     onVisibleChanged: if(visible) applyChrome()
-    property Connections _chromeConn: Connections {
-        target: settings
-        function onChanged() { dash.applyChrome() }
-    }
     property Connections _chromeThemeConn: Connections {
         target: theme
         function onChanged() { dash.applyChrome() }
@@ -88,7 +83,7 @@ Window {
             id: sidebar
             width: 240
             height: parent.height
-            color: settings.backdropMode !== 0 ? Qt.rgba(theme.sidebar.r, theme.sidebar.g, theme.sidebar.b, 0.6) : theme.sidebar
+            color: theme.sidebar
 
             Column {
                 anchors.fill: parent
@@ -221,7 +216,7 @@ Window {
         Rectangle {
             width: dash.width - sidebar.width
             height: parent.height
-            color: settings.backdropMode !== 0 ? "transparent" : theme.window
+            color: theme.window
 
             Text {
                 id: pageTitle
@@ -967,14 +962,6 @@ Window {
                         model: ["Use system setting", "Light", "Dark"]
                         currentIndex: settings.appTheme
                         onActivated: settings.appTheme = index
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: "Window backdrop"
-                        description: "Give the flyouts and windows a translucent Windows 11 backdrop."
-                        model: ["Off", "Acrylic", "Mica"]
-                        currentIndex: settings.backdropMode
-                        onActivated: settings.backdropMode = index
                     }
                     SettingRow {
                         width: parent.width

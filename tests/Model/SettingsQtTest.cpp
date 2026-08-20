@@ -72,7 +72,6 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());
-    QCOMPARE(s.backdropMode(), 0);
     QCOMPARE(s.appTheme(), 0);
     QCOMPARE(s.filterMode(), 0);
     QVERIFY(s.filterList().isEmpty());

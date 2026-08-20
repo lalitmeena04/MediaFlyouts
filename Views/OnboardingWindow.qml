@@ -9,14 +9,11 @@ Window {
     width: 520
     height: 460
     title: "Welcome to MediaFlyouts"
-    color: settings.backdropMode !== 0 ? "transparent" : theme.window
+    color: theme.window
     flags: Qt.Dialog
     visible: false
 
-    Component.onCompleted: {
-        windowEffects.applyBackdrop(root, settings.backdropMode)
-        windowEffects.setDarkFrame(root, theme.dark)
-    }
+    Component.onCompleted: windowEffects.setDarkFrame(root, theme.dark)
 
     property int step: 0
     readonly property int stepCount: 4

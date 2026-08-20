@@ -14,13 +14,6 @@ Window {
     readonly property bool compact: settings.compactLayout
     readonly property int artSize: compact ? 52 : 76
 
-    // Windows 11 backdrop, re-applied when the setting changes
-    Component.onCompleted: windowEffects.applyBackdrop(root, settings.backdropMode)
-    property Connections _acrylicConn: Connections {
-        target: settings
-        function onChanged() { windowEffects.applyBackdrop(root, settings.backdropMode) }
-    }
-
     // accent follows the album art when enabled, else the theme accent
     readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt
         ? nowPlaying.artAccent : theme.accent
@@ -100,7 +93,7 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 14
-        color: settings.backdropMode !== 0 ? Qt.rgba(theme.flyout.r, theme.flyout.g, theme.flyout.b, 0.55) : theme.flyout
+        color: theme.flyout
         border.color: theme.flyoutBorder
         border.width: 1
 

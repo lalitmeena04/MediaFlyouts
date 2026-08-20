@@ -52,11 +52,6 @@ void Settings::reload() {
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
-    // backdropMode: 0 = none, 1 = acrylic, 2 = mica (migrates the old acrylicEnabled bool)
-    m_backdropMode = m_store
-                         .value(QStringLiteral("backdropMode"),
-                                m_store.value(QStringLiteral("acrylicEnabled"), false).toBool() ? 1 : 0)
-                         .toInt();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
     // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
@@ -276,9 +271,6 @@ bool Settings::onboardingCompleted() const {
 bool Settings::accentFromArt() const {
     return m_accentFromArt;
 }
-int Settings::backdropMode() const {
-    return m_backdropMode;
-}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -434,7 +426,4 @@ void Settings::setOnboardingCompleted(bool v) {
 }
 void Settings::setAccentFromArt(bool v) {
     assign("accentFromArt", m_accentFromArt, v);
-}
-void Settings::setBackdropMode(int v) {
-    assignInt("backdropMode", m_backdropMode, v);
 }
