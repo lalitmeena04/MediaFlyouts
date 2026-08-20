@@ -19,6 +19,8 @@ class Settings : public QObject {
         Q_PROPERTY(bool repeatEnabled READ repeatEnabled WRITE setRepeatEnabled NOTIFY changed)
         Q_PROPERTY(bool shuffleEnabled READ shuffleEnabled WRITE setShuffleEnabled NOTIFY changed)
         Q_PROPERTY(bool volumeFlyoutEnabled READ volumeFlyoutEnabled WRITE setVolumeFlyoutEnabled NOTIFY changed)
+        Q_PROPERTY(bool volumeFlyoutMixerEnabled READ volumeFlyoutMixerEnabled WRITE setVolumeFlyoutMixerEnabled NOTIFY
+                       changed)
         Q_PROPERTY(bool overrideNativeOsd READ overrideNativeOsd WRITE setOverrideNativeOsd NOTIFY changed)
         Q_PROPERTY(bool lockKeysEnabled READ lockKeysEnabled WRITE setLockKeysEnabled NOTIFY changed)
         Q_PROPERTY(bool lockKeysCapsEnabled READ lockKeysCapsEnabled WRITE setLockKeysCapsEnabled NOTIFY changed)
@@ -81,6 +83,7 @@ class Settings : public QObject {
         bool repeatEnabled() const;
         bool shuffleEnabled() const;
         bool volumeFlyoutEnabled() const;
+        bool volumeFlyoutMixerEnabled() const;
         bool overrideNativeOsd() const;
         bool lockKeysEnabled() const;
         bool lockKeysCapsEnabled() const;
@@ -131,6 +134,7 @@ class Settings : public QObject {
         void setRepeatEnabled(bool v);
         void setShuffleEnabled(bool v);
         void setVolumeFlyoutEnabled(bool v);
+        void setVolumeFlyoutMixerEnabled(bool v);
         void setOverrideNativeOsd(bool v);
         void setLockKeysEnabled(bool v);
         void setLockKeysCapsEnabled(bool v);
@@ -187,6 +191,7 @@ class Settings : public QObject {
         bool m_repeatEnabled;
         bool m_shuffleEnabled;
         bool m_volumeFlyoutEnabled;
+        bool m_volumeFlyoutMixerEnabled;
         bool m_overrideNativeOsd;
         bool m_lockKeysEnabled;
         bool m_lockKeysCapsEnabled;

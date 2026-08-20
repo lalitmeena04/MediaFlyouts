@@ -10,6 +10,7 @@ QtObject {
     }
     property VolumeFlyout volumeFlyout: VolumeFlyout {
         onVisibleChanged: app.restack()
+        onHeightChanged: app.restack()
     }
     property LockKeysFlyout lockKeysFlyout: LockKeysFlyout {
         onVisibleChanged: app.restack()

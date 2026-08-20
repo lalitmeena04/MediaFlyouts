@@ -19,6 +19,7 @@ void Settings::reload() {
     m_repeatEnabled = m_store.value(QStringLiteral("repeatEnabled"), true).toBool();
     m_shuffleEnabled = m_store.value(QStringLiteral("shuffleEnabled"), true).toBool();
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
+    m_volumeFlyoutMixerEnabled = m_store.value(QStringLiteral("volumeFlyoutMixerEnabled"), true).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
     m_lockKeysEnabled = m_store.value(QStringLiteral("lockKeysEnabled"), true).toBool();
     m_lockKeysCapsEnabled = m_store.value(QStringLiteral("lockKeysCapsEnabled"), true).toBool();
@@ -139,6 +140,9 @@ bool Settings::shuffleEnabled() const {
 }
 bool Settings::volumeFlyoutEnabled() const {
     return m_volumeFlyoutEnabled;
+}
+bool Settings::volumeFlyoutMixerEnabled() const {
+    return m_volumeFlyoutMixerEnabled;
 }
 bool Settings::overrideNativeOsd() const {
     return m_overrideNativeOsd;
@@ -305,6 +309,9 @@ void Settings::setShuffleEnabled(bool v) {
 }
 void Settings::setVolumeFlyoutEnabled(bool v) {
     assign("volumeFlyoutEnabled", m_volumeFlyoutEnabled, v);
+}
+void Settings::setVolumeFlyoutMixerEnabled(bool v) {
+    assign("volumeFlyoutMixerEnabled", m_volumeFlyoutMixerEnabled, v);
 }
 void Settings::setOverrideNativeOsd(bool v) {
     assign("overrideNativeOsd", m_overrideNativeOsd, v);

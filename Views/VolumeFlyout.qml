@@ -5,7 +5,10 @@ import MediaFlyouts
 Window {
     id: root
     width: 320
-    height: 64
+    // grows to fit the per-app mixer when expanded
+    property bool expanded: false
+    readonly property int sessionCount: volumeMixer.sessions.length
+    height: 64 + (expanded ? (16 + Math.max(1, sessionCount) * 48) : 0)
     visible: false
     opacity: 0
     color: "transparent"
@@ -44,6 +47,25 @@ Window {
         fadeOut.restart()
     }
 
+    // reveal / hide the per-app mixer, keeping the flyout open while it's showing
+    function toggleMixer() {
+        root.expanded = !root.expanded
+        if(root.expanded) {
+            volumeMixer.refresh()
+            hideTimer.stop()
+        } else {
+            hideTimer.restart()
+        }
+    }
+
+    // keep the app levels fresh while the mixer is open
+    Timer {
+        interval: 1000
+        running: root.visible && root.expanded
+        repeat: true
+        onTriggered: volumeMixer.refresh()
+    }
+
     Connections {
         target: volumeController
         function onVolumeChangedExternally() {
@@ -73,7 +95,7 @@ Window {
         to: 0
         duration: settings.flyoutAnimationMs
         easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: root.visible = false
+        onFinished: { root.visible = false; root.expanded = false }
     }
 
     Rectangle {
@@ -88,73 +110,194 @@ Window {
             anchors.fill: parent
             hoverEnabled: true
             onEntered: hideTimer.stop()
-            onExited: hideTimer.restart()
+            onExited: if(!root.expanded) hideTimer.restart()
         }
 
-        Row {
+        Column {
             anchors.fill: parent
             anchors.margins: 12
-            spacing: 12
+            spacing: 8
 
-            IconLabel {
-                glyph: root.speakerGlyph()
-                size: 22
-                color: theme.textPrimary
-                anchors.verticalCenter: parent.verticalCenter
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: volumeController.toggleMute()
+            // master volume row
+            Row {
+                width: parent.width
+                height: 40
+                spacing: 12
+
+                IconLabel {
+                    glyph: root.speakerGlyph()
+                    size: 22
+                    color: theme.textPrimary
+                    anchors.verticalCenter: parent.verticalCenter
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: volumeController.toggleMute()
+                    }
+                }
+
+                Rectangle {
+                    id: track
+                    width: parent.width - 22 - 44 - (settings.volumeFlyoutMixerEnabled ? 32 : 0) - 24
+                    height: 6
+                    radius: 3
+                    color: theme.track
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Rectangle {
+                        width: track.width * (volumeController.volume / 100)
+                        height: parent.height
+                        radius: 3
+                        color: volumeController.muted ? theme.textMuted : theme.accent
+                    }
+
+                    Rectangle {
+                        width: 14
+                        height: 14
+                        radius: 7
+                        color: theme.textPrimary
+                        y: (parent.height - height) / 2
+                        x: Math.max(0, Math.min(track.width - width, track.width * (volumeController.volume / 100) - width / 2))
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        anchors.margins: -8
+                        function setFromX(px) {
+                            const ratio = Math.max(0, Math.min(1, px / track.width))
+                            volumeController.setVolume(Math.round(ratio * 100))
+                            hideTimer.restart()
+                        }
+                        onPressed: (mouse) => setFromX(mouse.x)
+                        onPositionChanged: (mouse) => {
+                            if(pressed)
+                                setFromX(mouse.x)
+                        }
+                    }
+                }
+
+                Text {
+                    text: volumeController.volume + "%"
+                    color: theme.textSecondary
+                    font.pixelSize: 13
+                    width: 44
+                    horizontalAlignment: Text.AlignRight
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                // expand toggle for the per-app mixer
+                Text {
+                    visible: settings.volumeFlyoutMixerEnabled
+                    text: root.expanded ? "\u25B4" : "\u25BE"
+                    color: chevronArea.containsMouse ? theme.textPrimary : theme.textTertiary
+                    font.pixelSize: 16
+                    width: 20
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    MouseArea {
+                        id: chevronArea
+                        anchors.fill: parent
+                        anchors.margins: -6
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.toggleMixer()
+                    }
                 }
             }
 
             Rectangle {
-                id: track
-                width: parent.width - 22 - 44 - 24
-                height: 6
-                radius: 3
-                color: theme.track
-                anchors.verticalCenter: parent.verticalCenter
-
-                Rectangle {
-                    width: track.width * (volumeController.volume / 100)
-                    height: parent.height
-                    radius: 3
-                    color: volumeController.muted ? theme.textMuted : theme.accent
-                }
-
-                Rectangle {
-                    width: 14
-                    height: 14
-                    radius: 7
-                    color: theme.textPrimary
-                    y: (parent.height - height) / 2
-                    x: Math.max(0, Math.min(track.width - width, track.width * (volumeController.volume / 100) - width / 2))
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    anchors.margins: -8
-                    function setFromX(px) {
-                        const ratio = Math.max(0, Math.min(1, px / track.width))
-                        volumeController.setVolume(Math.round(ratio * 100))
-                        hideTimer.restart()
-                    }
-                    onPressed: (mouse) => setFromX(mouse.x)
-                    onPositionChanged: (mouse) => {
-                        if(pressed)
-                            setFromX(mouse.x)
-                    }
-                }
+                visible: root.expanded
+                width: parent.width
+                height: 1
+                color: theme.flyoutBorder
             }
 
-            Text {
-                text: volumeController.volume + "%"
-                color: theme.textSecondary
-                font.pixelSize: 13
-                width: 44
-                horizontalAlignment: Text.AlignRight
-                anchors.verticalCenter: parent.verticalCenter
+            // per-application mixer
+            Column {
+                visible: root.expanded
+                width: parent.width
+                spacing: 8
+
+                Text {
+                    visible: volumeMixer.sessions.length === 0
+                    text: "No apps are playing audio."
+                    color: theme.textMuted
+                    font.pixelSize: 12
+                }
+
+                Repeater {
+                    model: volumeMixer.sessions
+                    delegate: Row {
+                        required property var modelData
+                        width: parent.width
+                        height: 40
+                        spacing: 10
+
+                        IconLabel {
+                            glyph: modelData.muted ? Fluent.speakerMute : Fluent.speaker2
+                            size: 16
+                            color: modelData.muted ? theme.textMuted : theme.accent
+                            anchors.verticalCenter: parent.verticalCenter
+                            MouseArea {
+                                anchors.fill: parent
+                                anchors.margins: -4
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: volumeMixer.setSessionMute(modelData.index, !modelData.muted)
+                            }
+                        }
+
+                        Column {
+                            width: parent.width - 26
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 3
+
+                            Text {
+                                width: parent.width
+                                text: modelData.name
+                                color: theme.textSecondary
+                                font.pixelSize: 11
+                                elide: Text.ElideRight
+                            }
+
+                            Rectangle {
+                                id: appTrack
+                                width: parent.width
+                                height: 5
+                                radius: 2.5
+                                color: theme.track
+
+                                Rectangle {
+                                    width: appTrack.width * (modelData.volume / 100)
+                                    height: parent.height
+                                    radius: 2.5
+                                    color: modelData.muted ? theme.textMuted : theme.accent
+                                }
+                                Rectangle {
+                                    width: 11
+                                    height: 11
+                                    radius: 5.5
+                                    color: theme.textPrimary
+                                    y: (parent.height - height) / 2
+                                    x: Math.max(0, Math.min(appTrack.width - width, appTrack.width * (modelData.volume / 100) - width / 2))
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    anchors.margins: -8
+                                    function setFromX(px) {
+                                        const ratio = Math.max(0, Math.min(1, px / appTrack.width))
+                                        volumeMixer.setSessionVolume(modelData.index, Math.round(ratio * 100))
+                                        hideTimer.stop()
+                                    }
+                                    onPressed: (mouse) => setFromX(mouse.x)
+                                    onPositionChanged: (mouse) => {
+                                        if(pressed)
+                                            setFromX(mouse.x)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -703,6 +703,13 @@ Window {
                         value: settings.overrideNativeOsd
                         onToggled: settings.overrideNativeOsd = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "App mixer in volume flyout"
+                        description: "Show a button on the volume flyout to expand a per-app volume mixer."
+                        value: settings.volumeFlyoutMixerEnabled
+                        onToggled: settings.volumeFlyoutMixerEnabled = value
+                    }
                     SettingSlider {
                         width: parent.width
                         label: "Volume flyout duration"
