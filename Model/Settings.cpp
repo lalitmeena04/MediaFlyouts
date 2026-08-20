@@ -52,6 +52,9 @@ void Settings::reload() {
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
+    // accentMode: 0 = theme default, 1 = match system, 2 = custom
+    m_accentMode = m_store.value(QStringLiteral("accentMode"), 0).toInt();
+    m_customAccent = m_store.value(QStringLiteral("customAccent"), QStringLiteral("#4CC2FF")).toString();
     // appTheme: 0 = follow system, 1 = light, 2 = dark
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
     // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
@@ -271,6 +274,12 @@ bool Settings::onboardingCompleted() const {
 bool Settings::accentFromArt() const {
     return m_accentFromArt;
 }
+int Settings::accentMode() const {
+    return m_accentMode;
+}
+QString Settings::customAccent() const {
+    return m_customAccent;
+}
 
 void Settings::setMediaFlyoutEnabled(bool v) {
     assign("mediaFlyoutEnabled", m_mediaFlyoutEnabled, v);
@@ -426,4 +435,14 @@ void Settings::setOnboardingCompleted(bool v) {
 }
 void Settings::setAccentFromArt(bool v) {
     assign("accentFromArt", m_accentFromArt, v);
+}
+void Settings::setAccentMode(int v) {
+    assignInt("accentMode", m_accentMode, v);
+}
+void Settings::setCustomAccent(const QString& v) {
+    if(m_customAccent == v)
+        return;
+    m_customAccent = v;
+    m_store.setValue(QStringLiteral("customAccent"), v);
+    emit changed();
 }

@@ -97,6 +97,7 @@ if (WIN32)
         Controllers/VolumeMixer.h            Controllers/VolumeMixer.cpp
         Controllers/AudioCapture.h           Controllers/AudioCapture.cpp
         Controllers/WindowEffects.h          Controllers/WindowEffects.cpp
+        Controllers/AccentWatcher.h          Controllers/AccentWatcher.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib)

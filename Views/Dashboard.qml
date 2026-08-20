@@ -963,6 +963,36 @@ Window {
                         currentIndex: settings.appTheme
                         onActivated: settings.appTheme = index
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Accent color"
+                        description: "Use the built-in accent, match the Windows accent, or pick a custom color."
+                        model: ["Default", "Match system", "Custom"]
+                        currentIndex: settings.accentMode
+                        onActivated: settings.accentMode = index
+                    }
+                    Row {
+                        visible: settings.accentMode === 2
+                        x: 16
+                        width: parent.width - 16
+                        spacing: 12
+                        Rectangle {
+                            width: 28
+                            height: 28
+                            radius: 6
+                            color: theme.accent
+                            border.color: theme.border
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Button {
+                            text: "Choose color…"
+                            anchors.verticalCenter: parent.verticalCenter
+                            onClicked: {
+                                accentDialog.selectedColor = theme.accent
+                                accentDialog.open()
+                            }
+                        }
+                    }
                     SettingRow {
                         width: parent.width
                         label: "Launch on startup"
@@ -1048,5 +1078,10 @@ Window {
         fileMode: FileDialog.OpenFile
         nameFilters: ["Settings files (*.ini)"]
         onAccepted: settings.importFrom(selectedFile)
+    }
+    ColorDialog {
+        id: accentDialog
+        title: "Choose accent color"
+        onAccepted: settings.customAccent = selectedColor
     }
 }

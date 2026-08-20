@@ -22,6 +22,7 @@
 #include "StartupController.h"
 #include "TaskbarInfo.h"
 #include "AudioCapture.h"
+#include "AccentWatcher.h"
 #include "VolumeController.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
@@ -129,9 +130,15 @@ int main(int argc, char* argv[]) {
             audioCapture.stop();
     });
 
-    // Windows 11 acrylic backdrop for the flyout windows
+    // exposes the themed (dark/light) title-bar helper to QML
     WindowEffects windowEffects;
     engine.rootContext()->setContextProperty("windowEffects", &windowEffects);
+
+    // follow the OS accent color when the theme's accent mode is "match system"
+    AccentWatcher accentWatcher;
+    QObject::connect(&accentWatcher, &AccentWatcher::accentChanged, &theme, &ThemeController::setSystemAccent);
+    accentWatcher.start();
+    theme.setSystemAccent(accentWatcher.accent());
 
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;

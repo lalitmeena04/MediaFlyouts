@@ -66,6 +66,8 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
     EXPECT_FALSE(s.onboardingCompleted());
     EXPECT_FALSE(s.accentFromArt());
+    EXPECT_EQ(s.accentMode(), 0);
+    EXPECT_EQ(s.customAccent(), QStringLiteral("#4CC2FF"));
     EXPECT_EQ(s.appTheme(), 0);
     EXPECT_EQ(s.filterMode(), 0);
     EXPECT_TRUE(s.filterList().isEmpty());

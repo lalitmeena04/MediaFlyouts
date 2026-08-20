@@ -53,6 +53,8 @@ class ThemeController : public QObject {
     public slots:
         // recompute from the setting / system scheme and notify QML if it changed
         void refresh();
+        // the OS accent color, fed by a Windows accent watcher
+        void setSystemAccent(const QColor& color);
 
     signals:
         void changed();
@@ -62,4 +64,5 @@ class ThemeController : public QObject {
 
         Settings* m_settings = nullptr;
         bool m_dark = true;
+        QColor m_systemAccent;
 };

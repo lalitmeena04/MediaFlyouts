@@ -26,10 +26,15 @@ bool ThemeController::computeDark() const {
 }
 
 void ThemeController::refresh() {
-    const bool dark = computeDark();
-    if(dark == m_dark)
+    m_dark = computeDark();
+    // accent may also depend on settings that changed, so always notify
+    emit changed();
+}
+
+void ThemeController::setSystemAccent(const QColor& color) {
+    if(m_systemAccent == color)
         return;
-    m_dark = dark;
+    m_systemAccent = color;
     emit changed();
 }
 
@@ -71,6 +76,14 @@ QColor ThemeController::textMuted() const {
     return m_dark ? QColor("#7A7A7A") : QColor("#8A8A8A");
 }
 QColor ThemeController::accent() const {
+    const int mode = m_settings ? m_settings->accentMode() : 0;
+    if(mode == 1 && m_systemAccent.isValid())
+        return m_systemAccent;
+    if(mode == 2 && m_settings) {
+        const QColor custom(m_settings->customAccent());
+        if(custom.isValid())
+            return custom;
+    }
     return m_dark ? QColor("#4CC2FF") : QColor("#0078D4");
 }
 QColor ThemeController::accentSoft() const {

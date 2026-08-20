@@ -54,3 +54,21 @@ TEST_F(ThemeControllerTest, EmitsChangedWhenModeFlips) {
     EXPECT_TRUE(t.dark());
     EXPECT_GE(spy.count(), 1);
 }
+
+TEST_F(ThemeControllerTest, CustomAccentOverridesDefault) {
+    Settings s;
+    s.setAppTheme(2); // dark default accent
+    ThemeController t(&s);
+    EXPECT_EQ(t.accent(), QColor("#4CC2FF"));
+    s.setAccentMode(2);
+    s.setCustomAccent(QStringLiteral("#FF8800"));
+    EXPECT_EQ(t.accent(), QColor("#FF8800"));
+}
+
+TEST_F(ThemeControllerTest, SystemAccentAppliesWhenMatchingSystem) {
+    Settings s;
+    s.setAccentMode(1); // match system
+    ThemeController t(&s);
+    t.setSystemAccent(QColor("#123456"));
+    EXPECT_EQ(t.accent(), QColor("#123456"));
+}

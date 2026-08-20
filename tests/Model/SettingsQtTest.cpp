@@ -72,6 +72,8 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());
+    QCOMPARE(s.accentMode(), 0);
+    QCOMPARE(s.customAccent(), QStringLiteral("#4CC2FF"));
     QCOMPARE(s.appTheme(), 0);
     QCOMPARE(s.filterMode(), 0);
     QVERIFY(s.filterList().isEmpty());
