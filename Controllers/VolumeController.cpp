@@ -54,34 +54,92 @@ struct VolumeCallback : IAudioEndpointVolumeCallback {
         }
 };
 
+// classic-COM sink that re-binds us to the new default output when the user switches devices
+struct DeviceNotificationClient : IMMNotificationClient {
+        LONG ref = 1;
+        VolumeController* owner = nullptr;
+
+        explicit DeviceNotificationClient(VolumeController* o) : owner(o) {}
+
+        HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppv) override {
+            if(riid == __uuidof(IUnknown) || riid == __uuidof(IMMNotificationClient)) {
+                *ppv = static_cast<IMMNotificationClient*>(this);
+                AddRef();
+                return S_OK;
+            }
+            *ppv = nullptr;
+            return E_NOINTERFACE;
+        }
+        ULONG STDMETHODCALLTYPE AddRef() override {
+            return InterlockedIncrement(&ref);
+        }
+        ULONG STDMETHODCALLTYPE Release() override {
+            const LONG r = InterlockedDecrement(&ref);
+            if(r == 0)
+                delete this;
+            return r;
+        }
+
+        HRESULT STDMETHODCALLTYPE OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR) override {
+            // only the console render endpoint drives the flyout
+            if(flow == eRender && role == eConsole) {
+                VolumeController* o = owner;
+                QMetaObject::invokeMethod(o, [o] { o->rebindDefaultDevice(); }, Qt::QueuedConnection);
+            }
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(LPCWSTR, DWORD) override {
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR) override {
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR) override {
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE OnPropertyValueChanged(LPCWSTR, const PROPERTYKEY) override {
+            return S_OK;
+        }
+};
+
 VolumeController::VolumeController(QObject* parent) : QObject(parent) {}
 
 VolumeController::~VolumeController() {
-    if(m_endpoint && m_callback)
-        m_endpoint->UnregisterControlChangeNotify(m_callback);
-    if(m_callback)
-        m_callback->Release();
-    if(m_endpoint)
-        m_endpoint->Release();
+    if(m_enumerator && m_deviceNotifier)
+        m_enumerator->UnregisterEndpointNotificationCallback(m_deviceNotifier);
+    if(m_deviceNotifier)
+        m_deviceNotifier->Release();
+    releaseEndpoint();
     if(m_enumerator)
         m_enumerator->Release();
 }
 
-void VolumeController::start() {
-    HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
-                                  reinterpret_cast<void**>(&m_enumerator));
-    if(FAILED(hr) || !m_enumerator)
-        return;
+void VolumeController::releaseEndpoint() {
+    if(m_endpoint && m_callback)
+        m_endpoint->UnregisterControlChangeNotify(m_callback);
+    if(m_callback) {
+        m_callback->Release();
+        m_callback = nullptr;
+    }
+    if(m_endpoint) {
+        m_endpoint->Release();
+        m_endpoint = nullptr;
+    }
+}
+
+bool VolumeController::acquireEndpoint() {
+    if(!m_enumerator)
+        return false;
 
     IMMDevice* device = nullptr;
-    hr = m_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device);
-    if(FAILED(hr) || !device)
-        return;
+    if(FAILED(m_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device)) || !device)
+        return false;
 
-    hr = device->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_endpoint));
+    HRESULT hr =
+        device->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_endpoint));
     device->Release();
     if(FAILED(hr) || !m_endpoint)
-        return;
+        return false;
 
     m_callback = new VolumeCallback(this);
     m_endpoint->RegisterControlChangeNotify(m_callback);
@@ -91,6 +149,25 @@ void VolumeController::start() {
     m_endpoint->GetMasterVolumeLevelScalar(&level);
     m_endpoint->GetMute(&muted);
     applyState(static_cast<int>(std::lround(level * 100.0f)), muted != FALSE, false);
+    return true;
+}
+
+void VolumeController::rebindDefaultDevice() {
+    releaseEndpoint();
+    acquireEndpoint();
+}
+
+void VolumeController::start() {
+    HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
+                                  reinterpret_cast<void**>(&m_enumerator));
+    if(FAILED(hr) || !m_enumerator)
+        return;
+
+    // follow the default output device so the flyout always reflects the current one
+    m_deviceNotifier = new DeviceNotificationClient(this);
+    m_enumerator->RegisterEndpointNotificationCallback(m_deviceNotifier);
+
+    acquireEndpoint();
 }
 
 int VolumeController::volume() const {
