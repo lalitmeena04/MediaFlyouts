@@ -64,6 +64,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
+    EXPECT_TRUE(s.taskbarVisualizerCentered());
     EXPECT_FALSE(s.onboardingCompleted());
     EXPECT_FALSE(s.accentFromArt());
     EXPECT_EQ(s.accentMode(), 0);

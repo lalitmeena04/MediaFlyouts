@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("volumeMixer", &volumeMixer);
 
     // WASAPI loopback capture -> FFT bands for the taskbar visualizer
-    AudioCapture audioCapture;
+    AudioCapture audioCapture(28);
     engine.rootContext()->setContextProperty("audioCapture", &audioCapture);
     if(settings.taskbarVisualizerEnabled())
         audioCapture.start();

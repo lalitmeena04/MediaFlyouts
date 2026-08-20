@@ -51,6 +51,7 @@ class AudioCapture : public QObject {
         IAudioCaptureClient* m_capture = nullptr;
         tWAVEFORMATEX* m_format = nullptr;
         int m_channels = 2;
+        int m_sampleRate = 48000;
         bool m_isFloat = false;
         bool m_active = false;
 };

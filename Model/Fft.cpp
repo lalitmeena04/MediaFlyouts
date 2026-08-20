@@ -104,4 +104,45 @@ std::vector<double> spectrumBands(const std::vector<double>& magnitudes, int ban
     return out;
 }
 
+std::vector<double> frequencyBars(const std::vector<double>& magnitudes, double sampleRate, int fftSize, int bars,
+                                  double minFreq, double maxFreq, double minDb, double maxDb) {
+    std::vector<double> out(bars > 0 ? bars : 0, 0.0);
+    if(bars <= 0 || magnitudes.empty() || sampleRate <= 0.0 || fftSize <= 0 || maxDb <= minDb)
+        return out;
+
+    const double binHz = sampleRate / static_cast<double>(fftSize);
+    const int maxBin = static_cast<int>(magnitudes.size());
+    const double norm = static_cast<double>(fftSize) * 0.5; // full-scale single-bin magnitude
+
+    for(int i = 0; i < bars; ++i) {
+        const double startFreq = minFreq * std::pow(maxFreq / minFreq, static_cast<double>(i) / bars);
+        const double endFreq = minFreq * std::pow(maxFreq / minFreq, static_cast<double>(i + 1) / bars);
+        int startBin = static_cast<int>(startFreq / binHz);
+        int endBin = static_cast<int>(endFreq / binHz);
+        if(startBin < 0)
+            startBin = 0;
+        if(endBin <= startBin)
+            endBin = startBin + 1;
+        if(endBin > maxBin)
+            endBin = maxBin;
+        if(startBin >= maxBin)
+            break;
+
+        double maxAmp = 0.0;
+        for(int j = startBin; j < endBin; ++j)
+            if(magnitudes[j] > maxAmp)
+                maxAmp = magnitudes[j];
+
+        const double progress = static_cast<double>(i) / bars;
+        double amp = (maxAmp / norm) * (1.0 + progress * 4.0); // lift treble so it stays visible
+        if(amp < 1e-4)
+            amp = 1e-4;
+
+        const double db = 20.0 * std::log10(amp);
+        double intensity = (db - minDb) / (maxDb - minDb);
+        out[i] = intensity < 0.0 ? 0.0 : (intensity > 1.0 ? 1.0 : intensity);
+    }
+    return out;
+}
+
 } // namespace mf

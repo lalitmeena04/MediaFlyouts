@@ -69,7 +69,7 @@ Window {
             id: hover
         }
 
-        // spectrum visualizer bars drawn behind the media info
+        // spectrum equalizer drawn behind the media info; mirrored (centered) or bottom-anchored
         Row {
             id: visualizer
             visible: settings.taskbarVisualizerEnabled
@@ -85,11 +85,16 @@ Window {
                     height: visualizer.height
                     Rectangle {
                         width: parent.width
-                        anchors.bottom: parent.bottom
-                        height: Math.max(2, parent.height * modelData)
-                        radius: 1
-                        opacity: 0.55
-                        color: "#4CC2FF"
+                        radius: width / 2
+                        opacity: 0.7
+                        color: theme.accent
+                        // mirrored bars grow from the middle; otherwise from the bottom
+                        height: settings.taskbarVisualizerCentered
+                            ? Math.max(width, parent.height * modelData)
+                            : Math.max(2, parent.height * modelData)
+                        y: settings.taskbarVisualizerCentered
+                            ? (parent.height - height) / 2
+                            : parent.height - height
                         Behavior on height { NumberAnimation { duration: 90 } }
                     }
                 }

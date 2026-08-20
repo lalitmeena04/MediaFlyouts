@@ -62,6 +62,7 @@ void AudioCapture::start() {
     }
 
     m_channels = m_format->nChannels > 0 ? m_format->nChannels : 2;
+    m_sampleRate = m_format->nSamplesPerSec > 0 ? static_cast<int>(m_format->nSamplesPerSec) : 48000;
     m_isFloat = false;
     if(m_format->wFormatTag == WAVE_FORMAT_IEEE_FLOAT && m_format->wBitsPerSample == 32) {
         m_isFloat = true;
@@ -176,7 +177,7 @@ void AudioCapture::poll() {
         window[i] *= 0.5 * (1.0 - std::cos(2.0 * kPi * i / (kFftSize - 1)));
 
     const std::vector<double> mags = mf::magnitudeSpectrum(window);
-    std::vector<double> raw = mf::spectrumBands(mags, m_bandCount);
+    std::vector<double> raw = mf::frequencyBars(mags, m_sampleRate, kFftSize, m_bandCount);
 
     bool changed = false;
     for(int i = 0; i < m_bandCount; ++i) {

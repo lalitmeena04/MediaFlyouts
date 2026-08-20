@@ -50,6 +50,8 @@ void Settings::reload() {
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
+    // centered = mirrored bars around the middle; otherwise they grow from the bottom
+    m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // accentMode: 0 = theme default, 1 = match system, 2 = custom
@@ -268,6 +270,9 @@ bool Settings::taskbarWidgetScrollingEnabled() const {
 bool Settings::taskbarVisualizerEnabled() const {
     return m_taskbarVisualizerEnabled;
 }
+bool Settings::taskbarVisualizerCentered() const {
+    return m_taskbarVisualizerCentered;
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
@@ -429,6 +434,9 @@ void Settings::setTaskbarWidgetScrollingEnabled(bool v) {
 }
 void Settings::setTaskbarVisualizerEnabled(bool v) {
     assign("taskbarVisualizerEnabled", m_taskbarVisualizerEnabled, v);
+}
+void Settings::setTaskbarVisualizerCentered(bool v) {
+    assign("taskbarVisualizerCentered", m_taskbarVisualizerCentered, v);
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);

@@ -824,6 +824,15 @@ Window {
                         value: settings.taskbarVisualizerEnabled
                         onToggled: settings.taskbarVisualizerEnabled = value
                     }
+                    SettingRow {
+                        visible: settings.taskbarVisualizerEnabled
+                        x: 16
+                        width: parent.width - 16
+                        label: "Mirror the equalizer"
+                        description: "Grow the bars symmetrically from the middle instead of the bottom."
+                        value: settings.taskbarVisualizerCentered
+                        onToggled: settings.taskbarVisualizerCentered = value
+                    }
                     SettingCombo {
                         width: parent.width
                         label: "Widget monitor"
