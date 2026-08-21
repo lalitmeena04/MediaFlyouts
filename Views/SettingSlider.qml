@@ -24,14 +24,14 @@ Item {
 
         Text {
             text: root.label
-            color: "white"
+            color: theme.textPrimary
             font.pixelSize: 14
         }
         Text {
             visible: root.description.length > 0
             width: parent.width
             text: root.description
-            color: "#9AA0A6"
+            color: theme.textTertiary
             font.pixelSize: 11
             wrapMode: Text.WordWrap
         }
@@ -43,7 +43,7 @@ Item {
         anchors.rightMargin: 12
         anchors.verticalCenter: parent.verticalCenter
         text: root.valueText
-        color: "#9AA0A6"
+        color: theme.textTertiary
         font.pixelSize: 12
     }
 

@@ -5,6 +5,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 [STORIES.md](STORIES.md).
 
 ## 1. Media Flyout (core)
+
 - Master enable/disable toggle (`MediaFlyoutEnabled`).
 - Appears when a media key or volume key (unless excluded) is pressed while media is playing.
 - Displays album art thumbnail, track title, artist name, and optional media player name (`PlayerInfoEnabled`).
@@ -20,6 +21,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Exclude volume keys option (`MediaFlyoutVolumeKeysExcluded`) to suppress media flyout on volume key presses.
 
 ## 2. Volume Flyout & Volume Mixer
+
 - Standalone Volume Flyout toggle (`VolumeControlEnabled`) replacing standard Windows Volume OSD.
 - Master volume slider with configurable stay duration (0–10,000 ms, default 3000 ms).
 - Option to position volume flyout directly above the Media Flyout (`VolumeControlAboveMediaFlyout`).
@@ -29,6 +31,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Per-window acrylic blur toggle (`VolumeMixerAcrylicWindowEnabled`).
 
 ## 3. Lock Keys Flyout
+
 - Master enable/disable toggle (`LockKeysEnabled`).
 - Individual indicator toggles for Caps Lock, Num Lock, Scroll Lock, and Insert key (`LockKeysCapsEnabled`, `LockKeysNumEnabled`, `LockKeysScrollEnabled`, `LockKeysInsertEnabled`).
 - Configurable stay duration (0–10,000 ms, default 2000 ms).
@@ -38,6 +41,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Per-window acrylic blur toggle (`LockKeysAcrylicWindowEnabled`).
 
 ## 4. Next Up Flyout
+
 - Master enable/disable toggle (`NextUpEnabled`).
 - Displays popup notification with track title, artist, and album art on auto-advance track transitions.
 - Dynamic window width sizing based on string width calculations.
@@ -45,6 +49,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Per-window acrylic blur toggle (`NextUpAcrylicWindowEnabled`).
 
 ## 5. Taskbar Widget
+
 - Master enable/disable toggle (`TaskbarWidgetEnabled`).
 - Embeds as a child window into Windows Taskbar (`Shell_TrayWnd`) using Win32 `SetParent` and UI Automation anchor detection.
 - Target monitor selection for multi-monitor taskbars (`TaskbarWidgetSelectedMonitor`).
@@ -59,6 +64,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Integrated playback controls (Previous, Play/Pause, Next) toggle (`TaskbarWidgetControlsEnabled`) and placement (Left or Right).
 
 ## 6. Taskbar Visualizer
+
 - Master enable/disable toggle (`TaskbarVisualizerEnabled`).
 - Real-time audio spectrum analyzer using WASAPI loopback audio capture and FFT processing.
 - Positioning: Left (0) or Right (1) relative to the Taskbar Widget (`TaskbarVisualizerPosition`).
@@ -70,6 +76,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Interactivity: Clickable visualizer region to directly open visualizer settings.
 
 ## 7. System Tray & Main Window (Settings)
+
 - System tray icon with context menu: Settings, Repository link, View logs, Report bug, Quit.
 - Configurable tray icon left-click behavior: Open Settings (0) or Show Media Flyout (1) (`NIconLeftClick`).
 - Windows 11 symbol-style tray icon toggle (`NIconSymbol`) and option to hide tray icon completely (`NIconHide`).
@@ -78,6 +85,7 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Search across settings cards tagged for search index (`Tag="Indexable"`).
 
 ## 8. System, Appearance & Advanced
+
 - Launch on system startup minimized to tray (`Startup`) via Windows Registry `Run` key or WinRT `startupTask`.
 - Application theme mode: Windows Default (0), Light (1), Dark (2) (`AppTheme`).
 - Dynamic accent color: Option to derive app accent color from current album art (`UseAlbumArtAsAccentColor`).
@@ -89,18 +97,21 @@ in Qt 6 / C++ / QML. It is the source of truth for the story backlog in
 - Anonymous telemetry opt-in toggle (`AnonymousTelemetryAllowed`).
 
 ## 9. App Filtering
+
 - Master enable/disable toggle (`AppFilteringEnabled`).
 - Filtering mode toggle: Blacklist (0) or Whitelist (1) (`AppFilteringMode`).
 - Allowed applications list (`AllowedApps`) and Blocked applications list (`BlockedApps`).
 - Automatic discovery dropdown of currently running audio/media applications + manual executable name entry.
 
 ## 10. Onboarding & Localization
+
 - First-run Onboarding Wizard window (`OnboardingWindow`): 4-step guided intro (Media Flyout, Volume Flyout, Lock Keys, Taskbar Widget/Features) with slide/fade page transitions.
 - ~25–30 translation language dictionaries (e.g. ca, ar, cs, hi, he, fr, fi, es, en-US, de, it, id, hu, hr, ko, ja, nl, pl, pt-BR, zh-TW, zh-CN, vi, uk, tr, th, ta, sk, si, ru).
 - Automatic system language detection and manual language selector (`AppLanguage`).
 - Right-to-Left (RTL) layout support (`FlowDirection`) and font fallback strategy (`Segoe UI Variable, Microsoft YaHei UI, Yu Gothic UI`).
 
 ## Windows integration APIs used
+
 - Media: `GlobalSystemMediaTransportControlsSessionManager` (WinRT SMTC).
 - Volume: Core Audio APIs (`IMMDeviceEnumerator`, `IAudioSessionManager2`, `ISimpleAudioVolume`, `IAudioEndpointVolume`).
 - Hotkeys/Keys: Low-level keyboard hook (`SetWindowsHookEx` - `WH_KEYBOARD_LL`) / `RegisterHotKey`, `GetKeyState`.

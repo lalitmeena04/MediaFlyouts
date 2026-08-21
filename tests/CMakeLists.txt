@@ -3,8 +3,10 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Model/Settings.h         ${CMAKE_SOURCE_DIR}/Model/Settings.cpp
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.h ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/NowPlaying.h ${CMAKE_SOURCE_DIR}/Controllers/NowPlaying.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/ThemeController.h ${CMAKE_SOURCE_DIR}/Controllers/ThemeController.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/UpdateChecker.h ${CMAKE_SOURCE_DIR}/Controllers/UpdateChecker.cpp
 )
-target_link_libraries(mediaflyout_testlib PUBLIC mediaflyout_core Qt6::Gui Qt6::Quick)
+target_link_libraries(mediaflyout_testlib PUBLIC mediaflyout_core Qt6::Gui Qt6::Network Qt6::Quick)
 target_include_directories(mediaflyout_testlib PUBLIC
     ${CMAKE_SOURCE_DIR}/Model
     ${CMAKE_SOURCE_DIR}/Controllers
@@ -30,7 +32,10 @@ add_executable(mediaflyout_gtest
     Model/PlaybackControllerTest.cpp
     Model/SettingsTest.cpp
     Model/AlbumArtProviderTest.cpp
+    Model/FftTest.cpp
     Controllers/NowPlayingTest.cpp
+    Controllers/ThemeControllerTest.cpp
+    Controllers/UpdateCheckerTest.cpp
 )
 target_link_libraries(mediaflyout_gtest PRIVATE
     mediaflyout_testlib
@@ -39,6 +44,18 @@ target_link_libraries(mediaflyout_gtest PRIVATE
     GTest::gmock
 )
 add_test(NAME gtest_all COMMAND mediaflyout_gtest)
+
+# Windows-only audio/DWM controllers get default-state smoke tests
+if(WIN32)
+    target_sources(mediaflyout_gtest PRIVATE
+        ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/AudioCapture.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
+        Controllers/Win32ControllersTest.cpp
+    )
+    target_compile_definitions(mediaflyout_gtest PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib)
+endif()
 
 # --- Qt Test: one executable per class (each file has its own QTEST_GUILESS_MAIN) ---
 set(qt_test_sources

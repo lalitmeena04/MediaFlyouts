@@ -21,4 +21,7 @@ QtObject {
     readonly property string settings: "\uF6B3"
     readonly property string dismiss: "\uF36A"
     readonly property string keyboard: "\uF4C3"
+    readonly property string repeatAll: "\uF172"
+    readonly property string repeatOne: "\uEF34"
+    readonly property string shuffle: "\uEF37"
 }

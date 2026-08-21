@@ -7,7 +7,10 @@
 #include "FlyoutPlacement.h"
 #include "NowPlaying.h"
 #include "Settings.h"
+#include "SingleInstance.h"
+#include "ThemeController.h"
 #include "TrayController.h"
+#include "UpdateChecker.h"
 
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
@@ -18,7 +21,11 @@
 #include "NativeFlyoutSuppressor.h"
 #include "StartupController.h"
 #include "TaskbarInfo.h"
+#include "AudioCapture.h"
+#include "AccentWatcher.h"
 #include "VolumeController.h"
+#include "VolumeMixer.h"
+#include "WindowEffects.h"
 #include "WinMediaProvider.h"
 #endif
 
@@ -30,6 +37,11 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
 
+    // a second launch signals the running instance to show its dashboard, then exits
+    SingleInstance instance(QStringLiteral("MediaFlyouts.singleInstance"));
+    if(!instance.isPrimary())
+        return 0;
+
     // load the icon font in C++ too so the tray glyph can be rendered (QML loads it via FontLoader)
     const int fontId = QFontDatabase::addApplicationFont(
         QStringLiteral(":/qt/qml/MediaFlyouts/assets/fonts/FluentSystemIcons-Filled.ttf"));
@@ -40,6 +52,8 @@ int main(int argc, char* argv[]) {
 
     Settings settings;
     FlyoutPlacement placement(&settings);
+    ThemeController theme(&settings);
+    UpdateChecker updateChecker;
 
     QQmlApplicationEngine engine;
 
@@ -48,13 +62,19 @@ int main(int argc, char* argv[]) {
     engine.addImageProvider(QStringLiteral("albumart"), artProvider);
     nowPlaying.setArtProvider(artProvider);
 
-    TrayController tray(iconFamily);
+    TrayController tray(iconFamily, &settings);
+    // notify from the tray when an update check finds a newer release
+    QObject::connect(&updateChecker, &UpdateChecker::changed, &tray, [&] {
+        if(updateChecker.updateAvailable())
+            tray.notify(QStringLiteral("MediaFlyouts update available"), updateChecker.status());
+    });
 
 #ifdef Q_OS_WIN
     WinMediaProvider provider;
     nowPlaying.setController(&provider);
     QObject::connect(&provider, &WinMediaProvider::trackChanged, &nowPlaying, &NowPlaying::applyTrack);
     QObject::connect(&provider, &WinMediaProvider::artChanged, &nowPlaying, &NowPlaying::applyArt);
+    QObject::connect(&provider, &WinMediaProvider::sessionsChanged, &nowPlaying, &NowPlaying::noteSessionsChanged);
     provider.start();
 
     VolumeController volumeController;
@@ -94,6 +114,32 @@ int main(int argc, char* argv[]) {
     TaskbarInfo taskbar;
     engine.rootContext()->setContextProperty("taskbar", &taskbar);
 
+    // per-application volume control for the mixer window
+    VolumeMixer volumeMixer;
+    engine.rootContext()->setContextProperty("volumeMixer", &volumeMixer);
+
+    // WASAPI loopback capture -> FFT bands for the taskbar visualizer
+    AudioCapture audioCapture(28);
+    engine.rootContext()->setContextProperty("audioCapture", &audioCapture);
+    if(settings.taskbarVisualizerEnabled())
+        audioCapture.start();
+    QObject::connect(&settings, &Settings::changed, &audioCapture, [&] {
+        if(settings.taskbarVisualizerEnabled())
+            audioCapture.start();
+        else
+            audioCapture.stop();
+    });
+
+    // exposes the themed (dark/light) title-bar helper to QML
+    WindowEffects windowEffects;
+    engine.rootContext()->setContextProperty("windowEffects", &windowEffects);
+
+    // follow the OS accent color when the theme's accent mode is "match system"
+    AccentWatcher accentWatcher;
+    QObject::connect(&accentWatcher, &AccentWatcher::accentChanged, &theme, &ThemeController::setSystemAccent);
+    accentWatcher.start();
+    theme.setSystemAccent(accentWatcher.accent());
+
     // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
     MediaKeyController mediaKeys;
     mediaKeys.start();
@@ -105,7 +151,10 @@ int main(int argc, char* argv[]) {
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
     engine.rootContext()->setContextProperty("settings", &settings);
+    engine.rootContext()->setContextProperty("theme", &theme);
+    engine.rootContext()->setContextProperty("updateChecker", &updateChecker);
     engine.rootContext()->setContextProperty("placement", &placement);
+    engine.rootContext()->setContextProperty("instance", &instance);
     engine.rootContext()->setContextProperty("tray", &tray);
     engine.loadFromModule("MediaFlyouts", "App");
 

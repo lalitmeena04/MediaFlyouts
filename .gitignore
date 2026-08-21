@@ -50,3 +50,6 @@ Desktop.ini
 
 # --- Local dev-only notes (not for distribution) ---
 dev-notes/
+err.log
+out.log
+e.log

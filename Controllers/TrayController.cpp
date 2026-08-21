@@ -2,12 +2,17 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QDesktopServices>
 #include <QFont>
 #include <QIcon>
 #include <QMenu>
 #include <QPainter>
 #include <QPixmap>
 #include <QSystemTrayIcon>
+#include <QTimer>
+#include <QUrl>
+
+#include "Settings.h"
 
 namespace {
 
@@ -28,25 +33,82 @@ QIcon renderGlyphIcon(const QString& family, QChar glyph) {
 
 } // namespace
 
-TrayController::TrayController(const QString& iconFamily, QObject* parent) : QObject(parent), m_iconFamily(iconFamily) {
+TrayController::TrayController(const QString& iconFamily, Settings* settings, QObject* parent)
+    : QObject(parent), m_iconFamily(iconFamily), m_settings(settings) {
     m_menu = new QMenu();
-    QAction* dashAction = m_menu->addAction(QStringLiteral("Dashboard"));
-    QAction* flyoutAction = m_menu->addAction(QStringLiteral("Show Media Flyout"));
+    // dark, rounded, icon-per-item menu to match a Fluent-style tray menu
+    m_menu->setStyleSheet(QStringLiteral(
+        "QMenu { background-color: #2b2b2b; color: #ffffff; border: 1px solid #3d3d3d; border-radius: 8px; "
+        "padding: 6px; }"
+        "QMenu::item { padding: 8px 34px 8px 12px; border-radius: 6px; margin: 2px 4px; }"
+        "QMenu::item:selected { background-color: #3a3a3a; }"
+        "QMenu::icon { padding-left: 10px; }"
+        "QMenu::separator { height: 1px; background: #3d3d3d; margin: 6px 10px; }"));
+
+    QAction* dashAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF6B3)), QStringLiteral("Settings"));
+    QAction* flyoutAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF610)), QStringLiteral("Show Media Flyout"));
+    QAction* mixerAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xEB4C)), QStringLiteral("Volume Mixer"));
     m_menu->addSeparator();
-    QAction* quitAction = m_menu->addAction(QStringLiteral("Quit MediaFlyouts"));
+    QAction* repoAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF1FB)), QStringLiteral("Repository"));
+    QAction* bugAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xE21B)), QStringLiteral("Report a Bug"));
+    QAction* configAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF41D)), QStringLiteral("Open Config Folder"));
+    m_menu->addSeparator();
+    QAction* quitAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF619)), QStringLiteral("Quit MediaFlyouts"));
 
     connect(dashAction, &QAction::triggered, this, &TrayController::openDashboardRequested);
     connect(flyoutAction, &QAction::triggered, this, &TrayController::showFlyoutRequested);
+    connect(mixerAction, &QAction::triggered, this, &TrayController::openMixerRequested);
+    connect(repoAction, &QAction::triggered, this,
+            [] { QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts"))); });
+    connect(bugAction, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts/issues/new")));
+    });
+    connect(configAction, &QAction::triggered, this, [this] {
+        if(m_settings)
+            QDesktopServices::openUrl(QUrl::fromLocalFile(m_settings->configDir()));
+    });
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
     m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, QChar(0xE863)), this);
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
 
+    // in flyout mode a single click is held briefly so a double-click can open the dashboard instead
+    m_singleClickTimer = new QTimer(this);
+    m_singleClickTimer->setSingleShot(true);
+    m_singleClickTimer->setInterval(QApplication::doubleClickInterval());
+    connect(m_singleClickTimer, &QTimer::timeout, this, &TrayController::showFlyoutRequested);
+
     connect(m_tray, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
-        if(reason == QSystemTrayIcon::Trigger)
+        const bool flyoutMode = m_settings && m_settings->trayLeftClickShowsFlyout();
+        if(reason == QSystemTrayIcon::DoubleClick) {
+            // cancel the pending single-click flyout and show the dashboard
+            if(flyoutMode) {
+                m_singleClickTimer->stop();
+                emit openDashboardRequested();
+            }
+            return;
+        }
+        if(reason != QSystemTrayIcon::Trigger)
+            return;
+        if(flyoutMode)
+            m_singleClickTimer->start();
+        else
             emit openDashboardRequested();
     });
+
+    if(m_settings)
+        connect(m_settings, &Settings::changed, this, &TrayController::applyVisibility);
+}
+
+void TrayController::applyVisibility() {
+    if(m_tray)
+        m_tray->setVisible(!(m_settings && m_settings->trayIconHidden()));
 }
 
 TrayController::~TrayController() {
@@ -54,5 +116,10 @@ TrayController::~TrayController() {
 }
 
 void TrayController::show() {
-    m_tray->show();
+    applyVisibility();
+}
+
+void TrayController::notify(const QString& title, const QString& message) {
+    if(m_tray)
+        m_tray->showMessage(title, message);
 }

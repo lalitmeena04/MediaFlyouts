@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QColor>
 #include <QElapsedTimer>
 #include <QImage>
 #include <QObject>
@@ -23,6 +24,15 @@ class NowPlaying : public QObject {
         Q_PROPERTY(bool hasMedia READ hasMedia NOTIFY changed)
         Q_PROPERTY(QString artSource READ artSource NOTIFY changed)
         Q_PROPERTY(bool hasArt READ hasArt NOTIFY changed)
+        Q_PROPERTY(QColor artAccent READ artAccent NOTIFY changed)
+        Q_PROPERTY(QString playerName READ playerName NOTIFY changed)
+        Q_PROPERTY(int repeatMode READ repeatMode NOTIFY changed)
+        Q_PROPERTY(bool shuffle READ shuffle NOTIFY changed)
+        Q_PROPERTY(bool canSeek READ canSeek NOTIFY changed)
+        Q_PROPERTY(bool canRepeat READ canRepeat NOTIFY changed)
+        Q_PROPERTY(bool canShuffle READ canShuffle NOTIFY changed)
+        Q_PROPERTY(int sessionCount READ sessionCount NOTIFY sessionsChanged)
+        Q_PROPERTY(int selectedSessionIndex READ selectedSessionIndex NOTIFY sessionsChanged)
 
     public:
         explicit NowPlaying(QObject* parent = nullptr);
@@ -38,24 +48,42 @@ class NowPlaying : public QObject {
         bool isPlaying() const;
         bool hasMedia() const;
         QString artSource() const;
+        QColor artAccent() const;
         bool hasArt() const;
+        QString playerName() const;
+        int repeatMode() const;
+        bool shuffle() const;
+        bool canSeek() const;
+        bool canRepeat() const;
+        bool canShuffle() const;
+        int sessionCount() const;
+        int selectedSessionIndex() const;
 
         Q_INVOKABLE void playPause();
         Q_INVOKABLE void next();
         Q_INVOKABLE void previous();
+        Q_INVOKABLE void seekToFraction(double fraction);
+        Q_INVOKABLE void cycleRepeat();
+        Q_INVOKABLE void toggleShuffle();
+        // cycle the displayed media source (multi-app switcher on the widget)
+        Q_INVOKABLE void cycleSession(int delta);
 
     public slots:
         void applyTrack(const mf::TrackInfo& track);
         void applyArt(const QImage& art);
         void noteMediaKey();
+        // provider reports the set of media sessions changed
+        void noteSessionsChanged();
 
     signals:
         void changed();
         void trackUpdated();
         void nextUpRequested();
+        void sessionsChanged();
 
     private:
         qint64 currentPositionMs() const;
+        static QColor computeArtAccent(const QImage& art);
 
         mf::TrackInfo m_track;
         QElapsedTimer m_sinceUpdate;
@@ -64,6 +92,7 @@ class NowPlaying : public QObject {
         AlbumArtProvider* m_artProvider = nullptr;
         int m_artRevision = 0;
         bool m_hasArt = false;
+        QColor m_artAccent = QColor("#4CC2FF");
         qint64 m_lastMediaKeyMs = 0;
         bool m_seenFirstUpdate = false;
 };

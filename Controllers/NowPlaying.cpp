@@ -75,6 +75,72 @@ bool NowPlaying::hasArt() const {
     return m_hasArt;
 }
 
+QColor NowPlaying::artAccent() const {
+    return m_artAccent;
+}
+
+QColor NowPlaying::computeArtAccent(const QImage& art) {
+    if(art.isNull())
+        return QColor("#4CC2FF");
+    // average a downscaled copy, weighting saturated pixels so the accent isn't muddy
+    const QImage small =
+        art.scaled(24, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation).convertToFormat(QImage::Format_ARGB32);
+    double r = 0, g = 0, b = 0, weight = 0;
+    for(int y = 0; y < small.height(); ++y) {
+        const QRgb* line = reinterpret_cast<const QRgb*>(small.constScanLine(y));
+        for(int x = 0; x < small.width(); ++x) {
+            const QColor c(line[x]);
+            const double s = c.saturationF();
+            const double w = 0.1 + s * s; // favour colourful pixels
+            r += c.redF() * w;
+            g += c.greenF() * w;
+            b += c.blueF() * w;
+            weight += w;
+        }
+    }
+    if(weight <= 0)
+        return QColor("#4CC2FF");
+    QColor c = QColor::fromRgbF(r / weight, g / weight, b / weight);
+    // ensure it stays vivid and readable on both light and dark surfaces
+    float h, s, l, a;
+    c.getHslF(&h, &s, &l, &a);
+    s = qBound(0.45f, s < 0.35f ? 0.5f : s, 1.0f);
+    l = qBound(0.5f, l, 0.68f);
+    c.setHslF(h < 0 ? 0.55f : h, s, l);
+    return c;
+}
+
+QString NowPlaying::playerName() const {
+    QString id = m_track.sourceApp;
+    // AUMIDs look like "Family!AppId" for packaged apps, or "Spotify.exe" for desktop apps
+    const int bang = id.lastIndexOf(QLatin1Char('!'));
+    if(bang >= 0)
+        id = id.mid(bang + 1);
+    if(id.endsWith(QStringLiteral(".exe"), Qt::CaseInsensitive))
+        id.chop(4);
+    return id;
+}
+
+int NowPlaying::repeatMode() const {
+    return m_track.repeatMode;
+}
+
+bool NowPlaying::shuffle() const {
+    return m_track.shuffle;
+}
+
+bool NowPlaying::canSeek() const {
+    return m_track.canSeek;
+}
+
+bool NowPlaying::canRepeat() const {
+    return m_track.canRepeat;
+}
+
+bool NowPlaying::canShuffle() const {
+    return m_track.canShuffle;
+}
+
 void NowPlaying::playPause() {
     if(m_controller)
         mf::togglePlayPause(*m_controller, m_track.state);
@@ -88,6 +154,40 @@ void NowPlaying::next() {
 void NowPlaying::previous() {
     if(m_controller)
         m_controller->previous();
+}
+
+void NowPlaying::seekToFraction(double fraction) {
+    if(m_controller && m_track.durationMs > 0) {
+        const double clamped = fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction);
+        m_controller->seek(static_cast<qint64>(clamped * m_track.durationMs));
+    }
+}
+
+void NowPlaying::cycleRepeat() {
+    if(m_controller)
+        m_controller->setRepeatMode((m_track.repeatMode + 1) % 3);
+}
+
+void NowPlaying::toggleShuffle() {
+    if(m_controller)
+        m_controller->setShuffle(!m_track.shuffle);
+}
+
+int NowPlaying::sessionCount() const {
+    return m_controller ? m_controller->sessionCount() : 1;
+}
+
+int NowPlaying::selectedSessionIndex() const {
+    return m_controller ? m_controller->selectedSessionIndex() : 0;
+}
+
+void NowPlaying::cycleSession(int delta) {
+    if(m_controller)
+        m_controller->cycleSession(delta);
+}
+
+void NowPlaying::noteSessionsChanged() {
+    emit sessionsChanged();
 }
 
 void NowPlaying::applyTrack(const mf::TrackInfo& track) {
@@ -110,7 +210,7 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     if(identityChanged) {
         const bool stopped = track.title.isEmpty() && track.artist.isEmpty();
         // a title change within the manual window means the user pressed next/prev -> media flyout;
-        // otherwise the track auto-advanced -> Next Up flyout
+        // otherwise the track auto-advanced -> Next Up flyout (which now shows the newly started track)
         const bool manual = (QDateTime::currentMSecsSinceEpoch() - m_lastMediaKeyMs) < 1500;
         if(stopped || manual)
             emit trackUpdated();
@@ -129,6 +229,7 @@ void NowPlaying::applyArt(const QImage& art) {
     if(m_artProvider)
         m_artProvider->setImage(art);
     m_hasArt = !art.isNull();
+    m_artAccent = computeArtAccent(art);
     ++m_artRevision;
     emit changed();
 }

@@ -8,6 +8,8 @@ class LockKeysController : public QObject {
         Q_OBJECT
         Q_PROPERTY(QString keyName READ keyName NOTIFY changed)
         Q_PROPERTY(bool on READ on NOTIFY changed)
+        // 0 = Caps, 1 = Num, 2 = Scroll, 3 = Insert
+        Q_PROPERTY(int keyType READ keyType NOTIFY changed)
 
     public:
         explicit LockKeysController(QObject* parent = nullptr);
@@ -17,6 +19,7 @@ class LockKeysController : public QObject {
 
         QString keyName() const;
         bool on() const;
+        int keyType() const;
 
         // internal: invoked by the keyboard hook on the main thread
         void handleToggle(int vk);
@@ -28,4 +31,5 @@ class LockKeysController : public QObject {
     private:
         QString m_keyName;
         bool m_on = false;
+        int m_keyType = 0;
 };

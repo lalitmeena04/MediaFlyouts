@@ -8,7 +8,7 @@ Text {
     text: glyph
     font.family: Fluent.fontFamily
     font.pixelSize: size
-    color: "#E0E0E0"
+    color: theme.textPrimary
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignHCenter
 }

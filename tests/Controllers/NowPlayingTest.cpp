@@ -15,6 +15,12 @@ class MockController : public IPlaybackController {
         MOCK_METHOD(void, pause, (), (override));
         MOCK_METHOD(void, next, (), (override));
         MOCK_METHOD(void, previous, (), (override));
+        MOCK_METHOD(void, seek, (qint64), (override));
+        MOCK_METHOD(void, setRepeatMode, (int), (override));
+        MOCK_METHOD(void, setShuffle, (bool), (override));
+        MOCK_METHOD(int, sessionCount, (), (const, override));
+        MOCK_METHOD(int, selectedSessionIndex, (), (const, override));
+        MOCK_METHOD(void, cycleSession, (int), (override));
 };
 
 TrackInfo makeTrack(const QString& title, const QString& artist, PlaybackState state = PlaybackState::Playing) {
@@ -146,4 +152,163 @@ TEST(NowPlayingTest, ApplyArtTogglesHasArtAndArtSource) {
 
     np.applyArt(QImage());
     EXPECT_FALSE(np.hasArt());
+}
+
+TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
+    NowPlaying np;
+    // default accent before any art
+    EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
+
+    QImage red(8, 8, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    np.applyArt(red);
+    const QColor accent = np.artAccent();
+    EXPECT_GT(accent.red(), accent.green());
+    EXPECT_GT(accent.red(), accent.blue());
+
+    // clearing art restores the default accent
+    np.applyArt(QImage());
+    EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
+}
+
+TEST(NowPlayingTest, SeekToFractionForwardsClampedPosition) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"));
+    t.durationMs = 200000;
+    t.canSeek = true;
+    np.applyTrack(t);
+
+    EXPECT_CALL(controller, seek(100000)).Times(1);
+    np.seekToFraction(0.5);
+
+    EXPECT_CALL(controller, seek(0)).Times(1);
+    np.seekToFraction(-1.0); // clamps below zero
+
+    EXPECT_CALL(controller, seek(200000)).Times(1);
+    np.seekToFraction(2.0); // clamps to the duration
+}
+
+TEST(NowPlayingTest, SeekToFractionNoOpWithoutDuration) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"))); // durationMs stays 0
+
+    EXPECT_CALL(controller, seek(::testing::_)).Times(0);
+    np.seekToFraction(0.5);
+}
+
+TEST(NowPlayingTest, CycleRepeatAdvancesModuloThree) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"));
+    t.repeatMode = 0;
+    np.applyTrack(t);
+    EXPECT_CALL(controller, setRepeatMode(1)).Times(1);
+    np.cycleRepeat();
+
+    t.repeatMode = 2;
+    np.applyTrack(t);
+    EXPECT_CALL(controller, setRepeatMode(0)).Times(1); // 2 -> 0 wraps around
+    np.cycleRepeat();
+}
+
+TEST(NowPlayingTest, ToggleShuffleInvertsCurrentState) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"));
+    t.shuffle = false;
+    np.applyTrack(t);
+    EXPECT_CALL(controller, setShuffle(true)).Times(1);
+    np.toggleShuffle();
+
+    t.shuffle = true;
+    np.applyTrack(t);
+    EXPECT_CALL(controller, setShuffle(false)).Times(1);
+    np.toggleShuffle();
+}
+
+TEST(NowPlayingTest, CycleSessionForwardsDelta) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    EXPECT_CALL(controller, cycleSession(1)).Times(1);
+    EXPECT_CALL(controller, cycleSession(-1)).Times(1);
+    np.cycleSession(1);
+    np.cycleSession(-1);
+}
+
+TEST(NowPlayingTest, SessionCountAndIndexReflectController) {
+    NowPlaying np;
+    MockController controller;
+    ON_CALL(controller, sessionCount()).WillByDefault(::testing::Return(3));
+    ON_CALL(controller, selectedSessionIndex()).WillByDefault(::testing::Return(2));
+    np.setController(&controller);
+    EXPECT_EQ(np.sessionCount(), 3);
+    EXPECT_EQ(np.selectedSessionIndex(), 2);
+}
+
+TEST(NowPlayingTest, SessionCountDefaultsToOneWithoutController) {
+    NowPlaying np;
+    EXPECT_EQ(np.sessionCount(), 1);
+    EXPECT_EQ(np.selectedSessionIndex(), 0);
+}
+
+TEST(NowPlayingTest, TransportExtrasAreSafeWithoutController) {
+    NowPlaying np;
+    np.seekToFraction(0.5);
+    np.cycleRepeat();
+    np.toggleShuffle();
+    np.cycleSession(1);
+    SUCCEED();
+}
+
+TEST(NowPlayingTest, PlayerNameStripsExeSuffix) {
+    NowPlaying np;
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"));
+    t.sourceApp = QStringLiteral("Spotify.exe");
+    np.applyTrack(t);
+    EXPECT_EQ(np.playerName(), QStringLiteral("Spotify"));
+}
+
+TEST(NowPlayingTest, PlayerNameExtractsAppIdFromAumid) {
+    NowPlaying np;
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"));
+    t.sourceApp = QStringLiteral("Microsoft.ZuneMusic_8wekyb3d8bbwe!Microsoft.ZuneMusic");
+    np.applyTrack(t);
+    EXPECT_EQ(np.playerName(), QStringLiteral("Microsoft.ZuneMusic"));
+}
+
+TEST(NowPlayingTest, ReflectsRepeatShuffleAndCapabilities) {
+    NowPlaying np;
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"));
+    t.repeatMode = 2;
+    t.shuffle = true;
+    t.canSeek = true;
+    t.canRepeat = true;
+    t.canShuffle = true;
+    np.applyTrack(t);
+    EXPECT_EQ(np.repeatMode(), 2);
+    EXPECT_TRUE(np.shuffle());
+    EXPECT_TRUE(np.canSeek());
+    EXPECT_TRUE(np.canRepeat());
+    EXPECT_TRUE(np.canShuffle());
+}
+
+TEST(NowPlayingTest, ElapsedDurationAndProgressFromPausedPosition) {
+    NowPlaying np;
+    TrackInfo t = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused);
+    t.positionMs = 65000;  // 1:05
+    t.durationMs = 200000; // 3:20
+    np.applyTrack(t);
+    EXPECT_EQ(np.elapsed(), QStringLiteral("1:05"));
+    EXPECT_EQ(np.duration(), QStringLiteral("3:20"));
+    EXPECT_NEAR(np.progress(), 0.325, 1e-3);
+    EXPECT_FALSE(np.isPlaying());
 }

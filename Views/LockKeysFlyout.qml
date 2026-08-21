@@ -11,12 +11,27 @@ Window {
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
 
+    // true once App has placed this flyout, so re-stacking animates while the first show snaps
+    property bool positioned: false
+    Behavior on y {
+        enabled: root.positioned
+        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
+    }
+
+    // per-key toggle for the currently reported lock key (keyType: 0=Caps,1=Num,2=Scroll,3=Insert)
+    function keyEnabled() {
+        switch(lockKeys.keyType) {
+        case 0: return settings.lockKeysCapsEnabled
+        case 1: return settings.lockKeysNumEnabled
+        case 2: return settings.lockKeysScrollEnabled
+        case 3: return settings.lockKeysInsertEnabled
+        }
+        return true
+    }
+
     function showFlyout() {
-        if(!settings.lockKeysEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
+        if(!settings.lockKeysEnabled || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
-        var p = placement.position(width, height)
-        x = p.x
-        y = p.y
         hideTimer.restart()
         root.visible = true
         fadeIn.restart()
@@ -35,7 +50,7 @@ Window {
 
     Timer {
         id: hideTimer
-        interval: 1200
+        interval: settings.lockKeysDuration
         onTriggered: root.hideFlyout()
     }
 
@@ -44,7 +59,8 @@ Window {
         target: root
         property: "opacity"
         to: 1
-        duration: 120
+        duration: settings.flyoutAnimationMs
+        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
     }
 
     NumberAnimation {
@@ -52,7 +68,8 @@ Window {
         target: root
         property: "opacity"
         to: 0
-        duration: 180
+        duration: settings.flyoutAnimationMs
+        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
         onFinished: root.visible = false
     }
 
@@ -60,8 +77,8 @@ Window {
         anchors.fill: parent
         anchors.margins: 8
         radius: 12
-        color: "#EE1E1E1E"
-        border.color: "#22FFFFFF"
+        color: theme.flyout
+        border.color: theme.flyoutBorder
         border.width: 1
 
         Row {
@@ -71,7 +88,7 @@ Window {
             IconLabel {
                 glyph: Fluent.keyboard
                 size: 26
-                color: lockKeys.on ? "#4CC2FF" : "#8A8A8A"
+                color: lockKeys.on ? theme.accent : theme.textMuted
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -81,9 +98,9 @@ Window {
 
                 Text {
                     text: lockKeys.keyName
-                    color: "white"
+                    color: theme.textPrimary
                     font.pixelSize: 15
-                    font.bold: true
+                    font.bold: settings.lockKeysBoldUi
                 }
 
                 Row {
@@ -97,7 +114,7 @@ Window {
                     }
                     Text {
                         text: lockKeys.on ? "On" : "Off"
-                        color: "#C8C8C8"
+                        color: theme.textSecondary
                         font.pixelSize: 12
                     }
                 }

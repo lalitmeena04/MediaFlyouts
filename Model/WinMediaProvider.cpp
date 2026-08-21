@@ -7,7 +7,9 @@
 #include <QMetaObject>
 #include <QString>
 
+#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Media.h>
 #include <winrt/Windows.Storage.Streams.h>
 
 using namespace winrt::Windows::Media::Control;
@@ -20,6 +22,8 @@ WinMediaProvider::~WinMediaProvider() {
     try {
         if(m_manager && m_currentChangedToken.value)
             m_manager.CurrentSessionChanged(m_currentChangedToken);
+        if(m_manager && m_sessionsChangedToken.value)
+            m_manager.SessionsChanged(m_sessionsChangedToken);
     } catch(...) {
     }
 
@@ -48,10 +52,84 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
         co_return;
     }
 
-    m_currentChangedToken =
-        m_manager.CurrentSessionChanged([this](auto&&, auto&&) { hookSession(m_manager.GetCurrentSession()); });
+    m_currentChangedToken = m_manager.CurrentSessionChanged([this](auto&&, auto&&) {
+        // the OS current session drives us unless the user manually picked one
+        if(!m_manual)
+            hookSession(m_manager.GetCurrentSession());
+    });
+
+    m_sessionsChangedToken = m_manager.SessionsChanged([this](auto&&, auto&&) {
+        // if the user's chosen session vanished, fall back to the OS current one
+        if(m_manual) {
+            auto sessions = m_manager.GetSessions();
+            bool stillThere = false;
+            const Session sel = currentSession();
+            for(uint32_t i = 0; i < sessions.Size(); ++i) {
+                if(sel && sessions.GetAt(i) == sel) {
+                    stillThere = true;
+                    break;
+                }
+            }
+            if(!stillThere) {
+                m_manual = false;
+                hookSession(m_manager.GetCurrentSession());
+            }
+        }
+        refreshSessionMeta();
+        QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
+    });
 
     hookSession(m_manager.GetCurrentSession());
+    refreshSessionMeta();
+    QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
+}
+
+void WinMediaProvider::refreshSessionMeta() {
+    if(!m_manager)
+        return;
+    auto sessions = m_manager.GetSessions();
+    const int n = static_cast<int>(sessions.Size());
+    m_sessionCount = n < 1 ? 1 : n;
+    const Session sel = currentSession();
+    int idx = 0;
+    for(int i = 0; i < n; ++i) {
+        if(sel && sessions.GetAt(static_cast<uint32_t>(i)) == sel) {
+            idx = i;
+            break;
+        }
+    }
+    m_selectedIndex = idx;
+}
+
+int WinMediaProvider::sessionCount() const {
+    return m_sessionCount.load();
+}
+
+int WinMediaProvider::selectedSessionIndex() const {
+    return m_selectedIndex.load();
+}
+
+void WinMediaProvider::cycleSession(int delta) {
+    if(!m_manager || delta == 0)
+        return;
+    auto sessions = m_manager.GetSessions();
+    const int n = static_cast<int>(sessions.Size());
+    if(n <= 1)
+        return;
+
+    int current = 0;
+    const Session sel = currentSession();
+    for(int i = 0; i < n; ++i) {
+        if(sel && sessions.GetAt(static_cast<uint32_t>(i)) == sel) {
+            current = i;
+            break;
+        }
+    }
+    const int next = ((current + delta) % n + n) % n;
+    m_manual = true;
+    hookSession(sessions.GetAt(static_cast<uint32_t>(next)));
+    refreshSessionMeta();
+    QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
 }
 
 void WinMediaProvider::hookSession(Session session) {
@@ -104,7 +182,8 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
     }
 
     try {
-        switch(session.GetPlaybackInfo().PlaybackStatus()) {
+        auto info = session.GetPlaybackInfo();
+        switch(info.PlaybackStatus()) {
         case PlaybackStatus::Playing:
             track.state = mf::PlaybackState::Playing;
             break;
@@ -115,6 +194,20 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
             track.state = mf::PlaybackState::Stopped;
             break;
         }
+
+        auto controls = info.Controls();
+        track.canSeek = controls.IsPlaybackPositionEnabled();
+        track.canRepeat = controls.IsRepeatEnabled();
+        track.canShuffle = controls.IsShuffleEnabled();
+        if(auto repeat = info.AutoRepeatMode())
+            track.repeatMode = static_cast<int>(repeat.Value());
+        if(auto shuffle = info.IsShuffleActive())
+            track.shuffle = shuffle.Value();
+    } catch(...) {
+    }
+
+    try {
+        track.sourceApp = QString::fromWCharArray(session.SourceAppUserModelId().c_str());
     } catch(...) {
     }
 
@@ -182,4 +275,34 @@ void WinMediaProvider::next() {
 void WinMediaProvider::previous() {
     if(auto s = currentSession())
         s.TrySkipPreviousAsync();
+}
+
+void WinMediaProvider::seek(qint64 positionMs) {
+    if(auto s = currentSession()) {
+        try {
+            const auto start = s.GetTimelineProperties().StartTime();
+            s.TryChangePlaybackPositionAsync(start.count() + positionMs * 10000); // 100ns ticks
+        } catch(...) {
+        }
+    }
+}
+
+void WinMediaProvider::setRepeatMode(int mode) {
+    if(auto s = currentSession()) {
+        using RepeatMode = winrt::Windows::Media::MediaPlaybackAutoRepeatMode;
+        const RepeatMode m = mode == 1 ? RepeatMode::Track : mode == 2 ? RepeatMode::List : RepeatMode::None;
+        try {
+            s.TryChangeAutoRepeatModeAsync(m);
+        } catch(...) {
+        }
+    }
+}
+
+void WinMediaProvider::setShuffle(bool on) {
+    if(auto s = currentSession()) {
+        try {
+            s.TryChangeShuffleActiveAsync(on);
+        } catch(...) {
+        }
+    }
 }
