@@ -232,11 +232,27 @@ Window {
                         height: 40
                         spacing: 10
 
-                        IconLabel {
-                            glyph: modelData.muted ? Fluent.speakerMute : Fluent.speaker2
-                            size: 16
-                            color: modelData.muted ? theme.textMuted : theme.accent
+                        // real app icon when we have one, else a speaker glyph; the mute glyph wins when muted
+                        Item {
+                            width: 18
+                            height: 18
                             anchors.verticalCenter: parent.verticalCenter
+
+                            Image {
+                                anchors.fill: parent
+                                source: modelData.icon
+                                visible: modelData.icon.length > 0 && !modelData.muted
+                                fillMode: Image.PreserveAspectFit
+                                smooth: true
+                                mipmap: true
+                            }
+                            IconLabel {
+                                anchors.centerIn: parent
+                                visible: modelData.icon.length === 0 || modelData.muted
+                                glyph: modelData.muted ? Fluent.speakerMute : Fluent.speaker2
+                                size: 16
+                                color: modelData.muted ? theme.textMuted : theme.accent
+                            }
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4
@@ -246,7 +262,7 @@ Window {
                         }
 
                         Column {
-                            width: parent.width - 26
+                            width: parent.width - 28
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: 3
 

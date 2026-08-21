@@ -1,28 +1,102 @@
 #include "VolumeMixer.h"
 
+#include <QBuffer>
 #include <QFileInfo>
+#include <QImage>
 #include <QVariantMap>
 
 #include <windows.h>
 
 #include <audiopolicy.h>
 #include <mmdeviceapi.h>
+#include <shellapi.h>
 
 namespace {
 
-QString processName(DWORD pid) {
+QString processImagePath(DWORD pid) {
     if(pid == 0)
-        return QStringLiteral("System sounds");
+        return {};
     HANDLE h = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
     if(!h)
-        return QStringLiteral("PID %1").arg(pid);
+        return {};
     wchar_t buf[MAX_PATH] = {};
     DWORD size = MAX_PATH;
-    QString name;
+    QString path;
     if(QueryFullProcessImageNameW(h, 0, buf, &size))
-        name = QFileInfo(QString::fromWCharArray(buf, size)).completeBaseName();
+        path = QString::fromWCharArray(buf, size);
     CloseHandle(h);
-    return name.isEmpty() ? QStringLiteral("PID %1").arg(pid) : name;
+    return path;
+}
+
+// Copies the pixels out of an HICON into an ARGB image, rebuilding the alpha
+// channel from the AND mask for legacy icons that ship without one.
+QImage imageFromHICON(HICON icon) {
+    if(!icon)
+        return {};
+    ICONINFO ii = {};
+    if(!GetIconInfo(icon, &ii))
+        return {};
+    BITMAP bm = {};
+    GetObject(ii.hbmColor, sizeof(bm), &bm);
+    const int w = bm.bmWidth;
+    const int h = bm.bmHeight;
+
+    BITMAPINFO bi = {};
+    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bi.bmiHeader.biWidth = w;
+    bi.bmiHeader.biHeight = -h; // top-down
+    bi.bmiHeader.biPlanes = 1;
+    bi.bmiHeader.biBitCount = 32;
+    bi.bmiHeader.biCompression = BI_RGB;
+
+    QImage img(w, h, QImage::Format_ARGB32);
+    HDC dc = GetDC(nullptr);
+    GetDIBits(dc, ii.hbmColor, 0, h, img.bits(), &bi, DIB_RGB_COLORS);
+
+    bool hasAlpha = false;
+    for(int y = 0; y < h && !hasAlpha; ++y) {
+        const QRgb* line = reinterpret_cast<const QRgb*>(img.constScanLine(y));
+        for(int x = 0; x < w; ++x)
+            if(qAlpha(line[x]) != 0) {
+                hasAlpha = true;
+                break;
+            }
+    }
+    if(!hasAlpha && ii.hbmMask) {
+        QImage mask(w, h, QImage::Format_ARGB32);
+        GetDIBits(dc, ii.hbmMask, 0, h, mask.bits(), &bi, DIB_RGB_COLORS);
+        for(int y = 0; y < h; ++y) {
+            QRgb* line = reinterpret_cast<QRgb*>(img.scanLine(y));
+            const QRgb* mline = reinterpret_cast<const QRgb*>(mask.constScanLine(y));
+            for(int x = 0; x < w; ++x)
+                line[x] = qRgba(qRed(line[x]), qGreen(line[x]), qBlue(line[x]), qRed(mline[x]) == 0 ? 255 : 0);
+        }
+    }
+    ReleaseDC(nullptr, dc);
+    if(ii.hbmColor)
+        DeleteObject(ii.hbmColor);
+    if(ii.hbmMask)
+        DeleteObject(ii.hbmMask);
+    return img;
+}
+
+QString iconDataUri(const QString& exePath) {
+    if(exePath.isEmpty())
+        return {};
+    SHFILEINFOW sfi = {};
+    if(!SHGetFileInfoW(reinterpret_cast<const wchar_t*>(exePath.utf16()), 0, &sfi, sizeof(sfi),
+                       SHGFI_ICON | SHGFI_LARGEICON))
+        return {};
+    QImage img = imageFromHICON(sfi.hIcon);
+    if(sfi.hIcon)
+        DestroyIcon(sfi.hIcon);
+    if(img.isNull())
+        return {};
+    QByteArray png;
+    QBuffer buf(&png);
+    buf.open(QIODevice::WriteOnly);
+    img.save(&buf, "PNG");
+    return QStringLiteral("data:image/png;base64,") + QString::fromLatin1(png.toBase64());
 }
 
 } // namespace
@@ -103,13 +177,16 @@ void VolumeMixer::refresh() {
         control->GetState(&state);
 
         QString name;
+        QString iconUri;
         if(control2) {
             if(control2->IsSystemSoundsSession() == S_OK) {
                 name = QStringLiteral("System sounds");
             } else {
                 DWORD pid = 0;
                 control2->GetProcessId(&pid);
-                name = processName(pid);
+                const QString path = processImagePath(pid);
+                name = path.isEmpty() ? QStringLiteral("PID %1").arg(pid) : QFileInfo(path).completeBaseName();
+                iconUri = iconDataUri(path);
             }
         }
 
@@ -122,6 +199,7 @@ void VolumeMixer::refresh() {
             QVariantMap entry;
             entry[QStringLiteral("index")] = static_cast<int>(m_entries.size());
             entry[QStringLiteral("name")] = name;
+            entry[QStringLiteral("icon")] = iconUri;
             entry[QStringLiteral("volume")] = qRound(level * 100.0f);
             entry[QStringLiteral("muted")] = muted == TRUE;
             m_sessions.append(entry);
