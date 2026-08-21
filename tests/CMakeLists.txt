@@ -54,7 +54,7 @@ if(WIN32)
         Controllers/Win32ControllersTest.cpp
     )
     target_compile_definitions(mediaflyout_gtest PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib)
+    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib)
 endif()
 
 # --- Qt Test: one executable per class (each file has its own QTEST_GUILESS_MAIN) ---

@@ -101,7 +101,7 @@ if (WIN32)
         Controllers/AccentWatcher.h          Controllers/AccentWatcher.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib)
+    target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib)
 endif()
 
 if(MEDIAFLYOUTS_BUILD_TESTS)

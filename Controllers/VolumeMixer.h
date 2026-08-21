@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QHash>
 #include <QObject>
 #include <QVariantList>
 
@@ -37,4 +38,6 @@ class VolumeMixer : public QObject {
         };
         std::vector<Entry> m_entries;
         QVariantList m_sessions;
+        // exe path -> icon data URI, so icons aren't re-extracted on every refresh
+        QHash<QString, QString> m_iconCache;
 };
