@@ -676,6 +676,14 @@ Window {
                         valueText: (settings.nextUpDuration / 1000).toFixed(1) + " s"
                         onMoved: settings.nextUpDuration = Math.round(value)
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Up next style"
+                        description: "How the up-next flyout is laid out."
+                        model: ["Now playing card", "Compact pill"]
+                        currentIndex: settings.nextUpStyle
+                        onActivated: settings.nextUpStyle = index
+                    }
                 }
 
                 // Volume page

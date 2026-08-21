@@ -64,6 +64,7 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.flyoutAnimationEasingStyle(), 3);
     QCOMPARE(s.volumeFlyoutDuration(), 1800);
     QCOMPARE(s.nextUpDuration(), 2000);
+    QCOMPARE(s.nextUpStyle(), 0);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
     QCOMPARE(s.taskbarWidgetSide(), 0);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);

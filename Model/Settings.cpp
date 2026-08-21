@@ -43,6 +43,8 @@ void Settings::reload() {
     m_flyoutAnimationEasingStyle = m_store.value(QStringLiteral("flyoutAnimationEasingStyle"), 3).toInt();
     m_volumeFlyoutDuration = m_store.value(QStringLiteral("volumeFlyoutDuration"), 1800).toInt();
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
+    // nextUpStyle: 0 = now-playing card, 1 = compact "up next" pill
+    m_nextUpStyle = m_store.value(QStringLiteral("nextUpStyle"), 0).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     // widget side: 0 = left, 1 = center, 2 = right
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
@@ -226,6 +228,9 @@ int Settings::volumeFlyoutDuration() const {
 int Settings::nextUpDuration() const {
     return m_nextUpDuration;
 }
+int Settings::nextUpStyle() const {
+    return m_nextUpStyle;
+}
 int Settings::taskbarWidgetOffset() const {
     return m_taskbarWidgetOffset;
 }
@@ -384,6 +389,9 @@ void Settings::setVolumeFlyoutDuration(int v) {
 }
 void Settings::setNextUpDuration(int v) {
     assignInt("nextUpDuration", m_nextUpDuration, v);
+}
+void Settings::setNextUpStyle(int v) {
+    assignInt("nextUpStyle", m_nextUpStyle, v);
 }
 void Settings::setTaskbarWidgetOffset(int v) {
     assignInt("taskbarWidgetOffset", m_taskbarWidgetOffset, v);

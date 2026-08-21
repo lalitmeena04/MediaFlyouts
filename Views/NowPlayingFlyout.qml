@@ -4,10 +4,11 @@ import MediaFlyouts
 
 Window {
     id: root
+    readonly property bool compact: settings.nextUpStyle === 1
     // widen to fit the track text, clamped to a sensible range
     readonly property int contentWidth: Math.max(titleMetrics.implicitWidth, artistMetrics.implicitWidth, 80)
-    width: Math.round(Math.max(300, Math.min(560, 100 + contentWidth)))
-    height: 96
+    width: Math.round(Math.max(300, Math.min(560, (root.compact ? 190 : 100) + contentWidth)))
+    height: root.compact ? 64 : 96
     visible: false
     opacity: 0
     color: "transparent"
@@ -88,6 +89,7 @@ Window {
             anchors.fill: parent
             anchors.margins: 12
             spacing: 12
+            visible: !root.compact
 
             Rectangle {
                 width: 64
@@ -135,6 +137,78 @@ Window {
                     text: nowPlaying.artist
                     color: theme.textSecondary
                     font.pixelSize: 12
+                    elide: Text.ElideRight
+                }
+            }
+        }
+
+        // compact "up next" pill: [note Up next:] [art] [title / artist]
+        Row {
+            anchors.fill: parent
+            anchors.leftMargin: 14
+            anchors.rightMargin: 14
+            spacing: 10
+            visible: root.compact
+
+            Row {
+                id: upNextLabel
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 5
+                IconLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    glyph: Fluent.musicNote
+                    size: 14
+                    color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+                }
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Up next:"
+                    color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+                    font.pixelSize: 12
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                width: 36
+                height: 36
+                radius: 6
+                color: theme.artPlaceholder
+                clip: true
+                anchors.verticalCenter: parent.verticalCenter
+                RoundedArt {
+                    anchors.fill: parent
+                    source: nowPlaying.artSource
+                    visible: nowPlaying.hasArt
+                    radius: 6
+                }
+                IconLabel {
+                    anchors.centerIn: parent
+                    visible: !nowPlaying.hasArt
+                    glyph: Fluent.musicNote
+                    size: 16
+                    color: theme.textTertiary
+                }
+            }
+
+            Column {
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width - 36 - 10 - upNextLabel.width - 10
+                spacing: 1
+
+                Text {
+                    width: parent.width
+                    text: nowPlaying.title
+                    color: theme.textPrimary
+                    font.pixelSize: 13
+                    font.bold: true
+                    elide: Text.ElideRight
+                }
+                Text {
+                    width: parent.width
+                    text: nowPlaying.artist
+                    color: theme.textSecondary
+                    font.pixelSize: 11
                     elide: Text.ElideRight
                 }
             }

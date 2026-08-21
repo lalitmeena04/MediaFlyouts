@@ -58,6 +58,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.flyoutAnimationEasingStyle(), 3);
     EXPECT_EQ(s.volumeFlyoutDuration(), 1800);
     EXPECT_EQ(s.nextUpDuration(), 2000);
+    EXPECT_EQ(s.nextUpStyle(), 0);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
     EXPECT_EQ(s.taskbarWidgetSide(), 0);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);

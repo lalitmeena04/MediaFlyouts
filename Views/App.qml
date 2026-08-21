@@ -17,6 +17,7 @@ QtObject {
     }
     property NowPlayingFlyout nextUpFlyout: NowPlayingFlyout {
         onVisibleChanged: app.restack()
+        onHeightChanged: app.restack()
     }
     property Dashboard dashboard: Dashboard {}
     property VolumeMixerWindow volumeMixer: VolumeMixerWindow {}
