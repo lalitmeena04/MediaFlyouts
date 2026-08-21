@@ -80,3 +80,37 @@ TEST(FftTest, FrequencyBarsLightBarAtToneFrequency) {
         maxV = std::max(maxV, v);
     EXPECT_GT(maxV, 0.5); // the tone should drive at least one bar high
 }
+
+TEST(FftTest, MagnitudeSpectrumTruncatesToLargestPowerOfTwo) {
+    // 100 samples -> largest power of two is 64 -> 32 magnitude bins
+    const std::vector<double> mags = mf::magnitudeSpectrum(std::vector<double>(100, 0.5));
+    EXPECT_EQ(mags.size(), static_cast<std::size_t>(32));
+}
+
+TEST(FftTest, SpectrumBandsGuardInvalidBandCount) {
+    const std::vector<double> mags(64, 1.0);
+    EXPECT_TRUE(mf::spectrumBands(mags, 0).empty());
+    EXPECT_TRUE(mf::spectrumBands(mags, -3).empty());
+}
+
+TEST(FftTest, SpectrumBandsZeroForTinyInput) {
+    const std::vector<double> bands = mf::spectrumBands(std::vector<double>(1, 1.0), 4);
+    ASSERT_EQ(bands.size(), static_cast<std::size_t>(4));
+    for(double v : bands)
+        EXPECT_DOUBLE_EQ(v, 0.0);
+}
+
+TEST(FftTest, FrequencyBarsGuardInvalidArguments) {
+    const std::vector<double> mags(512, 1.0);
+    EXPECT_TRUE(mf::frequencyBars(mags, 48000.0, 1024, 0).empty()); // no bars
+
+    const std::vector<double> emptyMags = mf::frequencyBars({}, 48000.0, 1024, 8);
+    ASSERT_EQ(emptyMags.size(), static_cast<std::size_t>(8));
+    for(double v : emptyMags)
+        EXPECT_DOUBLE_EQ(v, 0.0);
+
+    const std::vector<double> badRate = mf::frequencyBars(mags, 0.0, 1024, 8);
+    ASSERT_EQ(badRate.size(), static_cast<std::size_t>(8));
+    for(double v : badRate)
+        EXPECT_DOUBLE_EQ(v, 0.0);
+}

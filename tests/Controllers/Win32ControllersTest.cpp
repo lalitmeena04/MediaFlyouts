@@ -18,6 +18,7 @@ TEST(Win32ControllersTest, AudioCaptureStartsSilentAndInactive) {
     AudioCapture capture(24);
     EXPECT_FALSE(capture.active());
     EXPECT_EQ(capture.bands().size(), 24);
+    EXPECT_DOUBLE_EQ(capture.level(), 0.0);
     for(const QVariant& band : capture.bands())
         EXPECT_DOUBLE_EQ(band.toDouble(), 0.0);
 }
