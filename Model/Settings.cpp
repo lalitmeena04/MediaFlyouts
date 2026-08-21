@@ -54,6 +54,8 @@ void Settings::reload() {
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     // centered = mirrored bars around the middle; otherwise they grow from the bottom
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
+    // visualizerStyle: 0 = bars, 1 = radial, 2 = waveform, 3 = particles
+    m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // accentMode: 0 = theme default, 1 = match system, 2 = custom
@@ -278,6 +280,9 @@ bool Settings::taskbarVisualizerEnabled() const {
 bool Settings::taskbarVisualizerCentered() const {
     return m_taskbarVisualizerCentered;
 }
+int Settings::visualizerStyle() const {
+    return m_visualizerStyle;
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
@@ -445,6 +450,9 @@ void Settings::setTaskbarVisualizerEnabled(bool v) {
 }
 void Settings::setTaskbarVisualizerCentered(bool v) {
     assign("taskbarVisualizerCentered", m_taskbarVisualizerCentered, v);
+}
+void Settings::setVisualizerStyle(int v) {
+    assignInt("visualizerStyle", m_visualizerStyle, v);
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);

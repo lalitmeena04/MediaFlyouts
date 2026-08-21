@@ -18,6 +18,7 @@ class AudioCapture : public QObject {
         Q_OBJECT
         Q_PROPERTY(QVariantList bands READ bands NOTIFY bandsChanged)
         Q_PROPERTY(bool active READ active NOTIFY activeChanged)
+        Q_PROPERTY(double level READ level NOTIFY levelChanged)
 
     public:
         explicit AudioCapture(int bandCount = 24, QObject* parent = nullptr);
@@ -25,6 +26,7 @@ class AudioCapture : public QObject {
 
         QVariantList bands() const;
         bool active() const;
+        double level() const;
 
     public slots:
         void start();
@@ -33,6 +35,9 @@ class AudioCapture : public QObject {
     signals:
         void bandsChanged();
         void activeChanged();
+        void levelChanged();
+        // emitted on a detected bass beat, drives the particle visualizer
+        void beat();
 
     private:
         void poll();
@@ -54,4 +59,7 @@ class AudioCapture : public QObject {
         int m_sampleRate = 48000;
         bool m_isFloat = false;
         bool m_active = false;
+        double m_level = 0.0;
+        double m_bassAvg = 0.0;
+        qint64 m_lastBeatMs = 0;
 };

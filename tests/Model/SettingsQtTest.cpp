@@ -72,6 +72,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.taskbarWidgetScrollingEnabled());
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
+    QCOMPARE(s.visualizerStyle(), 0);
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());
     QCOMPARE(s.accentMode(), 0);

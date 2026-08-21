@@ -59,6 +59,7 @@ class Settings : public QObject {
                        changed)
         Q_PROPERTY(bool taskbarVisualizerCentered READ taskbarVisualizerCentered WRITE setTaskbarVisualizerCentered
                        NOTIFY changed)
+        Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
         Q_PROPERTY(int accentMode READ accentMode WRITE setAccentMode NOTIFY changed)
@@ -120,6 +121,7 @@ class Settings : public QObject {
         bool taskbarWidgetScrollingEnabled() const;
         bool taskbarVisualizerEnabled() const;
         bool taskbarVisualizerCentered() const;
+        int visualizerStyle() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
         int accentMode() const;
@@ -172,6 +174,7 @@ class Settings : public QObject {
         void setTaskbarWidgetScrollingEnabled(bool v);
         void setTaskbarVisualizerEnabled(bool v);
         void setTaskbarVisualizerCentered(bool v);
+        void setVisualizerStyle(int v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
         void setAccentMode(int v);
@@ -232,6 +235,7 @@ class Settings : public QObject {
         bool m_taskbarWidgetScrollingEnabled;
         bool m_taskbarVisualizerEnabled;
         bool m_taskbarVisualizerCentered;
+        int m_visualizerStyle;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
         int m_accentMode;

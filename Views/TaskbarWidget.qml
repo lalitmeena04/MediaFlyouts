@@ -69,36 +69,12 @@ Window {
             id: hover
         }
 
-        // spectrum equalizer drawn behind the media info; mirrored (centered) or bottom-anchored
-        Row {
+        // spectrum visualizer drawn behind the media info; style is user-selectable
+        TaskbarVisualizer {
             id: visualizer
             visible: settings.taskbarVisualizerEnabled
             anchors.fill: parent
             anchors.margins: 3
-            spacing: 2
-            layoutDirection: Qt.LeftToRight
-            Repeater {
-                model: audioCapture.bands
-                delegate: Item {
-                    required property var modelData
-                    width: (visualizer.width - (audioCapture.bands.length - 1) * 2) / Math.max(1, audioCapture.bands.length)
-                    height: visualizer.height
-                    Rectangle {
-                        width: parent.width
-                        radius: width / 2
-                        opacity: 0.7
-                        color: theme.accent
-                        // mirrored bars grow from the middle; otherwise from the bottom
-                        height: settings.taskbarVisualizerCentered
-                            ? Math.max(width, parent.height * modelData)
-                            : Math.max(2, parent.height * modelData)
-                        y: settings.taskbarVisualizerCentered
-                            ? (parent.height - height) / 2
-                            : parent.height - height
-                        Behavior on height { NumberAnimation { duration: 90 } }
-                    }
-                }
-            }
         }
 
         MouseArea {

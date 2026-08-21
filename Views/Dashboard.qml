@@ -832,8 +832,18 @@ Window {
                         value: settings.taskbarVisualizerEnabled
                         onToggled: settings.taskbarVisualizerEnabled = value
                     }
-                    SettingRow {
+                    SettingCombo {
                         visible: settings.taskbarVisualizerEnabled
+                        x: 16
+                        width: parent.width - 16
+                        label: "Visualizer style"
+                        description: "How the audio is drawn behind the widget."
+                        model: ["Bars", "Radial", "Waveform", "Particles"]
+                        currentIndex: settings.visualizerStyle
+                        onActivated: settings.visualizerStyle = index
+                    }
+                    SettingRow {
+                        visible: settings.taskbarVisualizerEnabled && settings.visualizerStyle === 0
                         x: 16
                         width: parent.width - 16
                         label: "Mirror the equalizer"

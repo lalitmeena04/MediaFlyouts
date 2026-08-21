@@ -1,5 +1,6 @@
 #include "AudioCapture.h"
 
+#include <QDateTime>
 #include <QtGlobal>
 
 #include <cmath>
@@ -37,6 +38,10 @@ QVariantList AudioCapture::bands() const {
 
 bool AudioCapture::active() const {
     return m_active;
+}
+
+double AudioCapture::level() const {
+    return m_level;
 }
 
 void AudioCapture::start() {
@@ -133,6 +138,11 @@ void AudioCapture::publishSilence() {
     for(int i = 0; i < m_bandCount; ++i)
         m_bands[i] = 0.0;
     std::fill(m_smoothed.begin(), m_smoothed.end(), 0.0);
+    m_bassAvg = 0.0;
+    if(m_level != 0.0) {
+        m_level = 0.0;
+        emit levelChanged();
+    }
     emit bandsChanged();
 }
 
@@ -195,4 +205,26 @@ void AudioCapture::poll() {
     }
     if(changed)
         emit bandsChanged();
+
+    // overall level (particle intensity) and a simple bass-energy beat detector
+    double sum = 0.0;
+    const int bassCount = std::max(1, m_bandCount / 4);
+    double bass = 0.0;
+    for(int i = 0; i < m_bandCount; ++i) {
+        sum += raw[i];
+        if(i < bassCount)
+            bass += raw[i];
+    }
+    const double lvl = sum / m_bandCount;
+    bass /= bassCount;
+    if(!qFuzzyCompare(lvl + 1.0, m_level + 1.0)) {
+        m_level = lvl;
+        emit levelChanged();
+    }
+    const qint64 now = QDateTime::currentMSecsSinceEpoch();
+    if(bass > 0.16 && bass > m_bassAvg * 1.35 && (now - m_lastBeatMs) > 180) {
+        m_lastBeatMs = now;
+        emit beat();
+    }
+    m_bassAvg = m_bassAvg * 0.9 + bass * 0.1;
 }
