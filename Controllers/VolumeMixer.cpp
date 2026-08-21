@@ -120,6 +120,7 @@ QVariantList VolumeMixer::sessions() const {
 
 void VolumeMixer::refresh() {
     clear();
+    const QVariantList previous = m_sessions;
     m_sessions.clear();
 
     IMMDeviceEnumerator* enumerator = nullptr;
@@ -186,7 +187,15 @@ void VolumeMixer::refresh() {
                 control2->GetProcessId(&pid);
                 const QString path = processImagePath(pid);
                 name = path.isEmpty() ? QStringLiteral("PID %1").arg(pid) : QFileInfo(path).completeBaseName();
-                iconUri = iconDataUri(path);
+                if(!path.isEmpty()) {
+                    auto it = m_iconCache.constFind(path);
+                    if(it != m_iconCache.constEnd()) {
+                        iconUri = it.value();
+                    } else {
+                        iconUri = iconDataUri(path);
+                        m_iconCache.insert(path, iconUri);
+                    }
+                }
             }
         }
 
@@ -216,7 +225,9 @@ void VolumeMixer::refresh() {
     }
 
     cleanup();
-    emit sessionsChanged();
+    // only notify when the list actually changed so the mixer isn't rebuilt every tick
+    if(m_sessions != previous)
+        emit sessionsChanged();
 }
 
 void VolumeMixer::setSessionVolume(int index, int volume) {

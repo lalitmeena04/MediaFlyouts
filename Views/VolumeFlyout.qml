@@ -7,6 +7,8 @@ Window {
     width: 320
     // grows to fit the per-app mixer when expanded
     property bool expanded: false
+    // true while an app slider is being dragged, so the refresh timer doesn't rebuild the list
+    property bool appDragging: false
     readonly property int sessionCount: volumeMixer.sessions.length
     height: 64 + (expanded ? (16 + Math.max(1, sessionCount) * 48) : 0)
     visible: false
@@ -57,7 +59,7 @@ Window {
     // keep the app levels fresh while the mixer is open
     Timer {
         interval: 1000
-        running: root.visible && root.expanded
+        running: root.visible && root.expanded && !root.appDragging
         repeat: true
         onTriggered: volumeMixer.refresh()
     }
@@ -227,7 +229,10 @@ Window {
                 Repeater {
                     model: volumeMixer.sessions
                     delegate: Row {
+                        id: appRow
                         required property var modelData
+                        // optimistic value so the handle tracks the pointer instead of the 1s refresh
+                        property real shown: modelData.volume
                         width: parent.width
                         height: 40
                         spacing: 10
@@ -282,7 +287,7 @@ Window {
                                 color: theme.track
 
                                 Rectangle {
-                                    width: appTrack.width * (modelData.volume / 100)
+                                    width: appTrack.width * (appRow.shown / 100)
                                     height: parent.height
                                     radius: 2.5
                                     color: modelData.muted ? theme.textMuted : theme.accent
@@ -293,17 +298,19 @@ Window {
                                     radius: 5.5
                                     color: theme.textPrimary
                                     y: (parent.height - height) / 2
-                                    x: Math.max(0, Math.min(appTrack.width - width, appTrack.width * (modelData.volume / 100) - width / 2))
+                                    x: Math.max(0, Math.min(appTrack.width - width, appTrack.width * (appRow.shown / 100) - width / 2))
                                 }
                                 MouseArea {
                                     anchors.fill: parent
                                     anchors.margins: -8
                                     function setFromX(px) {
                                         const ratio = Math.max(0, Math.min(1, px / appTrack.width))
-                                        volumeMixer.setSessionVolume(modelData.index, Math.round(ratio * 100))
+                                        appRow.shown = Math.round(ratio * 100)
+                                        volumeMixer.setSessionVolume(modelData.index, appRow.shown)
                                         hideTimer.stop()
                                     }
-                                    onPressed: (mouse) => setFromX(mouse.x)
+                                    onPressed: (mouse) => { root.appDragging = true; setFromX(mouse.x) }
+                                    onReleased: root.appDragging = false
                                     onPositionChanged: (mouse) => {
                                         if(pressed)
                                             setFromX(mouse.x)
