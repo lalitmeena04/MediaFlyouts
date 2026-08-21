@@ -36,16 +36,38 @@ QIcon renderGlyphIcon(const QString& family, QChar glyph) {
 TrayController::TrayController(const QString& iconFamily, Settings* settings, QObject* parent)
     : QObject(parent), m_iconFamily(iconFamily), m_settings(settings) {
     m_menu = new QMenu();
-    QAction* dashAction = m_menu->addAction(QStringLiteral("Dashboard"));
-    QAction* flyoutAction = m_menu->addAction(QStringLiteral("Show Media Flyout"));
-    QAction* mixerAction = m_menu->addAction(QStringLiteral("Volume Mixer"));
-    QAction* configAction = m_menu->addAction(QStringLiteral("Open Config Folder"));
+    // dark, rounded, icon-per-item menu to match a Fluent-style tray menu
+    m_menu->setStyleSheet(QStringLiteral(
+        "QMenu { background-color: #2b2b2b; color: #ffffff; border: 1px solid #3d3d3d; border-radius: 8px; "
+        "padding: 6px; }"
+        "QMenu::item { padding: 8px 34px 8px 12px; border-radius: 6px; margin: 2px 4px; }"
+        "QMenu::item:selected { background-color: #3a3a3a; }"
+        "QMenu::icon { padding-left: 10px; }"
+        "QMenu::separator { height: 1px; background: #3d3d3d; margin: 6px 10px; }"));
+
+    QAction* dashAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF6B3)), QStringLiteral("Settings"));
+    QAction* flyoutAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF610)), QStringLiteral("Show Media Flyout"));
+    QAction* mixerAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xEB4C)), QStringLiteral("Volume Mixer"));
     m_menu->addSeparator();
-    QAction* quitAction = m_menu->addAction(QStringLiteral("Quit MediaFlyouts"));
+    QAction* repoAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF1FB)), QStringLiteral("Repository"));
+    QAction* bugAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xE21B)), QStringLiteral("Report a Bug"));
+    QAction* configAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF41D)), QStringLiteral("Open Config Folder"));
+    m_menu->addSeparator();
+    QAction* quitAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF619)), QStringLiteral("Quit MediaFlyouts"));
 
     connect(dashAction, &QAction::triggered, this, &TrayController::openDashboardRequested);
     connect(flyoutAction, &QAction::triggered, this, &TrayController::showFlyoutRequested);
     connect(mixerAction, &QAction::triggered, this, &TrayController::openMixerRequested);
+    connect(repoAction, &QAction::triggered, this,
+            [] { QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts"))); });
+    connect(bugAction, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts/issues/new")));
+    });
     connect(configAction, &QAction::triggered, this, [this] {
         if(m_settings)
             QDesktopServices::openUrl(QUrl::fromLocalFile(m_settings->configDir()));
