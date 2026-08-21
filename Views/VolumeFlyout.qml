@@ -110,8 +110,11 @@ Window {
         }
 
         Column {
-            anchors.fill: parent
-            anchors.margins: 12
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.leftMargin: 12
+            anchors.rightMargin: 12
             spacing: 8
 
             // master volume row

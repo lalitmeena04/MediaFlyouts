@@ -20,7 +20,7 @@ QtObject {
         onHeightChanged: app.restack()
     }
     property Dashboard dashboard: Dashboard {}
-    property VolumeMixerWindow volumeMixer: VolumeMixerWindow {}
+    property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
     property OnboardingWindow onboarding: OnboardingWindow {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         onActivated: flyout.showFlyout()
@@ -96,7 +96,7 @@ QtObject {
         }
 
         function onOpenMixerRequested() {
-            volumeMixer.open()
+            volumeMixerWindow.open()
         }
     }
 
