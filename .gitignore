@@ -53,3 +53,7 @@ dev-notes/
 err.log
 out.log
 e.log
+
+# --- Release artifacts ---
+/release/
+/dist/
