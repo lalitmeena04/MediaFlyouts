@@ -1,0 +1,45 @@
+# QML UI
+
+The UI lives in `Views/` as a QML module. C++ objects are exposed as context
+properties and QML binds to their properties/signals.
+
+## Root
+
+- **App.qml** — non-visual root (`QtObject`) that owns every window/flyout and
+  reacts to tray intents (open dashboard, show flyout, open mixer). It also
+  re-stacks visible flyouts so they don't overlap.
+
+## Flyouts
+
+- **MediaFlyout.qml** — album art, title/artist, transport controls and the
+  draggable seekbar.
+- **VolumeFlyout.qml** — master volume slider + the expandable per-app mixer.
+- **LockKeysFlyout.qml** — Caps/Num/Scroll/Insert indicators.
+- **NowPlayingFlyout.qml** — the "now playing" / "up next" flyout (card or pill).
+
+## Windows
+
+- **Dashboard.qml** — the settings dashboard (sidebar + searchable pages).
+- **VolumeMixerWindow.qml** — standalone per-app mixer.
+- **OnboardingWindow.qml** — first-run wizard.
+- **TaskbarWidget.qml** + **TaskbarVisualizer.qml** — the taskbar now-playing
+  widget and its multi-style audio visualizer.
+
+## Shared components
+
+- **Fluent.qml** (singleton) — Fluent icon glyph codepoints.
+- **Anim.qml** (singleton) — animation easing helpers.
+- **RoundedArt.qml** — album art with rounded corners.
+- **IconLabel.qml** — a glyph-icon label.
+- **SettingRow.qml / SettingCombo.qml / SettingSlider.qml** — dashboard controls.
+
+## Context properties (from `main.cpp`)
+
+`nowPlaying`, `settings`, `theme`, `placement`, `tray`, `updateChecker`,
+`instance`, and (on Windows) `volumeController`, `volumeMixer`, `audioCapture`,
+`taskbar`, `fullscreen`, `lockKeys`, `windowEffects`. QML reads these directly,
+e.g. `nowPlaying.title`, `settings.visualizerStyle`, `theme.accent`,
+`audioCapture.bands`.
+
+The QML module and its resources (including the Fluent icon font) are registered
+via `qt_add_qml_module` in [`CMakeLists.txt`](../../CMakeLists.txt).
