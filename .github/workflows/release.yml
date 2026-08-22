@@ -115,7 +115,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: |
-          gh release create "${{ steps.ver.outputs.tag }}" (Get-ChildItem dist | ForEach-Object FullName) `
-            --title "MediaFlyouts ${{ steps.ver.outputs.tag }}" `
-            --notes "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ steps.ver.outputs.tag }}/CHANGELOG.md) for release notes." `
-            --verify-tag
+          $tag = "${{ steps.ver.outputs.tag }}"
+          $assets = Get-ChildItem dist | ForEach-Object FullName
+
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $assets --clobber
+          } else {
+            gh release create $tag $assets `
+              --title "MediaFlyouts $tag" `
+              --notes "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/$tag/CHANGELOG.md) for release notes." `
+              --verify-tag
+          }
