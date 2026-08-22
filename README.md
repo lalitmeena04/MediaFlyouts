@@ -87,4 +87,4 @@ Issues and pull requests are welcome. Please run the test suite
 
 ## License
 
-See [LICENSE](LICENSE). <!-- TODO: choose and add a license before publishing the release. -->
+MediaFlyouts is released under the [MIT License](LICENSE).

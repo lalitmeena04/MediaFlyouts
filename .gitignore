@@ -57,3 +57,6 @@ e.log
 # --- Release artifacts ---
 /release/
 /dist/
+
+# --- Signing material (never commit certificates or keys) ---
+/signing/

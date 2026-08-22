@@ -56,9 +56,27 @@ powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1
 
 The only thing not in the repo is the **code-signing certificate** for the MSIX.
 The `Publisher` in `AppxManifest.xml` must equal the certificate subject
-(e.g. `CN=MediaFlyouts`). Provide it to CI as repository secrets:
+(`CN=MediaFlyouts`).
+
+[`tools/new-signing-cert.ps1`](../tools/new-signing-cert.ps1) creates a matching
+self-signed certificate, signs a package, and can export the PFX + base64 for CI:
+
+```powershell
+# sign the local package (self-signed, for testing)
+.\tools\new-signing-cert.ps1 -Msix release\MediaFlyouts-1.0.0.msix
+
+# to install a self-signed package, trust its public cert once (run elevated):
+Import-Certificate -FilePath signing\MediaFlyouts.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+
+# export a PFX + base64 for CI secrets
+.\tools\new-signing-cert.ps1 -ExportPfx -PfxPassword (Read-Host 'PFX password' -AsSecureString)
+```
+
+Set these repository secrets so the release workflow signs the MSIX:
 
 - `MSIX_CERT_BASE64` — base64 of the `.pfx`
 - `MSIX_CERT_PASSWORD` — the `.pfx` password
 
-The installer and ZIP artifacts do not require any signing.
+For a real (non-self-signed) release, use a certificate from a trusted CA so
+users don't have to trust it manually. The installer and ZIP artifacts do not
+require any signing.
