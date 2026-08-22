@@ -36,7 +36,20 @@ builds, tests, packages all four artifacts, signs the MSIX (from the
 `MSIX_CERT_*` secrets) and publishes a GitHub Release.
 
 ### Local
-After a release build:
+Produce every artifact into a clean `release/` folder with one script — it does a
+clean release build, deploys Qt, and builds the source/portable/installer/MSIX
+(signing the MSIX with the self-signed dev cert):
+
+```powershell
+.\tools\release.ps1            # all artifacts, signed MSIX
+.\tools\release.ps1 -NoSign    # skip MSIX signing
+.\tools\release.ps1 -SkipBuild # reuse the current bin\
+```
+
+Missing optional tools (Inno Setup, Windows SDK `makeappx`) are reported and
+skipped rather than failing the run.
+
+To run the steps by hand instead, after a release build:
 
 ```powershell
 $ver = (Get-Content VERSION.txt -Raw).Trim()
