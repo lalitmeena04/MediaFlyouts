@@ -1,0 +1,3 @@
+// Embeds the application icon into MediaFlyouts.exe (used by Explorer, the
+// taskbar and native windows). Path is relative to this .rc file.
+IDI_ICON1 ICON "assets/MediaFlyouts.ico"

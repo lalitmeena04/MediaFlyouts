@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QString>
 
+#include "Version.h"
+
 class QNetworkAccessManager;
 
 // Checks the project's GitHub releases for a newer version than the running one.
@@ -35,7 +37,7 @@ class UpdateChecker : public QObject {
     private:
         QNetworkAccessManager* m_net = nullptr;
         QString m_status = QStringLiteral("Not checked yet.");
-        QString m_current = QStringLiteral("0.1.0");
+        QString m_current = QStringLiteral(MEDIAFLYOUTS_VERSION);
         QString m_latest;
         bool m_available = false;
         bool m_checking = false;

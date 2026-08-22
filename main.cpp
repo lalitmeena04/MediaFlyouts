@@ -11,6 +11,7 @@
 #include "ThemeController.h"
 #include "TrayController.h"
 #include "UpdateChecker.h"
+#include "Version.h"
 
 #ifdef Q_OS_WIN
 #include <winrt/base.h>
@@ -36,6 +37,9 @@ int main(int argc, char* argv[]) {
 
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
+    QApplication::setApplicationName(QStringLiteral("MediaFlyouts"));
+    QApplication::setOrganizationName(QStringLiteral("MediaFlyouts"));
+    QApplication::setApplicationVersion(QStringLiteral(MEDIAFLYOUTS_VERSION));
 
     // a second launch signals the running instance to show its dashboard, then exits
     SingleInstance instance(QStringLiteral("MediaFlyouts.singleInstance"));

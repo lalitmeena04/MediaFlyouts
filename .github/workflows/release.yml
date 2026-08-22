@@ -1,0 +1,121 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. v1.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & publish artifacts
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Derive version
+        id: ver
+        shell: pwsh
+        run: |
+          $tag = if ("${{ github.event_name }}" -eq "workflow_dispatch") { "${{ inputs.version }}" } else { "${{ github.ref_name }}" }
+          if ($tag -notmatch '^v\d+\.\d+\.\d+$') { throw "Expected a vMAJOR.MINOR.PATCH tag, got '$tag'" }
+          $ver = $tag.TrimStart('v')
+          $fileVer = (Get-Content VERSION.txt -Raw).Trim()
+          if ($ver -ne $fileVer) { throw "Tag $tag does not match the VERSION file ($fileVer)" }
+          "tag=$tag"        >> $env:GITHUB_OUTPUT
+          "version=$ver"    >> $env:GITHUB_OUTPUT
+          "msixver=$ver.0"  >> $env:GITHUB_OUTPUT
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.3.1
+        with:
+          version: "6.8.*"
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          cache: true
+
+      - name: Set up MSVC environment
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
+
+      - name: Set up CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Configure & build (release)
+        run: |
+          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR"
+          cmake --build --preset msvc-release
+
+      - name: Test
+        run: ctest --preset msvc-release --output-on-failure
+
+      - name: Stage Qt runtime (windeployqt)
+        run: |
+          & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --qmldir Views --no-translations "${{ github.workspace }}\bin\MediaFlyouts.exe"
+
+      - name: Prepare dist folder
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force dist | Out-Null
+
+      - name: Source ZIP
+        run: git archive --format=zip -o "dist/MediaFlyouts-${{ steps.ver.outputs.version }}-src.zip" HEAD
+
+      - name: Portable ZIP
+        shell: pwsh
+        run: Compress-Archive -Path bin\* -DestinationPath "dist/MediaFlyouts-${{ steps.ver.outputs.version }}-win64.zip"
+
+      - name: Installer (Inno Setup)
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DMyAppVersion=${{ steps.ver.outputs.version }}" packaging\MediaFlyouts.iss
+
+      - name: MSIX package
+        # only runs once the logo PNGs exist under packaging/msix/Images/
+        if: ${{ hashFiles('packaging/msix/Images/**') != '' }}
+        shell: pwsh
+        run: |
+          $layout = "msix-layout"
+          New-Item -ItemType Directory -Force $layout | Out-Null
+          Copy-Item bin\* $layout -Recurse -Force
+          Copy-Item packaging\msix\Images $layout\Images -Recurse -Force
+          # inject the 4-part version into the manifest
+          (Get-Content packaging\msix\AppxManifest.xml) `
+            -replace 'Version="\d+\.\d+\.\d+\.\d+"', 'Version="${{ steps.ver.outputs.msixver }}"' `
+            | Set-Content "$layout\AppxManifest.xml"
+
+          $sdk = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Directory |
+                 Where-Object { $_.Name -match '^10\.' } | Sort-Object Name -Descending | Select-Object -First 1
+          $tools = Join-Path $sdk.FullName "x64"
+          $msix = "dist/MediaFlyouts-${{ steps.ver.outputs.version }}.msix"
+          & "$tools\makeappx.exe" pack /o /d $layout /p $msix
+
+          if ("${{ secrets.MSIX_CERT_BASE64 }}" -ne "") {
+            [IO.File]::WriteAllBytes("cert.pfx", [Convert]::FromBase64String("${{ secrets.MSIX_CERT_BASE64 }}"))
+            & "$tools\signtool.exe" sign /fd SHA256 /a /f cert.pfx /p "${{ secrets.MSIX_CERT_PASSWORD }}" $msix
+            Remove-Item cert.pfx
+          } else {
+            Write-Warning "MSIX built unsigned (no MSIX_CERT_BASE64 secret); it must be signed before distribution."
+          }
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release create "${{ steps.ver.outputs.tag }}" (Get-ChildItem dist | ForEach-Object FullName) `
+            --title "MediaFlyouts ${{ steps.ver.outputs.tag }}" `
+            --notes "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ steps.ver.outputs.tag }}/CHANGELOG.md) for release notes." `
+            --verify-tag

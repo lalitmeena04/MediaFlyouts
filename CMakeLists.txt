@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(MediaFlyouts VERSION 0.1.0 LANGUAGES CXX)
+# single source of truth for the version, shared by the app, packaging and CI
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" MEDIAFLYOUTS_VERSION)
+string(STRIP "${MEDIAFLYOUTS_VERSION}" MEDIAFLYOUTS_VERSION)
+
+project(MediaFlyouts VERSION ${MEDIAFLYOUTS_VERSION} LANGUAGES CXX)
+
+# expose the version to C++ (main.cpp, UpdateChecker, ...) via Version.h
+add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -87,6 +94,7 @@ target_link_libraries(MediaFlyouts PRIVATE
 
 if (WIN32)
     target_sources(MediaFlyouts PRIVATE
+        packaging/MediaFlyouts.rc
         Model/WinMediaProvider.h             Model/WinMediaProvider.cpp
         Controllers/VolumeController.h       Controllers/VolumeController.cpp
         Controllers/NativeFlyoutSuppressor.h Controllers/NativeFlyoutSuppressor.cpp

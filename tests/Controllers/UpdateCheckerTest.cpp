@@ -21,7 +21,7 @@ TEST(UpdateCheckerTest, RejectsSameOrOlderVersions) {
 
 TEST(UpdateCheckerTest, DefaultState) {
     UpdateChecker u;
-    EXPECT_EQ(u.currentVersion(), QStringLiteral("0.1.0"));
+    EXPECT_EQ(u.currentVersion(), QStringLiteral(MEDIAFLYOUTS_VERSION));
     EXPECT_TRUE(u.latestVersion().isEmpty());
     EXPECT_FALSE(u.updateAvailable());
     EXPECT_FALSE(u.checking());
