@@ -31,13 +31,26 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full list, and
 Grab the latest build from the [Releases page](https://github.com/scleaverzer0ne/MediaFlyouts/releases):
 
 - **Installer** — `MediaFlyouts-<version>-setup.exe`. Recommended for most users.
-- **MSIX package** — `MediaFlyouts-<version>.msix`. Requires the package's
-  signing certificate to be trusted (see the release notes).
+- **MSIX package** — `MediaFlyouts-<version>.msix`. Signed with a self-signed
+  certificate, so you must trust it once before installing (see below).
 - **Portable ZIP** — `MediaFlyouts-<version>-win64.zip`. Unzip and run
   `MediaFlyouts.exe`; no installation required.
 - **Source ZIP** — `MediaFlyouts-<version>-src.zip` for building yourself.
 
 MediaFlyouts is a self-contained C++ app; no .NET runtime is required.
+
+### Installing the MSIX
+
+The MSIX is signed with a self-signed certificate, so Windows will reject it
+(`0x800B010A`) until that certificate is trusted. Download `MediaFlyouts.cer`
+from the release, then in an **elevated** PowerShell run:
+
+```powershell
+Import-Certificate -FilePath MediaFlyouts.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+```
+
+Now double-click the `.msix` to install. Prefer the installer or portable ZIP if
+you'd rather not add a certificate.
 
 ## Build from source
 
