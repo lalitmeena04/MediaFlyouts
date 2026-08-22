@@ -65,8 +65,8 @@ self-signed certificate, signs a package, and can export the PFX + base64 for CI
 # sign the local package (self-signed, for testing)
 .\tools\new-signing-cert.ps1 -Msix release\MediaFlyouts-1.0.0.msix
 
-# to install a self-signed package, trust its public cert once (run elevated):
-Import-Certificate -FilePath signing\MediaFlyouts.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+# to install a self-signed package, trust its cert once as a root (run elevated):
+Import-Certificate -FilePath signing\MediaFlyouts.cer -CertStoreLocation Cert:\LocalMachine\Root
 
 # export a PFX + base64 for CI secrets
 .\tools\new-signing-cert.ps1 -ExportPfx -PfxPassword (Read-Host 'PFX password' -AsSecureString)

@@ -17,6 +17,7 @@
 param(
     [string]$Subject = 'CN=MediaFlyouts',
     [string]$Msix,
+    [switch]$Trust,
     [switch]$ExportPfx,
     [System.Security.SecureString]$PfxPassword,
     [string]$OutDir = 'signing'
@@ -42,8 +43,20 @@ if (-not $cert) {
 $cer = Join-Path $OutDir 'MediaFlyouts.cer'
 Export-Certificate -Cert $cert -FilePath $cer | Out-Null
 Write-Host "Public certificate -> $cer"
-Write-Host "Trust it on this PC (run elevated):"
-Write-Host "  Import-Certificate -FilePath '$cer' -CertStoreLocation Cert:\LocalMachine\TrustedPeople"
+
+# a self-signed package only installs once its cert is a trusted root on the machine
+$trustCmd = "Import-Certificate -FilePath '$cer' -CertStoreLocation Cert:\LocalMachine\Root"
+if ($Trust) {
+    $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+        [Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (-not $admin) { throw "Run this in an elevated PowerShell to trust the certificate." }
+    Import-Certificate -FilePath $cer -CertStoreLocation Cert:\LocalMachine\Root | Out-Null
+    Import-Certificate -FilePath $cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople | Out-Null
+    Write-Host 'Certificate trusted (LocalMachine\Root + TrustedPeople).'
+} else {
+    Write-Host 'To install the signed package on this PC, trust the cert (run elevated):'
+    Write-Host "  $trustCmd"
+}
 
 $sdk = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Directory |
     Where-Object { $_.Name -match '^10\.' } | Sort-Object Name -Descending | Select-Object -First 1

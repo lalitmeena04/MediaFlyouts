@@ -42,11 +42,11 @@ MediaFlyouts is a self-contained C++ app; no .NET runtime is required.
 ### Installing the MSIX
 
 The MSIX is signed with a self-signed certificate, so Windows will reject it
-(`0x800B010A`) until that certificate is trusted. Download `MediaFlyouts.cer`
-from the release, then in an **elevated** PowerShell run:
+(`0x800B010A`) until that certificate is trusted as a root. Download
+`MediaFlyouts.cer` from the release, then in an **elevated** PowerShell run:
 
 ```powershell
-Import-Certificate -FilePath MediaFlyouts.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+Import-Certificate -FilePath MediaFlyouts.cer -CertStoreLocation Cert:\LocalMachine\Root
 ```
 
 Now double-click the `.msix` to install. Prefer the installer or portable ZIP if
