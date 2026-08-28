@@ -105,7 +105,15 @@ void BatteryStatusController::applyPolled(const QVector<BatteryDeviceInfo>& poll
         entry[QStringLiteral("connectionKind")] = info.connectionKind;
         entry[QStringLiteral("category")] = info.category;
         entry[QStringLiteral("charging")] = info.charging;
-        entry[QStringLiteral("detail")] = info.detail;
+        QVariantList components;
+        for(const BatteryComponentInfo& component : info.components) {
+            QVariantMap part;
+            part[QStringLiteral("label")] = component.label;
+            part[QStringLiteral("percent")] = component.percent;
+            part[QStringLiteral("charging")] = component.charging;
+            components.append(part);
+        }
+        entry[QStringLiteral("components")] = components;
         devices.append(entry);
     }
 

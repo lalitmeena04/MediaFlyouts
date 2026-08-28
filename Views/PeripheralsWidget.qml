@@ -153,8 +153,13 @@ Window {
                                     var tipText = modelData.name + " \u2014 " + modelData.percent + "%"
                                     if(modelData.charging)
                                         tipText += " \u26A1"
-                                    if(modelData.detail)
-                                        tipText += "\n" + modelData.detail
+                                    var parts = []
+                                    for(var i = 0; i < modelData.components.length; i++) {
+                                        var c = modelData.components[i]
+                                        parts.push(c.label + " " + c.percent + "%" + (c.charging ? " \u26A1" : ""))
+                                    }
+                                    if(parts.length > 1)
+                                        tipText += "\n" + parts.join("   ")
                                     root.showTip(deviceRing.mapToGlobal(deviceRing.width / 2, 0), tipText)
                                 } else {
                                     root.hideTip()

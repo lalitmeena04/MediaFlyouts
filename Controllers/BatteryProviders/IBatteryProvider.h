@@ -3,6 +3,13 @@
 #include <QString>
 #include <QVector>
 
+// One battery of a multi-battery device, e.g. the left bud of a true-wireless set.
+struct BatteryComponentInfo {
+        QString label; // "L", "R", "Case", ...
+        int percent = -1;
+        bool charging = false;
+};
+
 // One discovered peripheral with a readable battery level.
 struct BatteryDeviceInfo {
         QString name;
@@ -13,9 +20,9 @@ struct BatteryDeviceInfo {
         // Bluetooth Class of Device where available, more reliable than guessing from the name
         QString category;
         bool charging = false;
-        // per-component breakdown for devices that report more than one battery
-        // (e.g. "L 100%  R 90%  Case 100%"); empty for single-battery devices
-        QString detail;
+        // populated only when the device reports more than one battery; 'percent' above is
+        // then the lowest of these
+        QVector<BatteryComponentInfo> components;
 };
 
 // A source of battery info for one class of peripheral connection (Bluetooth Classic,

@@ -144,24 +144,23 @@ SOCKET connectFastPair(quint64 address, int timeoutMs) {
     return sock;
 }
 
-QString formatDetail(const std::vector<fastpair::BatteryComponent>& components) {
+QVector<BatteryComponentInfo> describeComponents(const std::vector<fastpair::BatteryComponent>& components) {
+    QVector<BatteryComponentInfo> described;
     if(components.size() < 2)
-        return {};
+        return described; // single-battery device, the headline percent says it all
 
     // a 3-component device is a true-wireless set; anything else is labelled positionally
     static const char* twsLabels[] = {"L", "R", "Case"};
-    QStringList parts;
     for(size_t i = 0; i < components.size(); ++i) {
         if(components[i].percent < 0)
             continue;
-        const QString label = (components.size() == 3) ? QString::fromLatin1(twsLabels[i])
-                                                       : QStringLiteral("#%1").arg(i + 1);
-        parts << QStringLiteral("%1 %2%%3")
-                     .arg(label)
-                     .arg(components[i].percent)
-                     .arg(components[i].charging ? QStringLiteral(" \u26A1") : QString());
+        BatteryComponentInfo info;
+        info.label = (components.size() == 3) ? QString::fromLatin1(twsLabels[i]) : QStringLiteral("#%1").arg(i + 1);
+        info.percent = components[i].percent;
+        info.charging = components[i].charging;
+        described.push_back(info);
     }
-    return parts.join(QStringLiteral("   "));
+    return described;
 }
 
 } // namespace
@@ -271,7 +270,7 @@ void FastPairBatteryProvider::run() {
                 info.connectionKind = QStringLiteral("bluetooth");
                 info.category = QStringLiteral("headset");
                 info.charging = fastpair::anyCharging(components);
-                info.detail = formatDetail(components);
+                info.components = describeComponents(components);
 
                 std::lock_guard<std::mutex> lock(m_mutex);
                 m_latest.insert(connection.address, info);

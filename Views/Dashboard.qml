@@ -538,7 +538,7 @@ Window {
                                 delegate: Rectangle {
                                     required property var modelData
                                     width: 108
-                                    height: 128
+                                    height: modelData.components.length > 1 ? 168 : 128
                                     radius: 12
                                     color: theme.card
                                     border.color: theme.border
@@ -578,14 +578,38 @@ Window {
                                             }
                                         }
 
-                                        Text {
-                                            visible: !!modelData.detail
-                                            width: 100
-                                            horizontalAlignment: Text.AlignHCenter
-                                            text: modelData.detail || ""
-                                            color: theme.textMuted
-                                            font.pixelSize: 9
-                                            elide: Text.ElideRight
+                                        Row {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            spacing: 8
+                                            visible: modelData.components.length > 1
+
+                                            Repeater {
+                                                model: modelData.components
+                                                delegate: Column {
+                                                    required property var modelData
+                                                    spacing: 1
+
+                                                    BatteryRing {
+                                                        anchors.horizontalCenter: parent.horizontalCenter
+                                                        width: 22
+                                                        height: 22
+                                                        thickness: 2
+                                                        percent: modelData.percent
+                                                    }
+                                                    Text {
+                                                        anchors.horizontalCenter: parent.horizontalCenter
+                                                        text: modelData.label + (modelData.charging ? " \u26A1" : "")
+                                                        color: theme.textMuted
+                                                        font.pixelSize: 9
+                                                    }
+                                                    Text {
+                                                        anchors.horizontalCenter: parent.horizontalCenter
+                                                        text: modelData.percent + "%"
+                                                        color: theme.textPrimary
+                                                        font.pixelSize: 9
+                                                    }
+                                                }
+                                            }
                                         }
 
                                         Text {
@@ -1003,9 +1027,13 @@ Window {
                             required property var modelData
                             width: parent.width
                             label: modelData.name
-                            description: modelData.detail
-                                ? "Currently at " + modelData.percent + "% (" + modelData.detail + ")."
-                                : "Currently at " + modelData.percent + "%."
+                            description: {
+                                var text = "Currently at " + modelData.percent + "%"
+                                var parts = []
+                                for(var i = 0; i < modelData.components.length; i++)
+                                    parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
+                                return parts.length > 1 ? text + " (" + parts.join(", ") + ")." : text + "."
+                            }
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
                         }
