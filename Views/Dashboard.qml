@@ -820,6 +820,22 @@ Window {
                         value: settings.volumeFlyoutMixerEnabled
                         onToggled: settings.volumeFlyoutMixerEnabled = value
                     }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Volume flyout position"
+                        description: "Place the volume flyout independently of the media flyout."
+                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        currentIndex: settings.volumeFlyoutPosition
+                        onActivated: settings.volumeFlyoutPosition = index
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Volume flyout monitor"
+                        description: "Which display the volume flyout is shown on."
+                        model: placement.monitorNames()
+                        currentIndex: settings.volumeFlyoutMonitor
+                        onActivated: settings.volumeFlyoutMonitor = index
+                    }
                     SettingSlider {
                         width: parent.width
                         label: "Volume flyout duration"

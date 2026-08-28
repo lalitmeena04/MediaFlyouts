@@ -57,6 +57,9 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.flyoutAnimationMs(), 300);
     EXPECT_EQ(s.flyoutAnimationEasingStyle(), 3);
     EXPECT_EQ(s.volumeFlyoutDuration(), 1800);
+    // the volume flyout is placed independently of the media flyout
+    EXPECT_EQ(s.volumeFlyoutPosition(), 4);
+    EXPECT_EQ(s.volumeFlyoutMonitor(), 0);
     EXPECT_EQ(s.nextUpDuration(), 2000);
     EXPECT_EQ(s.nextUpStyle(), 0);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);

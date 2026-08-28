@@ -144,7 +144,7 @@ Window {
             }
         }
 
-        // compact "up next" pill: [note Up next:] [art] [title / artist]
+        // compact pill: [note Now playing:] [art] [title / artist]
         Row {
             anchors.fill: parent
             anchors.leftMargin: 14
@@ -164,7 +164,7 @@ Window {
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Up next:"
+                    text: "Now playing:"
                     color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
                     font.pixelSize: 12
                     font.bold: true

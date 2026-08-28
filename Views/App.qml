@@ -42,39 +42,49 @@ QtObject {
     // stacking order, bottom-most first; visible flyouts are stacked away from the anchor edge
     readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout]
 
+    // the volume flyout can be placed independently of the other flyouts
+    function positionIndexFor(f) {
+        return f === volumeFlyout ? settings.volumeFlyoutPosition : settings.flyoutPosition
+    }
+    function monitorFor(f) {
+        return f === volumeFlyout ? settings.volumeFlyoutMonitor : settings.flyoutMonitor
+    }
+
     function restack() {
-        var aboveWidget = settings.flyoutPosition === 6 // dock above the taskbar widget
-        var topAligned = settings.flyoutPosition <= 2 // 0..2 are the top positions
         var gap = 10
+        // flyouts only stack against each other when they share a position and monitor
+        var used = ({})
 
-        // anchor point (widget top-left) when docking above the taskbar widget
-        var anchor = null
-        var screen = null
-        if(aboveWidget) {
-            anchor = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
-                                            settings.taskbarWidgetOffset, taskbarWidget.width, taskbarWidget.height)
-            screen = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
-        }
-
-        var cumulative = 0
         for(var i = 0; i < flyoutStack.length; i++) {
             var f = flyoutStack[i]
             if(!f.visible) {
                 f.positioned = false // next appearance snaps in without sliding
                 continue
             }
+
+            var posIndex = positionIndexFor(f)
+            var monitor = monitorFor(f)
+            var key = posIndex + ":" + monitor
+            var cumulative = used[key] || 0
+            var aboveWidget = posIndex === 6 // dock above the taskbar widget
+            var topAligned = posIndex <= 2 // 0..2 are the top positions
+
             if(aboveWidget) {
+                var anchor = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
+                                                    settings.taskbarWidgetOffset, taskbarWidget.width,
+                                                    taskbarWidget.height)
+                var screen = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
                 // center each flyout over the widget, clamped so it stays on-screen
                 var fx = anchor.x + (taskbarWidget.width - f.width) / 2
                 fx = Math.max(screen.x + 8, Math.min(fx, screen.x + screen.width - f.width - 8))
                 f.x = fx
                 f.y = anchor.y - f.height - 12 - cumulative
             } else {
-                var p = placement.position(f.width, f.height)
+                var p = placement.positionAt(f.width, f.height, posIndex, monitor)
                 f.x = p.x
                 f.y = topAligned ? (p.y + cumulative) : (p.y - cumulative)
             }
-            cumulative += f.height + gap
+            used[key] = cumulative + f.height + gap
             f.positioned = true // subsequent shifts animate
         }
     }
