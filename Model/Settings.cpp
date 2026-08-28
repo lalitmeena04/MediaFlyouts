@@ -84,9 +84,6 @@ void Settings::reload() {
     // visualizerStyle: 0 = bars, 1 = radial, 2 = waveform, 3 = particles
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
-    m_peripheralsWidgetOffset = m_store.value(QStringLiteral("peripheralsWidgetOffset"), 0).toInt();
-    m_peripheralsWidgetSide = m_store.value(QStringLiteral("peripheralsWidgetSide"), 2).toInt();
-    m_peripheralsWidgetMonitor = m_store.value(QStringLiteral("peripheralsWidgetMonitor"), 0).toInt();
     m_peripheralsWidgetSelected = m_store.value(QStringLiteral("peripheralsWidgetSelected")).toStringList();
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
@@ -325,15 +322,7 @@ int Settings::visualizerStyle() const {
 bool Settings::peripheralsWidgetEnabled() const {
     return m_peripheralsWidgetEnabled;
 }
-int Settings::peripheralsWidgetOffset() const {
-    return m_peripheralsWidgetOffset;
-}
-int Settings::peripheralsWidgetSide() const {
-    return m_peripheralsWidgetSide;
-}
-int Settings::peripheralsWidgetMonitor() const {
-    return m_peripheralsWidgetMonitor;
-}
+
 QStringList Settings::peripheralsWidgetSelected() const {
     return m_peripheralsWidgetSelected;
 }
@@ -537,15 +526,6 @@ void Settings::setVisualizerStyle(int v) {
 }
 void Settings::setPeripheralsWidgetEnabled(bool v) {
     assign("peripheralsWidgetEnabled", m_peripheralsWidgetEnabled, v);
-}
-void Settings::setPeripheralsWidgetOffset(int v) {
-    assignInt("peripheralsWidgetOffset", m_peripheralsWidgetOffset, v);
-}
-void Settings::setPeripheralsWidgetSide(int v) {
-    assignInt("peripheralsWidgetSide", m_peripheralsWidgetSide, v);
-}
-void Settings::setPeripheralsWidgetMonitor(int v) {
-    assignInt("peripheralsWidgetMonitor", m_peripheralsWidgetMonitor, v);
 }
 void Settings::setBatteryRingUseAccent(bool v) {
     assign("batteryRingUseAccent", m_batteryRingUseAccent, v);

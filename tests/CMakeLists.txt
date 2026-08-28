@@ -34,6 +34,7 @@ add_executable(mediaflyout_gtest
     Model/AlbumArtProviderTest.cpp
     Model/FftTest.cpp
     Model/DualSenseProtocolTest.cpp
+    Model/FastPairProtocolTest.cpp
     Model/BatteryUtilsTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
@@ -58,13 +59,14 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/HidChangeWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/FastPairBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
         Controllers/Win32ControllersTest.cpp
         Controllers/BatteryStatusControllerTest.cpp
     )
     target_compile_definitions(mediaflyout_gtest PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib Bthprops.lib hid.lib setupapi.lib)
+    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib Bthprops.lib hid.lib setupapi.lib ws2_32.lib)
 endif()
 
 # --- Qt Test: one executable per class (each file has its own QTEST_GUILESS_MAIN) ---
