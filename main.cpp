@@ -86,21 +86,23 @@ int main(int argc, char* argv[]) {
     volumeController.start();
     engine.rootContext()->setContextProperty("volumeController", &volumeController);
 
-    // replace the native Windows volume OSD with our flyout (when enabled)
+    // replace the native Windows volume OSD with our flyout (when enabled). Left alone until
+    // onboarding finishes, otherwise neither OSD would show during the wizard.
     NativeFlyoutSuppressor nativeSuppressor;
-    if(settings.overrideNativeOsd())
+    if(settings.overrideNativeOsd() && settings.onboardingCompleted())
         nativeSuppressor.start();
 
     // skip flyouts (and native-OSD suppression) while a fullscreen/exclusive-D3D app is foreground
     FullscreenDetector fullscreen;
     engine.rootContext()->setContextProperty("fullscreen", &fullscreen);
     QObject::connect(&volumeController, &VolumeController::volumeChangedExternally, &nativeSuppressor, [&] {
-        if(settings.overrideNativeOsd() && !fullscreen.shouldBlock(settings.disableOnFullscreen()))
+        if(settings.overrideNativeOsd() && settings.onboardingCompleted()
+           && !fullscreen.shouldBlock(settings.disableOnFullscreen()))
             nativeSuppressor.arm();
     });
     // apply the override-native-OSD toggle at runtime
     QObject::connect(&settings, &Settings::changed, &nativeSuppressor, [&] {
-        if(settings.overrideNativeOsd())
+        if(settings.overrideNativeOsd() && settings.onboardingCompleted())
             nativeSuppressor.arm();
         else
             nativeSuppressor.restore();
