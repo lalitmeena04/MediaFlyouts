@@ -4,16 +4,18 @@
 
 namespace {
 
-// Mirrors the Windows 11 taskbar alignment (Explorer\Advanced\TaskbarAl: 0 = left, 1 = center) onto
-// our widget side (0 = left, 1 = center). Windows 10 has no such key and is always left-aligned.
+// Seeds the widget to the taskbar edge the shell leaves free: a centered taskbar (Windows 11
+// Explorer\Advanced\TaskbarAl = 1) keeps its buttons in the middle, so we sit on the left; a
+// left-aligned taskbar pushes us to the right. Windows 10 has no such key and is always left.
 int systemTaskbarSide() {
 #ifdef Q_OS_WIN
     const QSettings explorer(
         QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
         QSettings::NativeFormat);
-    return explorer.value(QStringLiteral("TaskbarAl"), 0).toInt() == 1 ? 1 : 0;
+    // widget side: 0 = left, 2 = right
+    return explorer.value(QStringLiteral("TaskbarAl"), 0).toInt() == 1 ? 0 : 2;
 #else
-    return 0;
+    return 2;
 #endif
 }
 

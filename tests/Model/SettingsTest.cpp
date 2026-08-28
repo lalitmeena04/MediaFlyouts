@@ -61,7 +61,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.nextUpStyle(), 0);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
     // seeded from the system taskbar alignment, so only the range is fixed
-    EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 1);
+    EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
@@ -120,7 +120,7 @@ TEST_F(SettingsTest, TaskbarWidgetSideIsSeededOnceThenPinned) {
     {
         Settings first;
         seeded = first.taskbarWidgetSide();
-        // pick the other side so we can tell a stored choice from a re-seed
+        // pick a different side so we can tell a stored choice from a re-seed
         first.setTaskbarWidgetSide(seeded == 1 ? 0 : 1);
     }
     Settings second;
