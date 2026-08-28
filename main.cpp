@@ -24,6 +24,7 @@
 #include "TaskbarInfo.h"
 #include "AudioCapture.h"
 #include "AccentWatcher.h"
+#include "BatteryStatusController.h"
 #include "VolumeController.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
@@ -151,6 +152,10 @@ int main(int argc, char* argv[]) {
     // volume keys show the flyout even at min/max, where the audio callback doesn't fire
     QObject::connect(&mediaKeys, &MediaKeyController::volumeKeyPressed, &volumeController,
                      &VolumeController::handleVolumeKey);
+
+    // battery level of paired wireless peripherals (headsets, mice, keyboards, ...)
+    BatteryStatusController batteryStatus;
+    engine.rootContext()->setContextProperty("batteryStatus", &batteryStatus);
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);

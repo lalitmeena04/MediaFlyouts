@@ -518,6 +518,80 @@ Window {
                             }
                         }
 
+                        // wireless peripherals with a readable battery level (Bluetooth today; see BatteryStatusController)
+                        Text {
+                            visible: batteryStatus.devices.length > 0
+                            text: "Peripherals"
+                            color: theme.textPrimary
+                            font.pixelSize: 16
+                            font.bold: true
+                            topPadding: 4
+                        }
+
+                        Flow {
+                            width: parent.width
+                            spacing: 12
+                            visible: batteryStatus.devices.length > 0
+
+                            Repeater {
+                                model: batteryStatus.devices
+                                delegate: Rectangle {
+                                    required property var modelData
+                                    width: (homePage.width - 24) / 3
+                                    height: 60
+                                    radius: 10
+                                    color: theme.card
+                                    border.color: theme.border
+
+                                    readonly property color levelColor: modelData.percent <= 20 ? "#E06C75"
+                                        : (modelData.percent <= 40 ? "#E5C07B" : "#6FCF7F")
+
+                                    Row {
+                                        anchors.fill: parent
+                                        anchors.margins: 12
+                                        spacing: 10
+
+                                        Rectangle {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            width: 26
+                                            height: 14
+                                            radius: 3
+                                            color: "transparent"
+                                            border.color: theme.textMuted
+                                            Rectangle {
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                anchors.left: parent.left
+                                                anchors.leftMargin: 2
+                                                width: (parent.width - 4) * Math.max(0, Math.min(100, modelData.percent)) / 100
+                                                height: parent.height - 4
+                                                radius: 1
+                                                color: levelColor
+                                            }
+                                        }
+
+                                        Column {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            spacing: 4
+                                            width: parent.width - 36
+                                            Text {
+                                                width: parent.width
+                                                text: modelData.name
+                                                color: theme.textPrimary
+                                                font.pixelSize: 13
+                                                font.bold: true
+                                                elide: Text.ElideRight
+                                            }
+                                            Text {
+                                                text: modelData.percent + "%"
+                                                color: theme.textMuted
+                                                font.pixelSize: 11
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         Text {
                             width: parent.width
                             wrapMode: Text.WordWrap
