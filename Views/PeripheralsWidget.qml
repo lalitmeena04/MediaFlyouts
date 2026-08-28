@@ -27,9 +27,9 @@ Window {
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
-    // shown only when enabled, at least one selected device is currently reporting battery,
-    // and not blocked by fullscreen / lock screen
-    visible: settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
+    // shown only once onboarding is done, when enabled, at least one selected device is currently
+    // reporting battery, and not blocked by fullscreen / lock screen
+    visible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
 
     // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
     property bool blocked: false
