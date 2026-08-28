@@ -30,6 +30,8 @@ Window {
     }
 
     function showFlyout() {
+        if(!settings.onboardingCompleted)
+            return
         if(!settings.lockKeysEnabled || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         hideTimer.restart()
