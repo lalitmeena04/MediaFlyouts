@@ -53,7 +53,7 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 - Center alignment, a pause overlay, and marquee scrolling for long titles.
 - Scroll wheel / swipe to switch between multiple simultaneous media sources,
   with source indicator dots.
-- Hidden automatically over fullscreen apps and kept out of screen captures.
+- Hidden automatically over fullscreen apps.
 - Optional integrated playback controls.
 
 ## Taskbar visualizer
