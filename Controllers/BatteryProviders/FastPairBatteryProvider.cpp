@@ -1,6 +1,7 @@
 #include "FastPairBatteryProvider.h"
 
 #include "FastPairProtocol.h"
+#include "BatteryUtils.h"
 
 #include <winsock2.h>
 #include <ws2bth.h>
@@ -25,6 +26,7 @@ constexpr wchar_t kFastPairUuidText[] = L"{DF21FE2C-2515-4FDB-8886-F12C4D67927C}
 struct FastPairDevice {
         quint64 address = 0;
         QString name;
+        QString category;
 };
 
 QString devNodePropertyText(DEVINST devInst, const DEVPROPKEY& key) {
@@ -51,13 +53,15 @@ bool isAddressConnected(quint64 address) {
 
 // The PnP service sub-node is only ever called "Bluetooth Peripheral Device", so ask the
 // Bluetooth API for the paired name (and skip devices that aren't currently connected).
-QString connectedDeviceName(quint64 address) {
+bool connectedDeviceInfo(quint64 address, QString& name, QString& category) {
     BLUETOOTH_DEVICE_INFO info = {};
     info.dwSize = sizeof(info);
     info.Address.ullLong = address;
     if(BluetoothGetDeviceInfo(nullptr, &info) != ERROR_SUCCESS || !info.fConnected)
-        return {};
-    return QString::fromWCharArray(info.szName);
+        return false;
+    name = QString::fromWCharArray(info.szName);
+    category = BatteryUtils::categoryFromClassOfDevice(info.ulClassofDevice);
+    return !name.isEmpty();
 }
 
 // The 12 hex digits before "_C" in a BTHENUM service instance id are the device address.
@@ -109,13 +113,15 @@ std::vector<FastPairDevice> enumerateFastPairDevices() {
         if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
             continue;
 
-        const QString name = connectedDeviceName(address);
-        if(name.isEmpty())
+        QString name;
+        QString category;
+        if(!connectedDeviceInfo(address, name, category))
             continue; // paired but not connected right now
 
         FastPairDevice device;
         device.address = address;
         device.name = name;
+        device.category = category;
         devices.push_back(device);
     }
     return devices;
@@ -208,6 +214,7 @@ void FastPairBatteryProvider::run() {
             SOCKET sock = INVALID_SOCKET;
             quint64 address = 0;
             QString name;
+            QString category;
             std::vector<std::uint8_t> buffer;
     };
     std::vector<Connection> connections;
@@ -233,7 +240,7 @@ void FastPairBatteryProvider::run() {
         }
         // periodically pick up newly connected devices
         if(std::chrono::steady_clock::now() >= nextScan) {
-            nextScan = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+            nextScan = std::chrono::steady_clock::now() + std::chrono::seconds(3);
             for(const FastPairDevice& device : enumerateFastPairDevices()) {
                 if(m_stop)
                     break;
@@ -251,6 +258,7 @@ void FastPairBatteryProvider::run() {
                 connection.sock = sock;
                 connection.address = device.address;
                 connection.name = device.name;
+                connection.category = device.category;
                 connections.push_back(std::move(connection));
             }
         }
@@ -293,7 +301,7 @@ void FastPairBatteryProvider::run() {
                 info.name = connection.name;
                 info.percent = percent;
                 info.connectionKind = QStringLiteral("bluetooth");
-                info.category = QStringLiteral("headset");
+                info.category = connection.category;
                 info.charging = fastpair::anyCharging(components);
                 info.components = describeComponents(components);
 

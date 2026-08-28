@@ -34,30 +34,6 @@ constexpr DEVPROPKEY kBluetoothDeviceAddressKey = {
 constexpr DEVPROPKEY kBluetoothClassOfDeviceKey = {
     {0x2bd67d8b, 0x8beb, 0x48d5, {0x87, 0xe0, 0x6c, 0xda, 0x34, 0x28, 0x04, 0x0a}}, 4};
 
-// Decodes the Bluetooth Class of Device field (see Bluetooth Assigned Numbers, "Baseband")
-// into a rough device category. Falls back to empty for classes we don't map explicitly.
-QString categoryFromClassOfDevice(quint32 cod) {
-    const quint32 majorClass = (cod >> 8) & 0x1F;
-    const quint32 minorClass = (cod >> 2) & 0x3F;
-
-    if(majorClass == 0x04) // Audio/Video
-        return QStringLiteral("headset");
-    if(majorClass == 0x05) { // Peripheral (HID)
-        const quint32 pointerKeyboardBits = (minorClass >> 4) & 0x3;
-        if(pointerKeyboardBits == 0x1)
-            return QStringLiteral("keyboard");
-        if(pointerKeyboardBits == 0x2)
-            return QStringLiteral("mouse");
-        if(pointerKeyboardBits == 0x3)
-            return QStringLiteral("keyboard"); // combo keyboard/pointing device
-
-        const quint32 subtype = minorClass & 0xF;
-        if(subtype == 0x1 || subtype == 0x2) // joystick / gamepad
-            return QStringLiteral("gamepad");
-    }
-    return {};
-}
-
 QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key) {
     DEVPROPTYPE type = 0;
     ULONG size = 0;
@@ -170,7 +146,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
         if(CM_Get_DevNode_PropertyW(devInst, &kBluetoothClassOfDeviceKey, &codType, reinterpret_cast<PBYTE>(&classOfDevice),
                                     &codSize, 0) == CR_SUCCESS
            && codType == DEVPROP_TYPE_UINT32)
-            category = categoryFromClassOfDevice(classOfDevice);
+            category = BatteryUtils::categoryFromClassOfDevice(classOfDevice);
 
         result.append({name, static_cast<int>(percent), QStringLiteral("bluetooth"), category});
     }

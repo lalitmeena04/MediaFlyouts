@@ -2,8 +2,25 @@
 
 #include <gtest/gtest.h>
 
+using BatteryUtils::categoryFromClassOfDevice;
 using BatteryUtils::cleanBluetoothProfileSuffix;
 using BatteryUtils::milliwattHoursToPercent;
+
+TEST(BatteryUtilsTest, ClassifiesAudioDevicesAsHeadsets) {
+    EXPECT_EQ(categoryFromClassOfDevice(0x240404), "headset"); // major class 0x04, audio/video
+}
+
+TEST(BatteryUtilsTest, ClassifiesHidPeripherals) {
+    EXPECT_EQ(categoryFromClassOfDevice(0x000540), "keyboard");
+    EXPECT_EQ(categoryFromClassOfDevice(0x000580), "mouse");
+    EXPECT_EQ(categoryFromClassOfDevice(0x0005C0), "keyboard"); // combo keyboard/pointer
+    EXPECT_EQ(categoryFromClassOfDevice(0x000508), "gamepad");
+}
+
+TEST(BatteryUtilsTest, ReturnsEmptyForUnmappedClasses) {
+    EXPECT_EQ(categoryFromClassOfDevice(0x000000), "");
+    EXPECT_EQ(categoryFromClassOfDevice(0x000200), ""); // phone
+}
 
 TEST(BatteryUtilsTest, StripsHandsFreeAgSuffix) {
     EXPECT_EQ(cleanBluetoothProfileSuffix("CMF Neckband Pro Hands-Free AG"), "CMF Neckband Pro");
