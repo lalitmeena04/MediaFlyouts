@@ -114,6 +114,8 @@ if (WIN32)
         Controllers/WindowEffects.h          Controllers/WindowEffects.cpp
         Controllers/AccentWatcher.h          Controllers/AccentWatcher.cpp
         Controllers/BatteryStatusController.h Controllers/BatteryStatusController.cpp
+        Controllers/BluetoothConnectionWatcher.h Controllers/BluetoothConnectionWatcher.cpp
+        Controllers/HidChangeWatcher.h        Controllers/HidChangeWatcher.cpp
         Controllers/BatteryProviders/IBatteryProvider.h
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.h
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp

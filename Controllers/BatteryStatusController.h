@@ -7,6 +7,9 @@
 #include <memory>
 #include <vector>
 
+#include "BluetoothConnectionWatcher.h"
+#include "HidChangeWatcher.h"
+
 class IBatteryProvider;
 
 // Aggregates battery level for wireless peripherals (Bluetooth headsets/mice/keyboards,
@@ -39,6 +42,10 @@ class BatteryStatusController : public QObject {
         std::vector<std::unique_ptr<IBatteryProvider>> m_providers;
         QVariantList m_devices;
         QTimer m_timer;
+        // instant connect/disconnect signals layered on top of the timer, which still
+        // catches battery-level drift and anything the watchers miss
+        BluetoothConnectionWatcher m_bluetoothWatcher;
+        HidChangeWatcher m_hidWatcher;
         // real (Windows) providers poll on a background thread to avoid blocking the STA main
         // thread on WinRT async calls; the test-injection constructor leaves this false
         bool m_pollOnWorkerThread = false;

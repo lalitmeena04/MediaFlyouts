@@ -18,10 +18,19 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
     m_providers.push_back(std::make_unique<PlayStationControllerBatteryProvider>());
     m_pollOnWorkerThread = true;
 
-    // battery level changes slowly; poll infrequently rather than watch for device events
-    m_timer.setInterval(5 * 60 * 1000);
+    // poll as a fallback (battery % drifts without a device event, and this catches
+    // anything the watchers below miss); connect/disconnect itself reacts instantly
+    m_timer.setInterval(15 * 1000);
     connect(&m_timer, &QTimer::timeout, this, &BatteryStatusController::refresh);
     m_timer.start();
+
+    // react immediately when a Bluetooth or HID device connects/disconnects, instead of
+    // waiting for the next timer tick
+    connect(&m_bluetoothWatcher, &BluetoothConnectionWatcher::deviceChanged, this,
+            &BatteryStatusController::refresh);
+    connect(&m_hidWatcher, &HidChangeWatcher::deviceChanged, this, &BatteryStatusController::refresh);
+    m_bluetoothWatcher.start();
+    m_hidWatcher.start();
 
     refresh();
 }
