@@ -63,6 +63,9 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.flyoutAnimationMs(), 300);
     QCOMPARE(s.flyoutAnimationEasingStyle(), 3);
     QCOMPARE(s.volumeFlyoutDuration(), 1800);
+    // the volume flyout is placed independently of the media flyout
+    QCOMPARE(s.volumeFlyoutPosition(), 4);
+    QCOMPARE(s.volumeFlyoutMonitor(), 0);
     QCOMPARE(s.nextUpDuration(), 2000);
     QCOMPARE(s.nextUpStyle(), 0);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
