@@ -25,7 +25,7 @@ volume and lock-key overlay built with Qt 6 / C++ / QML.
 - **[Packaging](../packaging/README.md)** — installer / MSIX / signing inputs
 
 ### Releases
-- **[Release Notes](RELEASE_NOTES.md)** — version history (v1.0.0)
+- **[Release Notes](RELEASE_NOTES.md)** — version history (v1.1.0)
 - **[Changelog](../CHANGELOG.md)** — concise change log
 
 ## 🚀 Quick start
@@ -37,6 +37,6 @@ volume and lock-key overlay built with Qt 6 / C++ / QML.
 ## 📖 About MediaFlyouts
 
 MediaFlyouts replaces the dated Windows media/volume overlays with clean,
-Fluent-styled flyouts and adds a per-app volume mixer, a taskbar now-playing
-widget, and an audio visualizer. It is a self-contained C++ application — no
-.NET runtime required — targeting Windows 10/11 (x64).
+Fluent-styled flyouts and adds an optional per-app volume mixer, a taskbar
+now-playing widget, and an audio visualizer. It is a self-contained C++
+application — no .NET runtime required — targeting Windows 10/11 (x64).

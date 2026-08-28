@@ -35,6 +35,14 @@ Push a `v*.*.*` tag to run
 builds, tests, packages all four artifacts, signs the MSIX (from the
 `MSIX_CERT_*` secrets) and publishes a GitHub Release.
 
+Before tagging, make sure both of these are on `main`:
+
+- [`VERSION.txt`](../../VERSION.txt) matches the tag — the workflow fails the
+  release if they disagree.
+- [`docs/RELEASE_NOTES.md`](../RELEASE_NOTES.md) has a `## Version <ver>` section
+  — its body becomes the GitHub Release description, and a missing section fails
+  the release rather than publishing an empty one.
+
 ### Local
 Produce every artifact into a clean `release/` folder with one script — it does a
 clean release build, deploys Qt, and builds the source/portable/installer/MSIX

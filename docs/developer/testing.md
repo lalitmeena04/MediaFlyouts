@@ -35,7 +35,7 @@ tests/
 ## What is covered
 
 - **Settings** — defaults, setters/signals, persistence, export/import, app
-  filtering.
+  filtering, and the once-only first-run seeding of `taskbarWidgetSide`.
 - **Fft** — spectrum peaks, band normalization, frequency-bar mapping and edge
   cases.
 - **NowPlaying** — flyout-trigger logic, transport/seek/repeat/shuffle

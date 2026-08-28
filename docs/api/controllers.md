@@ -46,6 +46,8 @@ running version comes from `MEDIAFLYOUTS_VERSION`.
 - **LockKeysController / MediaKeyController** — low-level keyboard hook for lock
   keys and media keys.
 - **FullscreenDetector** — suppresses flyouts over fullscreen/exclusive apps.
-- **NativeFlyoutSuppressor** — hides the native Windows volume OSD.
+- **NativeFlyoutSuppressor** — hides the native Windows volume OSD. `main.cpp`
+  only starts/arms it once onboarding is complete, so the system OSD keeps
+  working during the first-run wizard.
 - **StartupController** — launch-on-startup via the `Run` registry key.
 - **TaskbarInfo** — taskbar geometry for placing the widget.

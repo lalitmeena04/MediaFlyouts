@@ -30,6 +30,8 @@ dismiss it.
 Press a volume key to show the master volume slider (it replaces the native
 Windows OSD). Click the **chevron** to expand the **per-app mixer**, where each
 app has its own volume slider, mute toggle and icon. Changes apply immediately.
+The in-flyout mixer is **off by default** — switch it on from the Volume flyout
+page in Settings.
 
 ### Lock-keys flyout
 Toggling Caps / Num / Scroll / Insert shows a brief indicator. Enable or disable
@@ -41,7 +43,9 @@ the **card** or **compact pill** style in Settings.
 
 ## Taskbar widget
 
-Enable the taskbar widget to show the current track next to the tray. You can:
+Enable the taskbar widget to show the current track next to the tray. On first
+run it docks to whichever edge your taskbar leaves free — left if your taskbar is
+center-aligned, right if it is left-aligned. You can:
 
 - dock it to the **left or right**, move it between **monitors**, and nudge it
   with an **offset**;

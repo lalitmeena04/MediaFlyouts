@@ -22,12 +22,13 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 
 ## Volume flyout & per-app mixer
 
-- Replaces the native Windows volume OSD (the system OSD is suppressed).
+- Replaces the native Windows volume OSD.
 - Master volume slider with mute, and a configurable stay duration.
 - Follows the default output device and re-binds automatically when the default
   device changes.
 - Expandable per-app mixer (chevron) directly inside the flyout, with a live,
-  responsive slider and mute per application and the real app icon.
+  responsive slider and mute per application and the real app icon. Off by
+  default — enable it on the Volume flyout page.
 - A standalone Volume Mixer window offering the same per-process controls.
 
 ## Lock-keys flyout
@@ -46,6 +47,9 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 - A compact now-playing widget docked next to the system tray.
 - Dock to the left or right side, move between monitors, and nudge with an
   offset that can shift either direction.
+- On first run it picks the taskbar edge the shell leaves free — left for a
+  center-aligned taskbar, right for a left-aligned one. Your own choice is kept
+  afterwards.
 - Center alignment, a pause overlay, and marquee scrolling for long titles.
 - Scroll wheel / swipe to switch between multiple simultaneous media sources,
   with source indicator dots.
@@ -97,7 +101,8 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 
 ## Onboarding & updates
 
-- First-run onboarding wizard.
+- First-run onboarding wizard. Flyouts and the taskbar widget stay hidden, and
+  the native volume OSD is left alone, until you finish it.
 - Update checker against the GitHub releases API, with an optional automatic
   check and a tray notification when an update is available.
 

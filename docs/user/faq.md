@@ -24,11 +24,20 @@ Then install the `.msix`. Prefer the installer or portable ZIP to avoid this.
 
 ## The native Windows volume popup still shows
 The app suppresses the native OSD while the volume flyout is enabled. If both
-appear briefly, ensure the volume flyout is enabled and restart the app.
+appear briefly, ensure the volume flyout is enabled and restart the app. During
+the first-run wizard the native OSD is deliberately left alone, so it is normal
+to see it until you finish onboarding.
+
+## The per-app mixer is missing from the volume flyout
+It is off by default from v1.1.0 on. Turn on the in-flyout mixer from the Volume
+flyout page in Settings, or use **Volume Mixer** in the tray menu for the
+standalone window.
 
 ## The taskbar widget disappears or moves
 It hides over fullscreen apps and re-anchors when the taskbar changes (monitor,
-DPI). Use the Taskbar Widget page to set the side, monitor and offset.
+DPI). Use the Taskbar Widget page to set the side, monitor and offset. On first
+run the side is chosen to avoid your taskbar buttons — left for a center-aligned
+taskbar, right for a left-aligned one — and is never changed again once set.
 
 ## Where are my settings stored?
 Use **Open Config Folder** in the tray menu. Settings live in a per-user `.ini`

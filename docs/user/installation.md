@@ -42,6 +42,8 @@ See the [Build Guide](../developer/build-guide.md).
 
 ## First run
 
-On first launch a short **onboarding wizard** introduces the main features. After
-that, right-click the tray icon and choose **Settings** to open the dashboard, or
-press a media/volume key to see a flyout. See the [User Guide](user-guide.md).
+On first launch a short **onboarding wizard** introduces the main features. While
+it is open the flyouts and taskbar widget stay hidden, so nothing pops up over
+the wizard while you pick your settings. After that, right-click the tray icon
+and choose **Settings** to open the dashboard, or press a media/volume key to see
+a flyout. See the [User Guide](user-guide.md).
