@@ -8,6 +8,8 @@ Window {
     id: root
     width: 520
     height: 460
+    minimumWidth: 460
+    minimumHeight: 430
     title: "Welcome to MediaFlyouts"
     color: theme.window
     flags: Qt.Dialog
@@ -23,12 +25,14 @@ Window {
         root.close()
     }
 
-    Column {
+    Item {
         anchors.fill: parent
         anchors.margins: 28
-        spacing: 18
 
         Row {
+            id: header
+            anchors.top: parent.top
+            anchors.left: parent.left
             spacing: 12
             IconLabel {
                 glyph: Fluent.musicNote
@@ -44,10 +48,15 @@ Window {
             }
         }
 
-        // step content
+        // step content, bounded by the header and footer so it can never overlap them
         Item {
-            width: parent.width
-            height: parent.height - 150
+            anchors.top: header.bottom
+            anchors.topMargin: 18
+            anchors.bottom: footer.top
+            anchors.bottomMargin: 18
+            anchors.left: parent.left
+            anchors.right: parent.right
+            clip: true
 
             // 0: welcome
             Column {
@@ -153,39 +162,46 @@ Window {
             }
         }
 
-        // step dots
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 6
-            Repeater {
-                model: root.stepCount
-                delegate: Rectangle {
-                    required property int index
-                    width: 8
-                    height: 8
-                    radius: 4
-                    color: index === root.step ? theme.accent : theme.border
+        // pinned to the bottom; the step content sizes itself around it
+        Column {
+            id: footer
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            spacing: 18
+
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 6
+                Repeater {
+                    model: root.stepCount
+                    delegate: Rectangle {
+                        required property int index
+                        width: 8
+                        height: 8
+                        radius: 4
+                        color: index === root.step ? theme.accent : theme.border
+                    }
                 }
             }
-        }
 
-        // navigation
-        Item {
-            width: parent.width
-            height: nextBtn.height
-            Button {
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-                text: "Back"
-                visible: root.step > 0
-                onClicked: root.step--
-            }
-            Button {
-                id: nextBtn
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                text: root.step === root.stepCount - 1 ? "Get started" : "Next"
-                onClicked: root.step === root.stepCount - 1 ? root.finish() : root.step++
+            Item {
+                width: parent.width
+                height: nextBtn.height
+                Button {
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Back"
+                    visible: root.step > 0
+                    onClicked: root.step--
+                }
+                Button {
+                    id: nextBtn
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: root.step === root.stepCount - 1 ? "Get started" : "Next"
+                    onClicked: root.step === root.stepCount - 1 ? root.finish() : root.step++
+                }
             }
         }
     }
