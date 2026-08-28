@@ -66,7 +66,8 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.nextUpDuration(), 2000);
     QCOMPARE(s.nextUpStyle(), 0);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
-    QCOMPARE(s.taskbarWidgetSide(), 0);
+    // seeded from the system taskbar alignment, so only the range is fixed
+    QVERIFY(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
     QVERIFY(s.taskbarWidgetShowPauseOverlay());
     QVERIFY(s.taskbarWidgetScrollingEnabled());

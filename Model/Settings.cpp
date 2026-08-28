@@ -2,6 +2,25 @@
 
 #include <QFileInfo>
 
+namespace {
+
+// Seeds the widget to the taskbar edge the shell leaves free: a centered taskbar (Windows 11
+// Explorer\Advanced\TaskbarAl = 1) keeps its buttons in the middle, so we sit on the left; a
+// left-aligned taskbar pushes us to the right. Windows 10 has no such key and is always left.
+int systemTaskbarSide() {
+#ifdef Q_OS_WIN
+    const QSettings explorer(
+        QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
+        QSettings::NativeFormat);
+    // widget side: 0 = left, 2 = right
+    return explorer.value(QStringLiteral("TaskbarAl"), 0).toInt() == 1 ? 0 : 2;
+#else
+    return 2;
+#endif
+}
+
+} // namespace
+
 Settings::Settings(QObject* parent)
     : QObject(parent), m_store(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
                                QStringLiteral("MediaFlyouts")) {
@@ -47,6 +66,10 @@ void Settings::reload() {
     m_nextUpStyle = m_store.value(QStringLiteral("nextUpStyle"), 0).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     // widget side: 0 = left, 1 = center, 2 = right
+    // On first run, seed it from the system taskbar alignment and pin it so later system changes
+    // don't move a widget the user has already positioned.
+    if(!m_store.contains(QStringLiteral("taskbarWidgetSide")))
+        m_store.setValue(QStringLiteral("taskbarWidgetSide"), systemTaskbarSide());
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();

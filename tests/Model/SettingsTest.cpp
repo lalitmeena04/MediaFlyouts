@@ -60,7 +60,8 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.nextUpDuration(), 2000);
     EXPECT_EQ(s.nextUpStyle(), 0);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
-    EXPECT_EQ(s.taskbarWidgetSide(), 0);
+    // seeded from the system taskbar alignment, so only the range is fixed
+    EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
@@ -112,6 +113,18 @@ TEST_F(SettingsTest, ValuesPersistAcrossInstances) {
     Settings second;
     EXPECT_FALSE(second.overrideNativeOsd());
     EXPECT_TRUE(second.launchOnStartup());
+}
+
+TEST_F(SettingsTest, TaskbarWidgetSideIsSeededOnceThenPinned) {
+    int seeded = -1;
+    {
+        Settings first;
+        seeded = first.taskbarWidgetSide();
+        // pick a different side so we can tell a stored choice from a re-seed
+        first.setTaskbarWidgetSide(seeded == 1 ? 0 : 1);
+    }
+    Settings second;
+    EXPECT_EQ(second.taskbarWidgetSide(), seeded == 1 ? 0 : 1);
 }
 
 TEST_F(SettingsTest, ExportImportRoundTrip) {
