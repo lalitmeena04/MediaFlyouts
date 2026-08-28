@@ -26,6 +26,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/TrackInfo.h        Model/TrackInfo.cpp
     Model/PlaybackController.h Model/PlaybackController.cpp
     Model/Fft.h              Model/Fft.cpp
+    Model/DualSenseProtocol.h Model/DualSenseProtocol.cpp
+    Model/BatteryUtils.h     Model/BatteryUtils.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
 target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model)
@@ -115,9 +117,11 @@ if (WIN32)
         Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
         Controllers/BatteryProviders/GameControllerBatteryProvider.h
         Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
+        Controllers/BatteryProviders/PlayStationControllerBatteryProvider.h
+        Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib)
+    target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib Bthprops.lib hid.lib setupapi.lib)
 endif()
 
 if(MEDIAFLYOUTS_BUILD_TESTS)

@@ -1,5 +1,7 @@
 #include "GameControllerBatteryProvider.h"
 
+#include "BatteryUtils.h"
+
 #include <winrt/Windows.Devices.Power.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Foundation.h>
@@ -19,10 +21,12 @@ QVector<BatteryDeviceInfo> GameControllerBatteryProvider::poll() {
 
             const auto remaining = report.RemainingCapacityInMilliwattHours();
             const auto full = report.FullChargeCapacityInMilliwattHours();
-            if(!remaining || !full || full.Value() <= 0)
+            if(!remaining || !full)
                 continue;
 
-            const int percent = static_cast<int>((100LL * remaining.Value()) / full.Value());
+            const int percent = BatteryUtils::milliwattHoursToPercent(remaining.Value(), full.Value());
+            if(percent < 0)
+                continue;
 
             QString name = QString::fromWCharArray(controller.DisplayName().c_str());
             if(name.isEmpty())

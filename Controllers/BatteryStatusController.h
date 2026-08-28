@@ -33,7 +33,14 @@ class BatteryStatusController : public QObject {
         void devicesChanged();
 
     private:
+        // applies a freshly polled snapshot on the main thread (updates m_devices, emits if changed)
+        void applyPolled(const QVector<struct BatteryDeviceInfo>& polled);
+
         std::vector<std::unique_ptr<IBatteryProvider>> m_providers;
         QVariantList m_devices;
         QTimer m_timer;
+        // real (Windows) providers poll on a background thread to avoid blocking the STA main
+        // thread on WinRT async calls; the test-injection constructor leaves this false
+        bool m_pollOnWorkerThread = false;
+        bool m_refreshing = false;
 };
