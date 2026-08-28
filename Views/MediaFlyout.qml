@@ -29,6 +29,8 @@ Window {
     property bool prevAlwaysDisplay: settings.mediaFlyoutAlwaysDisplay
 
     function showFlyout() {
+        if(!settings.onboardingCompleted)
+            return
         if(!settings.mediaFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         if(nowPlaying.hasMedia && !settings.playerAllowed(nowPlaying.playerName))

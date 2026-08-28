@@ -25,6 +25,8 @@ Window {
     }
 
     function showFlyout() {
+        if(!settings.onboardingCompleted)
+            return
         if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         if(!settings.playerAllowed(nowPlaying.playerName))

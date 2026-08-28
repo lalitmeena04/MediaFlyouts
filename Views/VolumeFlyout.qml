@@ -34,6 +34,8 @@ Window {
     Component.onCompleted: windowEffects.setDarkFrame(root, theme.dark)
 
     function showFlyout() {
+        if(!settings.onboardingCompleted)
+            return
         if(!settings.volumeFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
             return
         hideTimer.restart()
