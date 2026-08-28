@@ -19,7 +19,7 @@ void Settings::reload() {
     m_repeatEnabled = m_store.value(QStringLiteral("repeatEnabled"), true).toBool();
     m_shuffleEnabled = m_store.value(QStringLiteral("shuffleEnabled"), true).toBool();
     m_volumeFlyoutEnabled = m_store.value(QStringLiteral("volumeFlyoutEnabled"), true).toBool();
-    m_volumeFlyoutMixerEnabled = m_store.value(QStringLiteral("volumeFlyoutMixerEnabled"), true).toBool();
+    m_volumeFlyoutMixerEnabled = m_store.value(QStringLiteral("volumeFlyoutMixerEnabled"), false).toBool();
     m_overrideNativeOsd = m_store.value(QStringLiteral("overrideNativeOsd"), true).toBool();
     m_lockKeysEnabled = m_store.value(QStringLiteral("lockKeysEnabled"), true).toBool();
     m_lockKeysCapsEnabled = m_store.value(QStringLiteral("lockKeysCapsEnabled"), true).toBool();

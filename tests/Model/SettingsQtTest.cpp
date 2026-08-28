@@ -40,7 +40,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.repeatEnabled());
     QVERIFY(s.shuffleEnabled());
     QVERIFY(s.volumeFlyoutEnabled());
-    QVERIFY(s.volumeFlyoutMixerEnabled());
+    QVERIFY(!s.volumeFlyoutMixerEnabled());
     QVERIFY(s.overrideNativeOsd());
     QVERIFY(s.lockKeysEnabled());
     QVERIFY(s.lockKeysCapsEnabled());

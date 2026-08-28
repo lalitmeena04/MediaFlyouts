@@ -34,7 +34,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.repeatEnabled());
     EXPECT_TRUE(s.shuffleEnabled());
     EXPECT_TRUE(s.volumeFlyoutEnabled());
-    EXPECT_TRUE(s.volumeFlyoutMixerEnabled());
+    EXPECT_FALSE(s.volumeFlyoutMixerEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
     EXPECT_TRUE(s.lockKeysEnabled());
     EXPECT_TRUE(s.lockKeysCapsEnabled());
