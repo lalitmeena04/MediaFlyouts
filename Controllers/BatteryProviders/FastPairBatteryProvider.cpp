@@ -40,6 +40,15 @@ QString devNodePropertyText(DEVINST devInst, const DEVPROPKEY& key) {
     return QString::fromWCharArray(buf.data());
 }
 
+// The RFCOMM socket can stay open for a while after the device drops off, so connection
+// state is taken from the Bluetooth API rather than inferred from the socket.
+bool isAddressConnected(quint64 address) {
+    BLUETOOTH_DEVICE_INFO info = {};
+    info.dwSize = sizeof(info);
+    info.Address.ullLong = address;
+    return BluetoothGetDeviceInfo(nullptr, &info) == ERROR_SUCCESS && info.fConnected;
+}
+
 // The PnP service sub-node is only ever called "Bluetooth Peripheral Device", so ask the
 // Bluetooth API for the paired name (and skip devices that aren't currently connected).
 QString connectedDeviceName(quint64 address) {
@@ -181,8 +190,16 @@ FastPairBatteryProvider::~FastPairBatteryProvider() {
 QVector<BatteryDeviceInfo> FastPairBatteryProvider::poll() {
     std::lock_guard<std::mutex> lock(m_mutex);
     QVector<BatteryDeviceInfo> devices;
-    for(const BatteryDeviceInfo& info : m_latest)
-        devices.push_back(info);
+    for(auto it = m_latest.begin(); it != m_latest.end();) {
+        // never report a device that has already dropped off, even if the worker thread
+        // hasn't noticed its socket die yet
+        if(!isAddressConnected(it.key())) {
+            it = m_latest.erase(it);
+            continue;
+        }
+        devices.push_back(it.value());
+        ++it;
+    }
     return devices;
 }
 
@@ -195,6 +212,7 @@ void FastPairBatteryProvider::run() {
     };
     std::vector<Connection> connections;
     auto nextScan = std::chrono::steady_clock::now();
+    auto nextLivenessCheck = std::chrono::steady_clock::now();
 
     auto dropConnection = [&](size_t index) {
         closesocket(connections[index].sock);
@@ -206,6 +224,13 @@ void FastPairBatteryProvider::run() {
     };
 
     while(!m_stop) {
+        // a disconnect doesn't always break the socket, so poll the link state too
+        if(std::chrono::steady_clock::now() >= nextLivenessCheck) {
+            nextLivenessCheck = std::chrono::steady_clock::now() + std::chrono::seconds(1);
+            for(size_t i = connections.size(); i-- > 0;)
+                if(!isAddressConnected(connections[i].address))
+                    dropConnection(i);
+        }
         // periodically pick up newly connected devices
         if(std::chrono::steady_clock::now() >= nextScan) {
             nextScan = std::chrono::steady_clock::now() + std::chrono::seconds(10);
