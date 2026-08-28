@@ -18,6 +18,9 @@ class BatteryStatusController : public QObject {
 
     public:
         explicit BatteryStatusController(QObject* parent = nullptr);
+        // test seam: inject providers directly instead of the real Windows-backed ones
+        explicit BatteryStatusController(std::vector<std::unique_ptr<IBatteryProvider>> providers,
+                                          QObject* parent = nullptr);
         ~BatteryStatusController() override;
 
         QVariantList devices() const;

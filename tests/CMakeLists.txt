@@ -51,10 +51,15 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/AudioCapture.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryStatusController.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
         Controllers/Win32ControllersTest.cpp
+        Controllers/BatteryStatusControllerTest.cpp
     )
     target_compile_definitions(mediaflyout_gtest PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib)
+    target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib)
 endif()
 
 # --- Qt Test: one executable per class (each file has its own QTEST_GUILESS_MAIN) ---

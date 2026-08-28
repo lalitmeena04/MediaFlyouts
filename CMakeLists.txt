@@ -111,6 +111,10 @@ if (WIN32)
         Controllers/BatteryProviders/IBatteryProvider.h
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.h
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
+        Controllers/BatteryProviders/BluetoothLeBatteryProvider.h
+        Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
+        Controllers/BatteryProviders/GameControllerBatteryProvider.h
+        Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
     )
     target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib)

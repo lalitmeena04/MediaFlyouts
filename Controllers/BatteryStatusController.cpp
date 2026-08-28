@@ -3,16 +3,26 @@
 #include <QVariantMap>
 
 #include "BatteryProviders/BluetoothClassicBatteryProvider.h"
+#include "BatteryProviders/BluetoothLeBatteryProvider.h"
+#include "BatteryProviders/GameControllerBatteryProvider.h"
 #include "BatteryProviders/IBatteryProvider.h"
 
 BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(parent) {
     m_providers.push_back(std::make_unique<BluetoothClassicBatteryProvider>());
+    m_providers.push_back(std::make_unique<BluetoothLeBatteryProvider>());
+    m_providers.push_back(std::make_unique<GameControllerBatteryProvider>());
 
     // battery level changes slowly; poll infrequently rather than watch for device events
     m_timer.setInterval(5 * 60 * 1000);
     connect(&m_timer, &QTimer::timeout, this, &BatteryStatusController::refresh);
     m_timer.start();
 
+    refresh();
+}
+
+BatteryStatusController::BatteryStatusController(std::vector<std::unique_ptr<IBatteryProvider>> providers,
+                                                   QObject* parent)
+    : QObject(parent), m_providers(std::move(providers)) {
     refresh();
 }
 
