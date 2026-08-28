@@ -537,55 +537,54 @@ Window {
                                 model: batteryStatus.devices
                                 delegate: Rectangle {
                                     required property var modelData
-                                    width: (homePage.width - 24) / 3
-                                    height: 60
-                                    radius: 10
+                                    width: 108
+                                    height: 128
+                                    radius: 12
                                     color: theme.card
                                     border.color: theme.border
 
-                                    readonly property color levelColor: modelData.percent <= 20 ? "#E06C75"
-                                        : (modelData.percent <= 40 ? "#E5C07B" : "#6FCF7F")
+                                    Column {
+                                        anchors.centerIn: parent
+                                        spacing: 6
 
-                                    Row {
-                                        anchors.fill: parent
-                                        anchors.margins: 12
-                                        spacing: 10
+                                        BatteryRing {
+                                            id: ring
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            width: 64
+                                            height: 64
+                                            thickness: 5
+                                            percent: modelData.percent
 
-                                        Rectangle {
-                                            anchors.verticalCenter: parent.verticalCenter
-                                            width: 26
-                                            height: 14
-                                            radius: 3
-                                            color: "transparent"
-                                            border.color: theme.textMuted
-                                            Rectangle {
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                anchors.left: parent.left
-                                                anchors.leftMargin: 2
-                                                width: (parent.width - 4) * Math.max(0, Math.min(100, modelData.percent)) / 100
-                                                height: parent.height - 4
-                                                radius: 1
-                                                color: levelColor
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: DeviceIcons.glyph(modelData.name, modelData.connectionKind)
+                                                font.pixelSize: 26
                                             }
                                         }
 
-                                        Column {
-                                            anchors.verticalCenter: parent.verticalCenter
+                                        Row {
+                                            anchors.horizontalCenter: parent.horizontalCenter
                                             spacing: 4
-                                            width: parent.width - 36
                                             Text {
-                                                width: parent.width
-                                                text: modelData.name
-                                                color: theme.textPrimary
-                                                font.pixelSize: 13
-                                                font.bold: true
-                                                elide: Text.ElideRight
+                                                text: "\uD83D\uDD0B" // small battery pictogram
+                                                font.pixelSize: 11
+                                                color: ring.progressColor
                                             }
                                             Text {
                                                 text: modelData.percent + "%"
-                                                color: theme.textMuted
-                                                font.pixelSize: 11
+                                                color: theme.textPrimary
+                                                font.pixelSize: 12
+                                                font.bold: true
                                             }
+                                        }
+
+                                        Text {
+                                            width: 100
+                                            horizontalAlignment: Text.AlignHCenter
+                                            text: modelData.name
+                                            color: theme.textMuted
+                                            font.pixelSize: 10
+                                            elide: Text.ElideRight
                                         }
                                     }
                                 }
@@ -946,6 +945,82 @@ Window {
                         value: settings.taskbarWidgetOffset
                         valueText: settings.taskbarWidgetOffset + " px"
                         onMoved: settings.taskbarWidgetOffset = Math.round(value)
+                    }
+
+                    Text {
+                        text: "Peripherals widget"
+                        color: theme.textPrimary
+                        font.pixelSize: 16
+                        font.bold: true
+                        topPadding: 8
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Peripherals widget"
+                        description: "Dock a battery widget for selected wireless peripherals on the taskbar."
+                        value: settings.peripheralsWidgetEnabled
+                        onToggled: settings.peripheralsWidgetEnabled = value
+                    }
+                    SettingCombo {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        label: "Widget side"
+                        description: "Which part of the taskbar the peripherals widget docks to."
+                        model: ["Left", "Center", "Right"]
+                        currentIndex: settings.peripheralsWidgetSide
+                        onActivated: settings.peripheralsWidgetSide = index
+                    }
+                    SettingCombo {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        label: "Widget monitor"
+                        description: "Which display's taskbar the peripherals widget docks to."
+                        model: placement.monitorNames()
+                        currentIndex: settings.peripheralsWidgetMonitor
+                        onActivated: settings.peripheralsWidgetMonitor = index
+                    }
+                    SettingSlider {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        label: "Widget offset"
+                        description: settings.peripheralsWidgetSide === 1
+                            ? "Shift the centered widget left or right along the taskbar."
+                            : "Fine-tune the widget's horizontal position on the taskbar."
+                        from: settings.peripheralsWidgetSide === 1 ? -600 : 0
+                        to: 600
+                        stepSize: 10
+                        value: settings.peripheralsWidgetOffset
+                        valueText: settings.peripheralsWidgetOffset + " px"
+                        onMoved: settings.peripheralsWidgetOffset = Math.round(value)
+                    }
+
+                    Text {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Choose which detected peripherals to show on the widget:"
+                        color: theme.textSecondary
+                        font.pixelSize: 12
+                        topPadding: 4
+                    }
+                    Text {
+                        visible: settings.peripheralsWidgetEnabled && batteryStatus.devices.length === 0
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "No peripherals with a readable battery level are currently connected."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+                    Repeater {
+                        model: settings.peripheralsWidgetEnabled ? batteryStatus.devices : []
+                        delegate: SettingRow {
+                            required property var modelData
+                            width: parent.width
+                            label: modelData.name
+                            description: "Currently at " + modelData.percent + "%."
+                            value: settings.peripheralSelected(modelData.name)
+                            onToggled: settings.setPeripheralSelected(modelData.name, value)
+                        }
                     }
                 }
 

@@ -25,6 +25,9 @@ QtObject {
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         onActivated: flyout.showFlyout()
     }
+    property PeripheralsWidget peripheralsWidget: PeripheralsWidget {
+        mediaWidget: taskbarWidget
+    }
 
     // show the first-run wizard once
     Component.onCompleted: if(!settings.onboardingCompleted) onboarding.show()

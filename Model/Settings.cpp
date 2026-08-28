@@ -56,6 +56,11 @@ void Settings::reload() {
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
     // visualizerStyle: 0 = bars, 1 = radial, 2 = waveform, 3 = particles
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
+    m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
+    m_peripheralsWidgetOffset = m_store.value(QStringLiteral("peripheralsWidgetOffset"), 0).toInt();
+    m_peripheralsWidgetSide = m_store.value(QStringLiteral("peripheralsWidgetSide"), 2).toInt();
+    m_peripheralsWidgetMonitor = m_store.value(QStringLiteral("peripheralsWidgetMonitor"), 0).toInt();
+    m_peripheralsWidgetSelected = m_store.value(QStringLiteral("peripheralsWidgetSelected")).toStringList();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // accentMode: 0 = theme default, 1 = match system, 2 = custom
@@ -283,6 +288,39 @@ bool Settings::taskbarVisualizerCentered() const {
 int Settings::visualizerStyle() const {
     return m_visualizerStyle;
 }
+bool Settings::peripheralsWidgetEnabled() const {
+    return m_peripheralsWidgetEnabled;
+}
+int Settings::peripheralsWidgetOffset() const {
+    return m_peripheralsWidgetOffset;
+}
+int Settings::peripheralsWidgetSide() const {
+    return m_peripheralsWidgetSide;
+}
+int Settings::peripheralsWidgetMonitor() const {
+    return m_peripheralsWidgetMonitor;
+}
+QStringList Settings::peripheralsWidgetSelected() const {
+    return m_peripheralsWidgetSelected;
+}
+bool Settings::peripheralSelected(const QString& name) const {
+    return m_peripheralsWidgetSelected.contains(name, Qt::CaseInsensitive);
+}
+void Settings::setPeripheralSelected(const QString& name, bool selected) {
+    const bool alreadySelected = m_peripheralsWidgetSelected.contains(name, Qt::CaseInsensitive);
+    if(selected == alreadySelected)
+        return;
+
+    if(selected) {
+        m_peripheralsWidgetSelected.append(name);
+    } else {
+        for(int i = m_peripheralsWidgetSelected.size() - 1; i >= 0; --i)
+            if(m_peripheralsWidgetSelected.at(i).compare(name, Qt::CaseInsensitive) == 0)
+                m_peripheralsWidgetSelected.removeAt(i);
+    }
+    m_store.setValue(QStringLiteral("peripheralsWidgetSelected"), m_peripheralsWidgetSelected);
+    emit changed();
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
@@ -453,6 +491,18 @@ void Settings::setTaskbarVisualizerCentered(bool v) {
 }
 void Settings::setVisualizerStyle(int v) {
     assignInt("visualizerStyle", m_visualizerStyle, v);
+}
+void Settings::setPeripheralsWidgetEnabled(bool v) {
+    assign("peripheralsWidgetEnabled", m_peripheralsWidgetEnabled, v);
+}
+void Settings::setPeripheralsWidgetOffset(int v) {
+    assignInt("peripheralsWidgetOffset", m_peripheralsWidgetOffset, v);
+}
+void Settings::setPeripheralsWidgetSide(int v) {
+    assignInt("peripheralsWidgetSide", m_peripheralsWidgetSide, v);
+}
+void Settings::setPeripheralsWidgetMonitor(int v) {
+    assignInt("peripheralsWidgetMonitor", m_peripheralsWidgetMonitor, v);
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);

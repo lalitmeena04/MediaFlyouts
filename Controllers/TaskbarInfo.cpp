@@ -96,13 +96,6 @@ void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
     HWND hwnd = reinterpret_cast<HWND>(window->winId());
     if(!hwnd)
         return;
-    // keep the widget out of screenshots / the snip tool overlay grab
-#ifndef WDA_EXCLUDEFROMCAPTURE
-#define WDA_EXCLUDEFROMCAPTURE 0x00000011
-#endif
-    DWORD affinity = 0;
-    if(!GetWindowDisplayAffinity(hwnd, &affinity) || affinity != WDA_EXCLUDEFROMCAPTURE)
-        SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE);
     // move to the top of the topmost band (above the taskbar) without stealing focus
     SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 }

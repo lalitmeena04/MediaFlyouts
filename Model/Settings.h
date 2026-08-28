@@ -60,6 +60,14 @@ class Settings : public QObject {
         Q_PROPERTY(bool taskbarVisualizerCentered READ taskbarVisualizerCentered WRITE setTaskbarVisualizerCentered
                        NOTIFY changed)
         Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
+        Q_PROPERTY(bool peripheralsWidgetEnabled READ peripheralsWidgetEnabled WRITE setPeripheralsWidgetEnabled
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralsWidgetOffset READ peripheralsWidgetOffset WRITE setPeripheralsWidgetOffset NOTIFY
+                       changed)
+        Q_PROPERTY(int peripheralsWidgetSide READ peripheralsWidgetSide WRITE setPeripheralsWidgetSide NOTIFY changed)
+        Q_PROPERTY(int peripheralsWidgetMonitor READ peripheralsWidgetMonitor WRITE setPeripheralsWidgetMonitor NOTIFY
+                       changed)
+        Q_PROPERTY(QStringList peripheralsWidgetSelected READ peripheralsWidgetSelected NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
         Q_PROPERTY(int accentMode READ accentMode WRITE setAccentMode NOTIFY changed)
@@ -122,6 +130,14 @@ class Settings : public QObject {
         bool taskbarVisualizerEnabled() const;
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
+        bool peripheralsWidgetEnabled() const;
+        int peripheralsWidgetOffset() const;
+        int peripheralsWidgetSide() const;
+        int peripheralsWidgetMonitor() const;
+        QStringList peripheralsWidgetSelected() const;
+        // true when the named device is checked in the peripherals-widget device picker
+        Q_INVOKABLE bool peripheralSelected(const QString& name) const;
+        Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
         bool onboardingCompleted() const;
         bool accentFromArt() const;
         int accentMode() const;
@@ -175,6 +191,10 @@ class Settings : public QObject {
         void setTaskbarVisualizerEnabled(bool v);
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
+        void setPeripheralsWidgetEnabled(bool v);
+        void setPeripheralsWidgetOffset(int v);
+        void setPeripheralsWidgetSide(int v);
+        void setPeripheralsWidgetMonitor(int v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
         void setAccentMode(int v);
@@ -236,6 +256,11 @@ class Settings : public QObject {
         bool m_taskbarVisualizerEnabled;
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;
+        bool m_peripheralsWidgetEnabled;
+        int m_peripheralsWidgetOffset;
+        int m_peripheralsWidgetSide;
+        int m_peripheralsWidgetMonitor;
+        QStringList m_peripheralsWidgetSelected;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
         int m_accentMode;
