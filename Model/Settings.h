@@ -40,6 +40,8 @@ class Settings : public QObject {
                        setTaskbarWidgetControlsEnabled NOTIFY changed)
         Q_PROPERTY(int flyoutPosition READ flyoutPosition WRITE setFlyoutPosition NOTIFY changed)
         Q_PROPERTY(int flyoutMonitor READ flyoutMonitor WRITE setFlyoutMonitor NOTIFY changed)
+        Q_PROPERTY(int volumeFlyoutPosition READ volumeFlyoutPosition WRITE setVolumeFlyoutPosition NOTIFY changed)
+        Q_PROPERTY(int volumeFlyoutMonitor READ volumeFlyoutMonitor WRITE setVolumeFlyoutMonitor NOTIFY changed)
         Q_PROPERTY(int flyoutDuration READ flyoutDuration WRITE setFlyoutDuration NOTIFY changed)
         Q_PROPERTY(int flyoutAnimationSpeed READ flyoutAnimationSpeed WRITE setFlyoutAnimationSpeed NOTIFY changed)
         Q_PROPERTY(int flyoutAnimationMs READ flyoutAnimationMs NOTIFY changed)
@@ -115,6 +117,9 @@ class Settings : public QObject {
         bool taskbarWidgetControlsEnabled() const;
         int flyoutPosition() const;
         int flyoutMonitor() const;
+        // independent of the media flyout; indexes mf::FlyoutPosition like flyoutPosition
+        int volumeFlyoutPosition() const;
+        int volumeFlyoutMonitor() const;
         int flyoutDuration() const;
         int flyoutAnimationSpeed() const;
         // fade duration in ms derived from flyoutAnimationSpeed
@@ -179,6 +184,8 @@ class Settings : public QObject {
         void setTaskbarWidgetControlsEnabled(bool v);
         void setFlyoutPosition(int v);
         void setFlyoutMonitor(int v);
+        void setVolumeFlyoutPosition(int v);
+        void setVolumeFlyoutMonitor(int v);
         void setFlyoutDuration(int v);
         void setFlyoutAnimationSpeed(int v);
         void setFlyoutAnimationEasingStyle(int v);
@@ -245,6 +252,8 @@ class Settings : public QObject {
         bool m_taskbarWidgetControlsEnabled;
         int m_flyoutPosition;
         int m_flyoutMonitor;
+        int m_volumeFlyoutPosition;
+        int m_volumeFlyoutMonitor;
         int m_flyoutDuration;
         int m_flyoutAnimationSpeed;
         int m_flyoutAnimationEasingStyle;

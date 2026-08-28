@@ -57,6 +57,10 @@ void Settings::reload() {
     // flyoutPosition indexes mf::FlyoutPosition (4 = BottomCenter); duration in milliseconds
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
+    // -1 keeps the volume flyout wherever the media flyout is, which is how it behaved
+    // before it got its own position controls
+    m_volumeFlyoutPosition = m_store.value(QStringLiteral("volumeFlyoutPosition"), 4).toInt();
+    m_volumeFlyoutMonitor = m_store.value(QStringLiteral("volumeFlyoutMonitor"), 0).toInt();
     m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
     m_flyoutAnimationSpeed = m_store.value(QStringLiteral("flyoutAnimationSpeed"), 2).toInt();
     m_flyoutAnimationEasingStyle = m_store.value(QStringLiteral("flyoutAnimationEasingStyle"), 3).toInt();
@@ -227,6 +231,12 @@ int Settings::flyoutPosition() const {
 }
 int Settings::flyoutMonitor() const {
     return m_flyoutMonitor;
+}
+int Settings::volumeFlyoutPosition() const {
+    return m_volumeFlyoutPosition;
+}
+int Settings::volumeFlyoutMonitor() const {
+    return m_volumeFlyoutMonitor;
 }
 int Settings::flyoutDuration() const {
     return m_flyoutDuration;
@@ -444,6 +454,12 @@ void Settings::setFlyoutPosition(int v) {
 }
 void Settings::setFlyoutMonitor(int v) {
     assignInt("flyoutMonitor", m_flyoutMonitor, v);
+}
+void Settings::setVolumeFlyoutPosition(int v) {
+    assignInt("volumeFlyoutPosition", m_volumeFlyoutPosition, v);
+}
+void Settings::setVolumeFlyoutMonitor(int v) {
+    assignInt("volumeFlyoutMonitor", m_volumeFlyoutMonitor, v);
 }
 void Settings::setFlyoutDuration(int v) {
     assignInt("flyoutDuration", m_flyoutDuration, v);
