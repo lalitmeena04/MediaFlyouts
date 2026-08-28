@@ -35,16 +35,13 @@ Window {
     property bool blocked: false
 
     function updatePosition() {
-        // if the media widget is showing on the same monitor/edge, dock right after it
-        // instead of on top of it
+        // this widget always shares the media widget's monitor and taskbar edge, so reserve its
+        // slot even while it is hidden — otherwise we would jump around as playback starts/stops
         var extraOffset = 0
-        if(root.mediaWidget && root.mediaWidget.visible
-           && settings.peripheralsWidgetMonitor === settings.taskbarWidgetMonitor
-           && settings.peripheralsWidgetSide === settings.taskbarWidgetSide) {
+        if(root.mediaWidget && settings.taskbarWidgetEnabled)
             extraOffset = root.mediaWidget.width + 8
-        }
-        var p = taskbar.widgetPosition(settings.peripheralsWidgetMonitor, settings.peripheralsWidgetSide,
-                                       settings.peripheralsWidgetOffset + extraOffset, width, height)
+        var p = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
+                                       settings.taskbarWidgetOffset + extraOffset, width, height)
         root.x = p.x
         root.y = p.y
         if(root.visible)
@@ -117,7 +114,11 @@ Window {
     Rectangle {
         anchors.fill: parent
         radius: 6
-        color: "#2A2A2A"
+        color: cardHover.hovered ? "#2A2A2A" : "transparent"
+
+        HoverHandler {
+            id: cardHover
+        }
 
         Row {
             anchors.centerIn: parent
@@ -146,11 +147,18 @@ Window {
 
                         HoverHandler {
                             onHoveredChanged: {
-                                if(hovered)
-                                    root.showTip(deviceRing.mapToGlobal(deviceRing.width / 2, 0),
-                                                 modelData.name + " \u2014 " + modelData.percent + "%")
-                                else
+                                if(hovered) {
+                                    // multi-battery devices (earbuds + case) show the ring at their
+                                    // weakest level, with the full breakdown here
+                                    var tipText = modelData.name + " \u2014 " + modelData.percent + "%"
+                                    if(modelData.charging)
+                                        tipText += " \u26A1"
+                                    if(modelData.detail)
+                                        tipText += "\n" + modelData.detail
+                                    root.showTip(deviceRing.mapToGlobal(deviceRing.width / 2, 0), tipText)
+                                } else {
                                     root.hideTip()
+                                }
                             }
                         }
                     }

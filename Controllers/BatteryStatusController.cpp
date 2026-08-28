@@ -1,17 +1,22 @@
 #include "BatteryStatusController.h"
 
 #include <QThread>
+#include <QSet>
 #include <QVariantMap>
 
 #include <winrt/base.h>
 
 #include "BatteryProviders/BluetoothClassicBatteryProvider.h"
 #include "BatteryProviders/BluetoothLeBatteryProvider.h"
+#include "BatteryProviders/FastPairBatteryProvider.h"
 #include "BatteryProviders/GameControllerBatteryProvider.h"
 #include "BatteryProviders/IBatteryProvider.h"
 #include "BatteryProviders/PlayStationControllerBatteryProvider.h"
 
 BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(parent) {
+    // Fast Pair first: it reports live per-component levels, so it wins the name-based
+    // dedupe in applyPolled() over the coarser Hands-Free value for the same device
+    m_providers.push_back(std::make_unique<FastPairBatteryProvider>());
     m_providers.push_back(std::make_unique<BluetoothClassicBatteryProvider>());
     m_providers.push_back(std::make_unique<BluetoothLeBatteryProvider>());
     m_providers.push_back(std::make_unique<GameControllerBatteryProvider>());
@@ -86,12 +91,21 @@ void BatteryStatusController::refresh() {
 
 void BatteryStatusController::applyPolled(const QVector<BatteryDeviceInfo>& polled) {
     QVariantList devices;
+    QSet<QString> seen;
     for(const BatteryDeviceInfo& info : polled) {
+        // the same headset can be reported by more than one provider (e.g. Fast Pair and
+        // Hands-Free); keep the first, which is the richest source
+        if(seen.contains(info.name))
+            continue;
+        seen.insert(info.name);
+
         QVariantMap entry;
         entry[QStringLiteral("name")] = info.name;
         entry[QStringLiteral("percent")] = info.percent;
         entry[QStringLiteral("connectionKind")] = info.connectionKind;
         entry[QStringLiteral("category")] = info.category;
+        entry[QStringLiteral("charging")] = info.charging;
+        entry[QStringLiteral("detail")] = info.detail;
         devices.append(entry);
     }
 

@@ -571,11 +571,21 @@ Window {
                                                 color: ring.progressColor
                                             }
                                             Text {
-                                                text: modelData.percent + "%"
+                                                text: modelData.percent + "%" + (modelData.charging ? " \u26A1" : "")
                                                 color: theme.textPrimary
                                                 font.pixelSize: 12
                                                 font.bold: true
                                             }
+                                        }
+
+                                        Text {
+                                            visible: !!modelData.detail
+                                            width: 100
+                                            horizontalAlignment: Text.AlignHCenter
+                                            text: modelData.detail || ""
+                                            color: theme.textMuted
+                                            font.pixelSize: 9
+                                            elide: Text.ElideRight
                                         }
 
                                         Text {
@@ -969,38 +979,6 @@ Window {
                         value: settings.batteryRingUseAccent
                         onToggled: settings.batteryRingUseAccent = value
                     }
-                    SettingCombo {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        label: "Widget side"
-                        description: "Which part of the taskbar the peripherals widget docks to."
-                        model: ["Left", "Center", "Right"]
-                        currentIndex: settings.peripheralsWidgetSide
-                        onActivated: settings.peripheralsWidgetSide = index
-                    }
-                    SettingCombo {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        label: "Widget monitor"
-                        description: "Which display's taskbar the peripherals widget docks to."
-                        model: placement.monitorNames()
-                        currentIndex: settings.peripheralsWidgetMonitor
-                        onActivated: settings.peripheralsWidgetMonitor = index
-                    }
-                    SettingSlider {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        label: "Widget offset"
-                        description: settings.peripheralsWidgetSide === 1
-                            ? "Shift the centered widget left or right along the taskbar."
-                            : "Fine-tune the widget's horizontal position on the taskbar."
-                        from: settings.peripheralsWidgetSide === 1 ? -600 : 0
-                        to: 600
-                        stepSize: 10
-                        value: settings.peripheralsWidgetOffset
-                        valueText: settings.peripheralsWidgetOffset + " px"
-                        onMoved: settings.peripheralsWidgetOffset = Math.round(value)
-                    }
 
                     Text {
                         visible: settings.peripheralsWidgetEnabled
@@ -1025,7 +1003,9 @@ Window {
                             required property var modelData
                             width: parent.width
                             label: modelData.name
-                            description: "Currently at " + modelData.percent + "%."
+                            description: modelData.detail
+                                ? "Currently at " + modelData.percent + "% (" + modelData.detail + ")."
+                                : "Currently at " + modelData.percent + "%."
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
                         }

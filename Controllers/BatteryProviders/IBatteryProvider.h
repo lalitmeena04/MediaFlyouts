@@ -12,6 +12,10 @@ struct BatteryDeviceInfo {
         // "mouse", "keyboard", "headset", "gamepad", or empty if unknown - decoded from the
         // Bluetooth Class of Device where available, more reliable than guessing from the name
         QString category;
+        bool charging = false;
+        // per-component breakdown for devices that report more than one battery
+        // (e.g. "L 100%  R 90%  Case 100%"); empty for single-battery devices
+        QString detail;
 };
 
 // A source of battery info for one class of peripheral connection (Bluetooth Classic,

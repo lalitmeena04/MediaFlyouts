@@ -1,0 +1,290 @@
+#include "FastPairBatteryProvider.h"
+
+#include "FastPairProtocol.h"
+
+#include <winsock2.h>
+#include <ws2bth.h>
+#include <windows.h>
+
+#include <cfgmgr32.h>
+#include <initguid.h>
+#include <devpkey.h>
+
+#include <chrono>
+#include <vector>
+
+namespace {
+
+// Google Fast Pair message stream RFCOMM service.
+constexpr GUID kFastPairMessageStream = {
+    0xdf21fe2c, 0x2515, 0x4fdb, {0x88, 0x86, 0xf1, 0x2c, 0x4d, 0x67, 0x92, 0x7c}};
+
+constexpr wchar_t kFastPairUuidText[] = L"{DF21FE2C-2515-4FDB-8886-F12C4D67927C}";
+
+struct FastPairDevice {
+        quint64 address = 0;
+        QString name;
+};
+
+QString devNodeFriendlyName(DEVINST devInst) {
+    DEVPROPTYPE type = 0;
+    ULONG size = 0;
+    CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName, &type, nullptr, &size, 0);
+    if(size == 0)
+        return {};
+
+    std::vector<wchar_t> buf(size / sizeof(wchar_t));
+    if(CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName, &type, reinterpret_cast<PBYTE>(buf.data()),
+                                 &size, 0)
+       != CR_SUCCESS)
+        return {};
+    return QString::fromWCharArray(buf.data());
+}
+
+// The 12 hex digits before "_C" in a BTHENUM service instance id are the device address.
+bool addressFromServiceId(const std::wstring& id, quint64& out) {
+    const size_t marker = id.rfind(L"_C");
+    if(marker == std::wstring::npos || marker < 12)
+        return false;
+    const std::wstring hex = id.substr(marker - 12, 12);
+    for(wchar_t c : hex)
+        if(!iswxdigit(c))
+            return false;
+    out = std::wcstoull(hex.c_str(), nullptr, 16);
+    return true;
+}
+
+// Paired devices that advertise the Fast Pair message stream, with the friendly name
+// taken from the device's own BTHENUM\DEV_<addr> node rather than the service sub-node
+// (which is just called "Bluetooth Peripheral Device").
+std::vector<FastPairDevice> enumerateFastPairDevices() {
+    ULONG listSize = 0;
+    if(CM_Get_Device_ID_List_SizeW(&listSize, L"BTHENUM", CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS
+       || listSize == 0)
+        return {};
+
+    std::vector<wchar_t> list(listSize);
+    if(CM_Get_Device_ID_ListW(L"BTHENUM", list.data(), listSize, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS)
+        return {};
+
+    std::vector<quint64> addresses;
+    QHash<quint64, QString> names;
+
+    for(const wchar_t* id = list.data(); *id; id += wcslen(id) + 1) {
+        const std::wstring text(id);
+        DEVINST devInst = 0;
+        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
+            continue;
+
+        quint64 address = 0;
+        if(text.find(L"\\DEV_") != std::wstring::npos) {
+            const size_t start = text.find(L"\\DEV_") + 5;
+            if(start + 12 <= text.size()) {
+                address = std::wcstoull(text.substr(start, 12).c_str(), nullptr, 16);
+                const QString name = devNodeFriendlyName(devInst);
+                if(address && !name.isEmpty())
+                    names.insert(address, name);
+            }
+            continue;
+        }
+
+        // service sub-node: only interested in the Fast Pair one
+        if(text.find(kFastPairUuidText) == std::wstring::npos) {
+            std::wstring upper = text;
+            for(wchar_t& c : upper)
+                c = towupper(c);
+            if(upper.find(kFastPairUuidText) == std::wstring::npos)
+                continue;
+        }
+        if(addressFromServiceId(text, address) && address)
+            addresses.push_back(address);
+    }
+
+    std::vector<FastPairDevice> devices;
+    for(quint64 address : addresses) {
+        bool seen = false;
+        for(const FastPairDevice& existing : devices)
+            if(existing.address == address)
+                seen = true;
+        if(seen)
+            continue;
+        FastPairDevice device;
+        device.address = address;
+        device.name = names.value(address);
+        if(device.name.isEmpty())
+            continue; // unpaired/stale entry
+        devices.push_back(device);
+    }
+    return devices;
+}
+
+// Blocking connect with a bounded wait, so an off/idle device can't stall the thread.
+SOCKET connectFastPair(quint64 address, int timeoutMs) {
+    SOCKET sock = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+    if(sock == INVALID_SOCKET)
+        return INVALID_SOCKET;
+
+    SOCKADDR_BTH sa = {};
+    sa.addressFamily = AF_BTH;
+    sa.btAddr = address;
+    sa.serviceClassId = kFastPairMessageStream;
+    sa.port = BT_PORT_ANY; // resolve the RFCOMM channel via SDP
+
+    u_long nonBlocking = 1;
+    ioctlsocket(sock, FIONBIO, &nonBlocking);
+    connect(sock, reinterpret_cast<sockaddr*>(&sa), sizeof(sa));
+
+    fd_set writable;
+    FD_ZERO(&writable);
+    FD_SET(sock, &writable);
+    timeval tv = {timeoutMs / 1000, (timeoutMs % 1000) * 1000};
+    const int ready = select(0, nullptr, &writable, nullptr, &tv);
+
+    u_long blocking = 0;
+    ioctlsocket(sock, FIONBIO, &blocking);
+
+    if(ready != 1) {
+        closesocket(sock);
+        return INVALID_SOCKET;
+    }
+    return sock;
+}
+
+QString formatDetail(const std::vector<fastpair::BatteryComponent>& components) {
+    if(components.size() < 2)
+        return {};
+
+    // a 3-component device is a true-wireless set; anything else is labelled positionally
+    static const char* twsLabels[] = {"L", "R", "Case"};
+    QStringList parts;
+    for(size_t i = 0; i < components.size(); ++i) {
+        if(components[i].percent < 0)
+            continue;
+        const QString label = (components.size() == 3) ? QString::fromLatin1(twsLabels[i])
+                                                       : QStringLiteral("#%1").arg(i + 1);
+        parts << QStringLiteral("%1 %2%%3")
+                     .arg(label)
+                     .arg(components[i].percent)
+                     .arg(components[i].charging ? QStringLiteral(" \u26A1") : QString());
+    }
+    return parts.join(QStringLiteral("   "));
+}
+
+} // namespace
+
+FastPairBatteryProvider::FastPairBatteryProvider() {
+    WSADATA wsa = {};
+    WSAStartup(MAKEWORD(2, 2), &wsa);
+    m_thread = std::thread([this] { run(); });
+}
+
+FastPairBatteryProvider::~FastPairBatteryProvider() {
+    m_stop = true;
+    if(m_thread.joinable())
+        m_thread.join();
+    WSACleanup();
+}
+
+QVector<BatteryDeviceInfo> FastPairBatteryProvider::poll() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    QVector<BatteryDeviceInfo> devices;
+    for(const BatteryDeviceInfo& info : m_latest)
+        devices.push_back(info);
+    return devices;
+}
+
+void FastPairBatteryProvider::run() {
+    struct Connection {
+            SOCKET sock = INVALID_SOCKET;
+            quint64 address = 0;
+            QString name;
+            std::vector<std::uint8_t> buffer;
+    };
+    std::vector<Connection> connections;
+    auto nextScan = std::chrono::steady_clock::now();
+
+    auto dropConnection = [&](size_t index) {
+        closesocket(connections[index].sock);
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
+            m_latest.remove(connections[index].address);
+        }
+        connections.erase(connections.begin() + static_cast<std::ptrdiff_t>(index));
+    };
+
+    while(!m_stop) {
+        // periodically pick up newly connected devices
+        if(std::chrono::steady_clock::now() >= nextScan) {
+            nextScan = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+            for(const FastPairDevice& device : enumerateFastPairDevices()) {
+                if(m_stop)
+                    break;
+                bool connected = false;
+                for(const Connection& existing : connections)
+                    if(existing.address == device.address)
+                        connected = true;
+                if(connected)
+                    continue;
+
+                const SOCKET sock = connectFastPair(device.address, 3000);
+                if(sock == INVALID_SOCKET)
+                    continue; // device is paired but not in range/connected
+                Connection connection;
+                connection.sock = sock;
+                connection.address = device.address;
+                connection.name = device.name;
+                connections.push_back(std::move(connection));
+            }
+        }
+
+        if(connections.empty()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            continue;
+        }
+
+        fd_set readable;
+        FD_ZERO(&readable);
+        for(const Connection& connection : connections)
+            FD_SET(connection.sock, &readable);
+        timeval tv = {0, 500 * 1000};
+        if(select(0, &readable, nullptr, nullptr, &tv) <= 0)
+            continue;
+
+        for(size_t i = connections.size(); i-- > 0;) {
+            if(!FD_ISSET(connections[i].sock, &readable))
+                continue;
+
+            unsigned char chunk[512];
+            const int received = recv(connections[i].sock, reinterpret_cast<char*>(chunk), sizeof(chunk), 0);
+            if(received <= 0) {
+                dropConnection(i);
+                continue;
+            }
+
+            Connection& connection = connections[i];
+            connection.buffer.insert(connection.buffer.end(), chunk, chunk + received);
+            for(const fastpair::Frame& frame : fastpair::drainFrames(connection.buffer)) {
+                if(!fastpair::isBatteryFrame(frame))
+                    continue;
+                const auto components = fastpair::parseBattery(frame);
+                const int percent = fastpair::lowestPercent(components);
+                if(percent < 0)
+                    continue;
+
+                BatteryDeviceInfo info;
+                info.name = connection.name;
+                info.percent = percent;
+                info.connectionKind = QStringLiteral("bluetooth");
+                info.category = QStringLiteral("headset");
+                info.charging = fastpair::anyCharging(components);
+                info.detail = formatDetail(components);
+
+                std::lock_guard<std::mutex> lock(m_mutex);
+                m_latest.insert(connection.address, info);
+            }
+        }
+    }
+
+    for(Connection& connection : connections)
+        closesocket(connection.sock);
+}
