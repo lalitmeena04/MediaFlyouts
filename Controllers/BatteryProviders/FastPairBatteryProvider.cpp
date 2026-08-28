@@ -7,6 +7,7 @@
 #include <windows.h>
 
 #include <cfgmgr32.h>
+#include <bluetoothapis.h>
 #include <initguid.h>
 #include <devpkey.h>
 
@@ -26,19 +27,28 @@ struct FastPairDevice {
         QString name;
 };
 
-QString devNodeFriendlyName(DEVINST devInst) {
+QString devNodePropertyText(DEVINST devInst, const DEVPROPKEY& key) {
     DEVPROPTYPE type = 0;
     ULONG size = 0;
-    CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName, &type, nullptr, &size, 0);
+    CM_Get_DevNode_PropertyW(devInst, &key, &type, nullptr, &size, 0);
     if(size == 0)
         return {};
 
     std::vector<wchar_t> buf(size / sizeof(wchar_t));
-    if(CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_FriendlyName, &type, reinterpret_cast<PBYTE>(buf.data()),
-                                 &size, 0)
-       != CR_SUCCESS)
+    if(CM_Get_DevNode_PropertyW(devInst, &key, &type, reinterpret_cast<PBYTE>(buf.data()), &size, 0) != CR_SUCCESS)
         return {};
     return QString::fromWCharArray(buf.data());
+}
+
+// The PnP service sub-node is only ever called "Bluetooth Peripheral Device", so ask the
+// Bluetooth API for the paired name (and skip devices that aren't currently connected).
+QString connectedDeviceName(quint64 address) {
+    BLUETOOTH_DEVICE_INFO info = {};
+    info.dwSize = sizeof(info);
+    info.Address.ullLong = address;
+    if(BluetoothGetDeviceInfo(nullptr, &info) != ERROR_SUCCESS || !info.fConnected)
+        return {};
+    return QString::fromWCharArray(info.szName);
 }
 
 // The 12 hex digits before "_C" in a BTHENUM service instance id are the device address.
@@ -67,52 +77,36 @@ std::vector<FastPairDevice> enumerateFastPairDevices() {
     if(CM_Get_Device_ID_ListW(L"BTHENUM", list.data(), listSize, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS)
         return {};
 
-    std::vector<quint64> addresses;
-    QHash<quint64, QString> names;
+    std::vector<FastPairDevice> devices;
 
     for(const wchar_t* id = list.data(); *id; id += wcslen(id) + 1) {
-        const std::wstring text(id);
-        DEVINST devInst = 0;
-        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
+        std::wstring text(id);
+        for(wchar_t& c : text)
+            c = towupper(c);
+        if(text.find(kFastPairUuidText) == std::wstring::npos)
             continue;
 
         quint64 address = 0;
-        if(text.find(L"\\DEV_") != std::wstring::npos) {
-            const size_t start = text.find(L"\\DEV_") + 5;
-            if(start + 12 <= text.size()) {
-                address = std::wcstoull(text.substr(start, 12).c_str(), nullptr, 16);
-                const QString name = devNodeFriendlyName(devInst);
-                if(address && !name.isEmpty())
-                    names.insert(address, name);
-            }
+        if(!addressFromServiceId(text, address) || address == 0)
             continue;
-        }
-
-        // service sub-node: only interested in the Fast Pair one
-        if(text.find(kFastPairUuidText) == std::wstring::npos) {
-            std::wstring upper = text;
-            for(wchar_t& c : upper)
-                c = towupper(c);
-            if(upper.find(kFastPairUuidText) == std::wstring::npos)
-                continue;
-        }
-        if(addressFromServiceId(text, address) && address)
-            addresses.push_back(address);
-    }
-
-    std::vector<FastPairDevice> devices;
-    for(quint64 address : addresses) {
         bool seen = false;
         for(const FastPairDevice& existing : devices)
             if(existing.address == address)
                 seen = true;
         if(seen)
             continue;
+
+        DEVINST devInst = 0;
+        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
+            continue;
+
+        const QString name = connectedDeviceName(address);
+        if(name.isEmpty())
+            continue; // paired but not connected right now
+
         FastPairDevice device;
         device.address = address;
-        device.name = names.value(address);
-        if(device.name.isEmpty())
-            continue; // unpaired/stale entry
+        device.name = name;
         devices.push_back(device);
     }
     return devices;
