@@ -557,7 +557,7 @@ Window {
 
                                             Text {
                                                 anchors.centerIn: parent
-                                                text: DeviceIcons.glyph(modelData.name, modelData.connectionKind)
+                                                text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
                                                 font.pixelSize: 26
                                             }
                                         }
@@ -960,6 +960,14 @@ Window {
                         description: "Dock a battery widget for selected wireless peripherals on the taskbar."
                         value: settings.peripheralsWidgetEnabled
                         onToggled: settings.peripheralsWidgetEnabled = value
+                    }
+                    SettingRow {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        label: "Match app accent"
+                        description: "Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level."
+                        value: settings.batteryRingUseAccent
+                        onToggled: settings.batteryRingUseAccent = value
                     }
                     SettingCombo {
                         visible: settings.peripheralsWidgetEnabled

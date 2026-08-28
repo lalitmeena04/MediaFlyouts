@@ -135,7 +135,7 @@ Window {
 
                     Text {
                         anchors.centerIn: parent
-                        text: DeviceIcons.glyph(modelData.name, modelData.connectionKind)
+                        text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
                         font.pixelSize: 13
                     }
 

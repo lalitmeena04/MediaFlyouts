@@ -1,6 +1,7 @@
 #include "BluetoothConnectionWatcher.h"
 
 #include <winrt/Windows.Devices.Bluetooth.h>
+#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Foundation.h>
 
 using namespace winrt::Windows::Devices::Bluetooth;
@@ -33,8 +34,14 @@ void BluetoothConnectionWatcher::attach(DeviceWatcher& watcher) {
 }
 
 void BluetoothConnectionWatcher::start() {
+    // requesting this property explicitly is required for Updated to actually fire on
+    // connect/disconnect - without it the watcher only reports pair/unpair (verified empirically)
+    winrt::Windows::Foundation::Collections::IVector<winrt::hstring> extraProperties =
+        winrt::single_threaded_vector<winrt::hstring>({L"System.Devices.Aep.IsConnected"});
+
     try {
-        m_classicWatcher = DeviceInformation::CreateWatcher(BluetoothDevice::GetDeviceSelectorFromPairingState(true));
+        m_classicWatcher = DeviceInformation::CreateWatcher(BluetoothDevice::GetDeviceSelectorFromPairingState(true),
+                                                             extraProperties);
         attach(m_classicWatcher);
     } catch(...) {
         // watcher creation can fail if the Bluetooth radio is off/absent; battery polling
@@ -42,7 +49,8 @@ void BluetoothConnectionWatcher::start() {
     }
 
     try {
-        m_leWatcher = DeviceInformation::CreateWatcher(BluetoothLEDevice::GetDeviceSelectorFromPairingState(true));
+        m_leWatcher = DeviceInformation::CreateWatcher(BluetoothLEDevice::GetDeviceSelectorFromPairingState(true),
+                                                        extraProperties);
         attach(m_leWatcher);
     } catch(...) {
     }

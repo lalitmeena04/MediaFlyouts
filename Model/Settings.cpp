@@ -61,6 +61,7 @@ void Settings::reload() {
     m_peripheralsWidgetSide = m_store.value(QStringLiteral("peripheralsWidgetSide"), 2).toInt();
     m_peripheralsWidgetMonitor = m_store.value(QStringLiteral("peripheralsWidgetMonitor"), 0).toInt();
     m_peripheralsWidgetSelected = m_store.value(QStringLiteral("peripheralsWidgetSelected")).toStringList();
+    m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // accentMode: 0 = theme default, 1 = match system, 2 = custom
@@ -321,6 +322,9 @@ void Settings::setPeripheralSelected(const QString& name, bool selected) {
     m_store.setValue(QStringLiteral("peripheralsWidgetSelected"), m_peripheralsWidgetSelected);
     emit changed();
 }
+bool Settings::batteryRingUseAccent() const {
+    return m_batteryRingUseAccent;
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
@@ -503,6 +507,9 @@ void Settings::setPeripheralsWidgetSide(int v) {
 }
 void Settings::setPeripheralsWidgetMonitor(int v) {
     assignInt("peripheralsWidgetMonitor", m_peripheralsWidgetMonitor, v);
+}
+void Settings::setBatteryRingUseAccent(bool v) {
+    assign("batteryRingUseAccent", m_batteryRingUseAccent, v);
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);

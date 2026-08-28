@@ -91,6 +91,7 @@ void BatteryStatusController::applyPolled(const QVector<BatteryDeviceInfo>& poll
         entry[QStringLiteral("name")] = info.name;
         entry[QStringLiteral("percent")] = info.percent;
         entry[QStringLiteral("connectionKind")] = info.connectionKind;
+        entry[QStringLiteral("category")] = info.category;
         devices.append(entry);
     }
 

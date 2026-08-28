@@ -7,8 +7,11 @@
 struct BatteryDeviceInfo {
         QString name;
         int percent = -1;
-        // "bluetooth", "ble", "gamepad", ... — used to pick an icon in QML
+        // "bluetooth", "ble", "gamepad", ... — used as an icon fallback in QML
         QString connectionKind;
+        // "mouse", "keyboard", "headset", "gamepad", or empty if unknown - decoded from the
+        // Bluetooth Class of Device where available, more reliable than guessing from the name
+        QString category;
 };
 
 // A source of battery info for one class of peripheral connection (Bluetooth Classic,

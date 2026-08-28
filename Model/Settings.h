@@ -68,6 +68,7 @@ class Settings : public QObject {
         Q_PROPERTY(int peripheralsWidgetMonitor READ peripheralsWidgetMonitor WRITE setPeripheralsWidgetMonitor NOTIFY
                        changed)
         Q_PROPERTY(QStringList peripheralsWidgetSelected READ peripheralsWidgetSelected NOTIFY changed)
+        Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
         Q_PROPERTY(int accentMode READ accentMode WRITE setAccentMode NOTIFY changed)
@@ -138,6 +139,7 @@ class Settings : public QObject {
         // true when the named device is checked in the peripherals-widget device picker
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
+        bool batteryRingUseAccent() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
         int accentMode() const;
@@ -195,6 +197,7 @@ class Settings : public QObject {
         void setPeripheralsWidgetOffset(int v);
         void setPeripheralsWidgetSide(int v);
         void setPeripheralsWidgetMonitor(int v);
+        void setBatteryRingUseAccent(bool v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
         void setAccentMode(int v);
@@ -261,6 +264,7 @@ class Settings : public QObject {
         int m_peripheralsWidgetSide;
         int m_peripheralsWidgetMonitor;
         QStringList m_peripheralsWidgetSelected;
+        bool m_batteryRingUseAccent;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
         int m_accentMode;
