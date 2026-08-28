@@ -11,6 +11,9 @@ exposed to QML as the `settings` context property.
 - `playerAllowed(name)`, `filterMode`, `filterList`, `addFilterEntry` /
   `removeFilterEntry` — app filtering.
 - `configDir()` — the settings folder (for "Open Config Folder").
+- Most defaults are literals in `reload()`; `taskbarWidgetSide` is the exception
+  — on first run it is seeded from the system taskbar alignment and written to
+  the store, so a later system change never moves a widget the user has placed.
 
 ## TrackInfo (`namespace mf`)
 Plain struct describing the current track (title, artist, album, source app,

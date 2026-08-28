@@ -21,7 +21,9 @@ properties and QML binds to their properties/signals.
 
 - **Dashboard.qml** — the settings dashboard (sidebar + searchable pages).
 - **VolumeMixerWindow.qml** — standalone per-app mixer.
-- **OnboardingWindow.qml** — first-run wizard.
+- **OnboardingWindow.qml** — first-run wizard. Until it sets
+  `settings.onboardingCompleted`, every `showFlyout()` returns early and the
+  taskbar widget's `visible` binding stays false.
 - **TaskbarWidget.qml** + **TaskbarVisualizer.qml** — the taskbar now-playing
   widget and its multi-style audio visualizer.
 

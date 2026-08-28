@@ -3,6 +3,25 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-08-28
+
+A small follow-up release that fixes first-run behavior and adjusts two
+defaults. No changes to existing installs beyond the fixes below.
+
+### Fixed
+- Flyouts and the taskbar widget no longer appear while the first-run
+  onboarding wizard is still open; they now wait until it is finished.
+- The native Windows volume OSD is left alone until onboarding completes, so
+  volume changes still show feedback during the wizard.
+
+### Changed
+- The per-app volume mixer inside the volume flyout is now off by default and
+  can be enabled from the dashboard.
+- On first run the taskbar widget is placed on the taskbar edge the shell leaves
+  free — left when the taskbar is center-aligned, right when it is
+  left-aligned — instead of always docking left. An existing placement is never
+  overridden.
+
 ## [1.0.0] — 2026-08-27
 
 First public release. A complete media / volume / lock-key overlay for Windows,
@@ -69,4 +88,5 @@ written from scratch in Qt 6 / C++ / QML.
 - GitHub Actions CI building and testing both debug and release, running on
   Node 24 action runtimes.
 
+[1.1.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.1.0
 [1.0.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.0.0
