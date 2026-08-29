@@ -33,6 +33,7 @@ add_executable(mediaflyout_gtest
     Model/SettingsTest.cpp
     Model/AlbumArtProviderTest.cpp
     Model/FftTest.cpp
+    Model/SessionSelectionTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp

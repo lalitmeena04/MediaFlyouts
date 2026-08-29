@@ -26,6 +26,7 @@ qt_add_library(mediaflyout_core STATIC
     Model/TrackInfo.h        Model/TrackInfo.cpp
     Model/PlaybackController.h Model/PlaybackController.cpp
     Model/Fft.h              Model/Fft.cpp
+    Model/SessionSelection.h Model/SessionSelection.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
 target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model)
