@@ -109,6 +109,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
     // a physical device can expose the battery property on more than one profile
     // sub-node; keep only the first hit per device (by container id)
     QSet<QString> seenContainers;
+    QSet<QString> seenNames;
 
     for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
         DEVINST devInst = 0;
@@ -138,6 +139,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
             BatteryUtils::cleanBluetoothProfileSuffix(devNodeStringProperty(devInst, DEVPKEY_Device_FriendlyName));
         if(name.isEmpty())
             continue;
+        seenNames.insert(name);
 
         DEVPROPTYPE codType = 0;
         quint32 classOfDevice = 0;
@@ -149,6 +151,42 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
             category = BatteryUtils::categoryFromClassOfDevice(classOfDevice);
 
         result.append({name, static_cast<int>(percent), QStringLiteral("bluetooth"), category});
+    }
+
+    // second pass: paired + connected devices that don't expose a battery reading anywhere,
+    // still reported (with an unknown battery) so their connect/disconnect events surface
+    for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
+        DEVINST devInst = 0;
+        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
+            continue;
+        if(!devNodeIsActive(devInst))
+            continue;
+        if(!isBluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
+            continue;
+
+        const QString containerId = devNodeContainerId(devInst);
+        if(!containerId.isEmpty()) {
+            if(seenContainers.contains(containerId))
+                continue;
+            seenContainers.insert(containerId);
+        }
+
+        const QString name =
+            BatteryUtils::cleanBluetoothProfileSuffix(devNodeStringProperty(devInst, DEVPKEY_Device_FriendlyName));
+        if(name.isEmpty() || seenNames.contains(name))
+            continue;
+        seenNames.insert(name);
+
+        DEVPROPTYPE codType = 0;
+        quint32 classOfDevice = 0;
+        ULONG codSize = sizeof(classOfDevice);
+        QString category;
+        if(CM_Get_DevNode_PropertyW(devInst, &kBluetoothClassOfDeviceKey, &codType, reinterpret_cast<PBYTE>(&classOfDevice),
+                                    &codSize, 0) == CR_SUCCESS
+           && codType == DEVPROP_TYPE_UINT32)
+            category = BatteryUtils::categoryFromClassOfDevice(classOfDevice);
+
+        result.append({name, -1, QStringLiteral("bluetooth"), category});
     }
 
     return result;

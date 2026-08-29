@@ -15,9 +15,9 @@ Window {
         var all = batteryStatus.devices
         // read the property directly (not the peripheralSelected() method) so this
         // binding actually re-evaluates when the selection changes in the Dashboard
-        var selected = settings.peripheralsWidgetSelected
+        var excluded = settings.peripheralsWidgetExcluded
         for(var i = 0; i < all.length; i++)
-            if(selected.indexOf(all[i].name) !== -1)
+            if(excluded.indexOf(all[i].name) === -1)
                 picked.push(all[i])
         return picked
     }
@@ -34,11 +34,20 @@ Window {
     // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
     property bool blocked: false
 
+    // true once this widget has been placed once, so later moves (media widget showing up or
+    // going away) slide smoothly instead of snapping
+    property bool positioned: false
+    Behavior on x {
+        enabled: root.positioned
+        NumberAnimation { duration: 200; easing.type: Easing.OutQuad }
+    }
+
     function updatePosition() {
-        // this widget always shares the media widget's monitor and taskbar edge, so reserve its
-        // slot even while it is hidden — otherwise we would jump around as playback starts/stops
+        // shares the media widget's monitor and taskbar edge; only reserve space next to it
+        // while it is actually showing (media playing), so this widget slides in to fill the
+        // gap when nothing is playing and slides back out once playback starts again
         var extraOffset = 0
-        if(root.mediaWidget && settings.taskbarWidgetEnabled)
+        if(root.mediaWidget && root.mediaWidget.visible)
             extraOffset = root.mediaWidget.width + 8
         var p = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
                                        settings.taskbarWidgetOffset + extraOffset, width, height)
@@ -46,6 +55,7 @@ Window {
         root.y = p.y
         if(root.visible)
             taskbar.pinAboveTaskbar(root)
+        root.positioned = true
     }
 
     Component.onCompleted: updatePosition()
@@ -150,7 +160,8 @@ Window {
                                 if(hovered) {
                                     // multi-battery devices (earbuds + case) show the ring at their
                                     // weakest level, with the full breakdown here
-                                    var tipText = modelData.name + " \u2014 " + modelData.percent + "%"
+                                    var tipText = modelData.name
+                                    tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
                                     if(modelData.charging)
                                         tipText += " \u26A1"
                                     var link = DeviceIcons.transport(modelData.connectionKind)

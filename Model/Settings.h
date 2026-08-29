@@ -64,7 +64,7 @@ class Settings : public QObject {
         Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
         Q_PROPERTY(bool peripheralsWidgetEnabled READ peripheralsWidgetEnabled WRITE setPeripheralsWidgetEnabled
                        NOTIFY changed)
-        Q_PROPERTY(QStringList peripheralsWidgetSelected READ peripheralsWidgetSelected NOTIFY changed)
+        Q_PROPERTY(QStringList peripheralsWidgetExcluded READ peripheralsWidgetExcluded NOTIFY changed)
         Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
                        NOTIFY changed)
@@ -150,8 +150,8 @@ class Settings : public QObject {
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
         bool peripheralsWidgetEnabled() const;
-        QStringList peripheralsWidgetSelected() const;
-        // true when the named device is checked in the peripherals-widget device picker
+        QStringList peripheralsWidgetExcluded() const;
+        // true unless the named device has been explicitly hidden in the peripherals-widget device picker
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
         bool batteryRingUseAccent() const;
@@ -294,7 +294,7 @@ class Settings : public QObject {
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;
         bool m_peripheralsWidgetEnabled;
-        QStringList m_peripheralsWidgetSelected;
+        QStringList m_peripheralsWidgetExcluded;
         bool m_batteryRingUseAccent;
         bool m_peripheralFlyoutEnabled;
         int m_peripheralFlyoutDuration;

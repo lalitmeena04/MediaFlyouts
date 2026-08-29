@@ -26,8 +26,8 @@ struct BatteryDeviceInfo {
 };
 
 // A source of battery info for one class of peripheral connection (Bluetooth Classic,
-// BLE, game controllers, ...). Implementations only return devices they can actually
-// read a battery level for.
+// BLE, game controllers, ...). Devices with no readable battery level are still
+// returned (with percent left at -1) so their connect/disconnect events surface.
 class IBatteryProvider {
     public:
         virtual ~IBatteryProvider() = default;

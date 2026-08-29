@@ -15,23 +15,21 @@ QVector<BatteryDeviceInfo> GameControllerBatteryProvider::poll() {
 
     try {
         for(const RawGameController& controller : RawGameController::RawGameControllers()) {
+            int percent = -1;
             BatteryReport report = controller.TryGetBatteryReport();
-            if(!report)
-                continue;
-
-            const auto remaining = report.RemainingCapacityInMilliwattHours();
-            const auto full = report.FullChargeCapacityInMilliwattHours();
-            if(!remaining || !full)
-                continue;
-
-            const int percent = BatteryUtils::milliwattHoursToPercent(remaining.Value(), full.Value());
-            if(percent < 0)
-                continue;
+            if(report) {
+                const auto remaining = report.RemainingCapacityInMilliwattHours();
+                const auto full = report.FullChargeCapacityInMilliwattHours();
+                if(remaining && full)
+                    percent = BatteryUtils::milliwattHoursToPercent(remaining.Value(), full.Value());
+            }
 
             QString name = QString::fromWCharArray(controller.DisplayName().c_str());
             if(name.isEmpty())
                 name = QStringLiteral("Game controller");
 
+            // still reported (with an unknown battery) for wired/non-reporting controllers,
+            // so their connect/disconnect events surface too
             result.append({name, percent, QStringLiteral("gamepad")});
         }
     } catch(...) {

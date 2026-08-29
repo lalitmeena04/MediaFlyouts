@@ -14,7 +14,8 @@ class IBatteryProvider;
 
 // Aggregates battery level for wireless peripherals (Bluetooth headsets/mice/keyboards,
 // with more connection kinds to follow) into a single list exposed to QML. Devices a
-// provider can't read a battery level for are simply omitted, never shown as 0%/unknown.
+// provider can't read a battery level for are still included, with an unknown battery,
+// so connect/disconnect/charging alerts still fire for them.
 class BatteryStatusController : public QObject {
         Q_OBJECT
         Q_PROPERTY(QVariantList devices READ devices NOTIFY devicesChanged)

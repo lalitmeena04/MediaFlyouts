@@ -104,8 +104,6 @@ QVector<BatteryDeviceInfo> BluetoothLeBatteryProvider::poll() {
                 continue;
 
             const int percent = readBatteryPercent(device);
-            if(percent < 0)
-                continue;
 
             // DeviceInformation.Name is the paired/user-visible name shown in Windows
             // Bluetooth settings; BluetoothLEDevice.Name can fall back to a generic
@@ -116,6 +114,8 @@ QVector<BatteryDeviceInfo> BluetoothLeBatteryProvider::poll() {
             if(name.isEmpty())
                 continue;
 
+            // still reported (with an unknown battery) when there's no Battery Service, so
+            // connect/disconnect events surface even for devices that don't share battery
             result.append({name, percent, QStringLiteral("ble"), readCategory(device)});
         }
     } catch(...) {

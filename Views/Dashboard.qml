@@ -618,10 +618,12 @@ Window {
                                             Text {
                                                 text: "\uD83D\uDD0B" // small battery pictogram
                                                 font.pixelSize: 11
-                                                color: ring.progressColor
+                                                color: modelData.percent >= 0 ? ring.progressColor : theme.textMuted
                                             }
                                             Text {
-                                                text: modelData.percent + "%" + (modelData.charging ? " \u26A1" : "")
+                                                text: modelData.percent >= 0
+                                                          ? modelData.percent + "%" + (modelData.charging ? " \u26A1" : "")
+                                                          : "Unknown"
                                                 color: theme.textPrimary
                                                 font.pixelSize: 12
                                                 font.bold: true
@@ -654,7 +656,7 @@ Window {
                                                     }
                                                     Text {
                                                         anchors.horizontalCenter: parent.horizontalCenter
-                                                        text: modelData.percent + "%"
+                                                        text: modelData.percent >= 0 ? modelData.percent + "%" : "Unknown"
                                                         color: theme.textPrimary
                                                         font.pixelSize: 9
                                                     }
@@ -774,7 +776,7 @@ Window {
                     SettingRow {
                         width: parent.width
                         label: "Hide during fullscreen"
-                        description: "Suppress flyouts while a fullscreen or exclusive app is in the foreground."
+                        description: "Suppress flyouts while a fullscreen video game is in the foreground."
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
@@ -1092,7 +1094,7 @@ Window {
                         visible: settings.peripheralsWidgetEnabled && batteryStatus.devices.length === 0
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "No peripherals with a readable battery level are currently connected."
+                        text: "No peripherals are currently connected."
                         color: theme.textMuted
                         font.pixelSize: 12
                     }
@@ -1103,7 +1105,7 @@ Window {
                             width: parent.width
                             label: modelData.name
                             description: {
-                                var text = "Currently at " + modelData.percent + "%"
+                                var text = modelData.percent >= 0 ? "Currently at " + modelData.percent + "%" : "Battery level unknown"
                                 var parts = []
                                 for(var i = 0; i < modelData.components.length; i++)
                                     parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
@@ -1178,7 +1180,7 @@ Window {
                     SettingRow {
                         width: parent.width
                         label: "Hide during fullscreen"
-                        description: "Suppress flyouts while a fullscreen or exclusive app is in the foreground. Shared with the other flyouts."
+                        description: "Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts."
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }

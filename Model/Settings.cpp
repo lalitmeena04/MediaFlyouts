@@ -84,7 +84,8 @@ void Settings::reload() {
     // visualizerStyle: 0 = bars, 1 = radial, 2 = waveform, 3 = particles
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
-    m_peripheralsWidgetSelected = m_store.value(QStringLiteral("peripheralsWidgetSelected")).toStringList();
+    // devices are shown by default; this only lists ones the user has explicitly hidden
+    m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
     m_peripheralFlyoutEnabled = m_store.value(QStringLiteral("peripheralFlyoutEnabled"), false).toBool();
     m_peripheralFlyoutDuration = m_store.value(QStringLiteral("peripheralFlyoutDuration"), 3000).toInt();
@@ -333,25 +334,25 @@ bool Settings::peripheralsWidgetEnabled() const {
     return m_peripheralsWidgetEnabled;
 }
 
-QStringList Settings::peripheralsWidgetSelected() const {
-    return m_peripheralsWidgetSelected;
+QStringList Settings::peripheralsWidgetExcluded() const {
+    return m_peripheralsWidgetExcluded;
 }
 bool Settings::peripheralSelected(const QString& name) const {
-    return m_peripheralsWidgetSelected.contains(name, Qt::CaseInsensitive);
+    return !m_peripheralsWidgetExcluded.contains(name, Qt::CaseInsensitive);
 }
 void Settings::setPeripheralSelected(const QString& name, bool selected) {
-    const bool alreadySelected = m_peripheralsWidgetSelected.contains(name, Qt::CaseInsensitive);
+    const bool alreadySelected = !m_peripheralsWidgetExcluded.contains(name, Qt::CaseInsensitive);
     if(selected == alreadySelected)
         return;
 
     if(selected) {
-        m_peripheralsWidgetSelected.append(name);
+        for(int i = m_peripheralsWidgetExcluded.size() - 1; i >= 0; --i)
+            if(m_peripheralsWidgetExcluded.at(i).compare(name, Qt::CaseInsensitive) == 0)
+                m_peripheralsWidgetExcluded.removeAt(i);
     } else {
-        for(int i = m_peripheralsWidgetSelected.size() - 1; i >= 0; --i)
-            if(m_peripheralsWidgetSelected.at(i).compare(name, Qt::CaseInsensitive) == 0)
-                m_peripheralsWidgetSelected.removeAt(i);
+        m_peripheralsWidgetExcluded.append(name);
     }
-    m_store.setValue(QStringLiteral("peripheralsWidgetSelected"), m_peripheralsWidgetSelected);
+    m_store.setValue(QStringLiteral("peripheralsWidgetExcluded"), m_peripheralsWidgetExcluded);
     emit changed();
 }
 bool Settings::batteryRingUseAccent() const {

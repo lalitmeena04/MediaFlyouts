@@ -12,6 +12,7 @@ Item {
     property color progressColor: settings.batteryRingUseAccent
         ? (settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent)
         : (percent <= 20 ? "#E06C75" : (percent <= 40 ? "#E5C07B" : "#6FCF7F"))
+    property color unknownColor: theme.textMuted
     property real thickness: 4
 
     default property alias content: contentItem.children
@@ -33,11 +34,14 @@ Item {
             ctx.arc(cx, cy, r, 0, Math.PI * 2, false)
             ctx.stroke()
 
-            var pct = Math.max(0, Math.min(100, ring.percent)) / 100
+            // devices with no battery reading draw a full neutral ring instead of an empty
+            // one, so they read as "connected" rather than "flat"
+            var unknown = ring.percent < 0
+            var pct = unknown ? 1 : Math.max(0, Math.min(100, ring.percent)) / 100
             if(pct > 0) {
                 ctx.beginPath()
                 ctx.lineWidth = ring.thickness
-                ctx.strokeStyle = ring.progressColor
+                ctx.strokeStyle = unknown ? ring.unknownColor : ring.progressColor
                 ctx.lineCap = "round"
                 ctx.arc(cx, cy, r, start, start + Math.PI * 2 * pct, false)
                 ctx.stroke()
@@ -49,6 +53,7 @@ Item {
 
     onPercentChanged: canvas.requestPaint()
     onProgressColorChanged: canvas.requestPaint()
+    onUnknownColorChanged: canvas.requestPaint()
     Component.onCompleted: canvas.requestPaint()
 
     Item {
