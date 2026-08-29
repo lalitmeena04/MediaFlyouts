@@ -6,6 +6,9 @@
 #include <QImage>
 #include <QMetaObject>
 #include <QString>
+#include <QStringList>
+
+#include "SessionSelection.h"
 
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Foundation.h>
@@ -65,7 +68,6 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
         // if the user's chosen session vanished, fall back to the OS current one
         if(m_manual) {
             auto sessions = m_manager.GetSessions();
-            bool stillThere = false;
             QString selectedAppId;
             if(const Session sel = currentSession()) {
                 try {
@@ -73,14 +75,16 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
                 } catch(...) {
                 }
             }
-            for(uint32_t i = 0; i < sessions.Size(); ++i) {
-                try {
-                    if(!selectedAppId.isEmpty()
-                       && QString::fromWCharArray(sessions.GetAt(i).SourceAppUserModelId().c_str()) == selectedAppId) {
-                        stillThere = true;
-                        break;
+            bool stillThere = false;
+            if(!selectedAppId.isEmpty()) {
+                for(uint32_t i = 0; i < sessions.Size(); ++i) {
+                    try {
+                        if(QString::fromWCharArray(sessions.GetAt(i).SourceAppUserModelId().c_str()) == selectedAppId) {
+                            stillThere = true;
+                            break;
+                        }
+                    } catch(...) {
                     }
-                } catch(...) {
                 }
             }
             if(!stillThere) {
@@ -102,7 +106,7 @@ void WinMediaProvider::refreshSessionMeta() {
         return;
     auto sessions = m_manager.GetSessions();
     const int n = static_cast<int>(sessions.Size());
-    m_sessionCount = n < 1 ? 1 : n;
+    m_sessionCount = mf::normalizedSessionCount(n);
 
     // match by app id rather than WinRT object identity: GetCurrentSession() and GetSessions()
     // are separate calls that can hand back distinct proxy objects for the same session, so
@@ -115,19 +119,16 @@ void WinMediaProvider::refreshSessionMeta() {
         }
     }
 
-    int idx = 0;
+    QStringList appIds;
+    appIds.reserve(n);
     for(int i = 0; i < n; ++i) {
         try {
-            if(!selectedAppId.isEmpty()
-               && QString::fromWCharArray(sessions.GetAt(static_cast<uint32_t>(i)).SourceAppUserModelId().c_str())
-                      == selectedAppId) {
-                idx = i;
-                break;
-            }
+            appIds.append(QString::fromWCharArray(sessions.GetAt(static_cast<uint32_t>(i)).SourceAppUserModelId().c_str()));
         } catch(...) {
+            appIds.append(QString());
         }
     }
-    m_selectedIndex = idx;
+    m_selectedIndex = mf::selectedSessionIndexByAppId(appIds, selectedAppId);
 }
 
 int WinMediaProvider::sessionCount() const {
@@ -146,7 +147,6 @@ void WinMediaProvider::cycleSession(int delta) {
     if(n <= 1)
         return;
 
-    int current = 0;
     QString selectedAppId;
     if(const Session sel = currentSession()) {
         try {
@@ -154,17 +154,16 @@ void WinMediaProvider::cycleSession(int delta) {
         } catch(...) {
         }
     }
+    QStringList appIds;
+    appIds.reserve(n);
     for(int i = 0; i < n; ++i) {
         try {
-            if(!selectedAppId.isEmpty()
-               && QString::fromWCharArray(sessions.GetAt(static_cast<uint32_t>(i)).SourceAppUserModelId().c_str())
-                      == selectedAppId) {
-                current = i;
-                break;
-            }
+            appIds.append(QString::fromWCharArray(sessions.GetAt(static_cast<uint32_t>(i)).SourceAppUserModelId().c_str()));
         } catch(...) {
+            appIds.append(QString());
         }
     }
+    const int current = mf::selectedSessionIndexByAppId(appIds, selectedAppId);
     const int next = ((current + delta) % n + n) % n;
     m_manual = true;
     hookSession(sessions.GetAt(static_cast<uint32_t>(next)));
