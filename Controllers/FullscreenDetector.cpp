@@ -4,6 +4,7 @@
 
 #include <shellapi.h>
 #include <shlobj.h>
+#include <tlhelp32.h>
 
 namespace {
 
@@ -17,6 +18,42 @@ bool isWorkstationLocked() {
     const bool ok = GetUserObjectInformationW(desk, UOI_NAME, name, sizeof(name), &needed);
     CloseDesktop(desk);
     return ok && lstrcmpiW(name, L"Default") != 0;
+}
+
+// true if the process has a 3D rendering API loaded, the signal used to tell a game apart
+// from a fullscreen browser, video player, or presentation slideshow
+bool hasGraphicsApiLoaded(DWORD pid) {
+    static const wchar_t* kGraphicsModules[] = {
+        L"d3d9.dll", L"d3d10.dll", L"d3d10_1.dll", L"d3d11.dll", L"d3d12.dll",
+        L"dxgi.dll", L"opengl32.dll", L"vulkan-1.dll"
+    };
+
+    HANDLE snap = INVALID_HANDLE_VALUE;
+    for(int attempt = 0; attempt < 5; ++attempt) {
+        snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, pid);
+        if(snap != INVALID_HANDLE_VALUE)
+            break;
+        if(GetLastError() != ERROR_BAD_LENGTH) // transient while the target's module list is changing
+            return false;
+    }
+    if(snap == INVALID_HANDLE_VALUE)
+        return false;
+
+    MODULEENTRY32W me{};
+    me.dwSize = sizeof(me);
+    bool found = false;
+    if(Module32FirstW(snap, &me)) {
+        do {
+            for(const wchar_t* name : kGraphicsModules) {
+                if(_wcsicmp(me.szModule, name) == 0) {
+                    found = true;
+                    break;
+                }
+            }
+        } while(!found && Module32NextW(snap, &me));
+    }
+    CloseHandle(snap);
+    return found;
 }
 
 } // namespace
@@ -59,5 +96,12 @@ bool FullscreenDetector::isFullscreen() const {
         return false;
 
     const RECT m = mi.rcMonitor;
-    return wr.left <= m.left && wr.top <= m.top && wr.right >= m.right && wr.bottom >= m.bottom;
+    if(!(wr.left <= m.left && wr.top <= m.top && wr.right >= m.right && wr.bottom >= m.bottom))
+        return false;
+
+    // borderless fullscreen alone also matches fullscreen browsers/video players, so require a
+    // 3D graphics API to be loaded before treating this as a game
+    DWORD pid = 0;
+    GetWindowThreadProcessId(fg, &pid);
+    return pid != 0 && hasGraphicsApiLoaded(pid);
 }
