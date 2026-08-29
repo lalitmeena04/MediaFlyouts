@@ -6,10 +6,12 @@ int normalizedSessionCount(int sessionCount) {
     return sessionCount < 1 ? 1 : sessionCount;
 }
 
-int selectedSessionIndex(const QVector<bool>& selectedMatches) {
-    for(int index = 0; index < selectedMatches.size(); ++index)
-        if(selectedMatches.at(index))
-            return index;
+int selectedSessionIndexByAppId(const QStringList& appIds, const QString& selectedAppId) {
+    if(selectedAppId.isEmpty())
+        return 0;
+    for(int i = 0; i < appIds.size(); ++i)
+        if(appIds.at(i) == selectedAppId)
+            return i;
     return 0;
 }
 

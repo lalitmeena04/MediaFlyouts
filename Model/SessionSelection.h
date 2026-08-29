@@ -1,12 +1,18 @@
 #pragma once
 
-#include <QVector>
+#include <QString>
+#include <QStringList>
 
 namespace mf {
 
-// Resolves widget-indicator state from the current media-session list. The selected-session
-// match vector is built by the Windows provider, while this policy stays platform independent.
+// clamps a live session count to at least 1, so "no sessions" still reserves a slot for
+// the empty-state UI instead of collapsing to zero
 int normalizedSessionCount(int sessionCount);
-int selectedSessionIndex(const QVector<bool>& selectedMatches);
+
+// index of the first entry in appIds matching selectedAppId (a session's stable
+// SourceAppUserModelId); 0 if selectedAppId is empty or not found. Matching by app id
+// rather than WinRT object identity, since separate SMTC calls can hand back distinct
+// proxy objects for the same underlying session.
+int selectedSessionIndexByAppId(const QStringList& appIds, const QString& selectedAppId);
 
 } // namespace mf
