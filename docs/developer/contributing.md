@@ -7,7 +7,7 @@ green test suite.
 
 1. Fork and branch from the default branch.
 2. Make your change, keeping the scope tight.
-3. Build and run the tests: `.\build.ps1 -Test`.
+3. Build and run the tests: `.\mediaflyouts.ps1 build -RunTests`.
 4. Format your C++ (see below).
 5. Open a pull request describing the change and why.
 

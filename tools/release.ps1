@@ -49,7 +49,7 @@ Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\
 # 1) clean release build (+ windeployqt into bin\)
 if (-not $SkipBuild) {
     Step 'Clean release build'
-    & (Join-Path $root 'build.ps1') -Config release -Clean -NoTests | Out-Host
+    & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests | Out-Host
 } else {
     Step 'Reusing existing bin\ (-SkipBuild)'
 }

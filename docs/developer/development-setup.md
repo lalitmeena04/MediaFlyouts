@@ -21,10 +21,10 @@ The quickest path is the helper script, which locates the MSVC toolchain and
 deploys the Qt runtime into `bin/`:
 
 ```powershell
-.\build.ps1                 # debug build
-.\build.ps1 -Config release # release build
-.\build.ps1 -Test           # build then run the tests
-.\build.ps1 -Clean          # clean build
+.\mediaflyouts.ps1 build                 # debug build
+.\mediaflyouts.ps1 build -Config release # release build
+.\mediaflyouts.ps1 build -RunTests       # build then run the tests
+.\mediaflyouts.ps1 build -Clean          # clean build
 ```
 
 Or use CMake presets directly:
