@@ -24,4 +24,9 @@ QtObject {
     readonly property string repeatAll: "\uF172"
     readonly property string repeatOne: "\uEF34"
     readonly property string shuffle: "\uEF37"
+    readonly property string info: "\uF4A4"
+    readonly property string link: "\uF4E9"
+    readonly property string battery: "\uE9B5"
+    readonly property string chevronLeft: "\uEA4D"
+    readonly property string chevronRight: "\uEA50"
 }

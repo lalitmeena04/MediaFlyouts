@@ -29,11 +29,14 @@ Window {
     readonly property var pages: [
         { "icon": Fluent.musicNote, "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
+        { "icon": Fluent.battery,   "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
+        { "icon": Fluent.musicNote, "name": "Media Widget", "desc": "A compact now-playing widget docked on the taskbar." },
+        { "icon": Fluent.battery,   "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
         { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
-        { "icon": Fluent.musicNote, "name": "Taskbar Widget", "desc": "A compact now-playing widget docked on the taskbar." },
         { "icon": Fluent.dismiss,   "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
-        { "icon": Fluent.settings,  "name": "About",        "desc": "MediaFlyouts — a Fluent-style media overlay built with Qt 6." }
+        { "icon": Fluent.settings,  "name": "Additional Settings", "desc": "Theme, accent, startup, tray and settings backup." },
+        { "icon": Fluent.info,      "name": "About",        "desc": "App info and updates." }
     ]
 
     // searchable index of settings -> the page that hosts them
@@ -46,21 +49,23 @@ Window {
         { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
         { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
         { "label": "Animation speed", "page": 1 }, { "label": "Animation easing", "page": 1 },
-        { "label": "Volume flyout", "page": 2 }, { "label": "Override native OSD", "page": 2 },
-        { "label": "Volume flyout duration", "page": 2 }, { "label": "Lock keys flyout", "page": 3 },
-        { "label": "Caps lock", "page": 3 }, { "label": "Num lock", "page": 3 },
-        { "label": "Scroll lock", "page": 3 }, { "label": "Insert key", "page": 3 },
-        { "label": "Bold indicator text", "page": 3 }, { "label": "Lock keys duration", "page": 3 },
-        { "label": "Taskbar widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
-        { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
-        { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
-        { "label": "Audio visualizer", "page": 4 }, { "label": "Peripheral flyout", "page": 5 },
-        { "label": "Low battery warning", "page": 5 }, { "label": "Blacklist", "page": 6 },
-        { "label": "Whitelist", "page": 6 }, { "label": "Filter mode", "page": 6 },
-        { "label": "Theme", "page": 7 }, { "label": "Acrylic backdrop", "page": 7 },
-        { "label": "Launch on startup", "page": 7 }, { "label": "Hide tray icon", "page": 7 },
-        { "label": "Check for updates", "page": 7 }, { "label": "Export settings", "page": 7 },
-        { "label": "Import settings", "page": 7 }
+        { "label": "Volume flyout", "page": 5 }, { "label": "Override native OSD", "page": 5 },
+        { "label": "Volume flyout duration", "page": 5 }, { "label": "Lock keys flyout", "page": 6 },
+        { "label": "Caps lock", "page": 6 }, { "label": "Num lock", "page": 6 },
+        { "label": "Scroll lock", "page": 6 }, { "label": "Insert key", "page": 6 },
+        { "label": "Bold indicator text", "page": 6 }, { "label": "Lock keys duration", "page": 6 },
+        { "label": "Media widget", "page": 3 }, { "label": "Widget controls", "page": 3 },
+        { "label": "Widget alignment", "page": 3 }, { "label": "Widget offset", "page": 3 },
+        { "label": "Pause overlay", "page": 3 }, { "label": "Scroll long titles", "page": 3 },
+        { "label": "Audio visualizer", "page": 3 },
+        { "label": "Peripheral flyout", "page": 2 }, { "label": "Low battery warning", "page": 2 },
+        { "label": "Peripherals widget", "page": 4 }, { "label": "Battery rings", "page": 4 },
+        { "label": "Blacklist", "page": 7 },
+        { "label": "Whitelist", "page": 7 }, { "label": "Filter mode", "page": 7 },
+        { "label": "Theme", "page": 8 }, { "label": "Accent color", "page": 8 },
+        { "label": "Launch on startup", "page": 8 }, { "label": "Hide tray icon", "page": 8 },
+        { "label": "Export settings", "page": 8 }, { "label": "Import settings", "page": 8 },
+        { "label": "Check for updates", "page": 9 }, { "label": "Version", "page": 9 }
     ]
 
     readonly property var searchResults: {
@@ -178,7 +183,7 @@ Window {
                         required property int index
                         required property var modelData
 
-                        width: sidebar.width - 36
+                        width: sidebar.collapsed ? 40 : sidebar.width - 36
                         visible: dash.searchQuery.length === 0
                         height: visible ? 40 : 0
                         radius: 8
@@ -187,7 +192,7 @@ Window {
                         Row {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 12
+                            anchors.leftMargin: sidebar.collapsed ? 11 : 12
                             spacing: 12
                             IconLabel {
                                 glyph: modelData.icon
@@ -195,6 +200,7 @@ Window {
                                 color: dash.currentIndex === index ? theme.accent : theme.textSecondary
                             }
                             Text {
+                                visible: !sidebar.collapsed
                                 text: modelData.name
                                 color: theme.textPrimary
                                 font.pixelSize: 14
@@ -465,11 +471,11 @@ Window {
                             Repeater {
                                 model: [
                                     { "name": "Media flyout", "icon": Fluent.play, "key": "media", "page": 1 },
-                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 2 },
-                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 3 },
-                                    { "name": "Taskbar widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
+                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 5 },
+                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 6 },
+                                    { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 3 },
                                     { "name": "Up next", "icon": Fluent.next, "key": "nextup", "page": 1 },
-                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 2 }
+                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 5 }
                                 ]
                                 delegate: Rectangle {
                                     required property var modelData
@@ -796,7 +802,7 @@ Window {
 
                 // Volume page
                 Column {
-                    visible: dash.currentIndex === 2
+                    visible: dash.currentIndex === 5
                     width: parent.width
                     spacing: 12
 
@@ -852,7 +858,7 @@ Window {
 
                 // Lock Keys page
                 Column {
-                    visible: dash.currentIndex === 3
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 
@@ -907,9 +913,9 @@ Window {
                     }
                 }
 
-                // Taskbar Widget page
+                // Media Widget page
                 Column {
-                    visible: dash.currentIndex === 4
+                    visible: dash.currentIndex === 3
                     width: parent.width
                     spacing: 12
 
@@ -999,12 +1005,21 @@ Window {
                     }
 
                     Text {
-                        text: "Peripherals widget"
-                        color: theme.textPrimary
-                        font.pixelSize: 16
-                        font.bold: true
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Battery rings for your peripherals are configured on the Peripheral Widget page."
+                        color: theme.textMuted
+                        font.pixelSize: 12
                         topPadding: 8
                     }
+                }
+
+                // Peripheral Widget page
+                Column {
+                    visible: dash.currentIndex === 4
+                    width: parent.width
+                    spacing: 12
+
                     SettingRow {
                         width: parent.width
                         label: "Peripherals widget"
@@ -1061,24 +1076,17 @@ Window {
 
                     Text {
                         width: parent.width
-                        text: "Peripheral flyout"
-                        color: theme.textPrimary
-                        font.pixelSize: 15
-                        font.bold: true
-                        topPadding: 12
-                    }
-                    Text {
-                        width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Configured on the Peripheral Flyout page."
+                        text: "Connect and low-battery announcements are configured on the Peripheral Flyout page."
                         color: theme.textMuted
                         font.pixelSize: 12
+                        topPadding: 8
                     }
                 }
 
                 // Peripheral Flyout page
                 Column {
-                    visible: dash.currentIndex === 5
+                    visible: dash.currentIndex === 2
                     width: parent.width
                     spacing: 12
 
@@ -1162,7 +1170,7 @@ Window {
 
                 // App Filtering page
                 Column {
-                    visible: dash.currentIndex === 6
+                    visible: dash.currentIndex === 7
                     width: parent.width
                     spacing: 12
 
@@ -1261,9 +1269,9 @@ Window {
                     }
                 }
 
-                // About page
+                // Additional Settings page
                 Column {
-                    visible: dash.currentIndex === 7
+                    visible: dash.currentIndex === 8
                     width: parent.width
                     spacing: 12
 
@@ -1339,6 +1347,47 @@ Window {
                             onClicked: importDialog.open()
                         }
                     }
+                }
+
+                // About page
+                Column {
+                    visible: dash.currentIndex === 9
+                    width: parent.width
+                    spacing: 12
+
+                    Row {
+                        spacing: 12
+                        IconLabel {
+                            anchors.verticalCenter: parent.verticalCenter
+                            glyph: Fluent.musicNote
+                            size: 32
+                            color: theme.accent
+                        }
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 2
+                            Text {
+                                text: "MediaFlyouts"
+                                color: theme.textPrimary
+                                font.pixelSize: 20
+                                font.bold: true
+                            }
+                            Text {
+                                text: "Version " + updateChecker.currentVersion
+                                color: theme.textMuted
+                                font.pixelSize: 12
+                            }
+                        }
+                    }
+
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Fluent-style media, volume, lock-key and peripheral overlays for Windows, built with Qt 6."
+                        color: theme.textSecondary
+                        font.pixelSize: 13
+                        topPadding: 4
+                    }
 
                     Row {
                         spacing: 12
@@ -1364,11 +1413,27 @@ Window {
                         onToggled: settings.autoCheckUpdates = value
                     }
 
-                    Text {
-                        text: "Version " + updateChecker.currentVersion
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                        topPadding: 4
+                    // icon-only link to the project page
+                    Rectangle {
+                        width: 40
+                        height: 40
+                        radius: 8
+                        color: repoHover.containsMouse ? theme.cardHover : theme.card
+                        border.color: theme.border
+
+                        IconLabel {
+                            anchors.centerIn: parent
+                            glyph: Fluent.link
+                            size: 18
+                            color: theme.textPrimary
+                        }
+                        MouseArea {
+                            id: repoHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: Qt.openUrlExternally("https://github.com/scleaverzer0ne/MediaFlyouts")
+                        }
                     }
                 }
                 }
