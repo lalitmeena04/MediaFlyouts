@@ -7,7 +7,7 @@ together through CTest.
 
 ```powershell
 # build + run everything
-.\build.ps1 -Test
+.\mediaflyouts.ps1 test
 
 # or directly
 ctest --preset msvc-debug --output-on-failure

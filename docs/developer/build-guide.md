@@ -6,7 +6,7 @@ This guide covers building MediaFlyouts and producing the release artifacts.
 
 ```powershell
 # release build with the Qt runtime staged into bin\
-.\build.ps1 -Config release -Clean
+.\mediaflyouts.ps1 build -Config release -Clean
 
 # or with CMake presets directly
 cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=<Qt>/msvc2022_64"
