@@ -87,13 +87,18 @@ Window {
 
         Rectangle {
             id: sidebar
-            width: 240
+            property bool collapsed: false
+            width: collapsed ? 64 : 240
             height: parent.height
             color: theme.sidebar
 
+            Behavior on width {
+                NumberAnimation { duration: 140; easing.type: Easing.OutQuad }
+            }
+
             Column {
                 anchors.fill: parent
-                anchors.margins: 18
+                anchors.margins: sidebar.collapsed ? 8 : 18
                 spacing: 8
 
                 Row {
@@ -105,6 +110,7 @@ Window {
                         color: theme.accent
                     }
                     Text {
+                        visible: !sidebar.collapsed
                         text: "MediaFlyouts"
                         color: theme.textPrimary
                         font.pixelSize: 18
@@ -113,8 +119,45 @@ Window {
                     }
                 }
 
+                Rectangle {
+                    width: sidebar.collapsed ? 40 : sidebar.width - 36
+                    height: 32
+                    radius: 8
+                    color: collapseMouse.containsMouse ? theme.card : "transparent"
+
+                    IconLabel {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: sidebar.collapsed ? 11 : 12
+                        glyph: sidebar.collapsed ? Fluent.chevronRight : Fluent.chevronLeft
+                        size: 16
+                        color: theme.textSecondary
+                    }
+                    Text {
+                        visible: !sidebar.collapsed
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 40
+                        text: "Collapse"
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+                    MouseArea {
+                        id: collapseMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            sidebar.collapsed = !sidebar.collapsed
+                            if(sidebar.collapsed)
+                                searchField.text = ""
+                        }
+                    }
+                }
+
                 TextField {
                     id: searchField
+                    visible: !sidebar.collapsed
                     width: sidebar.width - 36
                     placeholderText: "Search settings…"
                     color: theme.textPrimary

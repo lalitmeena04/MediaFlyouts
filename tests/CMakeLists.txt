@@ -39,6 +39,8 @@ add_executable(mediaflyout_gtest
     Model/HidppProtocolTest.cpp
     Model/BatteryUtilsTest.cpp
     Model/BatteryAlertPolicyTest.cpp
+    Model/SessionSelectionTest.cpp
+    Views/QmlContractTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
@@ -49,6 +51,7 @@ target_link_libraries(mediaflyout_gtest PRIVATE
     GTest::gtest
     GTest::gmock
 )
+target_compile_definitions(mediaflyout_gtest PRIVATE MEDIAFLYOUTS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 add_test(NAME gtest_all COMMAND mediaflyout_gtest)
 
 # Windows-only audio/DWM controllers get default-state smoke tests
@@ -57,6 +60,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/AudioCapture.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/TaskbarInfo.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryStatusController.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BluetoothConnectionWatcher.cpp

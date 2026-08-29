@@ -2,12 +2,16 @@
 
 #include <QVariant>
 #include <QVariantMap>
+#include <QCoreApplication>
 
 #include <windows.h>
 
 #include <objbase.h>
 
 #include "AudioCapture.h"
+#include "BluetoothConnectionWatcher.h"
+#include "HidChangeWatcher.h"
+#include "TaskbarInfo.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
 
@@ -37,6 +41,35 @@ TEST(Win32ControllersTest, WindowEffectsToleratesNullWindow) {
     effects.setDarkFrame(nullptr, true);
     effects.setDarkFrame(nullptr, false);
     SUCCEED();
+}
+
+TEST(Win32ControllersTest, DeviceWatchersCanStartRepeatedly) {
+    BluetoothConnectionWatcher bluetooth;
+    HidChangeWatcher hid;
+
+    bluetooth.start();
+    bluetooth.start();
+    hid.start();
+    hid.start();
+    QCoreApplication::processEvents();
+    SUCCEED();
+}
+
+TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {
+    TaskbarInfo taskbar;
+    const QRect screen = taskbar.monitorGeometry(0);
+    if(screen.isEmpty())
+        GTEST_SKIP() << "No QScreen is available in the guiless test host.";
+
+    constexpr int width = 220;
+    constexpr int height = 40;
+    for(int side : {0, 1, 2}) {
+        const QPoint position = taskbar.widgetPosition(0, side, 0, width, height);
+        EXPECT_GE(position.x(), screen.left());
+        EXPECT_LE(position.x() + width, screen.right() + 1);
+        EXPECT_GE(position.y(), screen.top());
+        EXPECT_LE(position.y() + height, screen.bottom() + 1);
+    }
 }
 
 // With COM initialised we can exercise the real enumeration / capture code paths.

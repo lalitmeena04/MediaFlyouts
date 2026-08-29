@@ -7,6 +7,8 @@
 #include <QMetaObject>
 #include <QString>
 
+#include "SessionSelection.h"
+
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Media.h>
@@ -92,16 +94,14 @@ void WinMediaProvider::refreshSessionMeta() {
         return;
     auto sessions = m_manager.GetSessions();
     const int n = static_cast<int>(sessions.Size());
-    m_sessionCount = n < 1 ? 1 : n;
+    m_sessionCount = mf::normalizedSessionCount(n);
     const Session sel = currentSession();
-    int idx = 0;
+    QVector<bool> selectedMatches;
+    selectedMatches.reserve(n);
     for(int i = 0; i < n; ++i) {
-        if(sel && sessions.GetAt(static_cast<uint32_t>(i)) == sel) {
-            idx = i;
-            break;
-        }
+        selectedMatches.append(sel && sessions.GetAt(static_cast<uint32_t>(i)) == sel);
     }
-    m_selectedIndex = idx;
+    m_selectedIndex = mf::selectedSessionIndex(selectedMatches);
 }
 
 int WinMediaProvider::sessionCount() const {

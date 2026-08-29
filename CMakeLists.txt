@@ -32,6 +32,7 @@ qt_add_library(mediaflyout_core STATIC
     Model/HidppProtocol.h    Model/HidppProtocol.cpp
     Model/BatteryUtils.h     Model/BatteryUtils.cpp
     Model/BatteryAlertPolicy.h Model/BatteryAlertPolicy.cpp
+    Model/SessionSelection.h Model/SessionSelection.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
 target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model)

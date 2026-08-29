@@ -15,6 +15,7 @@ class SettingsQtTest : public QObject {
         void setterEmitsChanged();
         void redundantSetDoesNotEmit();
         void persistsAcrossInstances();
+        void legacySettingsKeepTheirValuesAndGainNewDefaults();
 };
 
 void SettingsQtTest::initTestCase() {
@@ -116,6 +117,26 @@ void SettingsQtTest::persistsAcrossInstances() {
     }
     Settings second;
     QVERIFY(!second.disableOnFullscreen());
+}
+
+void SettingsQtTest::legacySettingsKeepTheirValuesAndGainNewDefaults() {
+    QSettings legacy(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
+                     QStringLiteral("MediaFlyouts"));
+    legacy.setValue(QStringLiteral("mediaFlyoutEnabled"), false);
+    legacy.setValue(QStringLiteral("flyoutPosition"), 2);
+    legacy.setValue(QStringLiteral("taskbarWidgetEnabled"), false);
+    legacy.sync();
+
+    Settings settings;
+    QVERIFY(!settings.mediaFlyoutEnabled());
+    QCOMPARE(settings.flyoutPosition(), 2);
+    QVERIFY(!settings.taskbarWidgetEnabled());
+
+    // These did not exist in old INI files and must initialize without overwriting them.
+    QVERIFY(!settings.peripheralFlyoutEnabled());
+    QCOMPARE(settings.peripheralFlyoutDuration(), 3000);
+    QVERIFY(settings.peripheralFlyoutOnConnect());
+    QVERIFY(settings.peripheralLowBatteryToast());
 }
 
 QTEST_GUILESS_MAIN(SettingsQtTest)
