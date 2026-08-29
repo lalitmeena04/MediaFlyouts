@@ -86,6 +86,16 @@ void Settings::reload() {
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
     m_peripheralsWidgetSelected = m_store.value(QStringLiteral("peripheralsWidgetSelected")).toStringList();
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
+    m_peripheralFlyoutEnabled = m_store.value(QStringLiteral("peripheralFlyoutEnabled"), false).toBool();
+    m_peripheralFlyoutDuration = m_store.value(QStringLiteral("peripheralFlyoutDuration"), 3000).toInt();
+    // indexes mf::FlyoutPosition like flyoutPosition (4 = BottomCenter)
+    m_peripheralFlyoutPosition = m_store.value(QStringLiteral("peripheralFlyoutPosition"), 4).toInt();
+    m_peripheralFlyoutMonitor = m_store.value(QStringLiteral("peripheralFlyoutMonitor"), 0).toInt();
+    m_peripheralFlyoutOnConnect = m_store.value(QStringLiteral("peripheralFlyoutOnConnect"), true).toBool();
+    m_peripheralFlyoutOnDisconnect = m_store.value(QStringLiteral("peripheralFlyoutOnDisconnect"), true).toBool();
+    m_peripheralFlyoutOnLowBattery = m_store.value(QStringLiteral("peripheralFlyoutOnLowBattery"), true).toBool();
+    m_peripheralFlyoutOnCharging = m_store.value(QStringLiteral("peripheralFlyoutOnCharging"), false).toBool();
+    m_peripheralLowBatteryToast = m_store.value(QStringLiteral("peripheralLowBatteryToast"), true).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // accentMode: 0 = theme default, 1 = match system, 2 = custom
@@ -347,6 +357,33 @@ void Settings::setPeripheralSelected(const QString& name, bool selected) {
 bool Settings::batteryRingUseAccent() const {
     return m_batteryRingUseAccent;
 }
+bool Settings::peripheralFlyoutEnabled() const {
+    return m_peripheralFlyoutEnabled;
+}
+int Settings::peripheralFlyoutDuration() const {
+    return m_peripheralFlyoutDuration;
+}
+int Settings::peripheralFlyoutPosition() const {
+    return m_peripheralFlyoutPosition;
+}
+int Settings::peripheralFlyoutMonitor() const {
+    return m_peripheralFlyoutMonitor;
+}
+bool Settings::peripheralFlyoutOnConnect() const {
+    return m_peripheralFlyoutOnConnect;
+}
+bool Settings::peripheralFlyoutOnDisconnect() const {
+    return m_peripheralFlyoutOnDisconnect;
+}
+bool Settings::peripheralFlyoutOnLowBattery() const {
+    return m_peripheralFlyoutOnLowBattery;
+}
+bool Settings::peripheralFlyoutOnCharging() const {
+    return m_peripheralFlyoutOnCharging;
+}
+bool Settings::peripheralLowBatteryToast() const {
+    return m_peripheralLowBatteryToast;
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
@@ -529,6 +566,33 @@ void Settings::setPeripheralsWidgetEnabled(bool v) {
 }
 void Settings::setBatteryRingUseAccent(bool v) {
     assign("batteryRingUseAccent", m_batteryRingUseAccent, v);
+}
+void Settings::setPeripheralFlyoutEnabled(bool v) {
+    assign("peripheralFlyoutEnabled", m_peripheralFlyoutEnabled, v);
+}
+void Settings::setPeripheralFlyoutDuration(int v) {
+    assignInt("peripheralFlyoutDuration", m_peripheralFlyoutDuration, v);
+}
+void Settings::setPeripheralFlyoutPosition(int v) {
+    assignInt("peripheralFlyoutPosition", m_peripheralFlyoutPosition, v);
+}
+void Settings::setPeripheralFlyoutMonitor(int v) {
+    assignInt("peripheralFlyoutMonitor", m_peripheralFlyoutMonitor, v);
+}
+void Settings::setPeripheralFlyoutOnConnect(bool v) {
+    assign("peripheralFlyoutOnConnect", m_peripheralFlyoutOnConnect, v);
+}
+void Settings::setPeripheralFlyoutOnDisconnect(bool v) {
+    assign("peripheralFlyoutOnDisconnect", m_peripheralFlyoutOnDisconnect, v);
+}
+void Settings::setPeripheralFlyoutOnLowBattery(bool v) {
+    assign("peripheralFlyoutOnLowBattery", m_peripheralFlyoutOnLowBattery, v);
+}
+void Settings::setPeripheralFlyoutOnCharging(bool v) {
+    assign("peripheralFlyoutOnCharging", m_peripheralFlyoutOnCharging, v);
+}
+void Settings::setPeripheralLowBatteryToast(bool v) {
+    assign("peripheralLowBatteryToast", m_peripheralLowBatteryToast, v);
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);

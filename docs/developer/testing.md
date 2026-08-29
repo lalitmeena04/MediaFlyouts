@@ -36,6 +36,10 @@ tests/
 
 - **Settings** — defaults, setters/signals, persistence, export/import, app
   filtering, and the once-only first-run seeding of `taskbarWidgetSide`.
+- **Peripheral battery** — protocol parsing (Fast Pair, DualSense, Razer,
+  HID++), Class of Device and HID usage decoding, and the alert policy
+  (buckets, threshold crossings, hysteresis, debounce). The providers
+  themselves need real hardware and are not unit tested.
 - **Fft** — spectrum peaks, band normalization, frequency-bar mapping and edge
   cases.
 - **NowPlaying** — flyout-trigger logic, transport/seek/repeat/shuffle

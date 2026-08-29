@@ -31,6 +31,7 @@ qt_add_library(mediaflyout_core STATIC
     Model/RazerProtocol.h    Model/RazerProtocol.cpp
     Model/HidppProtocol.h    Model/HidppProtocol.cpp
     Model/BatteryUtils.h     Model/BatteryUtils.cpp
+    Model/BatteryAlertPolicy.h Model/BatteryAlertPolicy.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
 target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model)
@@ -77,6 +78,8 @@ qt_add_qml_module(MediaFlyouts
         Views/Dashboard.qml
         Views/TaskbarWidget.qml
         Views/PeripheralsWidget.qml
+        Views/PeripheralFlyout.qml
+        Views/PeripheralCard.qml
         Views/BatteryRing.qml
         Views/DeviceIcons.qml
         Views/TaskbarVisualizer.qml
@@ -117,6 +120,7 @@ if (WIN32)
         Controllers/WindowEffects.h          Controllers/WindowEffects.cpp
         Controllers/AccentWatcher.h          Controllers/AccentWatcher.cpp
         Controllers/BatteryStatusController.h Controllers/BatteryStatusController.cpp
+        Controllers/PeripheralAlerts.h        Controllers/PeripheralAlerts.cpp
         Controllers/BluetoothConnectionWatcher.h Controllers/BluetoothConnectionWatcher.cpp
         Controllers/HidChangeWatcher.h        Controllers/HidChangeWatcher.cpp
         Controllers/BatteryProviders/IBatteryProvider.h

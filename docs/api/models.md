@@ -38,6 +38,25 @@ screen bounds and size — the testable core behind `FlyoutPlacement`.
 ## AlbumArtProvider
 A `QQuickImageProvider` that serves the current album art to QML (`image://…`).
 
+## Peripheral battery helpers
+Pure, unit-tested logic shared by the battery providers, so the protocol and
+policy rules can be exercised without real hardware:
+
+- **BatteryUtils** — strips Bluetooth profile suffixes from device names,
+  converts milliwatt-hours to a percentage, and decodes the Bluetooth Class of
+  Device into a category ("mouse", "keyboard", "headset", "gamepad").
+- **FastPairProtocol** — frames the Google Fast Pair message stream and decodes
+  battery events, including the per-component levels of a true-wireless set and
+  the charging flag.
+- **DualSenseProtocol** — CRC32 and report parsing for DualSense controllers.
+- **RazerProtocol** — builds the 90-byte feature reports and reads the battery
+  level (reported on a 0-255 scale) and charging state.
+- **HidppProtocol** — Logitech HID++ 2.0 requests and replies, covering both the
+  modern `0x1004` UnifiedBattery and the legacy `0x1000` feature.
+- **BatteryAlertPolicy** — decides which changes deserve an alert: battery
+  buckets, downward threshold crossings with hysteresis, connect/disconnect
+  debouncing, and baseline seeding so launching the app is silent.
+
 ## WinMediaProvider *(Windows)*
 Bridges the WinRT **System Media Transport Controls** to `TrackInfo`, feeding
 `NowPlaying`.

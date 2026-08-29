@@ -79,6 +79,16 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.filterMode(), 0);
     EXPECT_TRUE(s.filterList().isEmpty());
     EXPECT_FALSE(s.autoCheckUpdates());
+    // peripheral flyout: off until asked for, then bottom-centre like the other flyouts
+    EXPECT_FALSE(s.peripheralFlyoutEnabled());
+    EXPECT_EQ(s.peripheralFlyoutDuration(), 3000);
+    EXPECT_EQ(s.peripheralFlyoutPosition(), 4);
+    EXPECT_EQ(s.peripheralFlyoutMonitor(), 0);
+    EXPECT_TRUE(s.peripheralFlyoutOnConnect());
+    EXPECT_TRUE(s.peripheralFlyoutOnDisconnect());
+    EXPECT_TRUE(s.peripheralFlyoutOnLowBattery());
+    EXPECT_FALSE(s.peripheralFlyoutOnCharging());
+    EXPECT_TRUE(s.peripheralLowBatteryToast());
 }
 
 TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {

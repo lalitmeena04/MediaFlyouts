@@ -77,6 +77,13 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
     QCOMPARE(s.visualizerStyle(), 0);
+    // peripheral flyout: off until asked for, then bottom-centre like the other flyouts
+    QVERIFY(!s.peripheralFlyoutEnabled());
+    QCOMPARE(s.peripheralFlyoutDuration(), 3000);
+    QCOMPARE(s.peripheralFlyoutPosition(), 4);
+    QVERIFY(s.peripheralFlyoutOnConnect());
+    QVERIFY(!s.peripheralFlyoutOnCharging());
+    QVERIFY(s.peripheralLowBatteryToast());
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());
     QCOMPARE(s.accentMode(), 0);

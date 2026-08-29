@@ -1057,6 +1057,91 @@ Window {
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
                         }
                     }
+
+                    Text {
+                        width: parent.width
+                        text: "Peripheral flyout"
+                        color: theme.textPrimary
+                        font.pixelSize: 15
+                        font.bold: true
+                        topPadding: 12
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Peripheral flyout"
+                        description: "Show a flyout when a peripheral connects, disconnects or runs low on battery."
+                        value: settings.peripheralFlyoutEnabled
+                        onToggled: settings.peripheralFlyoutEnabled = value
+                    }
+                    SettingRow {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "On connect"
+                        description: "Announce a peripheral when it connects."
+                        value: settings.peripheralFlyoutOnConnect
+                        onToggled: settings.peripheralFlyoutOnConnect = value
+                    }
+                    SettingRow {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "On disconnect"
+                        description: "Announce a peripheral when it disconnects."
+                        value: settings.peripheralFlyoutOnDisconnect
+                        onToggled: settings.peripheralFlyoutOnDisconnect = value
+                    }
+                    SettingRow {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "On low battery"
+                        description: "Warn once when a battery drops below 20%, and again below 10%."
+                        value: settings.peripheralFlyoutOnLowBattery
+                        onToggled: settings.peripheralFlyoutOnLowBattery = value
+                    }
+                    SettingRow {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "On charging"
+                        description: "Announce when a peripheral starts or stops charging."
+                        value: settings.peripheralFlyoutOnCharging
+                        onToggled: settings.peripheralFlyoutOnCharging = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Low battery notification"
+                        description: "Also show a tray notification for a low battery, so it isn't missed."
+                        value: settings.peripheralLowBatteryToast
+                        onToggled: settings.peripheralLowBatteryToast = value
+                    }
+                    SettingCombo {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "Peripheral flyout position"
+                        description: "Place the peripheral flyout independently of the other flyouts."
+                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        currentIndex: settings.peripheralFlyoutPosition
+                        onActivated: settings.peripheralFlyoutPosition = index
+                    }
+                    SettingCombo {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "Peripheral flyout monitor"
+                        description: "Which display the peripheral flyout is shown on."
+                        model: placement.monitorNames()
+                        currentIndex: settings.peripheralFlyoutMonitor
+                        onActivated: settings.peripheralFlyoutMonitor = index
+                    }
+                    SettingSlider {
+                        visible: settings.peripheralFlyoutEnabled
+                        width: parent.width
+                        label: "Peripheral flyout duration"
+                        description: "How long the peripheral flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.peripheralFlyoutDuration
+                        valueText: (settings.peripheralFlyoutDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.peripheralFlyoutDuration = Math.round(value)
+                    }
                 }
 
                 // App Filtering page

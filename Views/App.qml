@@ -19,6 +19,10 @@ QtObject {
         onVisibleChanged: app.restack()
         onHeightChanged: app.restack()
     }
+    property PeripheralFlyout peripheralFlyout: PeripheralFlyout {
+        onVisibleChanged: app.restack()
+        onWidthChanged: app.restack()
+    }
     property Dashboard dashboard: Dashboard {}
     property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
     property OnboardingWindow onboarding: OnboardingWindow {}
@@ -40,14 +44,22 @@ QtObject {
     }
 
     // stacking order, bottom-most first; visible flyouts are stacked away from the anchor edge
-    readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout]
+    readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout]
 
-    // the volume flyout can be placed independently of the other flyouts
+    // the volume and peripheral flyouts can be placed independently of the others
     function positionIndexFor(f) {
-        return f === volumeFlyout ? settings.volumeFlyoutPosition : settings.flyoutPosition
+        if(f === volumeFlyout)
+            return settings.volumeFlyoutPosition
+        if(f === peripheralFlyout)
+            return settings.peripheralFlyoutPosition
+        return settings.flyoutPosition
     }
     function monitorFor(f) {
-        return f === volumeFlyout ? settings.volumeFlyoutMonitor : settings.flyoutMonitor
+        if(f === volumeFlyout)
+            return settings.volumeFlyoutMonitor
+        if(f === peripheralFlyout)
+            return settings.peripheralFlyoutMonitor
+        return settings.flyoutMonitor
     }
 
     function restack() {

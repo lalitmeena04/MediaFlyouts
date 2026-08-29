@@ -38,6 +38,7 @@ add_executable(mediaflyout_gtest
     Model/RazerProtocolTest.cpp
     Model/HidppProtocolTest.cpp
     Model/BatteryUtilsTest.cpp
+    Model/BatteryAlertPolicyTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
@@ -57,6 +58,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/AudioCapture.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryStatusController.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BluetoothConnectionWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/HidChangeWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
@@ -69,6 +71,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
         Controllers/Win32ControllersTest.cpp
         Controllers/BatteryStatusControllerTest.cpp
+        Controllers/PeripheralAlertsTest.cpp
         Controllers/HidCollectionsTest.cpp
     )
     target_compile_definitions(mediaflyout_gtest PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)

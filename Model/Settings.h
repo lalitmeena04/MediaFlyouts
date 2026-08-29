@@ -66,6 +66,24 @@ class Settings : public QObject {
                        NOTIFY changed)
         Q_PROPERTY(QStringList peripheralsWidgetSelected READ peripheralsWidgetSelected NOTIFY changed)
         Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralFlyoutDuration READ peripheralFlyoutDuration WRITE setPeripheralFlyoutDuration
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralFlyoutPosition READ peripheralFlyoutPosition WRITE setPeripheralFlyoutPosition
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralFlyoutMonitor READ peripheralFlyoutMonitor WRITE setPeripheralFlyoutMonitor
+                       NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnConnect READ peripheralFlyoutOnConnect WRITE setPeripheralFlyoutOnConnect
+                       NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnDisconnect READ peripheralFlyoutOnDisconnect WRITE
+                       setPeripheralFlyoutOnDisconnect NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnLowBattery READ peripheralFlyoutOnLowBattery WRITE
+                       setPeripheralFlyoutOnLowBattery NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnCharging READ peripheralFlyoutOnCharging WRITE
+                       setPeripheralFlyoutOnCharging NOTIFY changed)
+        Q_PROPERTY(bool peripheralLowBatteryToast READ peripheralLowBatteryToast WRITE setPeripheralLowBatteryToast
+                       NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
         Q_PROPERTY(int accentMode READ accentMode WRITE setAccentMode NOTIFY changed)
@@ -137,6 +155,15 @@ class Settings : public QObject {
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
         bool batteryRingUseAccent() const;
+        bool peripheralFlyoutEnabled() const;
+        int peripheralFlyoutDuration() const;
+        int peripheralFlyoutPosition() const;
+        int peripheralFlyoutMonitor() const;
+        bool peripheralFlyoutOnConnect() const;
+        bool peripheralFlyoutOnDisconnect() const;
+        bool peripheralFlyoutOnLowBattery() const;
+        bool peripheralFlyoutOnCharging() const;
+        bool peripheralLowBatteryToast() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
         int accentMode() const;
@@ -194,6 +221,15 @@ class Settings : public QObject {
         void setVisualizerStyle(int v);
         void setPeripheralsWidgetEnabled(bool v);
         void setBatteryRingUseAccent(bool v);
+        void setPeripheralFlyoutEnabled(bool v);
+        void setPeripheralFlyoutDuration(int v);
+        void setPeripheralFlyoutPosition(int v);
+        void setPeripheralFlyoutMonitor(int v);
+        void setPeripheralFlyoutOnConnect(bool v);
+        void setPeripheralFlyoutOnDisconnect(bool v);
+        void setPeripheralFlyoutOnLowBattery(bool v);
+        void setPeripheralFlyoutOnCharging(bool v);
+        void setPeripheralLowBatteryToast(bool v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
         void setAccentMode(int v);
@@ -260,6 +296,15 @@ class Settings : public QObject {
         bool m_peripheralsWidgetEnabled;
         QStringList m_peripheralsWidgetSelected;
         bool m_batteryRingUseAccent;
+        bool m_peripheralFlyoutEnabled;
+        int m_peripheralFlyoutDuration;
+        int m_peripheralFlyoutPosition;
+        int m_peripheralFlyoutMonitor;
+        bool m_peripheralFlyoutOnConnect;
+        bool m_peripheralFlyoutOnDisconnect;
+        bool m_peripheralFlyoutOnLowBattery;
+        bool m_peripheralFlyoutOnCharging;
+        bool m_peripheralLowBatteryToast;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
         int m_accentMode;

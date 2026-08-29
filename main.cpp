@@ -25,6 +25,7 @@
 #include "AudioCapture.h"
 #include "AccentWatcher.h"
 #include "BatteryStatusController.h"
+#include "PeripheralAlerts.h"
 #include "VolumeController.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
@@ -158,6 +159,19 @@ int main(int argc, char* argv[]) {
     // battery level of paired wireless peripherals (headsets, mice, keyboards, ...)
     BatteryStatusController batteryStatus;
     engine.rootContext()->setContextProperty("batteryStatus", &batteryStatus);
+
+    PeripheralAlerts peripheralAlerts(&batteryStatus);
+    engine.rootContext()->setContextProperty("peripheralAlerts", &peripheralAlerts);
+
+    // a low battery can happen at any moment, so it also gets a tray notification
+    QObject::connect(&peripheralAlerts, &PeripheralAlerts::lowBattery, &tray,
+                     [&](const QString& device, int percent, bool veryLow) {
+                         if(!settings.peripheralLowBatteryToast() || !settings.onboardingCompleted())
+                             return;
+                         tray.notify(veryLow ? QStringLiteral("Peripheral battery very low")
+                                             : QStringLiteral("Peripheral battery low"),
+                                     QStringLiteral("%1 is at %2%").arg(device).arg(percent));
+                     });
 #endif
 
     engine.rootContext()->setContextProperty("nowPlaying", &nowPlaying);
