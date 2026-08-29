@@ -54,8 +54,11 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
 
     m_currentChangedToken = m_manager.CurrentSessionChanged([this](auto&&, auto&&) {
         // the OS current session drives us unless the user manually picked one
-        if(!m_manual)
+        if(!m_manual) {
             hookSession(m_manager.GetCurrentSession());
+            refreshSessionMeta();
+            QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
+        }
     });
 
     m_sessionsChangedToken = m_manager.SessionsChanged([this](auto&&, auto&&) {
