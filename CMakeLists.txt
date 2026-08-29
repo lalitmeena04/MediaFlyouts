@@ -28,6 +28,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/Fft.h              Model/Fft.cpp
     Model/DualSenseProtocol.h Model/DualSenseProtocol.cpp
     Model/FastPairProtocol.h Model/FastPairProtocol.cpp
+    Model/RazerProtocol.h    Model/RazerProtocol.cpp
+    Model/HidppProtocol.h    Model/HidppProtocol.cpp
     Model/BatteryUtils.h     Model/BatteryUtils.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
@@ -124,6 +126,12 @@ if (WIN32)
         Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
         Controllers/BatteryProviders/FastPairBatteryProvider.h
         Controllers/BatteryProviders/FastPairBatteryProvider.cpp
+        Controllers/BatteryProviders/HidCollections.h
+        Controllers/BatteryProviders/HidCollections.cpp
+        Controllers/BatteryProviders/RazerBatteryProvider.h
+        Controllers/BatteryProviders/RazerBatteryProvider.cpp
+        Controllers/BatteryProviders/LogitechBatteryProvider.h
+        Controllers/BatteryProviders/LogitechBatteryProvider.cpp
         Controllers/BatteryProviders/GameControllerBatteryProvider.h
         Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
         Controllers/BatteryProviders/PlayStationControllerBatteryProvider.h

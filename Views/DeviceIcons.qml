@@ -22,4 +22,18 @@ QtObject {
             return "\u2328"
         return "\uD83C\uDFA7" // default: headset / earbuds / other audio
     }
+
+    // How the device is connected, for tooltips.
+    function transport(connectionKind) {
+        switch(connectionKind) {
+        case "bluetooth":
+        case "ble":
+            return "Bluetooth"
+        case "wireless":
+            return "2.4 GHz"
+        case "usb":
+            return "USB"
+        }
+        return ""
+    }
 }

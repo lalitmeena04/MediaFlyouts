@@ -50,4 +50,6 @@ class BatteryStatusController : public QObject {
         // thread on WinRT async calls; the test-injection constructor leaves this false
         bool m_pollOnWorkerThread = false;
         bool m_refreshing = false;
+        // a connect/disconnect seen while a poll is in flight, re-run once it finishes
+        bool m_refreshPending = false;
 };

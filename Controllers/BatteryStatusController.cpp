@@ -11,7 +11,9 @@
 #include "BatteryProviders/FastPairBatteryProvider.h"
 #include "BatteryProviders/GameControllerBatteryProvider.h"
 #include "BatteryProviders/IBatteryProvider.h"
+#include "BatteryProviders/LogitechBatteryProvider.h"
 #include "BatteryProviders/PlayStationControllerBatteryProvider.h"
+#include "BatteryProviders/RazerBatteryProvider.h"
 
 BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(parent) {
     // Fast Pair first: it reports live per-component levels, so it wins the name-based
@@ -21,6 +23,9 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
     m_providers.push_back(std::make_unique<BluetoothLeBatteryProvider>());
     m_providers.push_back(std::make_unique<GameControllerBatteryProvider>());
     m_providers.push_back(std::make_unique<PlayStationControllerBatteryProvider>());
+    // 2.4GHz dongle devices, which have no standard battery channel
+    m_providers.push_back(std::make_unique<RazerBatteryProvider>());
+    m_providers.push_back(std::make_unique<LogitechBatteryProvider>());
     m_pollOnWorkerThread = true;
 
     // poll as a fallback (battery % drifts without a device event, and this catches
@@ -57,8 +62,12 @@ void BatteryStatusController::refresh() {
     // single-threaded apartment (see main.cpp), and cppwinrt asserts/deadlocks if you block-wait
     // on an STA thread, so real polling happens on a plain worker thread instead.
     if(m_pollOnWorkerThread) {
-        if(m_refreshing)
+        if(m_refreshing) {
+            // don't drop the event: a device just connected or disconnected, so the
+            // in-flight snapshot is already stale
+            m_refreshPending = true;
             return;
+        }
         m_refreshing = true;
 
         auto* providers = &m_providers;
@@ -74,6 +83,10 @@ void BatteryStatusController::refresh() {
                 [this, polled] {
                     m_refreshing = false;
                     applyPolled(polled);
+                    if(m_refreshPending) {
+                        m_refreshPending = false;
+                        refresh();
+                    }
                 },
                 Qt::QueuedConnection);
         });
@@ -122,4 +135,5 @@ void BatteryStatusController::applyPolled(const QVector<BatteryDeviceInfo>& poll
         emit devicesChanged();
     }
 }
+
 
