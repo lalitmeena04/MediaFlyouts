@@ -147,7 +147,8 @@ QVector<BatteryDeviceInfo> PlayStationControllerBatteryProvider::poll() {
 
         result.append({attrs.ProductID == kDualSenseEdgeProductId ? QStringLiteral("DualSense Edge Controller")
                                                                     : QStringLiteral("DualSense Controller"),
-                       percent, QStringLiteral("gamepad")});
+                       percent, isBluetooth ? QStringLiteral("bluetooth") : QStringLiteral("usb"),
+                       QStringLiteral("gamepad")});
     }
 
     SetupDiDestroyDeviceInfoList(deviceInfo);

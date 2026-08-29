@@ -68,3 +68,50 @@ TEST(BatteryStatusControllerTest, RefreshUpdatesDevicesAndEmitsSignalOnChange) {
     EXPECT_EQ(changedCount, 1);
     EXPECT_EQ(controller.devices()[0].toMap()[QStringLiteral("percent")].toInt(), 35);
 }
+
+TEST(BatteryStatusControllerTest, KeepsOnlyTheFirstProviderReportingADevice) {
+    // the same headset is visible over Fast Pair and Hands-Free; the richer Fast Pair
+    // reading is registered first and must win rather than appearing twice
+    std::vector<std::unique_ptr<IBatteryProvider>> providers;
+    providers.push_back(std::make_unique<FakeProvider>([] {
+        BatteryDeviceInfo fastPair{"Ear (2)", 80, "bluetooth", "headset"};
+        fastPair.components = {{"L", 100, false}, {"R", 80, false}, {"Case", 100, true}};
+        return QVector<BatteryDeviceInfo>{fastPair};
+    }));
+    providers.push_back(std::make_unique<FakeProvider>(
+        [] { return QVector<BatteryDeviceInfo>{{"Ear (2)", 60, "bluetooth", "headset"}}; }));
+
+    BatteryStatusController controller(std::move(providers));
+    const QVariantList devices = controller.devices();
+
+    ASSERT_EQ(devices.size(), 1);
+    EXPECT_EQ(devices[0].toMap()[QStringLiteral("percent")].toInt(), 80);
+}
+
+TEST(BatteryStatusControllerTest, ExposesComponentsAndChargingToQml) {
+    BatteryStatusController controller(providersOf([] {
+        BatteryDeviceInfo earbuds{"Ear (2)", 80, "bluetooth", "headset"};
+        earbuds.charging = true;
+        earbuds.components = {{"L", 100, false}, {"R", 80, false}, {"Case", 100, true}};
+        return QVector<BatteryDeviceInfo>{earbuds};
+    }));
+
+    const QVariantMap device = controller.devices().at(0).toMap();
+    EXPECT_TRUE(device[QStringLiteral("charging")].toBool());
+
+    const QVariantList components = device[QStringLiteral("components")].toList();
+    ASSERT_EQ(components.size(), 3);
+    EXPECT_EQ(components[0].toMap()[QStringLiteral("label")].toString(), QStringLiteral("L"));
+    EXPECT_EQ(components[1].toMap()[QStringLiteral("percent")].toInt(), 80);
+    EXPECT_TRUE(components[2].toMap()[QStringLiteral("charging")].toBool());
+}
+
+TEST(BatteryStatusControllerTest, SingleBatteryDevicesReportNoComponents) {
+    BatteryStatusController controller(
+        providersOf([] { return QVector<BatteryDeviceInfo>{{"Mouse", 53, "wireless", "mouse"}}; }));
+
+    const QVariantMap device = controller.devices().at(0).toMap();
+    EXPECT_TRUE(device[QStringLiteral("components")].toList().isEmpty());
+    EXPECT_FALSE(device[QStringLiteral("charging")].toBool());
+    EXPECT_EQ(device[QStringLiteral("connectionKind")].toString(), QStringLiteral("wireless"));
+}

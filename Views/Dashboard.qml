@@ -1048,7 +1048,10 @@ Window {
                                 var parts = []
                                 for(var i = 0; i < modelData.components.length; i++)
                                     parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
-                                return parts.length > 1 ? text + " (" + parts.join(", ") + ")." : text + "."
+                                if(parts.length > 1)
+                                    text += " (" + parts.join(", ") + ")"
+                                var link = DeviceIcons.transport(modelData.connectionKind)
+                                return link ? text + ", over " + link + "." : text + "."
                             }
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)

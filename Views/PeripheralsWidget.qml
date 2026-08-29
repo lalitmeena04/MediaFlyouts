@@ -153,6 +153,9 @@ Window {
                                     var tipText = modelData.name + " \u2014 " + modelData.percent + "%"
                                     if(modelData.charging)
                                         tipText += " \u26A1"
+                                    var link = DeviceIcons.transport(modelData.connectionKind)
+                                    if(link)
+                                        tipText += "   \u00B7 " + link
                                     var parts = []
                                     for(var i = 0; i < modelData.components.length; i++) {
                                         var c = modelData.components[i]
