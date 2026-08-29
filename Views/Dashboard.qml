@@ -54,12 +54,13 @@ Window {
         { "label": "Taskbar widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
         { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
         { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
-        { "label": "Audio visualizer", "page": 4 }, { "label": "Blacklist", "page": 5 },
-        { "label": "Whitelist", "page": 5 }, { "label": "Filter mode", "page": 5 },
-        { "label": "Theme", "page": 6 }, { "label": "Acrylic backdrop", "page": 6 },
-        { "label": "Launch on startup", "page": 6 }, { "label": "Hide tray icon", "page": 6 },
-        { "label": "Check for updates", "page": 6 }, { "label": "Export settings", "page": 6 },
-        { "label": "Import settings", "page": 6 }
+        { "label": "Audio visualizer", "page": 4 }, { "label": "Peripheral flyout", "page": 5 },
+        { "label": "Low battery warning", "page": 5 }, { "label": "Blacklist", "page": 6 },
+        { "label": "Whitelist", "page": 6 }, { "label": "Filter mode", "page": 6 },
+        { "label": "Theme", "page": 7 }, { "label": "Acrylic backdrop", "page": 7 },
+        { "label": "Launch on startup", "page": 7 }, { "label": "Hide tray icon", "page": 7 },
+        { "label": "Check for updates", "page": 7 }, { "label": "Export settings", "page": 7 },
+        { "label": "Import settings", "page": 7 }
     ]
 
     readonly property var searchResults: {
@@ -1066,6 +1067,21 @@ Window {
                         font.bold: true
                         topPadding: 12
                     }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Configured on the Peripheral Flyout page."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+                }
+
+                // Peripheral Flyout page
+                Column {
+                    visible: dash.currentIndex === 5
+                    width: parent.width
+                    spacing: 12
+
                     SettingRow {
                         width: parent.width
                         label: "Peripheral flyout"
@@ -1074,7 +1090,6 @@ Window {
                         onToggled: settings.peripheralFlyoutEnabled = value
                     }
                     SettingRow {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "On connect"
                         description: "Announce a peripheral when it connects."
@@ -1082,7 +1097,6 @@ Window {
                         onToggled: settings.peripheralFlyoutOnConnect = value
                     }
                     SettingRow {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "On disconnect"
                         description: "Announce a peripheral when it disconnects."
@@ -1090,7 +1104,6 @@ Window {
                         onToggled: settings.peripheralFlyoutOnDisconnect = value
                     }
                     SettingRow {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "On low battery"
                         description: "Warn once when a battery drops below 20%, and again below 10%."
@@ -1098,7 +1111,6 @@ Window {
                         onToggled: settings.peripheralFlyoutOnLowBattery = value
                     }
                     SettingRow {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "On charging"
                         description: "Announce when a peripheral starts or stops charging."
@@ -1112,8 +1124,14 @@ Window {
                         value: settings.peripheralLowBatteryToast
                         onToggled: settings.peripheralLowBatteryToast = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Hide during fullscreen"
+                        description: "Suppress flyouts while a fullscreen or exclusive app is in the foreground. Shared with the other flyouts."
+                        value: settings.disableOnFullscreen
+                        onToggled: settings.disableOnFullscreen = value
+                    }
                     SettingCombo {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "Peripheral flyout position"
                         description: "Place the peripheral flyout independently of the other flyouts."
@@ -1122,7 +1140,6 @@ Window {
                         onActivated: settings.peripheralFlyoutPosition = index
                     }
                     SettingCombo {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "Peripheral flyout monitor"
                         description: "Which display the peripheral flyout is shown on."
@@ -1131,7 +1148,6 @@ Window {
                         onActivated: settings.peripheralFlyoutMonitor = index
                     }
                     SettingSlider {
-                        visible: settings.peripheralFlyoutEnabled
                         width: parent.width
                         label: "Peripheral flyout duration"
                         description: "How long the peripheral flyout stays on screen."
@@ -1146,7 +1162,7 @@ Window {
 
                 // App Filtering page
                 Column {
-                    visible: dash.currentIndex === 5
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 
@@ -1247,7 +1263,7 @@ Window {
 
                 // About page
                 Column {
-                    visible: dash.currentIndex === 6
+                    visible: dash.currentIndex === 7
                     width: parent.width
                     spacing: 12
 
