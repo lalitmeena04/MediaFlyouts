@@ -66,11 +66,21 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
         if(m_manual) {
             auto sessions = m_manager.GetSessions();
             bool stillThere = false;
-            const Session sel = currentSession();
+            QString selectedAppId;
+            if(const Session sel = currentSession()) {
+                try {
+                    selectedAppId = QString::fromWCharArray(sel.SourceAppUserModelId().c_str());
+                } catch(...) {
+                }
+            }
             for(uint32_t i = 0; i < sessions.Size(); ++i) {
-                if(sel && sessions.GetAt(i) == sel) {
-                    stillThere = true;
-                    break;
+                try {
+                    if(!selectedAppId.isEmpty()
+                       && QString::fromWCharArray(sessions.GetAt(i).SourceAppUserModelId().c_str()) == selectedAppId) {
+                        stillThere = true;
+                        break;
+                    }
+                } catch(...) {
                 }
             }
             if(!stillThere) {
@@ -93,12 +103,28 @@ void WinMediaProvider::refreshSessionMeta() {
     auto sessions = m_manager.GetSessions();
     const int n = static_cast<int>(sessions.Size());
     m_sessionCount = n < 1 ? 1 : n;
-    const Session sel = currentSession();
+
+    // match by app id rather than WinRT object identity: GetCurrentSession() and GetSessions()
+    // are separate calls that can hand back distinct proxy objects for the same session, so
+    // comparing them with == unreliably misses the match
+    QString selectedAppId;
+    if(const Session sel = currentSession()) {
+        try {
+            selectedAppId = QString::fromWCharArray(sel.SourceAppUserModelId().c_str());
+        } catch(...) {
+        }
+    }
+
     int idx = 0;
     for(int i = 0; i < n; ++i) {
-        if(sel && sessions.GetAt(static_cast<uint32_t>(i)) == sel) {
-            idx = i;
-            break;
+        try {
+            if(!selectedAppId.isEmpty()
+               && QString::fromWCharArray(sessions.GetAt(static_cast<uint32_t>(i)).SourceAppUserModelId().c_str())
+                      == selectedAppId) {
+                idx = i;
+                break;
+            }
+        } catch(...) {
         }
     }
     m_selectedIndex = idx;
@@ -121,11 +147,22 @@ void WinMediaProvider::cycleSession(int delta) {
         return;
 
     int current = 0;
-    const Session sel = currentSession();
+    QString selectedAppId;
+    if(const Session sel = currentSession()) {
+        try {
+            selectedAppId = QString::fromWCharArray(sel.SourceAppUserModelId().c_str());
+        } catch(...) {
+        }
+    }
     for(int i = 0; i < n; ++i) {
-        if(sel && sessions.GetAt(static_cast<uint32_t>(i)) == sel) {
-            current = i;
-            break;
+        try {
+            if(!selectedAppId.isEmpty()
+               && QString::fromWCharArray(sessions.GetAt(static_cast<uint32_t>(i)).SourceAppUserModelId().c_str())
+                      == selectedAppId) {
+                current = i;
+                break;
+            }
+        } catch(...) {
         }
     }
     const int next = ((current + delta) % n + n) % n;
