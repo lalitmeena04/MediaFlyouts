@@ -60,3 +60,44 @@ TEST(QmlContractTest, DashboardHasTheRequestedTenPagesInOrder) {
     }
     expectContains(source, QStringLiteral("property bool collapsed"));
 }
+
+TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
+    const QString source = loadSource("Views/DeviceIcons.qml");
+
+    // Fluent covers most peripheral categories
+    expectContains(source, QStringLiteral("import MediaFlyouts"));
+    expectContains(source, QStringLiteral("Fluent.keyboard"));
+    expectContains(source, QStringLiteral("Fluent.gamepad"));
+    expectContains(source, QStringLiteral("Fluent.headset"));
+    expectContains(source, QStringLiteral("Fluent.headphones"));
+
+    // mouse has no Fluent glyph, so it falls back to the bundled Font Awesome font
+    expectContains(source, QStringLiteral("FontAwesome6-Solid.ttf"));
+    expectContains(source, QStringLiteral("\"fa\": true"));
+    expectContains(source, QStringLiteral("\\uF8CC")); // Font Awesome computer-mouse
+    expectContains(source, QStringLiteral("function family("));
+}
+
+TEST(QmlContractTest, FluentDefinesPeripheralGlyphs) {
+    const QString source = loadSource("Views/Fluent.qml");
+
+    expectContains(source, QStringLiteral("headphones: \"\\uF476\""));
+    expectContains(source, QStringLiteral("headset: \"\\uF478\""));
+    expectContains(source, QStringLiteral("gamepad: \"\\uEEB9\""));
+}
+
+TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
+    // every place that renders a device glyph must also pick the matching font family,
+    // otherwise a Font Awesome fallback glyph would render as tofu in the Fluent font
+    for(const char* path : {"Views/PeripheralsWidget.qml", "Views/PeripheralCard.qml", "Views/Dashboard.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("font.family: DeviceIcons.family("));
+    }
+}
+
+TEST(QmlContractTest, BundlesTheFontAwesomeFallbackFont) {
+    QFile font(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR) + QStringLiteral("/Views/assets/fonts/FontAwesome6-Solid.ttf"));
+    EXPECT_TRUE(font.exists()) << "Font Awesome fallback font is missing from the assets";
+    EXPECT_GT(font.size(), 0);
+}
+

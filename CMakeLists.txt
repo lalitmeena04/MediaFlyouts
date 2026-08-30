@@ -66,6 +66,8 @@ set_source_files_properties(Views/DeviceIcons.qml PROPERTIES QT_QML_SINGLETON_TY
 # keep the font at a stable resource path regardless of its source folder
 set_source_files_properties(Views/assets/fonts/FluentSystemIcons-Filled.ttf
     PROPERTIES QT_RESOURCE_ALIAS assets/fonts/FluentSystemIcons-Filled.ttf)
+set_source_files_properties(Views/assets/fonts/FontAwesome6-Solid.ttf
+    PROPERTIES QT_RESOURCE_ALIAS assets/fonts/FontAwesome6-Solid.ttf)
 
 qt_add_qml_module(MediaFlyouts
     URI MediaFlyouts
@@ -95,6 +97,7 @@ qt_add_qml_module(MediaFlyouts
         Views/SettingSlider.qml
     RESOURCES
         Views/assets/fonts/FluentSystemIcons-Filled.ttf
+        Views/assets/fonts/FontAwesome6-Solid.ttf
 )
 
 target_link_libraries(MediaFlyouts PRIVATE

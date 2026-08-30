@@ -113,7 +113,11 @@ Window {
 
     function showTip(globalPoint, text) {
         tipText.text = text
-        tip.x = globalPoint.x - tip.width / 2
+        var mon = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
+        var x = globalPoint.x - tip.width / 2
+        if(mon.width > 0)
+            x = Math.max(mon.x + 4, Math.min(x, mon.x + mon.width - tip.width - 4))
+        tip.x = x
         tip.y = globalPoint.y - tip.height - 6
         tip.visible = true
     }
@@ -147,7 +151,9 @@ Window {
                     Text {
                         anchors.centerIn: parent
                         text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
+                        font.family: DeviceIcons.family(modelData.name, modelData.connectionKind, modelData.category)
                         font.pixelSize: 13
+                        color: theme.accent
                     }
 
                     // HoverHandler isn't a QQuickItem, so it needs its own Item wrapper

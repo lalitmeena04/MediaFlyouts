@@ -608,7 +608,9 @@ Window {
                                             Text {
                                                 anchors.centerIn: parent
                                                 text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
+                                                font.family: DeviceIcons.family(modelData.name, modelData.connectionKind, modelData.category)
                                                 font.pixelSize: 26
+                                                color: theme.accent
                                             }
                                         }
 
@@ -616,8 +618,9 @@ Window {
                                             anchors.horizontalCenter: parent.horizontalCenter
                                             spacing: 4
                                             Text {
-                                                text: "\uD83D\uDD0B" // small battery pictogram
-                                                font.pixelSize: 11
+                                                text: Fluent.battery
+                                                font.family: Fluent.fontFamily
+                                                font.pixelSize: 12
                                                 color: modelData.percent >= 0 ? ring.progressColor : theme.textMuted
                                             }
                                             Text {

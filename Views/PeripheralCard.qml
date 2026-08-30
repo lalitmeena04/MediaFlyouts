@@ -40,7 +40,9 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: DeviceIcons.glyph(card.alert.name, card.alert.connectionKind, card.alert.category)
+                font.family: DeviceIcons.family(card.alert.name, card.alert.connectionKind, card.alert.category)
                 font.pixelSize: 16
+                color: theme.accent
             }
         }
 
