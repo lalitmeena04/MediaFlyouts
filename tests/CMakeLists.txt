@@ -65,6 +65,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BluetoothConnectionWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/HidChangeWatcher.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/WirelessReceiverProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/FastPairBatteryProvider.cpp
@@ -75,8 +76,10 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
         Controllers/Win32ControllersTest.cpp
         Controllers/BatteryStatusControllerTest.cpp
+        Controllers/WirelessReceiverProviderTest.cpp
         Controllers/PeripheralAlertsTest.cpp
         Controllers/HidCollectionsTest.cpp
+        Packaging/MsixManifestTest.cpp
     )
     target_compile_definitions(mediaflyout_gtest PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(mediaflyout_gtest PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib Bthprops.lib hid.lib setupapi.lib ws2_32.lib)

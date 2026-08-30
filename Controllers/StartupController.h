@@ -3,7 +3,8 @@
 #include <QObject>
 #include <QString>
 
-// Adds or removes MediaFlyouts from the per-user Windows startup (Run) registry key.
+// Enables/disables auto-launch at logon. Packaged (MSIX) builds use the declared StartupTask
+// (the Run registry key is not honored for packaged apps); unpackaged builds use the Run key.
 class StartupController : public QObject {
         Q_OBJECT
 
