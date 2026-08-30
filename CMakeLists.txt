@@ -125,6 +125,8 @@ if (WIN32)
         Controllers/BluetoothConnectionWatcher.h Controllers/BluetoothConnectionWatcher.cpp
         Controllers/HidChangeWatcher.h        Controllers/HidChangeWatcher.cpp
         Controllers/BatteryProviders/IBatteryProvider.h
+        Controllers/BatteryProviders/WirelessReceiverProvider.h
+        Controllers/BatteryProviders/WirelessReceiverProvider.cpp
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.h
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
         Controllers/BatteryProviders/BluetoothLeBatteryProvider.h

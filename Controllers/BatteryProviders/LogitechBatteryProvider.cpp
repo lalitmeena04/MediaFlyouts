@@ -91,6 +91,7 @@ QVector<BatteryDeviceInfo> LogitechBatteryProvider::poll() {
         // HID++ lives on the vendor-defined collection
         if(collection.usagePage != kVendorUsagePage || collection.outputLength == 0)
             continue;
+
         if(m_notHidpp.contains(collection.path))
             continue;
 

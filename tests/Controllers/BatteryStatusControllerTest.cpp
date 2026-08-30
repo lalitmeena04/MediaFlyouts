@@ -50,6 +50,17 @@ TEST(BatteryStatusControllerTest, EmptyWhenNoProviderReportsAnything) {
     EXPECT_TRUE(controller.devices().isEmpty());
 }
 
+TEST(BatteryStatusControllerTest, ExposesUnknownBatteryDevicesForConnectionAlerts) {
+    BatteryStatusController controller(
+        providersOf([] { return QVector<BatteryDeviceInfo>{{"AULA wireless keyboard", -1, "wireless", "keyboard"}}; }));
+
+    const QVariantMap device = controller.devices().at(0).toMap();
+    EXPECT_EQ(device[QStringLiteral("name")].toString(), QStringLiteral("AULA wireless keyboard"));
+    EXPECT_EQ(device[QStringLiteral("percent")].toInt(), -1);
+    EXPECT_EQ(device[QStringLiteral("connectionKind")].toString(), QStringLiteral("wireless"));
+    EXPECT_EQ(device[QStringLiteral("category")].toString(), QStringLiteral("keyboard"));
+}
+
 TEST(BatteryStatusControllerTest, RefreshUpdatesDevicesAndEmitsSignalOnChange) {
     int percent = 40;
     BatteryStatusController controller(

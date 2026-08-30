@@ -14,6 +14,7 @@
 #include "BatteryProviders/LogitechBatteryProvider.h"
 #include "BatteryProviders/PlayStationControllerBatteryProvider.h"
 #include "BatteryProviders/RazerBatteryProvider.h"
+#include "BatteryProviders/WirelessReceiverProvider.h"
 
 BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(parent) {
     // Fast Pair first: it reports live per-component levels, so it wins the name-based
@@ -26,6 +27,7 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
     // 2.4GHz dongle devices, which have no standard battery channel
     m_providers.push_back(std::make_unique<RazerBatteryProvider>());
     m_providers.push_back(std::make_unique<LogitechBatteryProvider>());
+    m_providers.push_back(std::make_unique<WirelessReceiverProvider>());
     m_pollOnWorkerThread = true;
 
     // poll as a fallback (battery % drifts without a device event, and this catches
