@@ -17,6 +17,21 @@ cmake --build --preset msvc-release
 The version comes from the top-level [`VERSION.txt`](../../VERSION.txt), which
 CMake reads and injects into the app as `MEDIAFLYOUTS_VERSION`.
 
+### Version numbering
+
+`VERSION.txt` holds the plain base version (e.g. `1.2.1`). How CMake stamps it
+depends on the build:
+
+- **Release** builds ship the plain version: `1.2.1`.
+- **Dev** builds (any non-Release config, or when a build number is passed
+  explicitly) get a traceable `-<build number>` suffix. The number defaults to
+  the git commit count and short hash, e.g. `1.2.1-157.d28b008`.
+
+The suffix is compared away by the update checker, so a dev build is never
+flagged as out of date against the plain release. Override the number with
+`-DMEDIAFLYOUTS_BUILD_NUMBER=<n>` on the CMake command line, or
+`.\mediaflyouts.ps1 build -BuildNumber <n>`.
+
 ## Release artifacts
 
 The release consists of four artifacts (see the
@@ -52,7 +67,13 @@ clean release build, deploys Qt, and builds the source/portable/installer/MSIX
 .\tools\release.ps1            # all artifacts, signed MSIX
 .\tools\release.ps1 -NoSign    # skip MSIX signing
 .\tools\release.ps1 -SkipBuild # reuse the current bin\
+.\tools\release.ps1 -DevBuild  # dev (pre-release) versioned build
 ```
+
+`-DevBuild` stamps a `<base>-<git commit count>.<short sha>` version into the
+binary and every artifact name (e.g. `MediaFlyouts-1.2.1-157.d28b008-setup.exe`).
+The MSIX and installer keep a strictly numeric version (`<base>.<count>`, e.g.
+`1.2.1.157`) since Windows packaging requires it.
 
 Missing optional tools (Inno Setup, Windows SDK `makeappx`) are reported and
 skipped rather than failing the run.

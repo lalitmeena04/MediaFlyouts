@@ -16,16 +16,23 @@
 .PARAMETER NoSign
   Do not sign the MSIX (otherwise it is signed with the self-signed dev cert).
 
+.PARAMETER DevBuild
+  Produce a dev (pre-release) versioned build: the version becomes
+  "<base>-<git commit count>.<short sha>" and is embedded in the binary and all
+  artifact names. The MSIX/installer keep a numeric version (<base>.<count>).
+
 .EXAMPLE
   .\tools\release.ps1
   .\tools\release.ps1 -NoSign
+  .\tools\release.ps1 -DevBuild
   .\tools\release.ps1 -SkipBuild -OutDir dist
 #>
 [CmdletBinding()]
 param(
     [string]$OutDir = 'release',
     [switch]$SkipBuild,
-    [switch]$NoSign
+    [switch]$NoSign,
+    [switch]$DevBuild
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -40,7 +47,20 @@ function Find-SdkTool([string]$name) {
     return $null
 }
 
-$ver = (Get-Content (Join-Path $root 'VERSION.txt') -Raw).Trim()
+$verBase = (Get-Content (Join-Path $root 'VERSION.txt') -Raw).Trim()
+$ver = $verBase
+$buildNumber = $null
+$msixRevision = 0
+if ($DevBuild) {
+    # derive a traceable pre-release build number from git: <commit count>.<short sha>
+    $count = (git -C $root rev-list --count HEAD 2>$null)
+    $sha   = (git -C $root rev-parse --short HEAD 2>$null)
+    if     ($count -and $sha) { $buildNumber = "$count.$sha" }
+    elseif ($count)          { $buildNumber = "$count" }
+    else                     { $buildNumber = 'dev' }
+    $ver = "$verBase-$buildNumber"
+    if ("$count" -match '^\d+$') { $msixRevision = [int]$count }
+}
 Step "MediaFlyouts $ver -> $OutDir"
 
 # stop any running instance so bin\ can be cleaned/rebuilt
@@ -49,7 +69,11 @@ Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\
 # 1) clean release build (+ windeployqt into bin\)
 if (-not $SkipBuild) {
     Step 'Clean release build'
-    & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests | Out-Host
+    if ($DevBuild) {
+        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -BuildNumber $buildNumber | Out-Host
+    } else {
+        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests | Out-Host
+    }
 } else {
     Step 'Reusing existing bin\ (-SkipBuild)'
 }
@@ -77,7 +101,7 @@ $iscc = Find-Tool @("$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
     "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe")
 if ($iscc) {
     Step 'Installer (Inno Setup)'
-    & $iscc "/O$out" (Join-Path $root 'packaging\MediaFlyouts.iss') | Out-Host
+    & $iscc "/O$out" "/DMyAppVersion=$ver" (Join-Path $root 'packaging\MediaFlyouts.iss') | Out-Host
     $results['Installer'] = "MediaFlyouts-$ver-setup.exe"
 } else {
     Write-Warning 'Inno Setup (ISCC.exe) not found - skipping the installer.'
@@ -94,7 +118,7 @@ if ($makeappx) {
     Copy-Item (Join-Path $root 'bin\*') $layout -Recurse -Force
     Copy-Item (Join-Path $root 'packaging\msix\Images') (Join-Path $layout 'Images') -Recurse -Force
     (Get-Content (Join-Path $root 'packaging\msix\AppxManifest.xml')) `
-        -replace 'Version="\d+\.\d+\.\d+\.\d+"', "Version=`"$ver.0`"" |
+        -replace 'Version="\d+\.\d+\.\d+\.\d+"', "Version=`"$verBase.$msixRevision`"" |
         Set-Content (Join-Path $layout 'AppxManifest.xml')
     $msix = Join-Path $out "MediaFlyouts-$ver.msix"
     & $makeappx pack /o /d $layout /p $msix | Out-Host

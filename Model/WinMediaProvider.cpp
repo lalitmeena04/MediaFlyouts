@@ -205,20 +205,29 @@ void WinMediaProvider::hookSession(Session session) {
 }
 
 // runs as a coroutine: awaiting (never .get()) keeps it safe to resume on the STA thread
-winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
+winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     if(!session)
         co_return;
 
     mf::TrackInfo track;
 
     GlobalSystemMediaTransportControlsSessionMediaProperties props{nullptr};
+    QString subtitle;
     try {
         props = co_await session.TryGetMediaPropertiesAsync();
-        track.title = QString::fromWCharArray(props.Title().c_str());
-        track.artist = QString::fromWCharArray(props.Artist().c_str());
-        track.album = QString::fromWCharArray(props.AlbumTitle().c_str());
+        if(props) {
+            track.title = QString::fromWCharArray(props.Title().c_str());
+            track.artist = QString::fromWCharArray(props.Artist().c_str());
+            track.album = QString::fromWCharArray(props.AlbumTitle().c_str());
+            subtitle = QString::fromWCharArray(props.Subtitle().c_str());
+        }
     } catch(...) {
     }
+
+    // video apps (Netflix, Prime Video, ...) commonly leave Artist empty but put the
+    // episode/secondary line in Subtitle — surface that instead of a blank second line
+    if(track.artist.isEmpty())
+        track.artist = subtitle;
 
     try {
         auto info = session.GetPlaybackInfo();
@@ -282,6 +291,31 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
         }
     }
 
+    const bool freshEmpty = track.title.isEmpty() && track.artist.isEmpty() && track.album.isEmpty();
+    const bool active = track.state == mf::PlaybackState::Playing || track.state == mf::PlaybackState::Paused;
+
+    // Streaming/video apps momentarily report empty metadata during buffering, ad breaks or
+    // title transitions. Keep the last known good title/artist/album/art for the same source
+    // app so the flyout doesn't collapse to just the app name and generic artwork.
+    {
+        std::lock_guard<std::mutex> lock(m_lastMutex);
+        const bool lastHadMeta =
+            !(m_lastTrack.title.isEmpty() && m_lastTrack.artist.isEmpty() && m_lastTrack.album.isEmpty());
+        if(freshEmpty && active && lastHadMeta && !track.sourceApp.isEmpty() &&
+           track.sourceApp == m_lastTrack.sourceApp) {
+            track.title = m_lastTrack.title;
+            track.artist = m_lastTrack.artist;
+            track.album = m_lastTrack.album;
+            if(art.isNull())
+                art = m_lastArt;
+        }
+        m_lastTrack = track;
+        if(!art.isNull())
+            m_lastArt = art;
+        else if(!active)
+            m_lastArt = QImage(); // media stopped: drop stale artwork
+    }
+
     QMetaObject::invokeMethod(
         this,
         [this, track, art] {
@@ -289,6 +323,21 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session) {
             emit artChanged(art);
         },
         Qt::QueuedConnection);
+
+    // some apps populate metadata a beat after playback starts without firing another
+    // MediaPropertiesChanged; re-poll a few times so the title/art aren't stuck empty
+    if(freshEmpty && active && attempt < 3) {
+        co_await winrt::resume_after(std::chrono::milliseconds(500));
+        QString stillApp;
+        if(const Session cur = currentSession()) {
+            try {
+                stillApp = QString::fromWCharArray(cur.SourceAppUserModelId().c_str());
+            } catch(...) {
+            }
+        }
+        if(!track.sourceApp.isEmpty() && stillApp == track.sourceApp)
+            refresh(session, attempt + 1);
+    }
 }
 
 WinMediaProvider::Session WinMediaProvider::currentSession() {
