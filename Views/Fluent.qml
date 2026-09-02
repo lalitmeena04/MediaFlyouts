@@ -24,6 +24,8 @@ QtObject {
     readonly property string headphones: "\uF476"
     readonly property string headset: "\uF478"
     readonly property string gamepad: "\uEEB9"
+    readonly property string bluetooth: "\uE15E"
+    readonly property string usbStick: "\uF857"
     readonly property string repeatAll: "\uF172"
     readonly property string repeatOne: "\uEF34"
     readonly property string shuffle: "\uEF37"

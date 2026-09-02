@@ -33,8 +33,8 @@ Window {
     ].filter(function(section) { return section.devices.length > 0 })
 
         width: Math.max(1, dongleDevices.length) * 32 + Math.max(1, bluetoothDevices.length) * 32
-           + (dongleDevices.length > 0 && bluetoothDevices.length > 0 ? 14 : 0)
-        height: 32
+                + deviceSections.length * 22 + (dongleDevices.length > 0 && bluetoothDevices.length > 0 ? 14 : 0)
+            height: 32
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
@@ -166,6 +166,14 @@ Window {
 
                     Row {
                         spacing: 6
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: modelData.label === "Bluetooth" ? Fluent.bluetooth : Fluent.usbStick
+                            font.family: Fluent.fontFamily
+                            font.pixelSize: 17
+                            color: theme.accent
+                        }
 
                         Repeater {
                             model: modelData.devices

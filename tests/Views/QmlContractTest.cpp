@@ -84,6 +84,8 @@ TEST(QmlContractTest, FluentDefinesPeripheralGlyphs) {
     expectContains(source, QStringLiteral("headphones: \"\\uF476\""));
     expectContains(source, QStringLiteral("headset: \"\\uF478\""));
     expectContains(source, QStringLiteral("gamepad: \"\\uEEB9\""));
+    expectContains(source, QStringLiteral("bluetooth: \"\\uE15E\""));
+    expectContains(source, QStringLiteral("usbStick: \"\\uF857\""));
 }
 
 TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
@@ -103,6 +105,10 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
         expectContains(source, QStringLiteral("connectionKind === \"wireless\""));
         expectContains(source, QStringLiteral("connectionKind === \"bluetooth\""));
     }
+
+    const QString widget = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(widget, QStringLiteral("Fluent.bluetooth"));
+    expectContains(widget, QStringLiteral("Fluent.usbStick"));
 }
 
 TEST(QmlContractTest, FluentBatteryGlyphUsesTheBundledBatteryIcon) {
