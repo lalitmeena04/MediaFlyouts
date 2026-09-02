@@ -8,6 +8,26 @@
 
 namespace {
 
+bool isStartMenuWindow(HWND window) {
+    DWORD processId = 0;
+    GetWindowThreadProcessId(window, &processId);
+
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, processId);
+    if(!process)
+        return false;
+
+    wchar_t path[MAX_PATH] = {};
+    DWORD pathSize = MAX_PATH;
+    const bool hasPath = QueryFullProcessImageNameW(process, 0, path, &pathSize);
+    CloseHandle(process);
+    if(!hasPath)
+        return false;
+
+    const wchar_t* executable = wcsrchr(path, L'\\');
+    executable = executable ? executable + 1 : path;
+    return lstrcmpiW(executable, L"StartMenuExperienceHost.exe") == 0;
+}
+
 // true when the secure / lock screen is the active input desktop
 bool isWorkstationLocked() {
     HDESK desk = OpenInputDesktop(0, FALSE, DESKTOP_READOBJECTS);
@@ -69,6 +89,10 @@ bool FullscreenDetector::shouldBlock(bool disableOnFullscreen) const {
 }
 
 bool FullscreenDetector::isFullscreen() const {
+    HWND fg = GetForegroundWindow();
+    if(fg && isStartMenuWindow(fg))
+        return false;
+
     // exclusive-D3D / presentation / generic fullscreen — the states that cause a game to minimize
     QUERY_USER_NOTIFICATION_STATE state = QUNS_ACCEPTS_NOTIFICATIONS;
     if(SUCCEEDED(SHQueryUserNotificationState(&state))) {
@@ -77,7 +101,6 @@ bool FullscreenDetector::isFullscreen() const {
     }
 
     // borderless fullscreen: foreground window covers its whole monitor and isn't the shell
-    HWND fg = GetForegroundWindow();
     if(!fg)
         return false;
 
