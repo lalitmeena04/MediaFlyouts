@@ -58,8 +58,10 @@ class BatteryAlertPolicy {
                 bool charging = false;
                 bool lowAlerted = false;
                 bool veryLowAlerted = false;
-                // kept briefly after a disconnect so an immediate reconnect can be debounced
+                // kept briefly after a missing snapshot so transient provider omissions are ignored
                 bool present = true;
+                bool disconnectReported = false;
+                qint64 absentSinceMs = 0;
                 qint64 lastConnectionEventMs = 0;
                 QString category;
                 QString connectionKind;

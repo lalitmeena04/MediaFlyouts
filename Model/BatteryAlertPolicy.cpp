@@ -41,7 +41,7 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
         DeviceState state = m_devices.value(device.name);
         const bool reappeared = known && !state.present;
 
-        if((!known || reappeared) && m_seeded) {
+        if((!known || (reappeared && state.disconnectReported)) && m_seeded) {
             if(timestampMs - state.lastConnectionEventMs >= m_debounceMs) {
                 alerts.append({PeripheralEvent::Connected, device.name, device.percent, bucketOf(device.percent),
                                device.category, device.connectionKind});
@@ -49,6 +49,8 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
             }
         }
         state.present = true;
+        state.disconnectReported = false;
+        state.absentSinceMs = 0;
 
         if(known && !reappeared && device.charging != state.charging) {
             alerts.append({device.charging ? PeripheralEvent::ChargingStarted : PeripheralEvent::ChargingStopped,
@@ -90,20 +92,23 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
             continue;
         }
         if(!it.value().present) {
-            // already reported gone; forget it once a reconnect could no longer be a flap
-            if(timestampMs - it.value().lastConnectionEventMs >= m_debounceMs)
+            if(!it.value().disconnectReported &&
+               timestampMs - it.value().absentSinceMs >= m_debounceMs) {
+                // report the level it had when it went away, which is all we know now
+                alerts.append({PeripheralEvent::Disconnected, it.key(), it.value().percent,
+                               bucketOf(it.value().percent), it.value().category, it.value().connectionKind});
+                it.value().disconnectReported = true;
+                it.value().lastConnectionEventMs = timestampMs;
+            } else if(it.value().disconnectReported &&
+                      timestampMs - it.value().lastConnectionEventMs >= m_debounceMs) {
                 it = m_devices.erase(it);
-            else
+            } else {
                 ++it;
+            }
             continue;
         }
-        if(m_seeded && timestampMs - it.value().lastConnectionEventMs >= m_debounceMs) {
-            // report the level it had when it went away, which is all we know now
-            alerts.append({PeripheralEvent::Disconnected, it.key(), it.value().percent,
-                           bucketOf(it.value().percent), it.value().category, it.value().connectionKind});
-        }
         it.value().present = false;
-        it.value().lastConnectionEventMs = timestampMs;
+        it.value().absentSinceMs = timestampMs;
         ++it;
     }
 

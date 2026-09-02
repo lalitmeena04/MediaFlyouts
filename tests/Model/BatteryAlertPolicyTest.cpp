@@ -66,10 +66,18 @@ TEST(BatteryAlertPolicyTest, ReportsConnectAndDisconnect) {
 TEST(BatteryAlertPolicyTest, DisconnectCarriesTheLastKnownLevel) {
     BatteryAlertPolicy policy = seededWith(snapshot({{"Headset", 42, false}}));
 
-    const auto alerts = policy.update(snapshot({}), 10000);
+    policy.update(snapshot({}), 10000);
+    const auto alerts = policy.update(snapshot({}), 14000);
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].percent, 42);
     EXPECT_EQ(alerts[0].bucket, BatteryBucket::Good);
+}
+
+TEST(BatteryAlertPolicyTest, IgnoresASingleMissingSnapshot) {
+    BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 55, false}}));
+
+    EXPECT_TRUE(policy.update(snapshot({}), 10000).isEmpty());
+    EXPECT_TRUE(policy.update(snapshot({{"Mouse", 55, false}}), 11000).isEmpty());
 }
 
 TEST(BatteryAlertPolicyTest, AlertsOnceWhenCrossingTheLowThreshold) {
