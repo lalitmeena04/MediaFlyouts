@@ -26,6 +26,14 @@ Window {
     }
 
     property int currentIndex: 0
+    readonly property var peripheralSections: [
+        { "label": "2.4 GHz", "devices": batteryStatus.devices.filter(function(device) {
+            return device.connectionKind === "wireless"
+        }) },
+        { "label": "Bluetooth", "devices": batteryStatus.devices.filter(function(device) {
+            return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
+        }) }
+    ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
         { "icon": Fluent.musicNote, "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
@@ -578,14 +586,28 @@ Window {
                             topPadding: 4
                         }
 
-                        Flow {
+                        Repeater {
                             width: parent.width
-                            spacing: 12
-                            visible: batteryStatus.devices.length > 0
+                            model: dash.peripheralSections
+                            delegate: Column {
+                                required property var modelData
+                                width: parent.width
+                                spacing: 8
 
-                            Repeater {
-                                model: batteryStatus.devices
-                                delegate: Rectangle {
+                                Text {
+                                    text: modelData.label
+                                    color: theme.textSecondary
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                }
+
+                                Flow {
+                                    width: parent.width
+                                    spacing: 12
+
+                                    Repeater {
+                                        model: modelData.devices
+                                        delegate: Rectangle {
                                     required property var modelData
                                     width: 108
                                     height: modelData.components.length > 1 ? 168 : 128
@@ -676,6 +698,8 @@ Window {
                                             elide: Text.ElideRight
                                         }
                                     }
+                                }
+                            }
                                 }
                             }
                         }

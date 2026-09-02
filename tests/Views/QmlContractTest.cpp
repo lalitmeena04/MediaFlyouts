@@ -95,6 +95,21 @@ TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
     }
 }
 
+TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
+    for(const char* path : {"Views/PeripheralsWidget.qml", "Views/Dashboard.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("2.4 GHz"));
+        expectContains(source, QStringLiteral("Bluetooth"));
+        expectContains(source, QStringLiteral("connectionKind === \"wireless\""));
+        expectContains(source, QStringLiteral("connectionKind === \"bluetooth\""));
+    }
+}
+
+TEST(QmlContractTest, FluentBatteryGlyphUsesTheBundledBatteryIcon) {
+    const QString source = loadSource("Views/Fluent.qml");
+    expectContains(source, QStringLiteral("battery: \"\\uE14E\""));
+}
+
 TEST(QmlContractTest, BundlesTheFontAwesomeFallbackFont) {
     QFile font(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR) + QStringLiteral("/Views/assets/fonts/FontAwesome6-Solid.ttf"));
     EXPECT_TRUE(font.exists()) << "Font Awesome fallback font is missing from the assets";

@@ -21,9 +21,20 @@ Window {
                 picked.push(all[i])
         return picked
     }
+    readonly property var dongleDevices: devices.filter(function(device) {
+        return device.connectionKind === "wireless"
+    })
+    readonly property var bluetoothDevices: devices.filter(function(device) {
+        return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
+    })
+    readonly property var deviceSections: [
+        { "label": "2.4 GHz", "devices": dongleDevices },
+        { "label": "Bluetooth", "devices": bluetoothDevices }
+    ].filter(function(section) { return section.devices.length > 0 })
 
-    width: Math.max(1, devices.length) * 40
-    height: 32
+        width: Math.max(1, dongleDevices.length) * 32 + Math.max(1, bluetoothDevices.length) * 32
+           + (dongleDevices.length > 0 && bluetoothDevices.length > 0 ? 14 : 0)
+        height: 32
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
@@ -136,55 +147,72 @@ Window {
 
         Row {
             anchors.centerIn: parent
-            spacing: 6
+            spacing: 7
 
             Repeater {
-                model: root.devices
-                delegate: BatteryRing {
-                    id: deviceRing
+                model: root.deviceSections
+                delegate: Row {
+                    required property int index
                     required property var modelData
-                    width: 26
-                    height: 26
-                    thickness: 3
-                    percent: modelData.percent
+                    spacing: 5
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
-                        font.family: DeviceIcons.family(modelData.name, modelData.connectionKind, modelData.category)
-                        font.pixelSize: 13
-                        color: theme.accent
+                    Rectangle {
+                        visible: index > 0
+                        width: 1
+                        height: 28
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: theme.border
                     }
 
-                    // HoverHandler isn't a QQuickItem, so it needs its own Item wrapper
-                    // to be accepted by BatteryRing's item-only 'content' default property
-                    Item {
-                        anchors.fill: parent
+                    Row {
+                        spacing: 6
 
-                        HoverHandler {
-                            onHoveredChanged: {
-                                if(hovered) {
-                                    // multi-battery devices (earbuds + case) show the ring at their
-                                    // weakest level, with the full breakdown here
-                                    var tipText = modelData.name
-                                    tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
-                                    if(modelData.charging)
-                                        tipText += " \u26A1"
-                                    var link = DeviceIcons.transport(modelData.connectionKind)
-                                    if(link)
-                                        tipText += "   \u00B7 " + link
-                                    var parts = []
-                                    for(var i = 0; i < modelData.components.length; i++) {
-                                        var c = modelData.components[i]
-                                        parts.push(c.label + " " + c.percent + "%" + (c.charging ? " \u26A1" : ""))
+                        Repeater {
+                            model: modelData.devices
+                            delegate: BatteryRing {
+                                    id: deviceRing
+                                    required property var modelData
+                                    width: 26
+                                    height: 26
+                                    thickness: 3
+                                    percent: modelData.percent
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
+                                        font.family: DeviceIcons.family(modelData.name, modelData.connectionKind, modelData.category)
+                                        font.pixelSize: 13
+                                        color: theme.accent
                                     }
-                                    if(parts.length > 1)
-                                        tipText += "\n" + parts.join("   ")
-                                    root.showTip(deviceRing.mapToGlobal(deviceRing.width / 2, 0), tipText)
-                                } else {
-                                    root.hideTip()
+
+                                    Item {
+                                        anchors.fill: parent
+
+                                        HoverHandler {
+                                            onHoveredChanged: {
+                                                if(hovered) {
+                                                    var tipText = modelData.name
+                                                    tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
+                                                    if(modelData.charging)
+                                                        tipText += " \u26A1"
+                                                    var link = DeviceIcons.transport(modelData.connectionKind)
+                                                    if(link)
+                                                        tipText += "   \u00B7 " + link
+                                                    var parts = []
+                                                    for(var i = 0; i < modelData.components.length; i++) {
+                                                        var c = modelData.components[i]
+                                                        parts.push(c.label + " " + c.percent + "%" + (c.charging ? " \u26A1" : ""))
+                                                    }
+                                                    if(parts.length > 1)
+                                                        tipText += "\n" + parts.join("   ")
+                                                    root.showTip(deviceRing.mapToGlobal(deviceRing.width / 2, 0), tipText)
+                                                } else {
+                                                    root.hideTip()
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            }
                         }
                     }
                 }
