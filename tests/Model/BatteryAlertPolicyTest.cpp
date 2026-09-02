@@ -57,7 +57,9 @@ TEST(BatteryAlertPolicyTest, ReportsConnectAndDisconnect) {
     EXPECT_EQ(alerts[0].event, PeripheralEvent::Connected);
     EXPECT_EQ(alerts[0].deviceName, QStringLiteral("Headset"));
 
-    alerts = policy.update(snapshot({{"Mouse", 55, false}}), 20000);
+    EXPECT_TRUE(policy.update(snapshot({{"Mouse", 55, false}}), 20000).isEmpty());
+
+    alerts = policy.update(snapshot({{"Mouse", 55, false}}), 24000);
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::Disconnected);
     EXPECT_EQ(alerts[0].deviceName, QStringLiteral("Headset"));

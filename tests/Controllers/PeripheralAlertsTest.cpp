@@ -55,7 +55,7 @@ TEST(PeripheralAlertsTest, RaisesAnAlertWhenADeviceAppears) {
     EXPECT_EQ(raised, 1);
 }
 
-TEST(PeripheralAlertsTest, RaisesAnAlertWhenADeviceGoesAway) {
+TEST(PeripheralAlertsTest, DefersAnAlertWhenADeviceFirstGoesAway) {
     QVector<BatteryDeviceInfo> devices{{"Headset", 80, "bluetooth", "headset"},
                                        {"Mouse", 53, "wireless", "mouse"}};
     BatteryStatusController status(providersOf([&devices] { return devices; }));
@@ -64,10 +64,7 @@ TEST(PeripheralAlertsTest, RaisesAnAlertWhenADeviceGoesAway) {
     devices.removeLast();
     status.refresh();
 
-    ASSERT_EQ(alerts.pending().size(), 1);
-    EXPECT_EQ(eventOf(alerts.pending(), 0), QStringLiteral("disconnected"));
-    // the level it had when it vanished is still useful to show
-    EXPECT_EQ(alerts.pending().at(0).toMap().value(QStringLiteral("percent")).toInt(), 53);
+    EXPECT_TRUE(alerts.pending().isEmpty());
 }
 
 TEST(PeripheralAlertsTest, ReportsSeveralDevicesFromOneSnapshot) {
