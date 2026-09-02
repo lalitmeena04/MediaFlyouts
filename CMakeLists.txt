@@ -1,10 +1,41 @@
 cmake_minimum_required(VERSION 3.21)
 
 # single source of truth for the version, shared by the app, packaging and CI
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" MEDIAFLYOUTS_VERSION)
-string(STRIP "${MEDIAFLYOUTS_VERSION}" MEDIAFLYOUTS_VERSION)
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" MEDIAFLYOUTS_VERSION_BASE)
+string(STRIP "${MEDIAFLYOUTS_VERSION_BASE}" MEDIAFLYOUTS_VERSION_BASE)
 
-project(MediaFlyouts VERSION ${MEDIAFLYOUTS_VERSION} LANGUAGES CXX)
+# project() needs a strict numeric x.y.z, so strip any pre-release suffix for it
+string(REGEX MATCH "^[0-9]+(\\.[0-9]+)*" MEDIAFLYOUTS_VERSION_NUMERIC "${MEDIAFLYOUTS_VERSION_BASE}")
+
+project(MediaFlyouts VERSION ${MEDIAFLYOUTS_VERSION_NUMERIC} LANGUAGES CXX)
+
+# Release builds ship the plain version; dev builds get a "-<build number>" suffix so local
+# and CI builds are traceable. The suffix is applied to any non-Release build, or whenever a
+# build number is passed explicitly (e.g. a dev-versioned release: -DMEDIAFLYOUTS_BUILD_NUMBER=123).
+# The number defaults to the git commit count and short hash.
+set(MEDIAFLYOUTS_VERSION "${MEDIAFLYOUTS_VERSION_BASE}")
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" OR DEFINED MEDIAFLYOUTS_BUILD_NUMBER)
+    if(NOT DEFINED MEDIAFLYOUTS_BUILD_NUMBER)
+        find_package(Git QUIET)
+        if(GIT_FOUND)
+            execute_process(COMMAND ${GIT_EXECUTABLE} rev-list --count HEAD
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                OUTPUT_VARIABLE MEDIAFLYOUTS_GIT_COUNT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+            execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                OUTPUT_VARIABLE MEDIAFLYOUTS_GIT_SHA OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+        endif()
+        if(MEDIAFLYOUTS_GIT_COUNT AND MEDIAFLYOUTS_GIT_SHA)
+            set(MEDIAFLYOUTS_BUILD_NUMBER "${MEDIAFLYOUTS_GIT_COUNT}.${MEDIAFLYOUTS_GIT_SHA}")
+        elseif(MEDIAFLYOUTS_GIT_COUNT)
+            set(MEDIAFLYOUTS_BUILD_NUMBER "${MEDIAFLYOUTS_GIT_COUNT}")
+        else()
+            set(MEDIAFLYOUTS_BUILD_NUMBER "dev")
+        endif()
+    endif()
+    set(MEDIAFLYOUTS_VERSION "${MEDIAFLYOUTS_VERSION_BASE}-${MEDIAFLYOUTS_BUILD_NUMBER}")
+endif()
+message(STATUS "MediaFlyouts version: ${MEDIAFLYOUTS_VERSION}")
 
 # expose the version to C++ (main.cpp, UpdateChecker, ...) via Version.h
 add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")

@@ -15,8 +15,9 @@ constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/Med
 UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent), m_net(new QNetworkAccessManager(this)) {}
 
 bool UpdateChecker::isNewerVersion(const QString& current, const QString& latest) {
-    const QStringList pa = QString(current).remove('v').split('.');
-    const QStringList pb = QString(latest).remove('v').split('.');
+    // compare the numeric core only; dev builds carry a "-<build number>" suffix
+    const QStringList pa = QString(current).remove('v').section('-', 0, 0).split('.');
+    const QStringList pb = QString(latest).remove('v').section('-', 0, 0).split('.');
     const int n = qMax(pa.size(), pb.size());
     for(int i = 0; i < n; ++i) {
         const int va = i < pa.size() ? pa[i].toInt() : 0;

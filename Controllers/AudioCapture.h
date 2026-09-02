@@ -41,6 +41,9 @@ class AudioCapture : public QObject {
 
     private:
         void poll();
+        bool openDevice();
+        void handleDeviceLoss();
+        void tryRecover();
         void releaseDevice();
         void publishSilence();
 
@@ -62,4 +65,5 @@ class AudioCapture : public QObject {
         double m_level = 0.0;
         double m_bassAvg = 0.0;
         qint64 m_lastBeatMs = 0;
+        qint64 m_lastRecoverMs = 0;
 };
