@@ -44,7 +44,7 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
 
         winrt::fire_and_forget initAsync();
         void hookSession(Session session);
-        winrt::fire_and_forget refresh(Session session);
+        winrt::fire_and_forget refresh(Session session, int attempt = 0);
         Session currentSession();
         void refreshSessionMeta();
 
@@ -59,4 +59,7 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         std::atomic<int> m_sessionCount{1};
         std::atomic<int> m_selectedIndex{0};
         bool m_manual = false; // true once the user picked a session to override the OS current one
+        std::mutex m_lastMutex;
+        mf::TrackInfo m_lastTrack; // last non-empty metadata, to bridge transient empty updates
+        QImage m_lastArt;
 };

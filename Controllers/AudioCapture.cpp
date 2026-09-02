@@ -47,23 +47,28 @@ double AudioCapture::level() const {
 void AudioCapture::start() {
     if(m_active)
         return;
+    if(!openDevice()) {
+        releaseDevice();
+        return;
+    }
+    m_active = true;
+    emit activeChanged();
+    m_timer.start();
+}
 
+bool AudioCapture::openDevice() {
     if(FAILED(CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
                                reinterpret_cast<void**>(&m_enumerator)))) {
-        releaseDevice();
-        return;
+        return false;
     }
     if(FAILED(m_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_device))) {
-        releaseDevice();
-        return;
+        return false;
     }
     if(FAILED(m_device->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_client)))) {
-        releaseDevice();
-        return;
+        return false;
     }
     if(FAILED(m_client->GetMixFormat(&m_format)) || !m_format) {
-        releaseDevice();
-        return;
+        return false;
     }
 
     m_channels = m_format->nChannels > 0 ? m_format->nChannels : 2;
@@ -78,22 +83,17 @@ void AudioCapture::start() {
     }
 
     if(FAILED(m_client->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK, 0, 0, m_format, nullptr))) {
-        releaseDevice();
-        return;
+        return false;
     }
     if(FAILED(m_client->GetService(__uuidof(IAudioCaptureClient), reinterpret_cast<void**>(&m_capture)))) {
-        releaseDevice();
-        return;
+        return false;
     }
     if(FAILED(m_client->Start())) {
-        releaseDevice();
-        return;
+        return false;
     }
 
     m_accum.clear();
-    m_active = true;
-    emit activeChanged();
-    m_timer.start();
+    return true;
 }
 
 void AudioCapture::stop() {
@@ -146,20 +146,50 @@ void AudioCapture::publishSilence() {
     emit bandsChanged();
 }
 
+void AudioCapture::handleDeviceLoss() {
+    // a WASAPI call failed (endpoint invalidated / default device changed);
+    // drop the stale device so poll() re-acquires the current endpoint
+    if(m_client)
+        m_client->Stop();
+    releaseDevice();
+    m_accum.clear();
+    publishSilence();
+}
+
+void AudioCapture::tryRecover() {
+    // re-acquire the default render endpoint after a device loss, throttled so a
+    // missing/failing device doesn't spin the audio stack every poll tick
+    const qint64 now = QDateTime::currentMSecsSinceEpoch();
+    if(now - m_lastRecoverMs < 750)
+        return;
+    m_lastRecoverMs = now;
+    if(!openDevice())
+        releaseDevice();
+}
+
 void AudioCapture::poll() {
-    if(!m_capture || !m_isFloat)
+    if(!m_capture) {
+        if(m_active)
+            tryRecover();
+        return;
+    }
+    if(!m_isFloat)
         return;
 
     UINT32 packet = 0;
-    if(FAILED(m_capture->GetNextPacketSize(&packet)))
+    if(FAILED(m_capture->GetNextPacketSize(&packet))) {
+        handleDeviceLoss();
         return;
+    }
 
     while(packet != 0) {
         BYTE* data = nullptr;
         UINT32 frames = 0;
         DWORD flags = 0;
-        if(FAILED(m_capture->GetBuffer(&data, &frames, &flags, nullptr, nullptr)))
-            break;
+        if(FAILED(m_capture->GetBuffer(&data, &frames, &flags, nullptr, nullptr))) {
+            handleDeviceLoss();
+            return;
+        }
 
         const bool silent = (flags & AUDCLNT_BUFFERFLAGS_SILENT) != 0;
         const auto* samples = reinterpret_cast<const float*>(data);
@@ -173,8 +203,10 @@ void AudioCapture::poll() {
             m_accum.push_back(mono);
         }
         m_capture->ReleaseBuffer(frames);
-        if(FAILED(m_capture->GetNextPacketSize(&packet)))
-            break;
+        if(FAILED(m_capture->GetNextPacketSize(&packet))) {
+            handleDeviceLoss();
+            return;
+        }
     }
 
     if(static_cast<int>(m_accum.size()) < kFftSize)

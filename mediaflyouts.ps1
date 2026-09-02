@@ -101,6 +101,7 @@ param(
     [switch]$NoTests,
     [switch]$RunTests,
     [switch]$SkipDeploy,
+    [string]$BuildNumber  = "",
 
     # -- package --------------------------------------------------------------
     [switch]$SkipBuild,
@@ -355,9 +356,14 @@ function Invoke-Build {
     $buildPath = Get-BuildDir
     $testsFlag = if ($NoTests) { "OFF" } else { "ON" }
 
-    Write-Info "cmake --preset msvc-$Config -DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag"
-    Invoke-Native { cmake --preset "msvc-$Config" "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag" } `
-        "CMake configuration failed."
+    # An explicit build number stamps a "-<number>" pre-release suffix onto the version;
+    # otherwise clear any stale cached value so a normal build stays on the plain version.
+    $cmakeArgs = @("--preset", "msvc-$Config", "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag")
+    if ($BuildNumber) { $cmakeArgs += "-DMEDIAFLYOUTS_BUILD_NUMBER=$BuildNumber" }
+    else              { $cmakeArgs += "-UMEDIAFLYOUTS_BUILD_NUMBER" }
+
+    Write-Info ("cmake " + ($cmakeArgs -join ' '))
+    Invoke-Native { cmake @cmakeArgs } "CMake configuration failed."
 
     Write-Info "cmake --build $buildPath"
     Stop-RunningApp
