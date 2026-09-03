@@ -90,7 +90,17 @@ bool FullscreenDetector::shouldBlock(bool disableOnFullscreen) const {
 
 bool FullscreenDetector::isFullscreen() const {
     HWND fg = GetForegroundWindow();
-    if(fg && isStartMenuWindow(fg))
+
+    if(!fg)
+        return false;
+    if(isStartMenuWindow(fg))
+        return false;
+
+    // desktop/taskbar in the foreground (no window open) is never a game; rule it out before the
+    // notification query, which can stay stuck on QUNS_BUSY after a fullscreen game exits (until reboot)
+    wchar_t cls[64] = {};
+    GetClassNameW(fg, cls, 64);
+    if(wcscmp(cls, L"Progman") == 0 || wcscmp(cls, L"WorkerW") == 0 || wcscmp(cls, L"Shell_TrayWnd") == 0)
         return false;
 
     // exclusive-D3D / presentation / generic fullscreen — the states that cause a game to minimize
@@ -101,14 +111,6 @@ bool FullscreenDetector::isFullscreen() const {
     }
 
     // borderless fullscreen: foreground window covers its whole monitor and isn't the shell
-    if(!fg)
-        return false;
-
-    wchar_t cls[64] = {};
-    GetClassNameW(fg, cls, 64);
-    if(wcscmp(cls, L"Progman") == 0 || wcscmp(cls, L"WorkerW") == 0 || wcscmp(cls, L"Shell_TrayWnd") == 0)
-        return false;
-
     RECT wr{};
     if(!GetWindowRect(fg, &wr))
         return false;
