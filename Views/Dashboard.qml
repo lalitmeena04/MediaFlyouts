@@ -35,14 +35,14 @@ Window {
         }) }
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
-        { "icon": Fluent.musicNote, "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
+        { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
-        { "icon": Fluent.battery,   "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
+        { "icon": Fluent.plugConnected, "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
         { "icon": Fluent.musicNote, "name": "Media Widget", "desc": "A compact now-playing widget docked on the taskbar." },
-        { "icon": Fluent.battery,   "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
+        { "icon": Fluent.usbStick,  "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
         { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
-        { "icon": Fluent.dismiss,   "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
+        { "icon": Fluent.filter,    "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
         { "icon": Fluent.settings,  "name": "Additional Settings", "desc": "Theme, accent, startup, tray and settings backup." },
         { "icon": Fluent.info,      "name": "About",        "desc": "App info and updates." }
     ]
@@ -52,7 +52,7 @@ Window {
         { "label": "Seekbar", "page": 1 }, { "label": "Interactive seekbar", "page": 1 },
         { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
         { "label": "Always display", "page": 1 }, { "label": "Show player name", "page": 1 },
-        { "label": "Accent from album art", "page": 1 }, { "label": "Repeat button", "page": 1 },
+        { "label": "Accent from album art", "page": 1 }, { "label": "Apply accent app-wide", "page": 1 }, { "label": "Repeat button", "page": 1 },
         { "label": "Shuffle button", "page": 1 }, { "label": "Up next flyout", "page": 1 },
         { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
         { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
@@ -185,8 +185,11 @@ Window {
                                 sidebarSearchPopup.close()
                             }
                         }
-                    }
-                }
+                        InfoTooltip {
+                            text: "Search settings"
+                            hovered: sidebar.collapsed && sidebarSearchMouse.containsMouse
+                        }
+                    }                }
 
                 ScrollView {
                     id: navigationScroll
@@ -293,6 +296,10 @@ Window {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: dash.currentIndex = index
+                            InfoTooltip {
+                                text: modelData.name
+                                hovered: sidebar.collapsed && navMouse.containsMouse
+                            }
                         }
                             }
                         }
@@ -326,7 +333,6 @@ Window {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: 40
-                    text: "Collapse"
                     color: theme.textMuted
                     font.pixelSize: 12
                 }
@@ -335,6 +341,10 @@ Window {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
+                    InfoTooltip {
+                        text: "Expand"
+                        hovered: sidebar.collapsed && collapseMouse.containsMouse
+                    }
                     onClicked: {
                         sidebar.collapsed = !sidebar.collapsed
                         if(sidebar.collapsed) {
@@ -443,12 +453,24 @@ Window {
             height: parent.height
             color: theme.window
 
+            IconLabel {
+                id: pageIcon
+                anchors.left: parent.left
+                anchors.leftMargin: 32
+                anchors.verticalCenter: pageTitle.verticalCenter
+                glyph: dash.pages[dash.currentIndex].icon
+                size: 26
+                color: theme.accent
+            }
+
             Text {
                 id: pageTitle
                 anchors.top: parent.top
-                anchors.left: parent.left
+                anchors.left: pageIcon.right
                 anchors.right: parent.right
-                anchors.margins: 32
+                anchors.topMargin: 32
+                anchors.leftMargin: 12
+                anchors.rightMargin: 32
                 text: dash.pages[dash.currentIndex].name
                 color: theme.textPrimary
                 font.pixelSize: 26
@@ -806,10 +828,11 @@ Window {
                                         Row {
                                             anchors.horizontalCenter: parent.horizontalCenter
                                             spacing: 4
-                                            Text {
-                                                text: Fluent.battery
-                                                font.family: Fluent.fontFamily
-                                                font.pixelSize: 12
+                                            BatteryIcon {
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                implicitWidth: 8
+                                                implicitHeight: 13
+                                                level: modelData.percent >= 0 ? modelData.percent / 100 : 1
                                                 color: modelData.percent >= 0 ? ring.progressColor : theme.textMuted
                                             }
                                             Text {
@@ -945,6 +968,16 @@ Window {
                         description: "Tint the flyout accents using the current album art's dominant color."
                         value: settings.accentFromArt
                         onToggled: settings.accentFromArt = value
+                    }
+                    SettingRow {
+                        // sub-option, shown only when accent from album art is enabled
+                        visible: settings.accentFromArt
+                        x: 16
+                        width: parent.width - 16
+                        label: "Apply accent app-wide"
+                        description: "Also tint the dashboard and other windows, not just the flyouts."
+                        value: settings.accentFromArtAppWide
+                        onToggled: settings.accentFromArtAppWide = value
                     }
                     SettingRow {
                         width: parent.width

@@ -14,7 +14,7 @@ Window {
     readonly property bool compact: settings.compactLayout
     readonly property int artSize: compact ? 52 : 76
 
-    readonly property color accentColor: theme.accent
+    readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
 
     // true once App has placed this flyout, so re-stacking animates while the first show snaps
     property bool positioned: false

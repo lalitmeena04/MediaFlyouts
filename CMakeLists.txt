@@ -115,6 +115,8 @@ qt_add_qml_module(MediaFlyouts
         Views/PeripheralFlyout.qml
         Views/PeripheralCard.qml
         Views/BatteryRing.qml
+        Views/BatteryIcon.qml
+        Views/InfoTooltip.qml
         Views/DeviceIcons.qml
         Views/TaskbarVisualizer.qml
         Views/VolumeMixerWindow.qml

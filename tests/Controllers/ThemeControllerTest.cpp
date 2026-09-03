@@ -86,3 +86,19 @@ TEST_F(ThemeControllerTest, AlbumArtAccentOverridesThemeAccentWhenEnabled) {
 
     EXPECT_EQ(t.accent(), nowPlaying.artAccent());
 }
+
+TEST_F(ThemeControllerTest, AlbumArtAccentIgnoredAppWideWhenSubOptionOff) {
+    Settings s;
+    NowPlaying nowPlaying;
+    s.setAppTheme(2); // dark default accent
+    ThemeController t(&s, &nowPlaying);
+    s.setAccentFromArt(true);
+    s.setAccentFromArtAppWide(false);
+
+    QImage art(8, 8, QImage::Format_ARGB32);
+    art.fill(Qt::red);
+    nowPlaying.applyArt(art);
+
+    // flyout tinting stays local; the app-wide accent keeps the theme default
+    EXPECT_EQ(t.accent(), QColor("#FFFFFF"));
+}

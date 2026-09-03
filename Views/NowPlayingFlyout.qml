@@ -5,6 +5,8 @@ import MediaFlyouts
 Window {
     id: root
     readonly property bool compact: settings.nextUpStyle === 1
+    // flyout accent follows the album art when enabled, else the theme accent
+    readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
     // widen to fit the track text, clamped to a sensible range
     readonly property int contentWidth: Math.max(titleMetrics.implicitWidth, artistMetrics.implicitWidth, 80)
     width: Math.round(Math.max(300, Math.min(560, (root.compact ? 190 : 100) + contentWidth)))
@@ -122,7 +124,7 @@ Window {
 
                 Text {
                     text: "Now playing"
-                    color: theme.accent
+                    color: root.accentColor
                     font.pixelSize: 11
                     font.bold: true
                 }
@@ -160,12 +162,12 @@ Window {
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: Fluent.musicNote
                     size: 14
-                    color: theme.accent
+                    color: root.accentColor
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Now playing:"
-                    color: theme.accent
+                    color: root.accentColor
                     font.pixelSize: 12
                     font.bold: true
                 }

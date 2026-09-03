@@ -99,6 +99,8 @@ void Settings::reload() {
     m_peripheralLowBatteryToast = m_store.value(QStringLiteral("peripheralLowBatteryToast"), true).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
+    // when accentFromArt is on, also tint the whole app (dashboard etc.), not just the flyouts
+    m_accentFromArtAppWide = m_store.value(QStringLiteral("accentFromArtAppWide"), true).toBool();
     // accentMode: 0 = theme default, 1 = match system, 2 = custom
     m_accentMode = m_store.value(QStringLiteral("accentMode"), 0).toInt();
     m_customAccent = m_store.value(QStringLiteral("customAccent"), QStringLiteral("#4CC2FF")).toString();
@@ -391,6 +393,9 @@ bool Settings::onboardingCompleted() const {
 bool Settings::accentFromArt() const {
     return m_accentFromArt;
 }
+bool Settings::accentFromArtAppWide() const {
+    return m_accentFromArtAppWide;
+}
 int Settings::accentMode() const {
     return m_accentMode;
 }
@@ -600,6 +605,9 @@ void Settings::setOnboardingCompleted(bool v) {
 }
 void Settings::setAccentFromArt(bool v) {
     assign("accentFromArt", m_accentFromArt, v);
+}
+void Settings::setAccentFromArtAppWide(bool v) {
+    assign("accentFromArtAppWide", m_accentFromArtAppWide, v);
 }
 void Settings::setAccentMode(int v) {
     assignInt("accentMode", m_accentMode, v);

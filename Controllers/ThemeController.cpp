@@ -80,7 +80,8 @@ QColor ThemeController::textMuted() const {
     return m_dark ? QColor("#7A7A7A") : QColor("#8A8A8A");
 }
 QColor ThemeController::accent() const {
-    if(m_settings && m_settings->accentFromArt() && m_nowPlaying && m_nowPlaying->hasArt())
+    if(m_settings && m_settings->accentFromArt() && m_settings->accentFromArtAppWide() && m_nowPlaying
+       && m_nowPlaying->hasArt())
         return m_nowPlaying->artAccent();
     const int mode = m_settings ? m_settings->accentMode() : 0;
     if(mode == 1 && m_systemAccent.isValid())

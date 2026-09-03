@@ -87,6 +87,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.peripheralLowBatteryToast());
     QVERIFY(!s.onboardingCompleted());
     QVERIFY(!s.accentFromArt());
+    QVERIFY(s.accentFromArtAppWide());
     QCOMPARE(s.accentMode(), 0);
     QCOMPARE(s.customAccent(), QStringLiteral("#4CC2FF"));
     QCOMPARE(s.appTheme(), 0);

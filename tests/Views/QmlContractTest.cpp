@@ -111,9 +111,11 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
     expectContains(widget, QStringLiteral("Fluent.usbStick"));
 }
 
-TEST(QmlContractTest, FluentBatteryGlyphUsesTheBundledBatteryIcon) {
-    const QString source = loadSource("Views/Fluent.qml");
-    expectContains(source, QStringLiteral("battery: \"\\uE14E\""));
+TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    expectContains(source, QStringLiteral("BatteryIcon"));
+    // the icon fill tracks the reported battery percentage
+    expectContains(source, QStringLiteral("modelData.percent / 100"));
 }
 
 TEST(QmlContractTest, BundlesTheFontAwesomeFallbackFont) {

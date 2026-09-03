@@ -20,6 +20,9 @@ QtObject {
     readonly property string musicNote: "\uE863"
     readonly property string settings: "\uF6B3"
     readonly property string dismiss: "\uF36A"
+    readonly property string home: "\uF487"
+    readonly property string plugConnected: "\uE9AB"
+    readonly property string filter: "\uF405"
     readonly property string search: "\uF699"
     readonly property string chevronDoubleLeft: "\uF285"
     readonly property string chevronDoubleRight: "\uF2A7"
@@ -34,7 +37,6 @@ QtObject {
     readonly property string shuffle: "\uEF37"
     readonly property string info: "\uF4AA"
     readonly property string link: "\uF4E9"
-    readonly property string battery: "\uE14E"
     readonly property string chevronLeft: "\uEA4D"
     readonly property string chevronRight: "\uEA50"
 }
