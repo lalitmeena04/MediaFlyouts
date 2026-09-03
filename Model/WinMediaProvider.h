@@ -44,6 +44,7 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
 
         winrt::fire_and_forget initAsync();
         void hookSession(Session session);
+        void queueRefresh(Session session);
         winrt::fire_and_forget refresh(Session session, int attempt = 0);
         Session currentSession();
         void refreshSessionMeta();
