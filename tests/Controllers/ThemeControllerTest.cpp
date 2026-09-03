@@ -6,6 +6,7 @@
 #include <QStandardPaths>
 
 #include "Settings.h"
+#include "NowPlaying.h"
 #include "ThemeController.h"
 
 namespace {
@@ -27,7 +28,7 @@ TEST_F(ThemeControllerTest, DarkPalette) {
     ThemeController t(&s);
     EXPECT_TRUE(t.dark());
     EXPECT_EQ(t.window(), QColor("#1B1B1B"));
-    EXPECT_EQ(t.accent(), QColor("#4CC2FF"));
+    EXPECT_EQ(t.accent(), QColor("#FFFFFF"));
     EXPECT_EQ(t.textPrimary(), QColor("#FFFFFF"));
     EXPECT_EQ(t.card(), QColor("#232323"));
 }
@@ -38,7 +39,7 @@ TEST_F(ThemeControllerTest, LightPalette) {
     ThemeController t(&s);
     EXPECT_FALSE(t.dark());
     EXPECT_EQ(t.window(), QColor("#F3F3F3"));
-    EXPECT_EQ(t.accent(), QColor("#0078D4"));
+    EXPECT_EQ(t.accent(), QColor("#000000"));
     EXPECT_EQ(t.textPrimary(), QColor("#1A1A1A"));
     EXPECT_EQ(t.card(), QColor("#FFFFFF"));
 }
@@ -59,7 +60,7 @@ TEST_F(ThemeControllerTest, CustomAccentOverridesDefault) {
     Settings s;
     s.setAppTheme(2); // dark default accent
     ThemeController t(&s);
-    EXPECT_EQ(t.accent(), QColor("#4CC2FF"));
+    EXPECT_EQ(t.accent(), QColor("#FFFFFF"));
     s.setAccentMode(2);
     s.setCustomAccent(QStringLiteral("#FF8800"));
     EXPECT_EQ(t.accent(), QColor("#FF8800"));
@@ -71,4 +72,17 @@ TEST_F(ThemeControllerTest, SystemAccentAppliesWhenMatchingSystem) {
     ThemeController t(&s);
     t.setSystemAccent(QColor("#123456"));
     EXPECT_EQ(t.accent(), QColor("#123456"));
+}
+
+TEST_F(ThemeControllerTest, AlbumArtAccentOverridesThemeAccentWhenEnabled) {
+    Settings s;
+    NowPlaying nowPlaying;
+    ThemeController t(&s, &nowPlaying);
+    s.setAccentFromArt(true);
+
+    QImage art(8, 8, QImage::Format_ARGB32);
+    art.fill(Qt::red);
+    nowPlaying.applyArt(art);
+
+    EXPECT_EQ(t.accent(), nowPlaying.artAccent());
 }

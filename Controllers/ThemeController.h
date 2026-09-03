@@ -4,6 +4,7 @@
 #include <QObject>
 
 class Settings;
+class NowPlaying;
 
 // Exposes a semantic color palette to QML that follows the appTheme setting
 // (0 = system, 1 = light, 2 = dark). QML singletons can't read context
@@ -30,7 +31,7 @@ class ThemeController : public QObject {
         Q_PROPERTY(QColor track READ track NOTIFY changed)
 
     public:
-        explicit ThemeController(Settings* settings, QObject* parent = nullptr);
+        explicit ThemeController(Settings* settings, NowPlaying* nowPlaying = nullptr, QObject* parent = nullptr);
 
         bool dark() const;
         QColor window() const;
@@ -63,6 +64,7 @@ class ThemeController : public QObject {
         bool computeDark() const;
 
         Settings* m_settings = nullptr;
+        NowPlaying* m_nowPlaying = nullptr;
         bool m_dark = true;
         QColor m_systemAccent;
 };

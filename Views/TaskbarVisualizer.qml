@@ -8,7 +8,7 @@ Item {
     clip: true
 
     readonly property int style: settings.visualizerStyle
-    readonly property color col: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+    readonly property color col: theme.accent
     property var particles: []
 
     // style 0: mirrored / bottom-anchored bars
