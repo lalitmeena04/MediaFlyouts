@@ -122,7 +122,7 @@ Window {
 
                 Text {
                     text: "Now playing"
-                    color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+                    color: theme.accent
                     font.pixelSize: 11
                     font.bold: true
                 }
@@ -160,12 +160,12 @@ Window {
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: Fluent.musicNote
                     size: 14
-                    color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+                    color: theme.accent
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Now playing:"
-                    color: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+                    color: theme.accent
                     font.pixelSize: 12
                     font.bold: true
                 }

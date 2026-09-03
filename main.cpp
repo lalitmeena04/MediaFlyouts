@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 
     Settings settings;
     FlyoutPlacement placement(&settings);
-    ThemeController theme(&settings);
+    ThemeController theme(&settings, &nowPlaying);
     UpdateChecker updateChecker;
 
     QQmlApplicationEngine engine;

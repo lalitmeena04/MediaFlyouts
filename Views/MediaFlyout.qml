@@ -14,9 +14,7 @@ Window {
     readonly property bool compact: settings.compactLayout
     readonly property int artSize: compact ? 52 : 76
 
-    // accent follows the album art when enabled, else the theme accent
-    readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt
-        ? nowPlaying.artAccent : theme.accent
+    readonly property color accentColor: theme.accent
 
     // true once App has placed this flyout, so re-stacking animates while the first show snaps
     property bool positioned: false
