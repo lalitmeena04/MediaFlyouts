@@ -46,6 +46,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Network Qml Quick Test Widgets)
 qt_standard_project_setup(REQUIRES 6.5)
 
+# spdlog for file logging; prefer a system/package copy, otherwise fetch a pinned release
+find_package(spdlog QUIET)
+if(NOT spdlog_FOUND)
+    include(FetchContent)
+    FetchContent_Declare(spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG v1.14.1
+    )
+    set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(spdlog)
+endif()
+
 option(MEDIAFLYOUTS_BUILD_TESTS "Build the unit tests" ON)
 if(MEDIAFLYOUTS_BUILD_TESTS)
     enable_testing()
@@ -53,6 +65,7 @@ endif()
 
 # --- Model: cross-platform domain logic, shared by the app and the tests ---
 qt_add_library(mediaflyout_core STATIC
+    Logging.h                Logging.cpp
     Model/FlyoutPositioner.h Model/FlyoutPositioner.cpp
     Model/TrackInfo.h        Model/TrackInfo.cpp
     Model/PlaybackController.h Model/PlaybackController.cpp
@@ -65,8 +78,17 @@ qt_add_library(mediaflyout_core STATIC
     Model/BatteryAlertPolicy.h Model/BatteryAlertPolicy.cpp
     Model/SessionSelection.h Model/SessionSelection.cpp
 )
-target_link_libraries(mediaflyout_core PUBLIC Qt6::Core)
-target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model)
+target_link_libraries(mediaflyout_core PUBLIC Qt6::Core spdlog::spdlog)
+# Logging: when enabled TRC_DEBUG is compiled in; when disabled SPDLOG_LEVEL_OFF compiles every
+# TRC_* call out to nothing (zero overhead) and initLogging() skips creating the log file.
+option(MEDIAFLYOUTS_ENABLE_LOGGING "Enable spdlog file logging" ON)
+if(MEDIAFLYOUTS_ENABLE_LOGGING)
+    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_DEBUG)
+else()
+    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_OFF)
+endif()
+target_compile_definitions(mediaflyout_core PUBLIC SPDLOG_ACTIVE_LEVEL=${MEDIAFLYOUTS_SPDLOG_LEVEL})
+target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model ${CMAKE_CURRENT_SOURCE_DIR})
 
 # --- Application executable ---
 qt_add_executable(MediaFlyouts WIN32
@@ -77,6 +99,7 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/SingleInstance.h Controllers/SingleInstance.cpp
     Controllers/ThemeController.h Controllers/ThemeController.cpp
     Controllers/UpdateChecker.h  Controllers/UpdateChecker.cpp
+    Controllers/QmlLogger.h      Controllers/QmlLogger.cpp
     Model/AlbumArtProvider.h     Model/AlbumArtProvider.cpp
     Model/Settings.h             Model/Settings.cpp
 )

@@ -18,6 +18,18 @@ Window {
     // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
     property bool blocked: false
 
+    onVisibleChanged: {
+        log.debug("TaskbarWidget.visible=" + visible
+            + " onboardingCompleted=" + settings.onboardingCompleted
+            + " enabled=" + settings.taskbarWidgetEnabled
+            + " hasMedia=" + nowPlaying.hasMedia
+            + " playerAllowed=" + settings.playerAllowed(nowPlaying.playerName)
+            + " blocked=" + root.blocked
+            + " monitor=" + settings.taskbarWidgetMonitor)
+        if(visible)
+            updatePosition()
+    }
+
     signal activated()
 
     function updatePosition() {
@@ -31,7 +43,6 @@ Window {
     }
 
     Component.onCompleted: updatePosition()
-    onVisibleChanged: if(visible) updatePosition()
 
     // reposition immediately when the offset (or other settings) change
     Connections {
@@ -47,7 +58,11 @@ Window {
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen)
+            var wasBlocked = root.blocked
+            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen, settings.taskbarWidgetMonitor)
+            if(wasBlocked !== root.blocked)
+                log.debug("TaskbarWidget.blocked changed " + wasBlocked + " -> " + root.blocked
+                    + " (monitor=" + settings.taskbarWidgetMonitor + ")")
             root.updatePosition()
         }
     }

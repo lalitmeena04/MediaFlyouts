@@ -1,12 +1,24 @@
 #include "FullscreenDetector.h"
 
+#include <cstdint>
+
 #include <windows.h>
 
 #include <shellapi.h>
 #include <shlobj.h>
 #include <tlhelp32.h>
 
+#include <QGuiApplication>
+#include <QScreen>
+
+#include "Logging.h"
+
 namespace {
+
+// hex-formatted pointer value for logging opaque Win32 handles
+std::uintptr_t handleId(void* h) {
+    return reinterpret_cast<std::uintptr_t>(h);
+}
 
 bool isStartMenuWindow(HWND window) {
     DWORD processId = 0;
@@ -76,57 +88,133 @@ bool hasGraphicsApiLoaded(DWORD pid) {
     return found;
 }
 
+// HMONITOR for a QGuiApplication screen index. QScreen::name() is the friendly monitor name on
+// Windows (not the GDI device), so map by the screen's physical center point instead.
+HMONITOR monitorHandleForScreen(int index) {
+    const QList<QScreen*> screens = QGuiApplication::screens();
+    if(screens.isEmpty()) {
+        TRC_WARN("monitorHandleForScreen: no screens available");
+        return nullptr;
+    }
+    if(index < 0 || index >= screens.size()) {
+        TRC_DEBUG("monitorHandleForScreen: index {} out of range (screenCount={}), clamping to 0", index,
+                  screens.size());
+        index = 0;
+    }
+    const QScreen* screen = screens.at(index);
+    const qreal dpr = screen->devicePixelRatio();
+    const QRect g = screen->geometry();
+    const POINT center{static_cast<LONG>(qRound((g.left() + g.width() / 2.0) * dpr)),
+                       static_cast<LONG>(qRound((g.top() + g.height() / 2.0) * dpr))};
+    const HMONITOR handle = MonitorFromPoint(center, MONITOR_DEFAULTTONULL);
+    TRC_DEBUG("monitorHandleForScreen: index={} name='{}' center=({},{}) -> HMONITOR={:#x}", index,
+              screen->name().toStdString(), center.x, center.y, handleId(handle));
+    return handle;
+}
+
 } // namespace
 
 FullscreenDetector::FullscreenDetector(QObject* parent) : QObject(parent) {}
 
 bool FullscreenDetector::isLocked() const {
-    return isWorkstationLocked();
+    const bool locked = isWorkstationLocked();
+    TRC_DEBUG("isLocked -> {}", locked);
+    return locked;
 }
 
-bool FullscreenDetector::shouldBlock(bool disableOnFullscreen) const {
-    return isLocked() || (disableOnFullscreen && isFullscreen());
+bool FullscreenDetector::shouldBlock(bool disableOnFullscreen, int monitor) const {
+    const bool locked = isLocked();
+    const bool fullscreen = disableOnFullscreen && isFullscreen(monitor);
+    const bool blocked = locked || fullscreen;
+    TRC_DEBUG("shouldBlock(disableOnFullscreen={}, monitor={}): locked={} fullscreen={} -> blocked={}",
+              disableOnFullscreen, monitor, locked, fullscreen, blocked);
+    return blocked;
 }
 
-bool FullscreenDetector::isFullscreen() const {
+bool FullscreenDetector::isFullscreen(int monitor) const {
     HWND fg = GetForegroundWindow();
+    TRC_DEBUG("isFullscreen(monitor={}): foreground HWND={:#x}", monitor, handleId(fg));
 
-    if(!fg)
+    if(!fg) {
+        TRC_DEBUG("isFullscreen: no foreground window -> not fullscreen");
         return false;
-    if(isStartMenuWindow(fg))
+    }
+    if(isStartMenuWindow(fg)) {
+        TRC_DEBUG("isFullscreen: foreground is the Start menu -> not fullscreen");
         return false;
+    }
 
     // desktop/taskbar in the foreground (no window open) is never a game; rule it out before the
     // notification query, which can stay stuck on QUNS_BUSY after a fullscreen game exits (until reboot)
     wchar_t cls[64] = {};
     GetClassNameW(fg, cls, 64);
-    if(wcscmp(cls, L"Progman") == 0 || wcscmp(cls, L"WorkerW") == 0 || wcscmp(cls, L"Shell_TrayWnd") == 0)
+    const std::string className = QString::fromWCharArray(cls).toStdString();
+    TRC_DEBUG("isFullscreen: foreground class='{}'", className);
+    if(wcscmp(cls, L"Progman") == 0 || wcscmp(cls, L"WorkerW") == 0 || wcscmp(cls, L"Shell_TrayWnd") == 0) {
+        TRC_DEBUG("isFullscreen: foreground is the desktop/taskbar shell -> not fullscreen");
         return false;
+    }
 
-    // exclusive-D3D / presentation / generic fullscreen — the states that cause a game to minimize
+    // a fullscreen app only blocks flyouts/widgets on its own monitor; if the foreground window is
+    // on a different display, leave this monitor's flyouts visible
+    if(monitor >= 0) {
+        const HMONITOR target = monitorHandleForScreen(monitor);
+        const HMONITOR fgMonitor = MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST);
+        TRC_DEBUG("isFullscreen: monitor gate: targetHMONITOR={:#x} foregroundHMONITOR={:#x}", handleId(target),
+                  handleId(fgMonitor));
+        if(target && fgMonitor != target) {
+            TRC_DEBUG("isFullscreen: foreground window is on a different monitor -> not fullscreen here");
+            return false;
+        }
+        if(!target)
+            TRC_WARN("isFullscreen: could not resolve target HMONITOR for monitor index {} - skipping monitor gate",
+                     monitor);
+    }
+
+    // exclusive-D3D / presentation fullscreen. QUNS_BUSY is deliberately NOT treated as fullscreen:
+    // it also means "a fullscreen app ran recently" and stays stuck for ordinary foreground windows
+    // after a game exits (until reboot), which would wrongly hide flyouts/widgets. Borderless games
+    // are still caught by the window-covers-monitor + graphics-API check below.
     QUERY_USER_NOTIFICATION_STATE state = QUNS_ACCEPTS_NOTIFICATIONS;
     if(SUCCEEDED(SHQueryUserNotificationState(&state))) {
-        if(state == QUNS_RUNNING_D3D_FULL_SCREEN || state == QUNS_PRESENTATION_MODE || state == QUNS_BUSY)
+        TRC_DEBUG("isFullscreen: SHQueryUserNotificationState={}", static_cast<int>(state));
+        if(state == QUNS_RUNNING_D3D_FULL_SCREEN || state == QUNS_PRESENTATION_MODE) {
+            TRC_WARN("isFullscreen: notification state {} indicates exclusive/presentation fullscreen -> fullscreen",
+                     static_cast<int>(state));
             return true;
+        }
+    } else {
+        TRC_DEBUG("isFullscreen: SHQueryUserNotificationState query failed");
     }
 
     // borderless fullscreen: foreground window covers its whole monitor and isn't the shell
     RECT wr{};
-    if(!GetWindowRect(fg, &wr))
+    if(!GetWindowRect(fg, &wr)) {
+        TRC_DEBUG("isFullscreen: GetWindowRect failed -> not fullscreen");
         return false;
+    }
 
     MONITORINFO mi;
     mi.cbSize = sizeof(mi);
-    if(!GetMonitorInfoW(MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST), &mi))
+    if(!GetMonitorInfoW(MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST), &mi)) {
+        TRC_DEBUG("isFullscreen: GetMonitorInfo failed -> not fullscreen");
         return false;
+    }
 
     const RECT m = mi.rcMonitor;
-    if(!(wr.left <= m.left && wr.top <= m.top && wr.right >= m.right && wr.bottom >= m.bottom))
+    TRC_DEBUG("isFullscreen: windowRect=({},{},{},{}) monitorRect=({},{},{},{})", wr.left, wr.top, wr.right, wr.bottom,
+              m.left, m.top, m.right, m.bottom);
+    if(!(wr.left <= m.left && wr.top <= m.top && wr.right >= m.right && wr.bottom >= m.bottom)) {
+        TRC_DEBUG("isFullscreen: window does not cover the whole monitor -> not fullscreen");
         return false;
+    }
 
     // borderless fullscreen alone also matches fullscreen browsers/video players, so require a
     // 3D graphics API to be loaded before treating this as a game
     DWORD pid = 0;
     GetWindowThreadProcessId(fg, &pid);
-    return pid != 0 && hasGraphicsApiLoaded(pid);
+    const bool graphics = pid != 0 && hasGraphicsApiLoaded(pid);
+    TRC_DEBUG("isFullscreen: borderless full-monitor window pid={} graphicsApiLoaded={} -> fullscreen={}", pid, graphics,
+              graphics);
+    return graphics;
 }

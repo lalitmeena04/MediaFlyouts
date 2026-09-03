@@ -70,7 +70,16 @@ Window {
     }
 
     Component.onCompleted: updatePosition()
-    onVisibleChanged: if(visible) updatePosition()
+    onVisibleChanged: {
+        log.debug("PeripheralsWidget.visible=" + visible
+            + " onboardingCompleted=" + settings.onboardingCompleted
+            + " enabled=" + settings.peripheralsWidgetEnabled
+            + " deviceCount=" + devices.length
+            + " blocked=" + root.blocked
+            + " monitor=" + settings.taskbarWidgetMonitor)
+        if(visible)
+            updatePosition()
+    }
     onWidthChanged: updatePosition()
 
     Connections {
@@ -93,7 +102,11 @@ Window {
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen)
+            var wasBlocked = root.blocked
+            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen, settings.taskbarWidgetMonitor)
+            if(wasBlocked !== root.blocked)
+                log.debug("PeripheralsWidget.blocked changed " + wasBlocked + " -> " + root.blocked
+                    + " (monitor=" + settings.taskbarWidgetMonitor + ")")
             root.updatePosition()
         }
     }

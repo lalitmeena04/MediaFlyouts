@@ -32,7 +32,7 @@ Window {
     function showFlyout() {
         if(!settings.onboardingCompleted)
             return
-        if(!settings.lockKeysEnabled || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen))
+        if(!settings.lockKeysEnabled || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))
             return
         hideTimer.restart()
         root.visible = true

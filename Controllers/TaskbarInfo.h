@@ -1,8 +1,11 @@
 #pragma once
 
+#include <QList>
 #include <QObject>
 #include <QPoint>
+#include <QPointer>
 #include <QRect>
+#include <QTimer>
 
 class QWindow;
 
@@ -12,6 +15,7 @@ class TaskbarInfo : public QObject {
 
     public:
         explicit TaskbarInfo(QObject* parent = nullptr);
+        ~TaskbarInfo() override;
 
         // whole primary taskbar; empty QRect if it can't be found
         Q_INVOKABLE QRect taskbarGeometry() const;
@@ -21,6 +25,20 @@ class TaskbarInfo : public QObject {
         Q_INVOKABLE QPoint widgetPosition(int monitor, int side, int offset, int width, int height) const;
         // full geometry (logical px) of the given monitor, used to keep flyouts on-screen
         Q_INVOKABLE QRect monitorGeometry(int monitor) const;
-        // re-assert the window at the top of the topmost band so it stays above the taskbar
+        // re-assert the window at the top of the topmost band so it stays above the taskbar. The
+        // window is remembered and re-pinned automatically on foreground/minimize changes.
         Q_INVOKABLE void pinAboveTaskbar(QWindow* window) const;
+
+        // re-pin every tracked window right now; called from the WinEvent hook
+        void repinTracked() const;
+        // react to a shell WinEvent: re-pin now and, for minimize/foreground changes, keep re-pinning
+        // for a short burst to cover the taskbar re-topping itself across the minimize animation
+        void handleShellEvent(unsigned long event);
+
+    private:
+        mutable QList<QPointer<QWindow>> m_pinned;
+        QTimer m_repinBurst;
+        int m_repinBurstTicks = 0;
 };
+
+

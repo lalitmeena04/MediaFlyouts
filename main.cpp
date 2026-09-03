@@ -2,10 +2,13 @@
 #include <QFontDatabase>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QScreen>
 
 #include "AlbumArtProvider.h"
 #include "FlyoutPlacement.h"
+#include "Logging.h"
 #include "NowPlaying.h"
+#include "QmlLogger.h"
 #include "Settings.h"
 #include "SingleInstance.h"
 #include "ThemeController.h"
@@ -43,6 +46,17 @@ int main(int argc, char* argv[]) {
     QApplication::setOrganizationName(QStringLiteral("MediaFlyouts"));
     QApplication::setApplicationVersion(QStringLiteral(MEDIAFLYOUTS_VERSION));
 
+    const QString logFile = mf::initLogging();
+    TRC_INFO("==== MediaFlyouts {} starting ====", MEDIAFLYOUTS_VERSION);
+    TRC_INFO("log file: {}", logFile.toStdString());
+    for(const QScreen* s : QApplication::screens()) {
+        const QRect g = s->geometry();
+        const QRect a = s->availableGeometry();
+        TRC_DEBUG("screen '{}' geometry=({},{} {}x{}) available=({},{} {}x{}) dpr={} primary={}",
+                  s->name().toStdString(), g.x(), g.y(), g.width(), g.height(), a.x(), a.y(), a.width(), a.height(),
+                  s->devicePixelRatio(), s == QApplication::primaryScreen());
+    }
+
     // a second launch signals the running instance to show its dashboard, then exits
     SingleInstance instance(QStringLiteral("MediaFlyouts.singleInstance"));
     if(!instance.isPrimary())
@@ -62,6 +76,9 @@ int main(int argc, char* argv[]) {
     UpdateChecker updateChecker;
 
     QQmlApplicationEngine engine;
+
+    QmlLogger qmlLog;
+    engine.rootContext()->setContextProperty("log", &qmlLog);
 
     // engine takes ownership of the image provider
     auto* artProvider = new AlbumArtProvider();
@@ -98,7 +115,7 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("fullscreen", &fullscreen);
     QObject::connect(&volumeController, &VolumeController::volumeChangedExternally, &nativeSuppressor, [&] {
         if(settings.overrideNativeOsd() && settings.onboardingCompleted()
-           && !fullscreen.shouldBlock(settings.disableOnFullscreen()))
+           && !fullscreen.shouldBlock(settings.disableOnFullscreen(), settings.volumeFlyoutMonitor()))
             nativeSuppressor.arm();
     });
     // apply the override-native-OSD toggle at runtime

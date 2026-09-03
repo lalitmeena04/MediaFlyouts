@@ -29,7 +29,7 @@ Window {
     function showFlyout() {
         if(!settings.onboardingCompleted)
             return
-        if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
+        if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))
             return
         if(!settings.playerAllowed(nowPlaying.playerName))
             return

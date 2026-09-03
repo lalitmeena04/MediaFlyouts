@@ -10,7 +10,7 @@ class FullscreenDetector : public QObject {
         explicit FullscreenDetector(QObject* parent = nullptr);
 
         Q_INVOKABLE bool isLocked() const;
-        Q_INVOKABLE bool isFullscreen() const;
-        // lock always blocks flyouts; fullscreen only blocks when the user setting is on
-        Q_INVOKABLE bool shouldBlock(bool disableOnFullscreen) const;
+        // monitor is a QGuiApplication screen index; -1 means any monitor (global check)
+        Q_INVOKABLE bool isFullscreen(int monitor = -1) const;
+        Q_INVOKABLE bool shouldBlock(bool disableOnFullscreen, int monitor = -1) const;
 };

@@ -1,9 +1,13 @@
 #include "TaskbarInfo.h"
 
+#include <cstdint>
+
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
 #include <windows.h>
+
+#include "Logging.h"
 
 namespace {
 // Convert a native window rect (physical pixels) into Qt logical coordinates.
@@ -23,9 +27,43 @@ QRect toLogical(HWND hwnd) {
     return QRect(qRound(r.left / dpr), qRound(r.top / dpr), qRound((r.right - r.left) / dpr),
                  qRound((r.bottom - r.top) / dpr));
 }
+
+TaskbarInfo* g_taskbarInfo = nullptr;
+HWINEVENTHOOK g_winEventHook = nullptr;
+
+// Fires when the foreground window or a window's minimize state changes; the shell re-tops the
+// taskbar on these, which can push our always-on-top widgets behind it, so re-pin immediately.
+void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DWORD, DWORD) {
+    TRC_DEBUG("winEventProc: event={:#x} hwnd={:#x}", event, reinterpret_cast<std::uintptr_t>(hwnd));
+    if(g_taskbarInfo)
+        g_taskbarInfo->handleShellEvent(event);
+}
 } // namespace
 
-TaskbarInfo::TaskbarInfo(QObject* parent) : QObject(parent) {}
+TaskbarInfo::TaskbarInfo(QObject* parent) : QObject(parent) {
+    g_taskbarInfo = this;
+    // keep re-pinning across the ~300ms minimize/restore animation, during which the taskbar
+    // repeatedly re-tops itself and would otherwise cover the widgets until the next 500ms poll
+    m_repinBurst.setInterval(30);
+    connect(&m_repinBurst, &QTimer::timeout, this, [this] {
+        repinTracked();
+        if(--m_repinBurstTicks <= 0)
+            m_repinBurst.stop();
+    });
+    // OUTOFCONTEXT delivers the callback on this (the GUI) thread, so touching QWindow is safe
+    g_winEventHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MINIMIZEEND, nullptr, winEventProc, 0, 0,
+                                     WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+    TRC_INFO("TaskbarInfo: WinEvent hook installed={}", g_winEventHook != nullptr);
+}
+
+TaskbarInfo::~TaskbarInfo() {
+    if(g_winEventHook) {
+        UnhookWinEvent(g_winEventHook);
+        g_winEventHook = nullptr;
+    }
+    g_taskbarInfo = nullptr;
+}
+
 
 QRect TaskbarInfo::taskbarGeometry() const {
     return toLogical(FindWindowW(L"Shell_TrayWnd", nullptr));
@@ -93,9 +131,38 @@ QRect TaskbarInfo::monitorGeometry(int monitor) const {
 void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
     if(!window)
         return;
+    if(!m_pinned.contains(window))
+        m_pinned.append(window);
     HWND hwnd = reinterpret_cast<HWND>(window->winId());
     if(!hwnd)
         return;
     // move to the top of the topmost band (above the taskbar) without stealing focus
     SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+}
+
+void TaskbarInfo::repinTracked() const {
+    int repinned = 0;
+    for(auto it = m_pinned.begin(); it != m_pinned.end();) {
+        QWindow* window = *it;
+        if(!window) {
+            it = m_pinned.erase(it);
+            continue;
+        }
+        if(window->isVisible()) {
+            if(HWND hwnd = reinterpret_cast<HWND>(window->winId())) {
+                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                ++repinned;
+            }
+        }
+        ++it;
+    }
+    TRC_DEBUG("repinTracked: tracked={} repinned={}", m_pinned.size(), repinned);
+}
+
+void TaskbarInfo::handleShellEvent(unsigned long event) {
+    repinTracked();
+    if(event == EVENT_SYSTEM_MINIMIZESTART || event == EVENT_SYSTEM_MINIMIZEEND || event == EVENT_SYSTEM_FOREGROUND) {
+        m_repinBurstTicks = 15; // ~450ms of coverage over the animation
+        m_repinBurst.start();
+    }
 }

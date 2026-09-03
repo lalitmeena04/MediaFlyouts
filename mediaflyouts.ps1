@@ -40,6 +40,9 @@
 .PARAMETER SkipDeploy
     (build) Skip the windeployqt step.
 
+.PARAMETER NoLogging
+    (build) Compile out spdlog file logging (MEDIAFLYOUTS_ENABLE_LOGGING=OFF).
+
 .PARAMETER SkipBuild
     (package) Reuse the existing bin\ instead of doing a clean release build.
 
@@ -101,6 +104,7 @@ param(
     [switch]$NoTests,
     [switch]$RunTests,
     [switch]$SkipDeploy,
+    [switch]$NoLogging,
     [string]$BuildNumber  = "",
 
     # -- package --------------------------------------------------------------
@@ -355,10 +359,12 @@ function Invoke-Build {
 
     $buildPath = Get-BuildDir
     $testsFlag = if ($NoTests) { "OFF" } else { "ON" }
+    $loggingFlag = if ($NoLogging) { "OFF" } else { "ON" }
 
     # An explicit build number stamps a "-<number>" pre-release suffix onto the version;
     # otherwise clear any stale cached value so a normal build stays on the plain version.
-    $cmakeArgs = @("--preset", "msvc-$Config", "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag")
+    $cmakeArgs = @("--preset", "msvc-$Config", "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag",
+                   "-DMEDIAFLYOUTS_ENABLE_LOGGING=$loggingFlag")
     if ($BuildNumber) { $cmakeArgs += "-DMEDIAFLYOUTS_BUILD_NUMBER=$BuildNumber" }
     else              { $cmakeArgs += "-UMEDIAFLYOUTS_BUILD_NUMBER" }
 

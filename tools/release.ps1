@@ -70,9 +70,9 @@ Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\
 if (-not $SkipBuild) {
     Step 'Clean release build'
     if ($DevBuild) {
-        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -BuildNumber $buildNumber | Out-Host
+        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging -BuildNumber $buildNumber | Out-Host
     } else {
-        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests | Out-Host
+        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging | Out-Host
     }
 } else {
     Step 'Reusing existing bin\ (-SkipBuild)'

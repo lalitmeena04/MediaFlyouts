@@ -36,7 +36,7 @@ Window {
     function showFlyout() {
         if(!settings.onboardingCompleted)
             return
-        if(!settings.volumeFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen))
+        if(!settings.volumeFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.volumeFlyoutMonitor))
             return
         hideTimer.restart()
         root.visible = true
