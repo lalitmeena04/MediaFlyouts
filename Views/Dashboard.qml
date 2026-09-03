@@ -83,6 +83,7 @@ Window {
         return searchIndex.filter(function(e) { return e.label.toLowerCase().indexOf(q) >= 0 })
     }
     property string searchQuery: ""
+    property bool sidebarSearchOpen: false
 
     // hide to tray instead of quitting the app
     onClosing: (event) => {
@@ -105,18 +106,26 @@ Window {
             }
 
             Item {
+                id: sidebarContent
                 anchors.fill: parent
-                anchors.margins: sidebar.collapsed ? 8 : 18
+                anchors.leftMargin: sidebar.collapsed ? 8 : 18
+                anchors.topMargin: 18
+                anchors.rightMargin: sidebar.collapsed ? 8 : 18
+                anchors.bottomMargin: 48
 
                 Row {
                     id: sidebarHeader
                     anchors.top: parent.top
                     anchors.left: parent.left
+                    anchors.leftMargin: sidebar.collapsed ? 8 : 9
                     spacing: 12
                     bottomPadding: 12
                     IconLabel {
                         glyph: Fluent.musicNote
                         size: 24
+                        width: 24
+                        height: 24
+                        anchors.verticalCenter: parent.verticalCenter
                         color: theme.accent
                     }
                     Text {
@@ -146,12 +155,44 @@ Window {
                     onTextChanged: dash.searchQuery = text
                 }
 
+                Rectangle {
+                    id: sidebarSearchButton
+                    visible: sidebar.collapsed
+                    anchors.top: sidebarHeader.bottom
+                    anchors.topMargin: 8
+                    width: 40
+                    height: 32
+                    radius: 8
+                    color: sidebarSearchMouse.containsMouse ? theme.card : "transparent"
+
+                    IconLabel {
+                        anchors.centerIn: parent
+                        glyph: Fluent.search
+                        size: 16
+                        color: theme.textSecondary
+                    }
+                    MouseArea {
+                        id: sidebarSearchMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            dash.sidebarSearchOpen = !dash.sidebarSearchOpen
+                            if(dash.sidebarSearchOpen) {
+                                popupSearchField.text = ""
+                                sidebarSearchPopup.open()
+                            } else {
+                                sidebarSearchPopup.close()
+                            }
+                        }
+                    }
+                }
+
                 ScrollView {
                     id: navigationScroll
-                    anchors.top: sidebar.collapsed ? sidebarHeader.bottom : searchField.bottom
+                    anchors.top: sidebar.collapsed ? sidebarSearchButton.bottom : searchField.bottom
                     anchors.topMargin: 8
-                    anchors.bottom: collapseButton.top
-                    anchors.bottomMargin: 8
+                    anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
                     clip: true
@@ -162,7 +203,7 @@ Window {
                     spacing: 4
                     Column {
                         width: parent.width
-                        visible: dash.searchQuery.length > 0
+                        visible: dash.searchQuery.length > 0 && !sidebar.collapsed
                         spacing: 4
                         Repeater {
                             model: dash.searchResults
@@ -210,7 +251,7 @@ Window {
 
                     Column {
                         width: parent.width
-                        visible: dash.searchQuery.length === 0
+                        visible: dash.searchQuery.length === 0 || sidebar.collapsed
                         spacing: 4
                         Repeater {
                             model: dash.pages
@@ -233,6 +274,8 @@ Window {
                             IconLabel {
                                 glyph: modelData.icon
                                 size: 18
+                                width: 18
+                                height: 18
                                 color: dash.currentIndex === index ? theme.accent : theme.textSecondary
                             }
                             Text {
@@ -257,46 +300,143 @@ Window {
                     }
                 }
 
-                Rectangle {
-                    id: collapseButton
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    width: sidebar.collapsed ? 40 : parent.width
-                    height: 32
-                    radius: 8
-                    color: collapseMouse.containsMouse ? theme.card : "transparent"
+            }
 
-                    IconLabel {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: sidebar.collapsed ? 11 : 12
-                        glyph: sidebar.collapsed ? Fluent.chevronDoubleRight : Fluent.chevronDoubleLeft
-                        size: 16
-                        color: theme.textSecondary
-                    }
-                    Text {
-                        visible: !sidebar.collapsed
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 40
-                        text: "Collapse"
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                    }
-                    MouseArea {
-                        id: collapseMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            sidebar.collapsed = !sidebar.collapsed
-                            if(sidebar.collapsed)
-                                searchField.text = ""
+            Rectangle {
+                id: collapseButton
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 8
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                width: sidebar.collapsed ? 40 : sidebar.width - 16
+                height: 32
+                radius: 8
+                color: collapseMouse.containsMouse ? theme.card : "transparent"
+
+                IconLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 11
+                    glyph: sidebar.collapsed ? Fluent.chevronDoubleRight : Fluent.chevronDoubleLeft
+                    size: 16
+                    color: theme.textSecondary
+                }
+                Text {
+                    visible: !sidebar.collapsed
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 40
+                    text: "Collapse"
+                    color: theme.textMuted
+                    font.pixelSize: 12
+                }
+                MouseArea {
+                    id: collapseMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        sidebar.collapsed = !sidebar.collapsed
+                        if(sidebar.collapsed) {
+                            searchField.text = ""
+                            dash.searchQuery = ""
+                            sidebarSearchPopup.close()
                         }
                     }
                 }
             }
         }
+
+    Popup {
+        id: sidebarSearchPopup
+        parent: sidebarSearchButton
+        x: sidebarSearchButton.width + 8
+        y: 0
+        width: 280
+        height: Math.min(360, dash.height - 120)
+        padding: 8
+        modal: false
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        onOpened: popupSearchField.forceActiveFocus()
+        onClosed: {
+            dash.sidebarSearchOpen = false
+            dash.searchQuery = ""
+        }
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 8
+            TextField {
+                id: popupSearchField
+                width: parent.width
+                placeholderText: "Search settings..."
+                color: theme.textPrimary
+                placeholderTextColor: theme.textMuted
+                background: Rectangle {
+                    radius: 6
+                    color: theme.window
+                    border.color: theme.border
+                }
+                onTextChanged: dash.searchQuery = text
+            }
+            ScrollView {
+                id: popupResultsScroll
+                width: parent.width
+                height: parent.height - popupSearchField.height - parent.spacing
+                clip: true
+                Column {
+                    width: popupResultsScroll.availableWidth
+                    spacing: 4
+                    Repeater {
+                        model: dash.searchResults
+                        delegate: Rectangle {
+                            required property var modelData
+                            width: parent.width
+                            height: 38
+                            radius: 6
+                            color: popupResultMouse.containsMouse ? theme.cardHover : "transparent"
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 12
+                                Text {
+                                    text: modelData.label
+                                    color: theme.textPrimary
+                                    font.pixelSize: 13
+                                }
+                                Text {
+                                    text: dash.pages[modelData.page].name
+                                    color: theme.textMuted
+                                    font.pixelSize: 10
+                                }
+                            }
+                            MouseArea {
+                                id: popupResultMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    dash.currentIndex = modelData.page
+                                    sidebarSearchPopup.close()
+                                }
+                            }
+                        }
+                    }
+                    Text {
+                        visible: dash.searchResults.length === 0
+                        text: "No matching settings."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                        leftPadding: 12
+                    }
+                }
+            }
+        }
+    }
 
         Rectangle {
             width: dash.width - sidebar.width
