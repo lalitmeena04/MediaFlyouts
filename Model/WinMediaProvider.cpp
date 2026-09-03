@@ -197,11 +197,15 @@ void WinMediaProvider::hookSession(Session session) {
         return;
     }
 
-    m_mediaPropsToken = session.MediaPropertiesChanged([this](Session s, auto&&) { refresh(s); });
-    m_playbackToken = session.PlaybackInfoChanged([this](Session s, auto&&) { refresh(s); });
-    m_timelineToken = session.TimelinePropertiesChanged([this](Session s, auto&&) { refresh(s); });
+    m_mediaPropsToken = session.MediaPropertiesChanged([this](Session s, auto&&) { queueRefresh(s); });
+    m_playbackToken = session.PlaybackInfoChanged([this](Session s, auto&&) { queueRefresh(s); });
+    m_timelineToken = session.TimelinePropertiesChanged([this](Session s, auto&&) { queueRefresh(s); });
 
     refresh(session);
+}
+
+void WinMediaProvider::queueRefresh(Session session) {
+    QMetaObject::invokeMethod(this, [this, session] { refresh(session); }, Qt::QueuedConnection);
 }
 
 // runs as a coroutine: awaiting (never .get()) keeps it safe to resume on the STA thread
