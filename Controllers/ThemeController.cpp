@@ -3,12 +3,16 @@
 #include <QGuiApplication>
 #include <QStyleHints>
 
+#include "NowPlaying.h"
 #include "Settings.h"
 
-ThemeController::ThemeController(Settings* settings, QObject* parent) : QObject(parent), m_settings(settings) {
+ThemeController::ThemeController(Settings* settings, NowPlaying* nowPlaying, QObject* parent)
+    : QObject(parent), m_settings(settings), m_nowPlaying(nowPlaying) {
     m_dark = computeDark();
     if(m_settings)
         connect(m_settings, &Settings::changed, this, &ThemeController::refresh);
+    if(m_nowPlaying)
+        connect(m_nowPlaying, &NowPlaying::changed, this, &ThemeController::changed);
     if(const QStyleHints* hints = QGuiApplication::styleHints())
         connect(hints, &QStyleHints::colorSchemeChanged, this, [this](Qt::ColorScheme) { refresh(); });
 }
@@ -76,6 +80,8 @@ QColor ThemeController::textMuted() const {
     return m_dark ? QColor("#7A7A7A") : QColor("#8A8A8A");
 }
 QColor ThemeController::accent() const {
+    if(m_settings && m_settings->accentFromArt() && m_nowPlaying && m_nowPlaying->hasArt())
+        return m_nowPlaying->artAccent();
     const int mode = m_settings ? m_settings->accentMode() : 0;
     if(mode == 1 && m_systemAccent.isValid())
         return m_systemAccent;
@@ -84,7 +90,7 @@ QColor ThemeController::accent() const {
         if(custom.isValid())
             return custom;
     }
-    return m_dark ? QColor("#4CC2FF") : QColor("#0078D4");
+    return m_dark ? QColor("#FFFFFF") : QColor("#000000");
 }
 QColor ThemeController::accentSoft() const {
     return m_dark ? QColor("#7FD6FF") : QColor("#005A9E");
