@@ -104,12 +104,14 @@ Window {
                 NumberAnimation { duration: 140; easing.type: Easing.OutQuad }
             }
 
-            Column {
+            Item {
                 anchors.fill: parent
                 anchors.margins: sidebar.collapsed ? 8 : 18
-                spacing: 8
 
                 Row {
+                    id: sidebarHeader
+                    anchors.top: parent.top
+                    anchors.left: parent.left
                     spacing: 12
                     bottomPadding: 12
                     IconLabel {
@@ -127,46 +129,12 @@ Window {
                     }
                 }
 
-                Rectangle {
-                    width: sidebar.collapsed ? 40 : sidebar.width - 36
-                    height: 32
-                    radius: 8
-                    color: collapseMouse.containsMouse ? theme.card : "transparent"
-
-                    IconLabel {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: sidebar.collapsed ? 11 : 12
-                        glyph: sidebar.collapsed ? Fluent.chevronRight : Fluent.chevronLeft
-                        size: 16
-                        color: theme.textSecondary
-                    }
-                    Text {
-                        visible: !sidebar.collapsed
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 40
-                        text: "Collapse"
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                    }
-                    MouseArea {
-                        id: collapseMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            sidebar.collapsed = !sidebar.collapsed
-                            if(sidebar.collapsed)
-                                searchField.text = ""
-                        }
-                    }
-                }
-
                 TextField {
                     id: searchField
                     visible: !sidebar.collapsed
-                    width: sidebar.width - 36
+                    anchors.top: sidebarHeader.bottom
+                    anchors.topMargin: 8
+                    width: parent.width
                     placeholderText: "Search settings…"
                     color: theme.textPrimary
                     placeholderTextColor: theme.textMuted
@@ -178,14 +146,27 @@ Window {
                     onTextChanged: dash.searchQuery = text
                 }
 
-                // search results replace the nav list while searching
-                Column {
-                    width: sidebar.width - 36
+                ScrollView {
+                    id: navigationScroll
+                    anchors.top: sidebar.collapsed ? sidebarHeader.bottom : searchField.bottom
+                    anchors.topMargin: 8
+                    anchors.bottom: collapseButton.top
+                    anchors.bottomMargin: 8
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    clip: true
+
+                    // search results replace the nav list while searching
+                    Column {
+                    width: navigationScroll.availableWidth
                     spacing: 4
-                    visible: dash.searchQuery.length > 0
-                    Repeater {
-                        model: dash.searchResults
-                        delegate: Rectangle {
+                    Column {
+                        width: parent.width
+                        visible: dash.searchQuery.length > 0
+                        spacing: 4
+                        Repeater {
+                            model: dash.searchResults
+                            delegate: Rectangle {
                             required property var modelData
                             width: parent.width
                             height: 38
@@ -216,21 +197,25 @@ Window {
                                     searchField.text = ""
                                 }
                             }
+                            }
+                        }
+                        Text {
+                            visible: dash.searchResults.length === 0
+                            text: "No matching settings."
+                            color: theme.textMuted
+                            font.pixelSize: 12
+                            leftPadding: 12
                         }
                     }
-                    Text {
-                        visible: dash.searchResults.length === 0
-                        text: "No matching settings."
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                        leftPadding: 12
-                    }
-                }
 
-                Repeater {
-                    model: dash.pages
+                    Column {
+                        width: parent.width
+                        visible: dash.searchQuery.length === 0
+                        spacing: 4
+                        Repeater {
+                            model: dash.pages
 
-                    delegate: Rectangle {
+                            delegate: Rectangle {
                         required property int index
                         required property var modelData
 
@@ -265,6 +250,48 @@ Window {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: dash.currentIndex = index
+                        }
+                            }
+                        }
+                    }
+                    }
+                }
+
+                Rectangle {
+                    id: collapseButton
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    width: sidebar.collapsed ? 40 : parent.width
+                    height: 32
+                    radius: 8
+                    color: collapseMouse.containsMouse ? theme.card : "transparent"
+
+                    IconLabel {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: sidebar.collapsed ? 11 : 12
+                        glyph: sidebar.collapsed ? Fluent.chevronDoubleRight : Fluent.chevronDoubleLeft
+                        size: 16
+                        color: theme.textSecondary
+                    }
+                    Text {
+                        visible: !sidebar.collapsed
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 40
+                        text: "Collapse"
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+                    MouseArea {
+                        id: collapseMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            sidebar.collapsed = !sidebar.collapsed
+                            if(sidebar.collapsed)
+                                searchField.text = ""
                         }
                     }
                 }

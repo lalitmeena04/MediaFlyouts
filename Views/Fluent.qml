@@ -20,6 +20,8 @@ QtObject {
     readonly property string musicNote: "\uE863"
     readonly property string settings: "\uF6B3"
     readonly property string dismiss: "\uF36A"
+    readonly property string chevronDoubleLeft: "\uF1A7"
+    readonly property string chevronDoubleRight: "\uF1A8"
     readonly property string keyboard: "\uF4C3"
     readonly property string headphones: "\uF476"
     readonly property string headset: "\uF478"
