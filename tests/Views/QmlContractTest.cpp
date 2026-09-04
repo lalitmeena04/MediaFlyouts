@@ -190,6 +190,14 @@ TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingCh
     }
 }
 
+TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
+    const QString source = loadSource("Views/TaskbarWidget.qml");
+    // capture only runs while the visualizer is actually on screen
+    expectContains(source, QStringLiteral("visualizerLive: root.visible && settings.taskbarVisualizerEnabled"));
+    expectContains(source, QStringLiteral("audioCapture.start()"));
+    expectContains(source, QStringLiteral("audioCapture.stop()"));
+}
+
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));

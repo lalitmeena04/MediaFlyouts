@@ -30,6 +30,19 @@ DockableWidget {
 
     signal activated()
 
+    // only capture system audio while the visualizer is actually on screen, so nothing is
+    // sampled while the widget is hidden by fullscreen / no media / onboarding
+    readonly property bool visualizerLive: root.visible && settings.taskbarVisualizerEnabled
+    onVisualizerLiveChanged: root.visualizerLive ? audioCapture.start() : audioCapture.stop()
+
+    // DockableWidget's Component.onCompleted only places the widget; extend it to also honor the
+    // initial capture state (a plain override would otherwise shadow the base placement call)
+    Component.onCompleted: {
+        updatePosition()
+        if(root.visualizerLive)
+            audioCapture.start()
+    }
+
     // throttle source-switching so touchpad inertia doesn't skip several sources at once
     property bool scrollCooldown: false
     Timer {

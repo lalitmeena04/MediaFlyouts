@@ -177,16 +177,9 @@ void MainControllerClass::buildPlatformSubsystems() {
     // per-application volume control for the mixer window
     m_volumeMixer = std::make_unique<VolumeMixer>();
 
-    // WASAPI loopback capture -> FFT bands for the taskbar visualizer
+    // WASAPI loopback capture -> FFT bands for the taskbar visualizer. Capture is started and
+    // stopped from QML based on whether the visualizer is actually on screen (see TaskbarWidget).
     m_audioCapture = std::make_unique<AudioCapture>(28);
-    if(m_settings->taskbarVisualizerEnabled())
-        m_audioCapture->start();
-    QObject::connect(m_settings.get(), &Settings::changed, m_audioCapture.get(), [this] {
-        if(m_settings->taskbarVisualizerEnabled())
-            m_audioCapture->start();
-        else
-            m_audioCapture->stop();
-    });
 
     // exposes the themed (dark/light) title-bar helper to QML
     m_windowEffects = std::make_unique<WindowEffects>();
