@@ -2,26 +2,15 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-Window {
+FlyoutBase {
     id: root
     width: settings.compactLayout ? 330 : 380
     height: settings.compactLayout ? 96 : (settings.seekbarEnabled ? 150 : 112)
-    visible: false
-    opacity: 0
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
 
     readonly property bool compact: settings.compactLayout
     readonly property int artSize: compact ? 52 : 76
 
     readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
-
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
-    property bool positioned: false
-    Behavior on y {
-        enabled: root.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
-    }
 
     // tracks the pinned state to detect when the user unpins while the flyout is up
     property bool prevAlwaysDisplay: settings.mediaFlyoutAlwaysDisplay
@@ -33,14 +22,10 @@ Window {
             return
         if(nowPlaying.hasMedia && !settings.playerAllowed(nowPlaying.playerName))
             return
-        if(!settings.mediaFlyoutAlwaysDisplay)
-            hideTimer.restart()
-        root.visible = true
-        fadeIn.restart()
-    }
-
-    function hideFlyout() {
-        fadeOut.restart()
+        present()
+        // pinned flyouts stay up: cancel the auto-hide countdown present() started
+        if(settings.mediaFlyoutAlwaysDisplay)
+            stopAutoHide()
     }
 
     Connections {
@@ -58,34 +43,9 @@ Window {
         function onChanged() {
             // unpinned while the flyout is up -> resume the auto-hide countdown
             if(root.prevAlwaysDisplay && !settings.mediaFlyoutAlwaysDisplay && root.visible)
-                hideTimer.restart()
+                root.restartAutoHide()
             root.prevAlwaysDisplay = settings.mediaFlyoutAlwaysDisplay
         }
-    }
-
-    Timer {
-        id: hideTimer
-        interval: settings.flyoutDuration
-        onTriggered: root.hideFlyout()
-    }
-
-    NumberAnimation {
-        id: fadeIn
-        target: root
-        property: "opacity"
-        to: 1
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-    }
-
-    NumberAnimation {
-        id: fadeOut
-        target: root
-        property: "opacity"
-        to: 0
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: root.visible = false
     }
 
     Rectangle {
@@ -100,9 +60,9 @@ Window {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: hideTimer.stop()
-            onExited: if(!settings.mediaFlyoutAlwaysDisplay) hideTimer.restart()
-            onClicked: if(!settings.mediaFlyoutAlwaysDisplay) hideTimer.restart()
+            onEntered: root.stopAutoHide()
+            onExited: if(!settings.mediaFlyoutAlwaysDisplay) root.restartAutoHide()
+            onClicked: if(!settings.mediaFlyoutAlwaysDisplay) root.restartAutoHide()
         }
 
         // dismiss button, shown only when the flyout is pinned (always-display)
@@ -291,16 +251,16 @@ Window {
                                 return Math.max(0, Math.min(1, px / seekTrack.width))
                             }
 
-                            onEntered: hideTimer.stop()
-                            onExited: if(!settings.mediaFlyoutAlwaysDisplay && !pressed) hideTimer.restart()
-                            onPressed: (mouse) => { hideTimer.stop(); seekTrack.dragFraction = fractionAt(mouse.x) }
+                            onEntered: root.stopAutoHide()
+                            onExited: if(!settings.mediaFlyoutAlwaysDisplay && !pressed) root.restartAutoHide()
+                            onPressed: (mouse) => { root.stopAutoHide(); seekTrack.dragFraction = fractionAt(mouse.x) }
                             onPositionChanged: (mouse) => { if(pressed) seekTrack.dragFraction = fractionAt(mouse.x) }
                             onReleased: {
                                 if(seekTrack.dragFraction >= 0)
                                     nowPlaying.seekToFraction(seekTrack.dragFraction)
                                 seekTrack.dragFraction = -1
                                 if(!settings.mediaFlyoutAlwaysDisplay)
-                                    hideTimer.restart()
+                                    root.restartAutoHide()
                             }
                         }
                     }

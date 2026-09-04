@@ -141,6 +141,29 @@ TEST(QmlContractTest, SettingRowSupportsUnavailableState) {
     expectContains(source, QStringLiteral("property string unavailableNote"));
 }
 
+TEST(QmlContractTest, FlyoutBaseOwnsSharedWindowChromeAndTiming) {
+    const QString base = loadSource("Views/FlyoutBase.qml");
+    expectContains(base, QStringLiteral("flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool"));
+    expectContains(base, QStringLiteral("function present()"));
+    expectContains(base, QStringLiteral("function hideFlyout()"));
+    expectContains(base, QStringLiteral("function stopAutoHide()"));
+    expectContains(base, QStringLiteral("function restartAutoHide()"));
+    expectContains(base, QStringLiteral("property int hideInterval"));
+}
+
+TEST(QmlContractTest, FlyoutsDeriveFromFlyoutBaseWithoutDuplicatingChrome) {
+    for(const char* path : {"Views/MediaFlyout.qml", "Views/VolumeFlyout.qml", "Views/LockKeysFlyout.qml",
+                            "Views/NowPlayingFlyout.qml", "Views/PeripheralFlyout.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("FlyoutBase {"));
+        // the shared chrome and timers now live only in FlyoutBase
+        EXPECT_FALSE(source.contains(QStringLiteral("flags: Qt.FramelessWindowHint")))
+            << "Duplicated window chrome still present in " << path;
+        EXPECT_FALSE(source.contains(QStringLiteral("id: hideTimer")))
+            << "Duplicated hide timer still present in " << path;
+    }
+}
+
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));

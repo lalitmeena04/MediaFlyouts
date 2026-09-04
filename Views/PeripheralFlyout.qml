@@ -5,7 +5,7 @@ import MediaFlyouts
 // Shows peripheral events (connect / disconnect / battery) as a row of cards. Several
 // devices reported in the same snapshot appear side by side in one window rather than as
 // separate flyouts fighting over the same screen edge.
-Window {
+FlyoutBase {
     id: root
 
     property var alerts: []
@@ -13,17 +13,7 @@ Window {
     readonly property int cardWidth: 176
     width: Math.max(1, alerts.length) * cardWidth + 16
     height: 92
-    visible: false
-    opacity: 0
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
-
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
-    property bool positioned: false
-    Behavior on y {
-        enabled: root.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
-    }
+    hideInterval: settings.peripheralFlyoutDuration
 
     // Events the user has switched off never reach the screen.
     function eventEnabled(event) {
@@ -52,13 +42,7 @@ Window {
             return
 
         root.alerts = shown
-        hideTimer.restart()
-        root.visible = true
-        fadeIn.restart()
-    }
-
-    function hideFlyout() {
-        fadeOut.restart()
+        present()
     }
 
     Connections {
@@ -67,31 +51,6 @@ Window {
             if(peripheralAlerts.pending.length > 0)
                 root.showFlyout(peripheralAlerts.pending)
         }
-    }
-
-    Timer {
-        id: hideTimer
-        interval: settings.peripheralFlyoutDuration
-        onTriggered: root.hideFlyout()
-    }
-
-    NumberAnimation {
-        id: fadeIn
-        target: root
-        property: "opacity"
-        to: 1
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-    }
-
-    NumberAnimation {
-        id: fadeOut
-        target: root
-        property: "opacity"
-        to: 0
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: root.visible = false
     }
 
     Rectangle {
@@ -105,8 +64,8 @@ Window {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: hideTimer.stop()
-            onExited: hideTimer.restart()
+            onEntered: root.stopAutoHide()
+            onExited: root.restartAutoHide()
         }
 
         Row {

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-Window {
+FlyoutBase {
     id: root
     width: 320
     // grows to fit the per-app mixer when expanded
@@ -11,17 +11,7 @@ Window {
     property bool appDragging: false
     readonly property int sessionCount: volumeMixer.sessions.length
     height: 64 + (expanded ? (16 + Math.max(1, sessionCount) * 48) : 0)
-    visible: false
-    opacity: 0
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
-
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
-    property bool positioned: false
-    Behavior on y {
-        enabled: root.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
-    }
+    hideInterval: settings.volumeFlyoutDuration
 
     function speakerGlyph() {
         if(volumeController.muted || volumeController.volume === 0)
@@ -38,13 +28,12 @@ Window {
             return
         if(!settings.volumeFlyoutEnabled || !capabilities.audioAvailable || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.volumeFlyoutMonitor))
             return
-        hideTimer.restart()
-        root.visible = true
-        fadeIn.restart()
+        present()
     }
 
-    function hideFlyout() {
-        fadeOut.restart()
+    // collapse the mixer once the flyout finishes fading out
+    function afterHide() {
+        root.expanded = false
     }
 
     // reveal / hide the per-app mixer, keeping the flyout open while it's showing
@@ -52,9 +41,9 @@ Window {
         root.expanded = !root.expanded
         if(root.expanded) {
             volumeMixer.refresh()
-            hideTimer.stop()
+            root.stopAutoHide()
         } else {
-            hideTimer.restart()
+            root.restartAutoHide()
         }
     }
 
@@ -73,31 +62,6 @@ Window {
         }
     }
 
-    Timer {
-        id: hideTimer
-        interval: settings.volumeFlyoutDuration
-        onTriggered: root.hideFlyout()
-    }
-
-    NumberAnimation {
-        id: fadeIn
-        target: root
-        property: "opacity"
-        to: 1
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-    }
-
-    NumberAnimation {
-        id: fadeOut
-        target: root
-        property: "opacity"
-        to: 0
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: { root.visible = false; root.expanded = false }
-    }
-
     Rectangle {
         anchors.fill: parent
         anchors.margins: 8
@@ -109,8 +73,8 @@ Window {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: hideTimer.stop()
-            onExited: if(!root.expanded) hideTimer.restart()
+            onEntered: root.stopAutoHide()
+            onExited: if(!root.expanded) root.restartAutoHide()
         }
 
         Column {
@@ -169,7 +133,7 @@ Window {
                         function setFromX(px) {
                             const ratio = Math.max(0, Math.min(1, px / track.width))
                             volumeController.setVolume(Math.round(ratio * 100))
-                            hideTimer.restart()
+                            root.restartAutoHide()
                         }
                         onPressed: (mouse) => setFromX(mouse.x)
                         onPositionChanged: (mouse) => {
@@ -309,7 +273,7 @@ Window {
                                         const ratio = Math.max(0, Math.min(1, px / appTrack.width))
                                         appRow.shown = Math.round(ratio * 100)
                                         volumeMixer.setSessionVolume(modelData.index, appRow.shown)
-                                        hideTimer.stop()
+                                        root.stopAutoHide()
                                     }
                                     onPressed: (mouse) => { root.appDragging = true; setFromX(mouse.x) }
                                     onReleased: root.appDragging = false

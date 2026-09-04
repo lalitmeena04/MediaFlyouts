@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-Window {
+FlyoutBase {
     id: root
     readonly property bool compact: settings.nextUpStyle === 1
     // flyout accent follows the album art when enabled, else the theme accent
@@ -11,20 +11,10 @@ Window {
     readonly property int contentWidth: Math.max(titleMetrics.implicitWidth, artistMetrics.implicitWidth, 80)
     width: Math.round(Math.max(300, Math.min(560, (root.compact ? 190 : 100) + contentWidth)))
     height: root.compact ? 64 : 96
-    visible: false
-    opacity: 0
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
+    hideInterval: settings.nextUpDuration
 
     Text { id: titleMetrics; visible: false; text: nowPlaying.title; font.pixelSize: 15; font.bold: true }
     Text { id: artistMetrics; visible: false; text: nowPlaying.artist; font.pixelSize: 12 }
-
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
-    property bool positioned: false
-    Behavior on y {
-        enabled: root.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
-    }
 
     function showFlyout() {
         if(!settings.onboardingCompleted)
@@ -33,13 +23,7 @@ Window {
             return
         if(!settings.playerAllowed(nowPlaying.playerName))
             return
-        hideTimer.restart()
-        root.visible = true
-        fadeIn.restart()
-    }
-
-    function hideFlyout() {
-        fadeOut.restart()
+        present()
     }
 
     Connections {
@@ -47,31 +31,6 @@ Window {
         function onNextUpRequested() {
             root.showFlyout()
         }
-    }
-
-    Timer {
-        id: hideTimer
-        interval: settings.nextUpDuration
-        onTriggered: root.hideFlyout()
-    }
-
-    NumberAnimation {
-        id: fadeIn
-        target: root
-        property: "opacity"
-        to: 1
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-    }
-
-    NumberAnimation {
-        id: fadeOut
-        target: root
-        property: "opacity"
-        to: 0
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: root.visible = false
     }
 
     Rectangle {
@@ -85,8 +44,8 @@ Window {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: hideTimer.stop()
-            onExited: hideTimer.restart()
+            onEntered: root.stopAutoHide()
+            onExited: root.restartAutoHide()
         }
 
         Row {

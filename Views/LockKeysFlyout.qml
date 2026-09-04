@@ -2,21 +2,11 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-Window {
+FlyoutBase {
     id: root
     width: 240
     height: 80
-    visible: false
-    opacity: 0
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
-
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
-    property bool positioned: false
-    Behavior on y {
-        enabled: root.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
-    }
+    hideInterval: settings.lockKeysDuration
 
     // per-key toggle for the currently reported lock key (keyType: 0=Caps,1=Num,2=Scroll,3=Insert)
     function keyEnabled() {
@@ -34,13 +24,7 @@ Window {
             return
         if(!settings.lockKeysEnabled || !capabilities.lockKeysAvailable || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))
             return
-        hideTimer.restart()
-        root.visible = true
-        fadeIn.restart()
-    }
-
-    function hideFlyout() {
-        fadeOut.restart()
+        present()
     }
 
     Connections {
@@ -48,31 +32,6 @@ Window {
         function onLockKeyToggled() {
             root.showFlyout()
         }
-    }
-
-    Timer {
-        id: hideTimer
-        interval: settings.lockKeysDuration
-        onTriggered: root.hideFlyout()
-    }
-
-    NumberAnimation {
-        id: fadeIn
-        target: root
-        property: "opacity"
-        to: 1
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-    }
-
-    NumberAnimation {
-        id: fadeOut
-        target: root
-        property: "opacity"
-        to: 0
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: root.visible = false
     }
 
     Rectangle {

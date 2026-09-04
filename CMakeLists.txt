@@ -134,6 +134,7 @@ qt_add_qml_module(MediaFlyouts
         Views/VolumeFlyout.qml
         Views/LockKeysFlyout.qml
         Views/NowPlayingFlyout.qml
+        Views/FlyoutBase.qml
         Views/Dashboard.qml
         Views/TaskbarWidget.qml
         Views/PeripheralsWidget.qml
