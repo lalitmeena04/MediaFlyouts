@@ -65,21 +65,37 @@ endif()
 
 # --- Model: cross-platform domain logic, shared by the app and the tests ---
 qt_add_library(mediaflyout_core STATIC
-    Logging.h                Logging.cpp
-    Model/FlyoutPositioner.h Model/FlyoutPositioner.cpp
-    Model/TrackInfo.h        Model/TrackInfo.cpp
-    Model/PlaybackController.h Model/PlaybackController.cpp
-    Model/Fft.h              Model/Fft.cpp
-    Model/DualSenseProtocol.h Model/DualSenseProtocol.cpp
-    Model/FastPairProtocol.h Model/FastPairProtocol.cpp
-    Model/RazerProtocol.h    Model/RazerProtocol.cpp
-    Model/HidppProtocol.h    Model/HidppProtocol.cpp
-    Model/BatteryUtils.h     Model/BatteryUtils.cpp
-    Model/BatteryAlertPolicy.h Model/BatteryAlertPolicy.cpp
-    Model/SessionSelection.h Model/SessionSelection.cpp
-    Model/Capabilities.h     Model/Capabilities.cpp
+    Logging.cpp
+    Logging.h
+    Model/BatteryAlertPolicy.cpp
+    Model/BatteryAlertPolicy.h
+    Model/BatteryUtils.cpp
+    Model/BatteryUtils.h
+    Model/Capabilities.cpp
+    Model/Capabilities.h
+    Model/DualSenseProtocol.cpp
+    Model/DualSenseProtocol.h
+    Model/FastPairProtocol.cpp
+    Model/FastPairProtocol.h
+    Model/Fft.cpp
+    Model/Fft.h
+    Model/FlyoutPositioner.cpp
+    Model/FlyoutPositioner.h
+    Model/HidppProtocol.cpp
+    Model/HidppProtocol.h
+    Model/PlaybackController.cpp
+    Model/PlaybackController.h
+    Model/RazerProtocol.cpp
+    Model/RazerProtocol.h
+    Model/SessionSelection.cpp
+    Model/SessionSelection.h
+    Model/TrackInfo.cpp
+    Model/TrackInfo.h
 )
-target_link_libraries(mediaflyout_core PUBLIC Qt6::Core spdlog::spdlog)
+target_link_libraries(mediaflyout_core PUBLIC
+    Qt6::Core
+    spdlog::spdlog
+)
 # Logging: when enabled TRC_DEBUG is compiled in; when disabled SPDLOG_LEVEL_OFF compiles every
 # TRC_* call out to nothing (zero overhead) and initLogging() skips creating the log file.
 option(MEDIAFLYOUTS_ENABLE_LOGGING "Enable spdlog file logging" ON)
@@ -89,21 +105,34 @@ else()
     set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_OFF)
 endif()
 target_compile_definitions(mediaflyout_core PUBLIC SPDLOG_ACTIVE_LEVEL=${MEDIAFLYOUTS_SPDLOG_LEVEL})
-target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Model ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(mediaflyout_core PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Model
+)
 
 # --- Application executable ---
 qt_add_executable(MediaFlyouts WIN32
+    Controllers/FlyoutPlacement.cpp
+    Controllers/FlyoutPlacement.h
+    Controllers/NowPlaying.cpp
+    Controllers/NowPlaying.h
+    Controllers/QmlLogger.cpp
+    Controllers/QmlLogger.h
+    Controllers/SingleInstance.cpp
+    Controllers/SingleInstance.h
+    Controllers/ThemeController.cpp
+    Controllers/ThemeController.h
+    Controllers/TrayController.cpp
+    Controllers/TrayController.h
+    Controllers/UpdateChecker.cpp
+    Controllers/UpdateChecker.h
     main.cpp
-    MainControllerClass.h        MainControllerClass.cpp
-    Controllers/NowPlaying.h     Controllers/NowPlaying.cpp
-    Controllers/TrayController.h Controllers/TrayController.cpp
-    Controllers/FlyoutPlacement.h Controllers/FlyoutPlacement.cpp
-    Controllers/SingleInstance.h Controllers/SingleInstance.cpp
-    Controllers/ThemeController.h Controllers/ThemeController.cpp
-    Controllers/UpdateChecker.h  Controllers/UpdateChecker.cpp
-    Controllers/QmlLogger.h      Controllers/QmlLogger.cpp
-    Model/AlbumArtProvider.h     Model/AlbumArtProvider.cpp
-    Model/Settings.h             Model/Settings.cpp
+    MainControllerClass.cpp
+    MainControllerClass.h
+    Model/AlbumArtProvider.cpp
+    Model/AlbumArtProvider.h
+    Model/Settings.cpp
+    Model/Settings.h
 )
 
 target_include_directories(MediaFlyouts PRIVATE
@@ -129,31 +158,32 @@ qt_add_qml_module(MediaFlyouts
     URI MediaFlyouts
     VERSION 1.0
     QML_FILES
-        Views/App.qml
-        Views/MediaFlyout.qml
-        Views/VolumeFlyout.qml
-        Views/LockKeysFlyout.qml
-        Views/NowPlayingFlyout.qml
-        Views/FlyoutBase.qml
-        Views/Dashboard.qml
-        Views/TaskbarWidget.qml
-        Views/PeripheralsWidget.qml
-        Views/PeripheralFlyout.qml
-        Views/PeripheralCard.qml
-        Views/BatteryRing.qml
-        Views/BatteryIcon.qml
-        Views/InfoTooltip.qml
-        Views/DeviceIcons.qml
-        Views/TaskbarVisualizer.qml
-        Views/VolumeMixerWindow.qml
-        Views/OnboardingWindow.qml
-        Views/RoundedArt.qml
-        Views/Fluent.qml
         Views/Anim.qml
+        Views/App.qml
+        Views/BatteryIcon.qml
+        Views/BatteryRing.qml
+        Views/Dashboard.qml
+        Views/DeviceIcons.qml
+        Views/DockableWidget.qml
+        Views/Fluent.qml
+        Views/FlyoutBase.qml
         Views/IconLabel.qml
-        Views/SettingRow.qml
+        Views/InfoTooltip.qml
+        Views/LockKeysFlyout.qml
+        Views/MediaFlyout.qml
+        Views/NowPlayingFlyout.qml
+        Views/OnboardingWindow.qml
+        Views/PeripheralCard.qml
+        Views/PeripheralFlyout.qml
+        Views/PeripheralsWidget.qml
+        Views/RoundedArt.qml
         Views/SettingCombo.qml
+        Views/SettingRow.qml
         Views/SettingSlider.qml
+        Views/TaskbarVisualizer.qml
+        Views/TaskbarWidget.qml
+        Views/VolumeFlyout.qml
+        Views/VolumeMixerWindow.qml
     RESOURCES
         Views/assets/fonts/FluentSystemIcons-Filled.ttf
         Views/assets/fonts/FontAwesome6-Solid.ttf
@@ -169,45 +199,75 @@ target_link_libraries(MediaFlyouts PRIVATE
 
 if (WIN32)
     target_sources(MediaFlyouts PRIVATE
-        packaging/MediaFlyouts.rc
-        Model/WinMediaProvider.h             Model/WinMediaProvider.cpp
-        Controllers/VolumeController.h       Controllers/VolumeController.cpp
-        Controllers/NativeFlyoutSuppressor.h Controllers/NativeFlyoutSuppressor.cpp
-        Controllers/FullscreenDetector.h     Controllers/FullscreenDetector.cpp
-        Controllers/LockKeysController.h     Controllers/LockKeysController.cpp
-        Controllers/MediaKeyController.h     Controllers/MediaKeyController.cpp
-        Controllers/StartupController.h      Controllers/StartupController.cpp
-        Controllers/TaskbarInfo.h            Controllers/TaskbarInfo.cpp
-        Controllers/VolumeMixer.h            Controllers/VolumeMixer.cpp
-        Controllers/AudioCapture.h           Controllers/AudioCapture.cpp
-        Controllers/WindowEffects.h          Controllers/WindowEffects.cpp
-        Controllers/AccentWatcher.h          Controllers/AccentWatcher.cpp
-        Controllers/BatteryStatusController.h Controllers/BatteryStatusController.cpp
-        Controllers/PeripheralAlerts.h        Controllers/PeripheralAlerts.cpp
-        Controllers/BluetoothConnectionWatcher.h Controllers/BluetoothConnectionWatcher.cpp
-        Controllers/HidChangeWatcher.h        Controllers/HidChangeWatcher.cpp
-        Controllers/BatteryProviders/IBatteryProvider.h
-        Controllers/BatteryProviders/WirelessReceiverProvider.h
-        Controllers/BatteryProviders/WirelessReceiverProvider.cpp
-        Controllers/BatteryProviders/BluetoothClassicBatteryProvider.h
+        Controllers/AccentWatcher.cpp
+        Controllers/AccentWatcher.h
+        Controllers/AudioCapture.cpp
+        Controllers/AudioCapture.h
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
-        Controllers/BatteryProviders/BluetoothLeBatteryProvider.h
+        Controllers/BatteryProviders/BluetoothClassicBatteryProvider.h
         Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
-        Controllers/BatteryProviders/FastPairBatteryProvider.h
+        Controllers/BatteryProviders/BluetoothLeBatteryProvider.h
         Controllers/BatteryProviders/FastPairBatteryProvider.cpp
-        Controllers/BatteryProviders/HidCollections.h
-        Controllers/BatteryProviders/HidCollections.cpp
-        Controllers/BatteryProviders/RazerBatteryProvider.h
-        Controllers/BatteryProviders/RazerBatteryProvider.cpp
-        Controllers/BatteryProviders/LogitechBatteryProvider.h
-        Controllers/BatteryProviders/LogitechBatteryProvider.cpp
-        Controllers/BatteryProviders/GameControllerBatteryProvider.h
+        Controllers/BatteryProviders/FastPairBatteryProvider.h
         Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
-        Controllers/BatteryProviders/PlayStationControllerBatteryProvider.h
+        Controllers/BatteryProviders/GameControllerBatteryProvider.h
+        Controllers/BatteryProviders/HidCollections.cpp
+        Controllers/BatteryProviders/HidCollections.h
+        Controllers/BatteryProviders/IBatteryProvider.h
+        Controllers/BatteryProviders/LogitechBatteryProvider.cpp
+        Controllers/BatteryProviders/LogitechBatteryProvider.h
         Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
+        Controllers/BatteryProviders/PlayStationControllerBatteryProvider.h
+        Controllers/BatteryProviders/RazerBatteryProvider.cpp
+        Controllers/BatteryProviders/RazerBatteryProvider.h
+        Controllers/BatteryProviders/WirelessReceiverProvider.cpp
+        Controllers/BatteryProviders/WirelessReceiverProvider.h
+        Controllers/BatteryStatusController.cpp
+        Controllers/BatteryStatusController.h
+        Controllers/BluetoothConnectionWatcher.cpp
+        Controllers/BluetoothConnectionWatcher.h
+        Controllers/FullscreenDetector.cpp
+        Controllers/FullscreenDetector.h
+        Controllers/HidChangeWatcher.cpp
+        Controllers/HidChangeWatcher.h
+        Controllers/LockKeysController.cpp
+        Controllers/LockKeysController.h
+        Controllers/MediaKeyController.cpp
+        Controllers/MediaKeyController.h
+        Controllers/NativeFlyoutSuppressor.cpp
+        Controllers/NativeFlyoutSuppressor.h
+        Controllers/PeripheralAlerts.cpp
+        Controllers/PeripheralAlerts.h
+        Controllers/StartupController.cpp
+        Controllers/StartupController.h
+        Controllers/TaskbarInfo.cpp
+        Controllers/TaskbarInfo.h
+        Controllers/VolumeController.cpp
+        Controllers/VolumeController.h
+        Controllers/VolumeMixer.cpp
+        Controllers/VolumeMixer.h
+        Controllers/WindowEffects.cpp
+        Controllers/WindowEffects.h
+        Model/WinMediaProvider.cpp
+        Model/WinMediaProvider.h
+        packaging/MediaFlyouts.rc
     )
-    target_compile_definitions(MediaFlyouts PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(MediaFlyouts PRIVATE WindowsApp.lib dwmapi.lib shell32.lib gdi32.lib user32.lib cfgmgr32.lib Bthprops.lib hid.lib setupapi.lib ws2_32.lib)
+    target_compile_definitions(MediaFlyouts PRIVATE
+        NOMINMAX
+        WIN32_LEAN_AND_MEAN
+    )
+    target_link_libraries(MediaFlyouts PRIVATE
+        WindowsApp.lib
+        dwmapi.lib
+        shell32.lib
+        gdi32.lib
+        user32.lib
+        cfgmgr32.lib
+        Bthprops.lib
+        hid.lib
+        setupapi.lib
+        ws2_32.lib
+    )
 endif()
 
 if(MEDIAFLYOUTS_BUILD_TESTS)

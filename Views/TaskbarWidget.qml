@@ -3,20 +3,18 @@ import QtQuick.Window
 import MediaFlyouts
 
 // A small always-on-top media widget docked on the primary taskbar near the tray.
-Window {
+DockableWidget {
     id: root
     width: 220
     height: 40
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
+    logName: "TaskbarWidget"
+    // keep polling (even when hidden) while media is playing so it reappears after fullscreen
+    pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
 
     // shown only once onboarding is done, when enabled, something is playing, and not blocked by
     // fullscreen / lock screen
     visible: settings.onboardingCompleted && settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
                 && settings.playerAllowed(nowPlaying.playerName)
-
-    // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
-    property bool blocked: false
 
     onVisibleChanged: {
         log.debug("TaskbarWidget.visible=" + visible
@@ -31,42 +29,6 @@ Window {
     }
 
     signal activated()
-
-    function updatePosition() {
-        var p = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
-                                       settings.taskbarWidgetOffset, width, height)
-        root.x = p.x
-        root.y = p.y
-        // keep the widget above the (possibly transparent) taskbar so it stays clickable
-        if(root.visible)
-            taskbar.pinAboveTaskbar(root)
-    }
-
-    Component.onCompleted: updatePosition()
-
-    // reposition immediately when the offset (or other settings) change
-    Connections {
-        target: settings
-        function onChanged() { root.updatePosition() }
-    }
-
-    // poll fullscreen/lock state and re-assert placement/z-order while media is playing,
-    // even when hidden, so the widget reappears once the fullscreen app is gone
-    Timer {
-        interval: 500
-        running: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            var wasBlocked = root.blocked
-            root.blocked = fullscreen.isLocked()
-                || fullscreen.isFullscreen(settings.taskbarWidgetMonitor)
-            if(wasBlocked !== root.blocked)
-                log.debug("TaskbarWidget.blocked changed " + wasBlocked + " -> " + root.blocked
-                    + " (monitor=" + settings.taskbarWidgetMonitor + ")")
-            root.updatePosition()
-        }
-    }
 
     // throttle source-switching so touchpad inertia doesn't skip several sources at once
     property bool scrollCooldown: false

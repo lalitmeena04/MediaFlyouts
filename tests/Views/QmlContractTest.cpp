@@ -112,9 +112,12 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
 }
 
 TEST(QmlContractTest, WidgetsHideForEveryFullscreenApp) {
+    // the taskbar widgets hide for every fullscreen app via the shared DockableWidget base
+    const QString base = loadSource("Views/DockableWidget.qml");
+    expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
+    EXPECT_FALSE(base.contains(QStringLiteral("fullscreen.shouldBlock(")));
     for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
         const QString source = loadSource(path);
-        expectContains(source, QStringLiteral("fullscreen.isFullscreen(settings.taskbarWidgetMonitor)"));
         EXPECT_FALSE(source.contains(QStringLiteral("fullscreen.shouldBlock(")));
     }
 }
@@ -161,6 +164,29 @@ TEST(QmlContractTest, FlyoutsDeriveFromFlyoutBaseWithoutDuplicatingChrome) {
             << "Duplicated window chrome still present in " << path;
         EXPECT_FALSE(source.contains(QStringLiteral("id: hideTimer")))
             << "Duplicated hide timer still present in " << path;
+    }
+}
+
+TEST(QmlContractTest, DockableWidgetOwnsSharedDockingAndBlocking) {
+    const QString base = loadSource("Views/DockableWidget.qml");
+    expectContains(base, QStringLiteral("flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus"));
+    expectContains(base, QStringLiteral("property bool blocked"));
+    expectContains(base, QStringLiteral("property bool pollActive"));
+    expectContains(base, QStringLiteral("function updatePosition()"));
+    expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
+}
+
+TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingChrome) {
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("DockableWidget {"));
+        expectContains(source, QStringLiteral("pollActive:"));
+        // the shared block state and fullscreen poll now live only in DockableWidget
+        // (a bare "flags:" check would trip on PeripheralsWidget's inner tooltip Window)
+        EXPECT_FALSE(source.contains(QStringLiteral("property bool blocked")))
+            << "Duplicated block state still present in " << path;
+        EXPECT_FALSE(source.contains(QStringLiteral("interval: 500")))
+            << "Duplicated fullscreen poll timer still present in " << path;
     }
 }
 

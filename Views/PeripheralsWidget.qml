@@ -4,8 +4,10 @@ import MediaFlyouts
 
 // A small always-on-top battery widget for user-selected peripherals, docked on the
 // taskbar like TaskbarWidget.qml.
-Window {
+DockableWidget {
     id: root
+    logName: "PeripheralsWidget"
+    pollActive: settings.peripheralsWidgetEnabled
     // the now-playing taskbar widget, set by App.qml, so this widget can dock next to
     // it instead of overlapping when both share the same monitor/side
     property var mediaWidget: null
@@ -35,15 +37,10 @@ Window {
         width: Math.max(1, dongleDevices.length) * 32 + Math.max(1, bluetoothDevices.length) * 32
                 + deviceSections.length * 22 + (dongleDevices.length > 0 && bluetoothDevices.length > 0 ? 14 : 0)
             height: 32
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
     // shown only once onboarding is done, when enabled, at least one selected device is currently
     // reporting battery, and not blocked by fullscreen / lock screen
     visible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
-
-    // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
-    property bool blocked: false
 
     // true once this widget has been placed once, so later moves (media widget showing up or
     // going away) slide smoothly instead of snapping
@@ -69,7 +66,6 @@ Window {
         root.positioned = true
     }
 
-    Component.onCompleted: updatePosition()
     onVisibleChanged: {
         log.debug("PeripheralsWidget.visible=" + visible
             + " onboardingCompleted=" + settings.onboardingCompleted
@@ -83,10 +79,6 @@ Window {
     onWidthChanged: updatePosition()
 
     Connections {
-        target: settings
-        function onChanged() { root.updatePosition() }
-    }
-    Connections {
         target: batteryStatus
         function onDevicesChanged() { root.updatePosition() }
     }
@@ -94,22 +86,6 @@ Window {
         target: root.mediaWidget
         function onVisibleChanged() { root.updatePosition() }
         function onWidthChanged() { root.updatePosition() }
-    }
-
-    Timer {
-        interval: 500
-        running: settings.peripheralsWidgetEnabled
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            var wasBlocked = root.blocked
-            root.blocked = fullscreen.isLocked()
-                || fullscreen.isFullscreen(settings.taskbarWidgetMonitor)
-            if(wasBlocked !== root.blocked)
-                log.debug("PeripheralsWidget.blocked changed " + wasBlocked + " -> " + root.blocked
-                    + " (monitor=" + settings.taskbarWidgetMonitor + ")")
-            root.updatePosition()
-        }
     }
 
     // a plain Popup/ToolTip would be clipped to this tiny frameless window's own bounds,
