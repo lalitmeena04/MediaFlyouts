@@ -40,6 +40,7 @@ add_executable(mediaflyout_gtest
     Model/BatteryUtilsTest.cpp
     Model/BatteryAlertPolicyTest.cpp
     Model/SessionSelectionTest.cpp
+    Model/CapabilitiesTest.cpp
     Views/QmlContractTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp

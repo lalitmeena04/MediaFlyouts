@@ -21,6 +21,8 @@ class VolumeController : public QObject {
 
         int volume() const;
         bool muted() const;
+        // true once a default render endpoint has been acquired (Core Audio available)
+        bool available() const;
 
         Q_INVOKABLE void setVolume(int percent);
         Q_INVOKABLE void toggleMute();
@@ -34,6 +36,7 @@ class VolumeController : public QObject {
     signals:
         void changed();
         void volumeChangedExternally();
+        void availabilityChanged();
 
     private:
         friend struct VolumeCallback;

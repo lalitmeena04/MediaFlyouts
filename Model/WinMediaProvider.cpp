@@ -48,12 +48,18 @@ void WinMediaProvider::start() {
     initAsync();
 }
 
+bool WinMediaProvider::available() const {
+    return m_manager != nullptr;
+}
+
 winrt::fire_and_forget WinMediaProvider::initAsync() {
     try {
         m_manager = co_await SessionManager::RequestAsync();
     } catch(...) {
+        QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
         co_return;
     }
+    QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
 
     m_currentChangedToken = m_manager.CurrentSessionChanged([this](auto&&, auto&&) {
         // the OS current session drives us unless the user manually picked one

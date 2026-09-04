@@ -35,6 +35,12 @@ MediaKeyController::~MediaKeyController() {
 
 void MediaKeyController::start() {
     g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, keyboardProc, GetModuleHandleW(nullptr), 0);
+    m_available = g_hook != nullptr;
+    emit availabilityChanged();
+}
+
+bool MediaKeyController::available() const {
+    return m_available;
 }
 
 void MediaKeyController::notifyPressed() {

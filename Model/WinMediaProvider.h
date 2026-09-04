@@ -21,6 +21,9 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
 
         void start();
 
+        // true once the SMTC session manager was obtained (media session API available)
+        bool available() const;
+
         // mf::IPlaybackController — forwarded to the currently active session.
         void play() override;
         void pause() override;
@@ -37,6 +40,7 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         void trackChanged(const mf::TrackInfo& track);
         void artChanged(const QImage& art);
         void sessionsChanged();
+        void availabilityChanged();
 
     private:
         using SessionManager = winrt::Windows::Media::Control::GlobalSystemMediaTransportControlsSessionManager;

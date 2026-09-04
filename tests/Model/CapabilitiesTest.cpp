@@ -1,0 +1,49 @@
+#include <gtest/gtest.h>
+
+#include <QSignalSpy>
+
+#include "Capabilities.h"
+
+// Every capability starts optimistically available so features stay visible until a
+// subsystem reports a definite failure.
+TEST(CapabilitiesTest, DefaultsToAvailable) {
+    Capabilities caps;
+    EXPECT_TRUE(caps.audioAvailable());
+    EXPECT_TRUE(caps.mediaSessionAvailable());
+    EXPECT_TRUE(caps.lockKeysAvailable());
+    EXPECT_TRUE(caps.mediaKeysAvailable());
+}
+
+TEST(CapabilitiesTest, SettersUpdateEachFlagIndependently) {
+    Capabilities caps;
+
+    caps.setAudioAvailable(false);
+    EXPECT_FALSE(caps.audioAvailable());
+    EXPECT_TRUE(caps.mediaSessionAvailable());
+    EXPECT_TRUE(caps.lockKeysAvailable());
+    EXPECT_TRUE(caps.mediaKeysAvailable());
+
+    caps.setMediaSessionAvailable(false);
+    caps.setLockKeysAvailable(false);
+    caps.setMediaKeysAvailable(false);
+    EXPECT_FALSE(caps.mediaSessionAvailable());
+    EXPECT_FALSE(caps.lockKeysAvailable());
+    EXPECT_FALSE(caps.mediaKeysAvailable());
+}
+
+TEST(CapabilitiesTest, EmitsChangedOnlyOnTransition) {
+    Capabilities caps;
+    QSignalSpy spy(&caps, &Capabilities::changed);
+
+    caps.setAudioAvailable(true); // no-op, already available
+    EXPECT_EQ(spy.count(), 0);
+
+    caps.setAudioAvailable(false);
+    EXPECT_EQ(spy.count(), 1);
+
+    caps.setAudioAvailable(false); // no-op, unchanged
+    EXPECT_EQ(spy.count(), 1);
+
+    caps.setAudioAvailable(true);
+    EXPECT_EQ(spy.count(), 2);
+}

@@ -124,6 +124,7 @@ void VolumeController::releaseEndpoint() {
     if(m_endpoint) {
         m_endpoint->Release();
         m_endpoint = nullptr;
+        emit availabilityChanged();
     }
 }
 
@@ -149,6 +150,7 @@ bool VolumeController::acquireEndpoint() {
     m_endpoint->GetMasterVolumeLevelScalar(&level);
     m_endpoint->GetMute(&muted);
     applyState(static_cast<int>(std::lround(level * 100.0f)), muted != FALSE, false);
+    emit availabilityChanged();
     return true;
 }
 
@@ -172,6 +174,10 @@ void VolumeController::start() {
 
 int VolumeController::volume() const {
     return m_volume;
+}
+
+bool VolumeController::available() const {
+    return m_endpoint != nullptr;
 }
 
 bool VolumeController::muted() const {

@@ -119,6 +119,28 @@ TEST(QmlContractTest, WidgetsHideForEveryFullscreenApp) {
     }
 }
 
+TEST(QmlContractTest, FlyoutsGateOnPlatformCapabilities) {
+    const struct {
+        const char* path;
+        const char* token;
+    } cases[] = {
+        {"Views/VolumeFlyout.qml", "capabilities.audioAvailable"},
+        {"Views/MediaFlyout.qml", "capabilities.mediaSessionAvailable"},
+        {"Views/LockKeysFlyout.qml", "capabilities.lockKeysAvailable"},
+        {"Views/NowPlayingFlyout.qml", "capabilities.mediaSessionAvailable"},
+    };
+    for(const auto& c : cases) {
+        const QString source = loadSource(c.path);
+        expectContains(source, QString::fromLatin1(c.token));
+    }
+}
+
+TEST(QmlContractTest, SettingRowSupportsUnavailableState) {
+    const QString source = loadSource("Views/SettingRow.qml");
+    expectContains(source, QStringLiteral("property bool available"));
+    expectContains(source, QStringLiteral("property string unavailableNote"));
+}
+
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));

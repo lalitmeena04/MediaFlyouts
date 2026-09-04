@@ -914,6 +914,8 @@ Window {
                         width: parent.width
                         label: "Media flyout"
                         description: "Show the now-playing flyout on media key presses."
+                        available: capabilities.mediaSessionAvailable
+                        unavailableNote: "Unavailable: no system media session was detected on this PC."
                         value: settings.mediaFlyoutEnabled
                         onToggled: settings.mediaFlyoutEnabled = value
                     }
@@ -997,6 +999,8 @@ Window {
                         width: parent.width
                         label: "Up next flyout"
                         description: "Show a compact card with the next track when one auto-advances."
+                        available: capabilities.mediaSessionAvailable
+                        unavailableNote: "Unavailable: no system media session was detected on this PC."
                         value: settings.nextUpEnabled
                         onToggled: settings.nextUpEnabled = value
                     }
@@ -1082,6 +1086,8 @@ Window {
                         width: parent.width
                         label: "Volume flyout"
                         description: "Show the volume flyout on volume key presses."
+                        available: capabilities.audioAvailable
+                        unavailableNote: "Unavailable: no audio output device was detected."
                         value: settings.volumeFlyoutEnabled
                         onToggled: settings.volumeFlyoutEnabled = value
                     }
@@ -1138,6 +1144,8 @@ Window {
                         width: parent.width
                         label: "Lock key indicators"
                         description: "Show a flyout when Caps, Num, or Scroll lock is toggled."
+                        available: capabilities.lockKeysAvailable
+                        unavailableNote: "Unavailable: the keyboard hook could not be installed."
                         value: settings.lockKeysEnabled
                         onToggled: settings.lockKeysEnabled = value
                     }
@@ -1231,6 +1239,8 @@ Window {
                         width: parent.width
                         label: "Audio visualizer"
                         description: "Show a live spectrum of the system audio behind the widget."
+                        available: capabilities.audioAvailable
+                        unavailableNote: "Unavailable: no audio output device was detected."
                         value: settings.taskbarVisualizerEnabled
                         onToggled: settings.taskbarVisualizerEnabled = value
                     }

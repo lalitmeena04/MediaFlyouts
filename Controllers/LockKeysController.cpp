@@ -34,6 +34,12 @@ LockKeysController::~LockKeysController() {
 
 void LockKeysController::start() {
     g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, keyboardProc, GetModuleHandleW(nullptr), 0);
+    m_available = g_hook != nullptr;
+    emit availabilityChanged();
+}
+
+bool LockKeysController::available() const {
+    return m_available;
 }
 
 QString LockKeysController::keyName() const {

@@ -12,6 +12,9 @@ class MediaKeyController : public QObject {
 
         void start();
 
+        // true once the low-level keyboard hook installed successfully
+        bool available() const;
+
         // internal: invoked by the keyboard hook on the main thread
         void notifyPressed();
         void notifyVolumePressed();
@@ -19,4 +22,8 @@ class MediaKeyController : public QObject {
     signals:
         void mediaKeyPressed();
         void volumeKeyPressed();
+        void availabilityChanged();
+
+    private:
+        bool m_available = false;
 };

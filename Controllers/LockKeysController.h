@@ -20,6 +20,8 @@ class LockKeysController : public QObject {
         QString keyName() const;
         bool on() const;
         int keyType() const;
+        // true once the low-level keyboard hook installed successfully
+        bool available() const;
 
         // internal: invoked by the keyboard hook on the main thread
         void handleToggle(int vk);
@@ -27,9 +29,11 @@ class LockKeysController : public QObject {
     signals:
         void changed();
         void lockKeyToggled();
+        void availabilityChanged();
 
     private:
         QString m_keyName;
         bool m_on = false;
         int m_keyType = 0;
+        bool m_available = false;
 };

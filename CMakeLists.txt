@@ -77,6 +77,7 @@ qt_add_library(mediaflyout_core STATIC
     Model/BatteryUtils.h     Model/BatteryUtils.cpp
     Model/BatteryAlertPolicy.h Model/BatteryAlertPolicy.cpp
     Model/SessionSelection.h Model/SessionSelection.cpp
+    Model/Capabilities.h     Model/Capabilities.cpp
 )
 target_link_libraries(mediaflyout_core PUBLIC Qt6::Core spdlog::spdlog)
 # Logging: when enabled TRC_DEBUG is compiled in; when disabled SPDLOG_LEVEL_OFF compiles every
@@ -93,6 +94,7 @@ target_include_directories(mediaflyout_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/M
 # --- Application executable ---
 qt_add_executable(MediaFlyouts WIN32
     main.cpp
+    MainControllerClass.h        MainControllerClass.cpp
     Controllers/NowPlaying.h     Controllers/NowPlaying.cpp
     Controllers/TrayController.h Controllers/TrayController.cpp
     Controllers/FlyoutPlacement.h Controllers/FlyoutPlacement.cpp
