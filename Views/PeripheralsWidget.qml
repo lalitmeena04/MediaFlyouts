@@ -103,7 +103,8 @@ Window {
         triggeredOnStart: true
         onTriggered: {
             var wasBlocked = root.blocked
-            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen, settings.taskbarWidgetMonitor)
+            root.blocked = fullscreen.isLocked()
+                || fullscreen.isFullscreen(settings.taskbarWidgetMonitor)
             if(wasBlocked !== root.blocked)
                 log.debug("PeripheralsWidget.blocked changed " + wasBlocked + " -> " + root.blocked
                     + " (monitor=" + settings.taskbarWidgetMonitor + ")")

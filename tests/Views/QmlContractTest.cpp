@@ -111,6 +111,14 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
     expectContains(widget, QStringLiteral("Fluent.usbStick"));
 }
 
+TEST(QmlContractTest, WidgetsHideForEveryFullscreenApp) {
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("fullscreen.isFullscreen(settings.taskbarWidgetMonitor)"));
+        EXPECT_FALSE(source.contains(QStringLiteral("fullscreen.shouldBlock(")));
+    }
+}
+
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));

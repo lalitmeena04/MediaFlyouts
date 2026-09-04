@@ -10,7 +10,9 @@ class FullscreenDetector : public QObject {
         explicit FullscreenDetector(QObject* parent = nullptr);
 
         Q_INVOKABLE bool isLocked() const;
-        // monitor is a QGuiApplication screen index; -1 means any monitor (global check)
+        // True for any fullscreen foreground app, including browsers and media players.
         Q_INVOKABLE bool isFullscreen(int monitor = -1) const;
+        // True only for fullscreen apps using a 3D graphics API.
+        Q_INVOKABLE bool isGraphicsFullscreen(int monitor = -1) const;
         Q_INVOKABLE bool shouldBlock(bool disableOnFullscreen, int monitor = -1) const;
 };

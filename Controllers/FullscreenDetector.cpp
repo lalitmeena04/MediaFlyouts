@@ -124,7 +124,7 @@ bool FullscreenDetector::isLocked() const {
 
 bool FullscreenDetector::shouldBlock(bool disableOnFullscreen, int monitor) const {
     const bool locked = isLocked();
-    const bool fullscreen = disableOnFullscreen && isFullscreen(monitor);
+    const bool fullscreen = disableOnFullscreen && isGraphicsFullscreen(monitor);
     const bool blocked = locked || fullscreen;
     TRC_DEBUG("shouldBlock(disableOnFullscreen={}, monitor={}): locked={} fullscreen={} -> blocked={}",
               disableOnFullscreen, monitor, locked, fullscreen, blocked);
@@ -209,12 +209,25 @@ bool FullscreenDetector::isFullscreen(int monitor) const {
         return false;
     }
 
-    // borderless fullscreen alone also matches fullscreen browsers/video players, so require a
-    // 3D graphics API to be loaded before treating this as a game
+    TRC_DEBUG("isFullscreen: foreground window covers the whole monitor -> fullscreen");
+    return true;
+}
+
+bool FullscreenDetector::isGraphicsFullscreen(int monitor) const {
+    if(!isFullscreen(monitor))
+        return false;
+
+    QUERY_USER_NOTIFICATION_STATE state = QUNS_ACCEPTS_NOTIFICATIONS;
+    if(SUCCEEDED(SHQueryUserNotificationState(&state)) && state == QUNS_RUNNING_D3D_FULL_SCREEN) {
+        TRC_WARN("isGraphicsFullscreen: notification state indicates exclusive D3D fullscreen -> fullscreen");
+        return true;
+    }
+
+    HWND fg = GetForegroundWindow();
     DWORD pid = 0;
     GetWindowThreadProcessId(fg, &pid);
     const bool graphics = pid != 0 && hasGraphicsApiLoaded(pid);
-    TRC_DEBUG("isFullscreen: borderless full-monitor window pid={} graphicsApiLoaded={} -> fullscreen={}", pid, graphics,
+    TRC_DEBUG("isGraphicsFullscreen: fullscreen app pid={} graphicsApiLoaded={} -> fullscreen={}", pid, graphics,
               graphics);
     return graphics;
 }
