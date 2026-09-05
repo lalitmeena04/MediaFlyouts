@@ -132,8 +132,8 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
   each with an icon.
 - Option to hide the tray icon and to choose the left-click behavior; the
   dashboard opens on double-click when single-click is set to show the flyout.
-- Single-instance handling: a second launch surfaces the running instance's
-  dashboard and exits.
+- Single-instance handling: a second launch exits after signaling the running
+  instance, which only surfaces its dashboard if the tray icon is hidden.
 
 ## Onboarding & updates
 - First-run onboarding wizard. Flyouts and the taskbar widget stay hidden, and

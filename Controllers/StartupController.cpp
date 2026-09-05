@@ -39,6 +39,9 @@ void StartupController::setEnabled(bool enable) {
         } else {
             task.Disable();
         }
+        // the StartupTask is the source of truth for packaged builds; drop any Run key left
+        // behind by an older unpackaged install so the app isn't launched twice at logon
+        QSettings(runKeyPath(), QSettings::NativeFormat).remove(m_appName);
         return;
     } catch(const winrt::hresult_error&) {}
 

@@ -26,7 +26,7 @@ Resolves a flyout's screen position from the placement settings for QML
 
 ### SingleInstance
 Ensures a single running instance (via a local server); a second launch signals
-the primary to surface its dashboard.
+the primary, which surfaces its dashboard only if the tray icon is hidden.
 
 ### UpdateChecker
 Queries the GitHub releases API and exposes `updateAvailable`, `latestVersion`,

@@ -47,7 +47,7 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     TRC_INFO("log file: {}", logFile.toStdString());
     logScreens();
 
-    // a second launch signals the running instance to show its dashboard, then exits
+    // a second launch signals the running instance, then exits (see SingleInstance)
     m_instance = std::make_unique<SingleInstance>(QStringLiteral("MediaFlyouts.singleInstance"));
     if(!m_instance->isPrimary())
         return;

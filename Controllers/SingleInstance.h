@@ -5,7 +5,8 @@
 
 class QLocalServer;
 
-// Ensures only one MediaFlyouts runs; a second launch signals the first to show its dashboard.
+// Ensures only one MediaFlyouts runs; a second launch signals the first (which surfaces its
+// dashboard only if the tray icon is hidden, since that's otherwise how the dashboard is opened).
 class SingleInstance : public QObject {
         Q_OBJECT
 

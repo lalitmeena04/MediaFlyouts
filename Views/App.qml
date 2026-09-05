@@ -125,10 +125,12 @@ QtObject {
         }
     }
 
-    // a second launch asks us to surface the dashboard
+    // a second launch surfaces the dashboard only when the tray icon isn't there to do it
     property Connections instanceConnection: Connections {
         target: instance
         function onActivated() {
+            if(!settings.trayIconHidden)
+                return
             dashboard.show()
             dashboard.raise()
             dashboard.requestActivate()

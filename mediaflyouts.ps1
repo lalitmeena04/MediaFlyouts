@@ -480,7 +480,7 @@ function Invoke-Run {
         }
     }
 
-    # single-instance: a second launch only surfaces the running dashboard
+    # single-instance: a second launch just signals the running instance, then exits
     Stop-RunningApp
     Write-Info "Launching: $exePath"
     Start-Process -FilePath $exePath -WorkingDirectory (Split-Path $exePath -Parent)
