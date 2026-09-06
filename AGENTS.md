@@ -6,6 +6,7 @@ Guidance for AI coding agents working in this repository.
 
 - Always keep code generalized.
 - Always add or update existing unit tests for any changes made in the code.
+- For comments: state facts and use simple langauge with short sentences. Follow softened ASD-STE100 standard and use light caveman mode.
 
 ## Building
 
