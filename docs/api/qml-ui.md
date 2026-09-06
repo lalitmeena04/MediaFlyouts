@@ -41,6 +41,16 @@ properties and QML binds to their properties/signals.
 - **RoundedArt.qml** — album art with rounded corners.
 - **IconLabel.qml** — a glyph-icon label.
 - **SettingRow.qml / SettingCombo.qml / SettingSlider.qml** — dashboard controls.
+- **FlyoutBase.qml** — shared frameless flyout window chrome, positioning,
+  animations and auto-hide methods (`present()`, `hideFlyout()`,
+  `stopAutoHide()`, `restartAutoHide()`, `afterHide()`).
+- **DockableWidget.qml** — shared taskbar-widget chrome with monitor-aware
+  placement, fullscreen/lock polling and taskbar z-order management.
+
+`App.qml` owns the five flyouts and its `restack()` logic groups visible
+flyouts by position and monitor, then assigns non-overlapping vertical offsets.
+The above-taskbar position uses the taskbar widget as an anchor and clamps the
+result to the available screen.
 
 ## Context properties (from `main.cpp`)
 
@@ -52,3 +62,7 @@ e.g. `nowPlaying.title`, `settings.visualizerStyle`, `theme.accent`,
 
 The QML module and its resources (including the Fluent icon font) are registered
 via `qt_add_qml_module` in [`CMakeLists.txt`](../../CMakeLists.txt).
+
+The dashboard has a collapsible sidebar and a search popup that filters pages.
+When enabled in Settings, the album-art accent can tint the whole application,
+not only individual flyouts.

@@ -9,7 +9,9 @@ controllers build everywhere; the rest are Windows-only.
 QML-facing now-playing model (`nowPlaying`). Applies `TrackInfo` updates, exposes
 title/artist/art/progress and transport `Q_INVOKABLE`s, and decides whether a
 change should raise the media flyout or the "up next" flyout. Forwards transport
-commands to an `IPlaybackController`.
+commands to an `IPlaybackController`. Windows media sessions are matched by app
+ID and refreshed through queued hooks, which keeps source and playback changes
+reliable during rapid switching.
 
 ### TrayController
 Owns the `QSystemTrayIcon` and its dark, Fluent-style context menu; emits intents
@@ -49,7 +51,8 @@ running version comes from `MEDIAFLYOUTS_VERSION`.
 - **NativeFlyoutSuppressor** — hides the native Windows volume OSD. `main.cpp`
   only starts/arms it once onboarding is complete, so the system OSD keeps
   working during the first-run wizard.
-- **StartupController** — launch-on-startup via the `Run` registry key.
+- **StartupController** — launch-on-startup via the MSIX startup-task API for
+  packaged installs, or the `Run` registry key for unpackaged installs.
 - **TaskbarInfo** — taskbar geometry for placing the widget.
 - **BatteryStatusController** — aggregates peripheral battery from all providers
   into one list for QML. Real providers poll on a worker thread; connect and
@@ -61,4 +64,6 @@ running version comes from `MEDIAFLYOUTS_VERSION`.
 - **BluetoothConnectionWatcher / HidChangeWatcher** — instant connect and
   disconnect notifications, so the UI doesn't wait for the next poll.
 - **PeripheralAlerts** — turns battery snapshots into connect / disconnect /
-  low-battery events using `mf::BatteryAlertPolicy`.
+  low-battery events using `mf::BatteryAlertPolicy`; it also handles charging
+  events, per-event settings, debounce and flyout/tray notification channels.
+- **QmlLogger** — exposes debug, info, warning and error logging methods to QML.

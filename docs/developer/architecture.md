@@ -24,6 +24,8 @@ isolation:
 - **FlyoutPositioner** — pure geometry for placing flyouts.
 - **AlbumArtProvider** — `QQuickImageProvider` for album art.
 - **WinMediaProvider** *(Windows)* — SMTC bridge feeding `TrackInfo`.
+- **Peripheral battery models** — protocol parsers and `BatteryAlertPolicy`
+  keep provider-specific parsing and alert rules portable and testable.
 
 ### Controllers (`Controllers/`)
 Qt objects that wire the model to Windows and to QML:
@@ -38,7 +40,8 @@ Qt objects that wire the model to Windows and to QML:
 - Windows-only: **VolumeController**, **VolumeMixer**, **AudioCapture**,
   **AccentWatcher**, **WindowEffects** (dark title bar), **LockKeysController**,
   **MediaKeyController**, **FullscreenDetector**, **NativeFlyoutSuppressor**,
-  **StartupController**, **TaskbarInfo**.
+  **StartupController**, **TaskbarInfo**, **BatteryStatusController**,
+  **PeripheralAlerts**, and the Bluetooth/HID battery providers.
 
 ### Views (`Views/`, QML)
 Flyouts and windows: `MediaFlyout`, `VolumeFlyout`, `LockKeysFlyout`,
@@ -51,7 +54,14 @@ owns the windows and reacts to tray intents.
 `main` initializes the WinRT apartment, creates the model + controllers, and
 registers them as QML context properties (`nowPlaying`, `settings`, `theme`,
 `volumeController`, `volumeMixer`, `audioCapture`, `taskbar`, `tray`, …), then
-loads `App.qml`.
+loads `App.qml`. `App.qml` owns the five flyouts and re-stacks visible windows
+when their visibility, position or monitor changes. Matching flyouts are
+stacked without overlap; the special above-taskbar position anchors a flyout
+to the taskbar widget and clamps it to the screen.
+
+Flyout windows share `FlyoutBase.qml`, while taskbar widgets share
+`DockableWidget.qml`. This keeps auto-hide, monitor-aware positioning,
+fullscreen suppression and taskbar z-order behavior consistent.
 
 ## Windows APIs used
 - **Media:** `GlobalSystemMediaTransportControlsSessionManager` (WinRT SMTC).
@@ -62,7 +72,8 @@ loads `App.qml`.
 - **Title bars:** `DwmSetWindowAttribute` (dark frame).
 - **Fullscreen:** `SHQueryUserNotificationState`.
 - **Accent:** WinRT `UISettings`.
-- **Startup:** Windows `Run` registry key.
+- **Startup:** MSIX startup task for packaged installs, Windows `Run` registry
+  key for installer and portable installs.
 
 See the [Controllers API](../api/controllers.md) and [Model API](../api/models.md)
 for class-level detail.

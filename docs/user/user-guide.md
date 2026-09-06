@@ -68,6 +68,10 @@ controllers, and Razer or Logitech devices on their 2.4GHz dongles.
   side by side. Turn individual events on or off on the Taskbar Widget page.
 - A **low battery** also raises a tray notification, so it isn't missed.
 
+Battery alerts use a 20% low-battery threshold and a 10% very-low threshold,
+with hysteresis so the same warning is not repeated on every poll. Connect,
+disconnect, charging and low-battery events can be enabled independently.
+
 Not every device can report a battery: it needs one of the supported
 transports. A Bluetooth speaker with no microphone, for example, has no
 Hands-Free profile and so reports nothing.
@@ -91,5 +95,7 @@ box** to jump to any setting. Highlights:
 ## Startup & updates
 
 Enable **launch on startup** to have MediaFlyouts start with Windows (minimized
-to tray). Turn on **automatic update checks** to be notified when a newer release
-is available; you can also check manually from the About page.
+to tray). Installer and portable builds use the Windows `Run` registry key;
+MSIX installs use the Windows startup-task mechanism. Turn on **automatic update
+checks** to be notified when a newer release is available; you can also check
+manually from the About page.

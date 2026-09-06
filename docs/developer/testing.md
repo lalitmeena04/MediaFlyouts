@@ -16,6 +16,21 @@ ctest --preset msvc-debug --output-on-failure
 There are **7 CTest targets**: one aggregated GoogleTest executable
 (`gtest_all`) plus six per-class Qt Test executables.
 
+### Focused and repeated runs
+
+The helper script forwards useful diagnostics to GoogleTest and CTest:
+
+```powershell
+.\mediaflyouts.ps1 test -Filter "RazerProtocolTest.*"
+.\mediaflyouts.ps1 test -ShowOutput
+.\mediaflyouts.ps1 test -FailFast
+.\mediaflyouts.ps1 test -Shuffle -Repeat -RepeatCount 5
+```
+
+`-Filter` selects matching GoogleTest cases, `-ShowOutput` enables verbose CTest
+output, `-FailFast` stops on the first failure, and `-Shuffle` with
+`-RepeatCount` exercises ordering-sensitive or intermittent failures.
+
 ## Layout
 
 ```

@@ -25,7 +25,23 @@ deploys the Qt runtime into `bin/`:
 .\mediaflyouts.ps1 build -Config release # release build
 .\mediaflyouts.ps1 build -RunTests       # build then run the tests
 .\mediaflyouts.ps1 build -Clean          # clean build
+.\mediaflyouts.ps1 build -NoLogging      # disable file logging
+.\mediaflyouts.ps1 build -SkipDeploy     # skip windeployqt
+.\mediaflyouts.ps1 build -NoTests        # skip test configuration
 ```
+
+Run tests directly, or use the helper's focused and repeatable test options:
+
+```powershell
+.\mediaflyouts.ps1 test
+.\mediaflyouts.ps1 test -Filter "RazerProtocolTest.*"
+.\mediaflyouts.ps1 test -ShowOutput -FailFast
+.\mediaflyouts.ps1 test -Shuffle -Repeat -RepeatCount 10
+```
+
+The helper script configures the MSVC and Qt environment, supports debug and
+release builds, and keeps deployment in `bin/`. Use the CMake presets directly
+when you need to customize the generator or cache.
 
 Or use CMake presets directly:
 

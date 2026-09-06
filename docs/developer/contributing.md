@@ -25,6 +25,13 @@ green test suite.
 - **QML** — follow the existing structure; shared pieces live in `Views/` as
   small components (`IconLabel`, `RoundedArt`, `Setting*`, …).
 
+### QML component reuse
+
+- Flyouts derive from `FlyoutBase.qml` for shared window chrome, positioning,
+  animation and auto-hide behavior. Do not duplicate that logic in a flyout.
+- Taskbar-docked widgets derive from `DockableWidget.qml` for shared monitor
+  placement, fullscreen/lock suppression and taskbar z-order handling.
+
 ## Adding a setting (common task)
 
 1. Add a `Q_PROPERTY` + member + getter/setter + `reload()` line in

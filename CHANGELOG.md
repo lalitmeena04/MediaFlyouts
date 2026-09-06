@@ -3,6 +3,41 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] — 2026-09-06
+
+A major feature release adding wireless peripheral battery monitoring and
+flyouts, alongside dashboard, media-session, fullscreen and packaging fixes.
+
+### Added
+- Wireless peripheral battery support for Bluetooth Classic, Bluetooth LE,
+  Google Fast Pair, DualSense, Razer and Logitech devices.
+- A selectable peripherals taskbar widget with battery rings, charging state
+  and multi-component device details.
+- Peripheral connect, disconnect, charging and low-battery flyouts with
+  per-event settings, alert debouncing and optional tray notifications.
+- A dedicated peripheral settings page, grouped device lists and improved
+  device classification and naming.
+- A unified `mediaflyouts.ps1` build/test/run entry point and optional file
+  logging for troubleshooting.
+- MSIX startup-task support and a release workflow that can reuse a stored
+  signing certificate.
+
+### Changed
+- The dashboard now has a collapsible, searchable sidebar with refreshed
+  icons, page headers and album-art app-wide accent support.
+- Shared flyout and dockable-widget window behavior is centralized, keeping
+  flyouts above the taskbar and reducing duplicate positioning logic.
+- Media sessions are matched by app ID and refreshed through queued hooks for
+  more reliable source and playback updates.
+
+### Fixed
+- Dashboard startup and onboarding visibility edge cases.
+- Flyout and widget visibility after fullscreen apps or games close.
+- Taskbar widget visibility over the Start menu and unnecessary audio capture
+  while the widget is hidden.
+- Fast Pair disconnect detection, Bluetooth naming and transient peripheral
+  disconnect alerts.
+
 ## [1.1.0] — 2026-08-28
 
 A small follow-up release that fixes first-run behavior and adjusts two
@@ -90,3 +125,4 @@ written from scratch in Qt 6 / C++ / QML.
 
 [1.1.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.1.0
 [1.0.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.0.0
+[1.2.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.2.0

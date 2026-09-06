@@ -58,6 +58,13 @@ either, there is nothing for MediaFlyouts to read.
 Use **Open Config Folder** in the tray menu. Settings live in a per-user `.ini`
 file; you can also **export/import** them from the dashboard.
 
+## Where are the log files?
+
+When file logging is enabled, diagnostic logs are stored in
+`%LOCALAPPDATA%\MediaFlyouts\logs\`. Files rotate at 5 MB and up to three
+files are retained. Open the config folder from the tray menu to reach the
+`logs` directory.
+
 ## How do I start MediaFlyouts with Windows?
 Enable **launch on startup** in Settings (it uses the Windows `Run` registry
 key). It starts minimized to the tray.

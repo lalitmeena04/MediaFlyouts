@@ -32,6 +32,20 @@ flagged as out of date against the plain release. Override the number with
 `-DMEDIAFLYOUTS_BUILD_NUMBER=<n>` on the CMake command line, or
 `.\mediaflyouts.ps1 build -BuildNumber <n>`.
 
+### Optional file logging
+
+File logging is enabled by default for local builds. Disable it when needed:
+
+```powershell
+.\mediaflyouts.ps1 build -NoLogging
+# or with CMake directly
+cmake --preset msvc-release -D "MEDIAFLYOUTS_ENABLE_LOGGING=OFF"
+```
+
+Logs are written under `%LOCALAPPDATA%\MediaFlyouts\logs\`, with rotating
+5 MB files and up to three retained files. The logger also writes to the MSVC
+debugger output when available. Release CI builds disable file logging.
+
 ## Release artifacts
 
 The release consists of four artifacts (see the
@@ -58,6 +72,28 @@ Before tagging, make sure both of these are on `main`:
 - [`docs/RELEASE_NOTES.md`](../RELEASE_NOTES.md) has a `## Version <ver>` section
   — its body becomes the GitHub Release description, and a missing section fails
   the release rather than publishing an empty one.
+
+### MSIX startup task and signing
+
+The MSIX manifest declares `MediaFlyoutsStartupTask`, so packaged installs can
+launch at Windows sign-in through the platform startup-task API. Installer and
+portable builds use the Windows `Run` registry key instead. The Settings toggle
+selects the appropriate mechanism automatically.
+
+The release workflow can reuse a persistent certificate through the
+`MSIX_CERT_BASE64` and `MSIX_CERT_PASSWORD` secrets. Export a development
+certificate with:
+
+```powershell
+.\tools\new-signing-cert.ps1 -ExportPfx -PfxPassword (Read-Host 'PFX password' -AsSecureString)
+```
+
+Without those secrets, CI creates a new self-signed certificate for the
+release, so users must trust each release certificate separately. A trusted CA
+certificate can be used for production releases. SignTool may report the
+self-signed package as untrusted on the GitHub runner; the workflow records
+that warning but does not fail after a successful signing operation. Users
+must install `MediaFlyouts.cer` as a trusted root before installing the MSIX.
 
 ### Local
 Produce every artifact into a clean `release/` folder with one script — it does a

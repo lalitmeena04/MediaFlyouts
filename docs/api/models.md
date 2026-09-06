@@ -44,7 +44,8 @@ policy rules can be exercised without real hardware:
 
 - **BatteryUtils** — strips Bluetooth profile suffixes from device names,
   converts milliwatt-hours to a percentage, and decodes the Bluetooth Class of
-  Device into a category ("mouse", "keyboard", "headset", "gamepad").
+  Device into a category ("mouse", "keyboard", "headset", "gamepad"). Device
+  categories come from Bluetooth or HID metadata rather than the display name.
 - **FastPairProtocol** — frames the Google Fast Pair message stream and decodes
   battery events, including the per-component levels of a true-wireless set and
   the charging flag.
@@ -56,6 +57,12 @@ policy rules can be exercised without real hardware:
 - **BatteryAlertPolicy** — decides which changes deserve an alert: battery
   buckets, downward threshold crossings with hysteresis, connect/disconnect
   debouncing, and baseline seeding so launching the app is silent.
+
+`BatteryAlertPolicy` uses Full (90-100%), Good (41-89%), Half (21-40%), Low
+(11-20%), Very low (1-10%) and Unknown buckets. Low and very-low warnings fire
+when crossing downward and re-arm after charging back above the threshold.
+Repeated connect/disconnect events are debounced, and the initial snapshot is
+seeded without producing an alert burst.
 
 ## WinMediaProvider *(Windows)*
 Bridges the WinRT **System Media Transport Controls** to `TrackInfo`, feeding

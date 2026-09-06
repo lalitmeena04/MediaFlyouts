@@ -7,7 +7,7 @@
 
 .EXAMPLE
     # Create cert if needed. Sign release package.
-  .\tools\new-signing-cert.ps1 -Msix release\MediaFlyouts-1.0.0.msix
+    .\tools\new-signing-cert.ps1 -Msix release\MediaFlyouts-1.2.0.msix
 
 .EXAMPLE
     # Export PFX and base64 for CI secrets.
