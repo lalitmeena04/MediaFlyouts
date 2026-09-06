@@ -27,6 +27,8 @@ Window {
     function present() {
         hideTimer.restart()
         base.visible = true
+        windowEffects.pinTopmost(base)
+        taskbar.pinTopmost(base)
         fadeIn.restart()
     }
 

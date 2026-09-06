@@ -40,6 +40,7 @@ TEST(Win32ControllersTest, WindowEffectsToleratesNullWindow) {
     WindowEffects effects;
     effects.setDarkFrame(nullptr, true);
     effects.setDarkFrame(nullptr, false);
+    effects.pinTopmost(nullptr);
     SUCCEED();
 }
 
@@ -57,6 +58,8 @@ TEST(Win32ControllersTest, DeviceWatchersCanStartRepeatedly) {
 
 TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {
     TaskbarInfo taskbar;
+    taskbar.pinTopmost(nullptr);
+    taskbar.pinAboveTaskbar(nullptr);
     const QRect screen = taskbar.monitorGeometry(0);
     if(screen.isEmpty())
         GTEST_SKIP() << "No QScreen is available in the guiless test host.";

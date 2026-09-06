@@ -25,8 +25,10 @@ class TaskbarInfo : public QObject {
         Q_INVOKABLE QPoint widgetPosition(int monitor, int side, int offset, int width, int height) const;
         // full geometry (logical px) of the given monitor, used to keep flyouts on-screen
         Q_INVOKABLE QRect monitorGeometry(int monitor) const;
-        // re-assert the window at the top of the topmost band so it stays above the taskbar. The
-        // window is remembered and re-pinned automatically on foreground/minimize changes.
+        // re-assert the window at the top of the topmost band. The window is remembered and
+        // re-pinned automatically on foreground/minimize changes.
+        Q_INVOKABLE void pinTopmost(QWindow* window) const;
+        // compatibility name for taskbar widgets docked over the shell taskbar
         Q_INVOKABLE void pinAboveTaskbar(QWindow* window) const;
 
         // re-pin every tracked window right now; called from the WinEvent hook

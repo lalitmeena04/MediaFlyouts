@@ -31,6 +31,13 @@ QRect toLogical(HWND hwnd) {
 TaskbarInfo* g_taskbarInfo = nullptr;
 HWINEVENTHOOK g_winEventHook = nullptr;
 
+void pinWindowTopmost(HWND hwnd) {
+    if(!hwnd)
+        return;
+    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+}
+
 // Fires when the foreground window or a window's minimize state changes; the shell re-tops the
 // taskbar on these, which can push our always-on-top widgets behind it, so re-pin immediately.
 void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DWORD, DWORD) {
@@ -128,16 +135,18 @@ QRect TaskbarInfo::monitorGeometry(int monitor) const {
     return screens.at(monitor)->geometry();
 }
 
-void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
+void TaskbarInfo::pinTopmost(QWindow* window) const {
     if(!window)
         return;
     if(!m_pinned.contains(window))
         m_pinned.append(window);
     HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    if(!hwnd)
-        return;
     // move to the top of the topmost band (above the taskbar) without stealing focus
-    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    pinWindowTopmost(hwnd);
+}
+
+void TaskbarInfo::pinAboveTaskbar(QWindow* window) const {
+    pinTopmost(window);
 }
 
 void TaskbarInfo::repinTracked() const {
@@ -150,7 +159,7 @@ void TaskbarInfo::repinTracked() const {
         }
         if(window->isVisible()) {
             if(HWND hwnd = reinterpret_cast<HWND>(window->winId())) {
-                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                pinWindowTopmost(hwnd);
                 ++repinned;
             }
         }

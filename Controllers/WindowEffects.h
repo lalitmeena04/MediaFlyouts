@@ -13,4 +13,7 @@ class WindowEffects : public QObject {
 
         // toggle the dark title bar / frame to match the theme
         Q_INVOKABLE void setDarkFrame(QWindow* window, bool dark);
+
+        // reassert topmost placement without taking focus from the active app
+        Q_INVOKABLE void pinTopmost(QWindow* window);
 };

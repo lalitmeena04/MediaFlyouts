@@ -138,6 +138,15 @@ TEST(QmlContractTest, FlyoutsGateOnPlatformCapabilities) {
     }
 }
 
+TEST(QmlContractTest, FlyoutBasePinsWindowTopmostWhenPresented) {
+    const QString source = loadSource("Views/FlyoutBase.qml");
+
+    expectContains(source, QStringLiteral("function present()"));
+    expectContains(source, QStringLiteral("base.visible = true"));
+    expectContains(source, QStringLiteral("windowEffects.pinTopmost(base)"));
+    expectContains(source, QStringLiteral("taskbar.pinTopmost(base)"));
+}
+
 TEST(QmlContractTest, SettingRowSupportsUnavailableState) {
     const QString source = loadSource("Views/SettingRow.qml");
     expectContains(source, QStringLiteral("property bool available"));

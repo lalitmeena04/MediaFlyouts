@@ -24,3 +24,12 @@ void WindowEffects::setDarkFrame(QWindow* window, bool dark) {
     BOOL value = dark ? TRUE : FALSE;
     DwmSetWindowAttribute(hwnd, kUseImmersiveDarkMode, &value, sizeof(value));
 }
+
+void WindowEffects::pinTopmost(QWindow* window) {
+    HWND hwnd = hwndOf(window);
+    if(!hwnd)
+        return;
+
+    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+}
