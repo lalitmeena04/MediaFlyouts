@@ -1,7 +1,7 @@
 import QtQuick
 import MediaFlyouts
 
-// Non-visual app root: owns the flyout + dashboard windows and reacts to tray intents.
+// Non-visual app root. Owns windows. Handles tray intents.
 QtObject {
     id: app
 
@@ -33,20 +33,20 @@ QtObject {
         mediaWidget: taskbarWidget
     }
 
-    // show the first-run wizard once
+    // Show first-run wizard once.
     Component.onCompleted: if(!settings.onboardingCompleted) onboarding.show()
 
-    // optional automatic update check shortly after launch
+    // Optional update check after launch.
     property Timer _updateTimer: Timer {
         interval: 4000
         running: settings.autoCheckUpdates
         onTriggered: updateChecker.check()
     }
 
-    // stacking order, bottom-most first; visible flyouts are stacked away from the anchor edge
+    // Stacking order. Bottom-most first.
     readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout]
 
-    // the volume and peripheral flyouts can be placed independently of the others
+    // Volume and peripheral flyouts have separate placement settings.
     function positionIndexFor(f) {
         if(f === volumeFlyout)
             return settings.volumeFlyoutPosition
@@ -64,13 +64,13 @@ QtObject {
 
     function restack() {
         var gap = 10
-        // flyouts only stack against each other when they share a position and monitor
+        // Flyouts stack only when position and monitor match.
         var used = ({})
 
         for(var i = 0; i < flyoutStack.length; i++) {
             var f = flyoutStack[i]
             if(!f.visible) {
-                f.positioned = false // next appearance snaps in without sliding
+                f.positioned = false // Next show snaps without slide.
                 continue
             }
 
@@ -78,7 +78,7 @@ QtObject {
             var monitor = monitorFor(f)
             var key = posIndex + ":" + monitor
             var cumulative = used[key] || 0
-            var aboveWidget = posIndex === 6 // dock above the taskbar widget
+            var aboveWidget = posIndex === 6 // Dock above taskbar widget.
             var topAligned = posIndex <= 2 // 0..2 are the top positions
 
             if(aboveWidget) {
@@ -86,7 +86,7 @@ QtObject {
                                                     settings.taskbarWidgetOffset, taskbarWidget.width,
                                                     taskbarWidget.height)
                 var screen = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
-                // center each flyout over the widget, clamped so it stays on-screen
+                // Center flyout over widget. Clamp to screen.
                 var fx = anchor.x + (taskbarWidget.width - f.width) / 2
                 fx = Math.max(screen.x + 8, Math.min(fx, screen.x + screen.width - f.width - 8))
                 f.x = fx
@@ -97,11 +97,11 @@ QtObject {
                 f.y = topAligned ? (p.y + cumulative) : (p.y - cumulative)
             }
             used[key] = cumulative + f.height + gap
-            f.positioned = true // subsequent shifts animate
+            f.positioned = true // Later shifts animate.
         }
     }
 
-    // re-stack when the position / monitor settings change
+    // Re-stack when position or monitor settings change.
     property Connections settingsConnection: Connections {
         target: settings
         function onChanged() { app.restack() }
@@ -125,7 +125,7 @@ QtObject {
         }
     }
 
-    // a second launch surfaces the dashboard only when the tray icon isn't there to do it
+    // Second launch shows dashboard only when tray icon is hidden.
     property Connections instanceConnection: Connections {
         target: instance
         function onActivated() {

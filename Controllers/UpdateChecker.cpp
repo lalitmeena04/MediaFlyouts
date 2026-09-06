@@ -8,14 +8,14 @@
 #include <QUrl>
 
 namespace {
-// GitHub releases endpoint for the project; a 404 simply means "couldn't check".
+// GitHub releases endpoint for project. 404 means check failed.
 constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts/releases/latest";
 } // namespace
 
 UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent), m_net(new QNetworkAccessManager(this)) {}
 
 bool UpdateChecker::isNewerVersion(const QString& current, const QString& latest) {
-    // compare the numeric core only; dev builds carry a "-<build number>" suffix
+    // Compare numeric core only. Dev builds have build-number suffix.
     const QStringList pa = QString(current).remove('v').section('-', 0, 0).split('.');
     const QStringList pb = QString(latest).remove('v').section('-', 0, 0).split('.');
     const int n = qMax(pa.size(), pb.size());

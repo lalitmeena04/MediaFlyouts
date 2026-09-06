@@ -8,7 +8,7 @@ class QMenu;
 class QTimer;
 class Settings;
 
-// Owns the notification-area icon and its menu; emits intents the QML app root reacts to.
+// Own notification-area icon and menu. Emit QML app intents.
 class TrayController : public QObject {
         Q_OBJECT
 
@@ -17,7 +17,7 @@ class TrayController : public QObject {
         ~TrayController() override;
 
         void show();
-        // show a balloon notification from the tray icon
+        // Show balloon notification from tray icon.
         void notify(const QString& title, const QString& message);
 
     signals:
@@ -32,6 +32,6 @@ class TrayController : public QObject {
         QMenu* m_menu = nullptr;
         QString m_iconFamily;
         Settings* m_settings = nullptr;
-        // defers the single-click flyout so a double-click can open the dashboard instead
+        // Delay single-click flyout. Double-click can open dashboard.
         QTimer* m_singleClickTimer = nullptr;
 };

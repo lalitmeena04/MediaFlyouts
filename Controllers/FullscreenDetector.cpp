@@ -15,7 +15,7 @@
 
 namespace {
 
-// hex-formatted pointer value for logging opaque Win32 handles
+// Hex pointer value for logging Win32 handles.
 std::uintptr_t handleId(void* h) {
     return reinterpret_cast<std::uintptr_t>(h);
 }
@@ -40,7 +40,7 @@ bool isStartMenuWindow(HWND window) {
     return lstrcmpiW(executable, L"StartMenuExperienceHost.exe") == 0;
 }
 
-// true when the secure / lock screen is the active input desktop
+// True when secure screen is active input desktop.
 bool isWorkstationLocked() {
     HDESK desk = OpenInputDesktop(0, FALSE, DESKTOP_READOBJECTS);
     if(!desk)
@@ -52,8 +52,7 @@ bool isWorkstationLocked() {
     return ok && lstrcmpiW(name, L"Default") != 0;
 }
 
-// true if the process has a 3D rendering API loaded, the signal used to tell a game apart
-// from a fullscreen browser, video player, or presentation slideshow
+// True if process has a 3D API loaded. This helps detect games.
 bool hasGraphicsApiLoaded(DWORD pid) {
     static const wchar_t* kGraphicsModules[] = {
         L"d3d9.dll", L"d3d10.dll", L"d3d10_1.dll", L"d3d11.dll", L"d3d12.dll",
@@ -65,7 +64,7 @@ bool hasGraphicsApiLoaded(DWORD pid) {
         snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, pid);
         if(snap != INVALID_HANDLE_VALUE)
             break;
-        if(GetLastError() != ERROR_BAD_LENGTH) // transient while the target's module list is changing
+        if(GetLastError() != ERROR_BAD_LENGTH) // Module list can change during snapshot.
             return false;
     }
     if(snap == INVALID_HANDLE_VALUE)
@@ -88,8 +87,8 @@ bool hasGraphicsApiLoaded(DWORD pid) {
     return found;
 }
 
-// HMONITOR for a QGuiApplication screen index. QScreen::name() is the friendly monitor name on
-// Windows (not the GDI device), so map by the screen's physical center point instead.
+// Get HMONITOR for screen index. QScreen::name() is not GDI device name.
+// Map by screen center point.
 HMONITOR monitorHandleForScreen(int index) {
     const QList<QScreen*> screens = QGuiApplication::screens();
     if(screens.isEmpty()) {
@@ -144,8 +143,8 @@ bool FullscreenDetector::isFullscreen(int monitor) const {
         return false;
     }
 
-    // desktop/taskbar in the foreground (no window open) is never a game; rule it out before the
-    // notification query, which can stay stuck on QUNS_BUSY after a fullscreen game exits (until reboot)
+    // Desktop/taskbar is not a game. Rule it out before notification query.
+    // Query can stay stuck after fullscreen game exits.
     wchar_t cls[64] = {};
     GetClassNameW(fg, cls, 64);
     const std::string className = QString::fromWCharArray(cls).toStdString();
@@ -155,8 +154,7 @@ bool FullscreenDetector::isFullscreen(int monitor) const {
         return false;
     }
 
-    // a fullscreen app only blocks flyouts/widgets on its own monitor; if the foreground window is
-    // on a different display, leave this monitor's flyouts visible
+    // Fullscreen app blocks only its own monitor. Other monitors stay visible.
     if(monitor >= 0) {
         const HMONITOR target = monitorHandleForScreen(monitor);
         const HMONITOR fgMonitor = MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST);
@@ -171,10 +169,8 @@ bool FullscreenDetector::isFullscreen(int monitor) const {
                      monitor);
     }
 
-    // exclusive-D3D / presentation fullscreen. QUNS_BUSY is deliberately NOT treated as fullscreen:
-    // it also means "a fullscreen app ran recently" and stays stuck for ordinary foreground windows
-    // after a game exits (until reboot), which would wrongly hide flyouts/widgets. Borderless games
-    // are still caught by the window-covers-monitor + graphics-API check below.
+    // Exclusive D3D or presentation fullscreen. QUNS_BUSY is not fullscreen.
+    // It can stay stuck after a game exits. Borderless games use check below.
     QUERY_USER_NOTIFICATION_STATE state = QUNS_ACCEPTS_NOTIFICATIONS;
     if(SUCCEEDED(SHQueryUserNotificationState(&state))) {
         TRC_DEBUG("isFullscreen: SHQueryUserNotificationState={}", static_cast<int>(state));
@@ -187,7 +183,7 @@ bool FullscreenDetector::isFullscreen(int monitor) const {
         TRC_DEBUG("isFullscreen: SHQueryUserNotificationState query failed");
     }
 
-    // borderless fullscreen: foreground window covers its whole monitor and isn't the shell
+    // Borderless fullscreen. Foreground window covers whole monitor.
     RECT wr{};
     if(!GetWindowRect(fg, &wr)) {
         TRC_DEBUG("isFullscreen: GetWindowRect failed -> not fullscreen");

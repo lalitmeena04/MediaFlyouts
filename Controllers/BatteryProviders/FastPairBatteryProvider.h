@@ -9,12 +9,10 @@
 #include <mutex>
 #include <thread>
 
-// Reads battery over the Google Fast Pair "message stream" (RFCOMM). Unlike the classic
-// Bluetooth provider, which depends on the Hands-Free profile, this works for devices
-// with no microphone and reports each component of a true-wireless set separately.
-//
-// Devices push updates whenever a level or charging state changes, so this keeps a
-// socket open per device on its own thread; poll() just returns the latest snapshot.
+// Read battery over Google Fast Pair message stream.
+// Works for devices without Hands-Free profile.
+// Reports true-wireless components separately.
+// Worker keeps socket open per device. Poll returns latest snapshot.
 class FastPairBatteryProvider : public IBatteryProvider {
     public:
         FastPairBatteryProvider();
@@ -28,6 +26,6 @@ class FastPairBatteryProvider : public IBatteryProvider {
         std::thread m_thread;
         std::atomic<bool> m_stop{false};
         std::mutex m_mutex;
-        // latest reading per device address, guarded by m_mutex
+        // Latest reading per device address. Guarded by m_mutex.
         QHash<quint64, BatteryDeviceInfo> m_latest;
 };

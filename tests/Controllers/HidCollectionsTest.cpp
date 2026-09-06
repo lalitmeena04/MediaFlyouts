@@ -28,7 +28,7 @@ TEST(HidCollectionsTest, IgnoresNonGenericDesktopPages) {
 }
 
 TEST(HidCollectionsTest, PrefersMouseOverTheKeyboardCollectionOfAGamingMouse) {
-    // a Basilisk exposes a keyboard collection for its macro keys as well as a mouse one
+    // Basilisk exposes keyboard collection for macro keys and mouse collection.
     const std::vector<HidCollection> collections{
         collectionOf(0x00B9, 0x01, 0x06), // keyboard, enumerated first
         collectionOf(0x00B9, 0x0C, 0x01), // consumer control
@@ -54,7 +54,7 @@ TEST(HidCollectionsTest, IgnoresCollectionsOfOtherProducts) {
 }
 
 TEST(HidCollectionsTest, ReturnsEmptyWhenNothingIdentifiesTheDevice) {
-    // headsets only expose vendor and audio collections
+    // Headsets expose vendor and audio collections only.
     const std::vector<HidCollection> collections{
         collectionOf(0x0ADF, 0xFF00, 0x01),
         collectionOf(0x0ADF, 0x0C, 0x01),

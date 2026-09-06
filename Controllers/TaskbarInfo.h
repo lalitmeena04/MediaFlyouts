@@ -9,7 +9,7 @@
 
 class QWindow;
 
-// Locates the Windows taskbar and system-tray rectangles, in Qt logical pixels.
+// Finds the Windows taskbar and tray in Qt logical pixels.
 class TaskbarInfo : public QObject {
         Q_OBJECT
 
@@ -17,24 +17,24 @@ class TaskbarInfo : public QObject {
         explicit TaskbarInfo(QObject* parent = nullptr);
         ~TaskbarInfo() override;
 
-        // whole primary taskbar; empty QRect if it can't be found
+        // Primary taskbar. Empty if not found.
         Q_INVOKABLE QRect taskbarGeometry() const;
-        // notification area (tray icons + clock); empty QRect if it can't be found
+        // Tray area. Empty if not found.
         Q_INVOKABLE QRect trayGeometry() const;
-        // top-left for the taskbar widget on the given monitor (side: 0 = left, 1 = right)
+        // Top-left for the taskbar widget.
         Q_INVOKABLE QPoint widgetPosition(int monitor, int side, int offset, int width, int height) const;
-        // full geometry (logical px) of the given monitor, used to keep flyouts on-screen
+        // Full monitor geometry in logical pixels.
         Q_INVOKABLE QRect monitorGeometry(int monitor) const;
-        // re-assert the window at the top of the topmost band. The window is remembered and
-        // re-pinned automatically on foreground/minimize changes.
+        // Put the window above other topmost windows.
+        // Remember it for later shell events.
         Q_INVOKABLE void pinTopmost(QWindow* window) const;
-        // compatibility name for taskbar widgets docked over the shell taskbar
+        // Old name used by taskbar widgets.
         Q_INVOKABLE void pinAboveTaskbar(QWindow* window) const;
 
-        // re-pin every tracked window right now; called from the WinEvent hook
+        // Pin all tracked windows now.
         void repinTracked() const;
-        // react to a shell WinEvent: re-pin now and, for minimize/foreground changes, keep re-pinning
-        // for a short burst to cover the taskbar re-topping itself across the minimize animation
+        // Handle one shell event.
+        // Pin more during minimize and foreground changes.
         void handleShellEvent(unsigned long event);
 
     private:

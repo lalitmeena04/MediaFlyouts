@@ -4,7 +4,7 @@
 #include <QMutex>
 #include <QQuickImageProvider>
 
-// Thread-safe holder for the current album art; QML pulls it via image://albumart/...
+// Thread-safe holder for current album art. QML reads image://albumart.
 class AlbumArtProvider : public QQuickImageProvider {
     public:
         AlbumArtProvider();

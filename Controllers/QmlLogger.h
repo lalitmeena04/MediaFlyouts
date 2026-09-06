@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QString>
 
-// Thin bridge so QML can write into the same spdlog file logger the C++ side uses.
+// Bridge QML logs into C++ spdlog file logger.
 // Exposed to QML as the context property "log".
 class QmlLogger : public QObject {
         Q_OBJECT

@@ -10,7 +10,7 @@ QVector<PeripheralSnapshot> snapshot(std::initializer_list<PeripheralSnapshot> d
     return QVector<PeripheralSnapshot>(devices);
 }
 
-// Seeds the baseline so later snapshots report real transitions.
+// Seed baseline. Later snapshots report real transitions.
 BatteryAlertPolicy seededWith(const QVector<PeripheralSnapshot>& devices) {
     BatteryAlertPolicy policy;
     policy.update(devices, 0);
@@ -41,7 +41,7 @@ TEST(BatteryAlertPolicyTest, MapsPercentagesToBuckets) {
 }
 
 TEST(BatteryAlertPolicyTest, FirstSnapshotOnlySeedsTheBaseline) {
-    // otherwise every already-connected device looks newly connected at launch
+    // Prevent false newly-connected event on launch.
     BatteryAlertPolicy policy;
     const auto alerts = policy.update(snapshot({{"Mouse", 55, false}, {"Headset", 80, false}}), 0);
 
@@ -89,7 +89,7 @@ TEST(BatteryAlertPolicyTest, AlertsOnceWhenCrossingTheLowThreshold) {
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::LowBattery);
 
-    // the 15s poll keeps seeing 19%/18%: no repeat alerts
+    // Repeated poll sees 19% and 18%. No repeat alerts.
     EXPECT_TRUE(policy.update(snapshot({{"Mouse", 19, false}}), 25000).isEmpty());
     EXPECT_TRUE(policy.update(snapshot({{"Mouse", 18, false}}), 40000).isEmpty());
 }
@@ -116,7 +116,7 @@ TEST(BatteryAlertPolicyTest, ChargingBackUpReArmsTheThreshold) {
     BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 25, false}}));
     policy.update(snapshot({{"Mouse", 15, false}}), 10000); // low alert fires
 
-    // charged above the threshold, then drained again: the warning is useful a second time
+    // Charge above threshold. Drain again. Warning fires again.
     policy.update(snapshot({{"Mouse", 60, true}}), 20000);
     policy.update(snapshot({{"Mouse", 60, false}}), 30000);
     const auto alerts = policy.update(snapshot({{"Mouse", 15, false}}), 40000);
@@ -147,7 +147,7 @@ TEST(BatteryAlertPolicyTest, DebouncesAFlappingBluetoothLink) {
     BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 55, false}}));
     policy.setDebounceMs(3000);
 
-    // drops out and comes straight back: one disconnect, no connect storm
+    // Drops out and comes back. One disconnect. No connect storm.
     policy.update(snapshot({}), 10000);
     const auto alerts = policy.update(snapshot({{"Mouse", 55, false}}), 11000);
     EXPECT_TRUE(alerts.isEmpty());

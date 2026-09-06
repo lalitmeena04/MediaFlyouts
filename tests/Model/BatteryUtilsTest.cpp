@@ -39,7 +39,7 @@ TEST(BatteryUtilsTest, LeavesPlainNameUnchanged) {
 }
 
 TEST(BatteryUtilsTest, OnlyStripsAtEndOfString) {
-    // "Hands-Free" appearing mid-name (not a trailing profile suffix) must survive
+    // Mid-name "Hands-Free" is not profile suffix.
     EXPECT_EQ(cleanBluetoothProfileSuffix("Hands-Free Speaker"), "Hands-Free Speaker");
 }
 
@@ -56,6 +56,6 @@ TEST(BatteryUtilsTest, MilliwattHoursRejectsInvalidCapacity) {
 }
 
 TEST(BatteryUtilsTest, MilliwattHoursClampsOverfullReading) {
-    // some firmwares briefly report remaining slightly above the "full" capacity
+    // Some firmware reports remaining above full capacity briefly.
     EXPECT_EQ(milliwattHoursToPercent(110, 100), 100);
 }

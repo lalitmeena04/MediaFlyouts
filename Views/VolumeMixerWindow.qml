@@ -31,7 +31,7 @@ Window {
         root.requestActivate()
     }
 
-    // keep levels roughly in sync while the window is open
+    // Keep levels in sync while window is open.
     Timer {
         interval: 1000
         running: root.visible

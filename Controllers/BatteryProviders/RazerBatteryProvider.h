@@ -4,14 +4,13 @@
 
 #include <QHash>
 
-// Reads battery from Razer wireless devices over their 90-byte HID feature-report protocol.
-// Only devices that answer the power-class battery command are reported.
+// Read Razer wireless battery over 90-byte HID feature-report protocol.
+// Report only devices that answer power-class battery command.
 class RazerBatteryProvider : public IBatteryProvider {
     public:
         QVector<BatteryDeviceInfo> poll() override;
 
     private:
-        // transaction id each product answered on last time; models differ, and sweeping
-        // the whole list costs a timeout per unanswered id
+        // Last transaction id per product. Avoid full sweep timeout.
         QHash<quint16, quint8> m_transactionIds;
 };

@@ -68,9 +68,9 @@ TEST(FftTest, FrequencyBarsLightBarAtToneFrequency) {
     const int fftSize = 1024;
     const double sampleRate = 48000.0;
     std::vector<double> mags(fftSize / 2, 0.0);
-    // a strong component around 1 kHz -> bin ~ 1000 / (48000/1024) ~ 21
+    // Strong component near 1 kHz maps to bin 21.
     const int bin = static_cast<int>(1000.0 / (sampleRate / fftSize));
-    mags[bin] = fftSize * 0.5; // full-scale magnitude
+    mags[bin] = fftSize * 0.5; // Full-scale magnitude.
 
     const int bars = 16;
     const std::vector<double> out = mf::frequencyBars(mags, sampleRate, fftSize, bars);

@@ -10,7 +10,7 @@
 #include "Settings.h"
 
 namespace {
-// Redirect QSettings to a throwaway location and start each case from a clean slate.
+// Redirect QSettings to test location. Start each case clean.
 class SettingsTest : public ::testing::Test {
     protected:
         void SetUp() override {
@@ -57,13 +57,13 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.flyoutAnimationMs(), 300);
     EXPECT_EQ(s.flyoutAnimationEasingStyle(), 3);
     EXPECT_EQ(s.volumeFlyoutDuration(), 1800);
-    // the volume flyout is placed independently of the media flyout
+    // Volume flyout is placed independently of media flyout.
     EXPECT_EQ(s.volumeFlyoutPosition(), 4);
     EXPECT_EQ(s.volumeFlyoutMonitor(), 0);
     EXPECT_EQ(s.nextUpDuration(), 2000);
     EXPECT_EQ(s.nextUpStyle(), 0);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
-    // seeded from the system taskbar alignment, so only the range is fixed
+    // Seeded from system taskbar alignment. Only range is fixed.
     EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
@@ -80,7 +80,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.filterMode(), 0);
     EXPECT_TRUE(s.filterList().isEmpty());
     EXPECT_FALSE(s.autoCheckUpdates());
-    // peripheral flyout: off until asked for, then bottom-centre like the other flyouts
+    // Peripheral flyout starts off. Default position is bottom center.
     EXPECT_FALSE(s.peripheralFlyoutEnabled());
     EXPECT_EQ(s.peripheralFlyoutDuration(), 3000);
     EXPECT_EQ(s.peripheralFlyoutPosition(), 4);
@@ -113,7 +113,7 @@ TEST_F(SettingsTest, EachToggleIsIndependent) {
     s.setLaunchOnStartup(true);
     EXPECT_FALSE(s.volumeFlyoutEnabled());
     EXPECT_TRUE(s.launchOnStartup());
-    // untouched toggles keep their defaults
+    // Untouched toggles keep defaults.
     EXPECT_TRUE(s.mediaFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
 }
@@ -134,7 +134,7 @@ TEST_F(SettingsTest, TaskbarWidgetSideIsSeededOnceThenPinned) {
     {
         Settings first;
         seeded = first.taskbarWidgetSide();
-        // pick a different side so we can tell a stored choice from a re-seed
+        // Pick different side. This distinguishes stored choice from re-seed.
         first.setTaskbarWidgetSide(seeded == 1 ? 0 : 1);
     }
     Settings second;
@@ -150,7 +150,7 @@ TEST_F(SettingsTest, ExportImportRoundTrip) {
         s.setFlyoutDuration(7000);
         EXPECT_TRUE(s.exportTo(QUrl::fromLocalFile(path)));
     }
-    // wipe the live store so defaults come back, then restore from the export
+    // Wipe live store. Defaults return before import.
     QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
               QStringLiteral("MediaFlyouts"))
         .clear();

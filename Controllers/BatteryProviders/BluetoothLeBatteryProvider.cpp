@@ -13,13 +13,11 @@ namespace streams = winrt::Windows::Storage::Streams;
 
 namespace {
 
-// GATT Characteristics UUIDs table doesn't expose a helper for Appearance (0x2A01);
-// build the standard 16-bit-derived UUID manually (Bluetooth Base UUID).
+// GATT UUID table has no Appearance helper. Build Bluetooth Base UUID manually.
 constexpr winrt::guid kAppearanceCharacteristicUuid{
     0x00002a01, 0x0000, 0x1000, {0x80, 0x00, 0x00, 0x80, 0x5f, 0x9b, 0x34, 0xfb}};
 
-// Reads the standard Battery Level characteristic (0x2A19) off the given device's
-// Battery Service (0x180F); returns -1 if the device doesn't expose one.
+// Read Battery Level characteristic from Battery Service. Return -1 if absent.
 int readBatteryPercent(const BluetoothLEDevice& device) {
     auto serviceResult = device.GetGattServicesForUuidAsync(GattServiceUuids::Battery(), BluetoothCacheMode::Uncached)
                               .get();
@@ -44,9 +42,8 @@ int readBatteryPercent(const BluetoothLEDevice& device) {
     return static_cast<int>(reader.ReadByte());
 }
 
-// Reads the standard GAP Appearance characteristic (0x2A01) off the Generic Access
-// Service (0x1800) and decodes it into a rough device category, per the Bluetooth SIG
-// "GAP Appearance Values" assigned numbers. Returns an empty string if unavailable/unmapped.
+// Read GAP Appearance from Generic Access Service. Map to rough device category.
+// Return empty string if absent or unmapped.
 QString readCategory(const BluetoothLEDevice& device) {
     try {
         auto serviceResult =
@@ -105,21 +102,20 @@ QVector<BatteryDeviceInfo> BluetoothLeBatteryProvider::poll() {
 
             const int percent = readBatteryPercent(device);
 
-            // DeviceInformation.Name is the paired/user-visible name shown in Windows
-            // Bluetooth settings; BluetoothLEDevice.Name can fall back to a generic
-            // "Bluetooth <address>" placeholder for devices that don't advertise a name
+            // DeviceInformation.Name is paired name from Windows Bluetooth settings.
+            // BluetoothLEDevice.Name can be generic placeholder.
             QString name = QString::fromWCharArray(info.Name().c_str());
             if(name.isEmpty())
                 name = QString::fromWCharArray(device.Name().c_str());
             if(name.isEmpty())
                 continue;
 
-            // still reported (with an unknown battery) when there's no Battery Service, so
-            // connect/disconnect events surface even for devices that don't share battery
+            // Report devices without Battery Service as unknown battery.
+            // This keeps connect/disconnect events visible.
             result.append({name, percent, QStringLiteral("ble"), readCategory(device)});
         }
     } catch(...) {
-        // BLE GATT access can fail transiently (device out of range, radio busy, ...); skip this cycle
+        // BLE GATT access can fail transiently. Skip this cycle.
     }
 
     return result;

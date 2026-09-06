@@ -3,7 +3,7 @@
 namespace razer {
 
 namespace {
-// offsets inside the 90-byte report, shifted by one for the leading report-id byte
+// Offsets inside 90-byte report. Shifted for leading report-id byte.
 constexpr std::size_t kStatus = 1;
 constexpr std::size_t kTransactionId = 2;
 constexpr std::size_t kDataSize = 6;

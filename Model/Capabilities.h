@@ -2,10 +2,9 @@
 
 #include <QObject>
 
-// Tracks which platform subsystems initialized successfully so the UI can hide or
-// disable features that depend on an unavailable Windows API. Each flag starts
-// optimistically available and is only cleared once a subsystem reports failure, so
-// features stay visible on platforms/tests where detection is absent.
+// Track platform subsystem availability.
+// UI hides features that need unavailable APIs.
+// Flags start available and clear only after reported failure.
 class Capabilities : public QObject {
         Q_OBJECT
         Q_PROPERTY(bool audioAvailable READ audioAvailable NOTIFY changed)

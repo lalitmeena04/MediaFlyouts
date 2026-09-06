@@ -28,10 +28,8 @@ TEST(SessionSelectionTest, FallsBackToZeroWhenNothingIsSelected) {
     EXPECT_EQ(selectedSessionIndexByAppId({}, QString()), 0);
 }
 
-// regression test: this is exactly the scenario the fix addressed. Before it, matching relied
-// on WinRT object identity across two separate SMTC calls (GetCurrentSession() vs GetSessions()),
-// which could disagree about identity for the same underlying session and leave the indicator
-// stuck on the previous app. Matching by the stable app id instead fixes this.
+// Regression test. WinRT identity differs across SMTC calls.
+// App id matching fixes stuck indicator state.
 TEST(SessionSelectionTest, SelectsTheNewCurrentSessionWhenItArrivesSecond) {
     const QStringList appIds{"Music.App", "Video.App"};
     EXPECT_EQ(selectedSessionIndexByAppId(appIds, "Video.App"), 1);

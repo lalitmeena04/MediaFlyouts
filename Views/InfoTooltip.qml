@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// Theme-aware tooltip shown after a hover delay. Bind `hovered` to the control's
-// hover state; it appears to the right of its parent once the delay elapses.
+// Theme-aware tooltip with hover delay.
+// Appears to right of parent.
 ToolTip {
     id: control
     property bool hovered: false
@@ -23,7 +23,7 @@ ToolTip {
         radius: 6
     }
 
-    // show only after the pointer rests on the control for a moment
+    // Show after pointer rests on control.
     Timer {
         interval: 750
         running: control.hovered

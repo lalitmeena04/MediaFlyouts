@@ -1,8 +1,7 @@
 import QtQuick
 import MediaFlyouts
 
-// One peripheral inside the peripheral flyout: device icon, name, what happened, and the
-// battery ring when the device reports a level.
+// One peripheral card. Shows icon, name, event, and battery ring.
 Item {
     id: card
 
@@ -33,7 +32,7 @@ Item {
             width: 40
             height: 40
             thickness: 4
-            // a device with no reading still gets the ring outline, just empty
+            // Device with no reading still shows empty ring outline.
             percent: card.hasBattery ? card.alert.percent : 0
             visible: true
 

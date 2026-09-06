@@ -11,7 +11,7 @@ std::vector<std::uint8_t> bytes(std::initializer_list<int> values) {
 } // namespace
 
 TEST(FastPairProtocolTest, DrainsCompleteFramesAndKeepsPartialTail) {
-    // model-id frame, then the first 3 bytes of a second frame
+    // Model-id frame. Then first 3 bytes of second frame.
     auto buffer = bytes({0x03, 0x01, 0x00, 0x03, 0x3F, 0x6F, 0x4A, 0x03, 0x02, 0x00});
     const auto frames = drainFrames(buffer);
 
@@ -19,7 +19,7 @@ TEST(FastPairProtocolTest, DrainsCompleteFramesAndKeepsPartialTail) {
     EXPECT_EQ(frames[0].group, 0x03);
     EXPECT_EQ(frames[0].code, 0x01);
     EXPECT_EQ(frames[0].payload, bytes({0x3F, 0x6F, 0x4A}));
-    EXPECT_EQ(buffer.size(), 3u); // partial frame preserved for the next read
+    EXPECT_EQ(buffer.size(), 3u); // Partial frame preserved for next read.
 }
 
 TEST(FastPairProtocolTest, DrainsSeveralFramesFromOneRead) {
@@ -33,7 +33,7 @@ TEST(FastPairProtocolTest, DrainsSeveralFramesFromOneRead) {
 }
 
 TEST(FastPairProtocolTest, ParsesSingleComponentDevice) {
-    // captured from a CMF Neckband Pro: 70%
+    // Captured from CMF Neckband Pro. 70%.
     auto buffer = bytes({0x03, 0x03, 0x00, 0x01, 0x46});
     const auto frames = drainFrames(buffer);
     ASSERT_EQ(frames.size(), 1u);
@@ -47,7 +47,7 @@ TEST(FastPairProtocolTest, ParsesSingleComponentDevice) {
 }
 
 TEST(FastPairProtocolTest, ParsesTrueWirelessLeftRightCase) {
-    // captured from a Nothing Ear (2): left 100%, right 90%, case 100%
+    // Captured from Nothing Ear (2). Left 100%. Right 90%. Case 100%.
     auto buffer = bytes({0x03, 0x03, 0x00, 0x03, 0x64, 0x5A, 0x64});
     const auto frames = drainFrames(buffer);
     ASSERT_EQ(frames.size(), 1u);
@@ -57,11 +57,11 @@ TEST(FastPairProtocolTest, ParsesTrueWirelessLeftRightCase) {
     EXPECT_EQ(components[0].percent, 100);
     EXPECT_EQ(components[1].percent, 90);
     EXPECT_EQ(components[2].percent, 100);
-    EXPECT_EQ(lowestPercent(components), 90); // the ring shows the weakest component
+    EXPECT_EQ(lowestPercent(components), 90); // Ring shows weakest component.
 }
 
 TEST(FastPairProtocolTest, DecodesTheChargingBit) {
-    // same device with the case on a charger: 0xE4 = 0x80 | 100
+    // Same device. Case on charger. 0xE4 = 0x80 | 100.
     auto buffer = bytes({0x03, 0x03, 0x00, 0x03, 0x64, 0x50, 0xE4});
     const auto frames = drainFrames(buffer);
     const auto components = parseBattery(frames[0]);

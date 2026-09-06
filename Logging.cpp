@@ -15,7 +15,7 @@ namespace mf {
 
 QString initLogging() {
 #if SPDLOG_ACTIVE_LEVEL >= SPDLOG_LEVEL_OFF
-    // logging disabled at build time (MEDIAFLYOUTS_ENABLE_LOGGING=OFF): no file, no sinks
+    // Logging disabled at build time. No file. No sinks.
     return {};
 #else
     const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/logs");
@@ -36,8 +36,8 @@ QString initLogging() {
         spdlog::set_default_logger(logger);
         spdlog::set_level(spdlog::level::debug);
     } catch(const std::exception&) {
-        // keep the process alive even if the file sink can't be created (e.g. locked file);
-        // the default stdout logger stays in place and TRC_* calls remain valid
+        // Keep process alive if file sink fails.
+        // Default stdout logger stays active.
         spdlog::set_level(spdlog::level::debug);
     }
     return file;

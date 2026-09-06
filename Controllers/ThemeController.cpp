@@ -23,7 +23,7 @@ bool ThemeController::computeDark() const {
         return false;
     if(mode == 2)
         return true;
-    // system: follow the OS color scheme
+    // System mode follows OS color scheme.
     if(const QStyleHints* hints = QGuiApplication::styleHints())
         return hints->colorScheme() != Qt::ColorScheme::Light;
     return true;
@@ -31,7 +31,7 @@ bool ThemeController::computeDark() const {
 
 void ThemeController::refresh() {
     m_dark = computeDark();
-    // accent may also depend on settings that changed, so always notify
+    // Accent can depend on settings. Always notify.
     emit changed();
 }
 

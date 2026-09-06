@@ -6,9 +6,8 @@
 
 namespace {
 
-// {4D1E55B2-F16F-11CF-88CB-001111000030} - GUID_DEVINTERFACE_HID, hardcoded to avoid
-// pulling in hidclass.h (which conflicts badly with hidpi.h/hidsdi.h when both are used
-// in the same binary - see PlayStationControllerBatteryProvider.cpp).
+// GUID_DEVINTERFACE_HID.
+// Hardcoded to avoid hidclass.h and hidpi.h conflict.
 constexpr GUID kHidInterfaceGuid = {
     0x4d1e55b2, 0xf16f, 0x11cf, {0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30}};
 

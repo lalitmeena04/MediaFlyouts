@@ -58,8 +58,8 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
                            device.connectionKind});
         }
 
-        // Charging back above a threshold re-arms it, so a device hovering at the limit
-        // alerts once per discharge rather than once per poll.
+        // Charging above threshold arms alert again.
+        // Device alerts once per discharge.
         if(device.percent > kLowThreshold)
             state.lowAlerted = false;
         if(device.percent > kVeryLowThreshold)
@@ -71,7 +71,7 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
                 alerts.append({PeripheralEvent::VeryLowBattery, device.name, device.percent,
                                bucketOf(device.percent), device.category, device.connectionKind});
                 state.veryLowAlerted = true;
-                state.lowAlerted = true; // don't also fire the softer warning
+                state.lowAlerted = true; // Do not also fire low warning.
             } else if(device.percent <= kLowThreshold && !state.lowAlerted) {
                 alerts.append({PeripheralEvent::LowBattery, device.name, device.percent, bucketOf(device.percent),
                                device.category, device.connectionKind});
@@ -94,7 +94,7 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
         if(!it.value().present) {
             if(!it.value().disconnectReported &&
                timestampMs - it.value().absentSinceMs >= m_debounceMs) {
-                // report the level it had when it went away, which is all we know now
+                // Report last known level.
                 alerts.append({PeripheralEvent::Disconnected, it.key(), it.value().percent,
                                bucketOf(it.value().percent), it.value().category, it.value().connectionKind});
                 it.value().disconnectReported = true;

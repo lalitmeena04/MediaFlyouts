@@ -19,7 +19,7 @@ class SettingsQtTest : public QObject {
 };
 
 void SettingsQtTest::initTestCase() {
-    // keep the tests from touching the real user configuration
+    // Keep tests from touching real user configuration.
     QStandardPaths::setTestModeEnabled(true);
 }
 
@@ -64,13 +64,13 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.flyoutAnimationMs(), 300);
     QCOMPARE(s.flyoutAnimationEasingStyle(), 3);
     QCOMPARE(s.volumeFlyoutDuration(), 1800);
-    // the volume flyout is placed independently of the media flyout
+    // Volume flyout has independent placement.
     QCOMPARE(s.volumeFlyoutPosition(), 4);
     QCOMPARE(s.volumeFlyoutMonitor(), 0);
     QCOMPARE(s.nextUpDuration(), 2000);
     QCOMPARE(s.nextUpStyle(), 0);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
-    // seeded from the system taskbar alignment, so only the range is fixed
+    // Seeded from system taskbar alignment. Only range is fixed.
     QVERIFY(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
     QVERIFY(s.taskbarWidgetShowPauseOverlay());
@@ -78,7 +78,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
     QCOMPARE(s.visualizerStyle(), 0);
-    // peripheral flyout: off until asked for, then bottom-centre like the other flyouts
+    // Peripheral flyout starts off. Default position is bottom center.
     QVERIFY(!s.peripheralFlyoutEnabled());
     QCOMPARE(s.peripheralFlyoutDuration(), 3000);
     QCOMPARE(s.peripheralFlyoutPosition(), 4);
@@ -133,7 +133,7 @@ void SettingsQtTest::legacySettingsKeepTheirValuesAndGainNewDefaults() {
     QCOMPARE(settings.flyoutPosition(), 2);
     QVERIFY(!settings.taskbarWidgetEnabled());
 
-    // These did not exist in old INI files and must initialize without overwriting them.
+    // Old INI files lack these values. Initialize without overwrite.
     QVERIFY(!settings.peripheralFlyoutEnabled());
     QCOMPARE(settings.peripheralFlyoutDuration(), 3000);
     QVERIFY(settings.peripheralFlyoutOnConnect());

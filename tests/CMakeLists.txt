@@ -30,7 +30,7 @@ FetchContent_Declare(
     GIT_TAG        v1.15.2
     GIT_SHALLOW    TRUE
 )
-# match Qt's dynamically-linked CRT on MSVC
+# Match Qt dynamically-linked CRT on MSVC.
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
@@ -128,7 +128,7 @@ foreach(src IN LISTS qt_test_sources)
     list(APPEND qt_test_names ${name})
 endforeach()
 
-# Qt's DLLs live in its bin dir; prepend it to PATH so the test exes can load Qt at runtime.
+# Qt DLLs live in bin dir. Prepend it to PATH for test executables.
 set_tests_properties(gtest_all ${qt_test_names} PROPERTIES
     ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Qt6::Core>")
 

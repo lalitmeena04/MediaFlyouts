@@ -2,9 +2,8 @@
 
 #include "IBatteryProvider.h"
 
-// Reads battery level for paired BLE peripherals (mice, keyboards, ...) via the
-// standard GATT Battery Service (UUID 0x180F), which classic-Bluetooth's PnP
-// property doesn't cover.
+// Read BLE battery from standard GATT Battery Service.
+// Classic Bluetooth PnP property does not cover BLE.
 class BluetoothLeBatteryProvider : public IBatteryProvider {
     public:
         QVector<BatteryDeviceInfo> poll() override;

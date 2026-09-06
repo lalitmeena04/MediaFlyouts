@@ -6,15 +6,15 @@
   Requires an elevated PowerShell (writes under HKEY_LOCAL_MACHINE).
 
 .EXAMPLE
-  # mini dumps (default), keep the last 10
+  # Mini dumps. Keep last 10.
   .\tools\enable-crash-dumps.ps1
 
 .EXAMPLE
-  # full dumps (larger, includes all process memory) for a deeper post-mortem
+  # Full dumps. Includes all process memory.
   .\tools\enable-crash-dumps.ps1 -Full
 
 .EXAMPLE
-  # remove the registry keys again
+  # Remove registry keys.
   .\tools\enable-crash-dumps.ps1 -Disable
 #>
 [CmdletBinding()]
@@ -49,7 +49,7 @@ if ($Disable) {
 New-Item -Path $appKey -Force | Out-Null
 New-Item -ItemType Directory -Force $DumpFolder | Out-Null
 
-# DumpType: 1 = mini dump (stacks + a bit of context), 2 = full dump (entire process memory)
+# DumpType. 1 = mini dump. 2 = full dump.
 $dumpType = if ($Full) { 2 } else { 1 }
 
 New-ItemProperty -Path $appKey -Name DumpFolder -PropertyType ExpandString -Value $DumpFolder -Force | Out-Null

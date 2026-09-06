@@ -4,7 +4,7 @@
 #include <QLocalSocket>
 
 SingleInstance::SingleInstance(const QString& key, QObject* parent) : QObject(parent), m_key(key) {
-    // if we can connect to an existing server, another instance already owns the key
+    // Existing server means another instance owns key.
     QLocalSocket socket;
     socket.connectToServer(m_key);
     if(socket.waitForConnected(200)) {
@@ -15,10 +15,10 @@ SingleInstance::SingleInstance(const QString& key, QObject* parent) : QObject(pa
         return;
     }
 
-    // a stale socket can linger after a crash; clear it before listening
+    // Stale socket can remain after crash. Clear it before listen.
     QLocalServer::removeServer(m_key);
     m_server = new QLocalServer(this);
-    m_primary = true; // run even if listen() fails, rather than block the user
+    m_primary = true; // Run even if listen() fails.
     if(m_server->listen(m_key)) {
         connect(m_server, &QLocalServer::newConnection, this, [this] {
             if(QLocalSocket* c = m_server->nextPendingConnection()) {

@@ -12,17 +12,15 @@
 
 class IBatteryProvider;
 
-// Aggregates battery level for wireless peripherals (Bluetooth headsets/mice/keyboards,
-// with more connection kinds to follow) into a single list exposed to QML. Devices a
-// provider can't read a battery level for are still included, with an unknown battery,
-// so connect/disconnect/charging alerts still fire for them.
+// Aggregate battery levels for wireless peripherals. Expose list to QML.
+// Include devices with unknown battery. Alerts still work.
 class BatteryStatusController : public QObject {
         Q_OBJECT
         Q_PROPERTY(QVariantList devices READ devices NOTIFY devicesChanged)
 
     public:
         explicit BatteryStatusController(QObject* parent = nullptr);
-        // test seam: inject providers directly instead of the real Windows-backed ones
+        // Test path. Inject providers without Windows hardware APIs.
         explicit BatteryStatusController(std::vector<std::unique_ptr<IBatteryProvider>> providers,
                                           QObject* parent = nullptr);
         ~BatteryStatusController() override;
@@ -30,27 +28,25 @@ class BatteryStatusController : public QObject {
         QVariantList devices() const;
 
     public slots:
-        // re-polls all providers now; also called automatically on a timer
+        // Re-poll all providers now. Timer also calls this.
         void refresh();
 
     signals:
         void devicesChanged();
 
     private:
-        // applies a freshly polled snapshot on the main thread (updates m_devices, emits if changed)
+        // Apply polled snapshot on main thread. Emit if changed.
         void applyPolled(const QVector<struct BatteryDeviceInfo>& polled);
 
         std::vector<std::unique_ptr<IBatteryProvider>> m_providers;
         QVariantList m_devices;
         QTimer m_timer;
-        // instant connect/disconnect signals layered on top of the timer, which still
-        // catches battery-level drift and anything the watchers miss
+        // Instant connect/disconnect signals. Timer handles drift and missed events.
         BluetoothConnectionWatcher m_bluetoothWatcher;
         HidChangeWatcher m_hidWatcher;
-        // real (Windows) providers poll on a background thread to avoid blocking the STA main
-        // thread on WinRT async calls; the test-injection constructor leaves this false
+        // Windows providers poll on background thread. Test path leaves this false.
         bool m_pollOnWorkerThread = false;
         bool m_refreshing = false;
-        // a connect/disconnect seen while a poll is in flight, re-run once it finishes
+        // Device changed during poll. Re-run after poll finishes.
         bool m_refreshPending = false;
 };

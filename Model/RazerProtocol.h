@@ -3,12 +3,12 @@
 #include <cstdint>
 #include <vector>
 
-// Razer's 90-byte HID feature-report protocol (as documented by the OpenRazer project).
-// Kept free of Windows/Qt types so it can be unit tested.
+// Razer 90-byte HID feature-report protocol.
+// Kept free of Windows and Qt types for tests.
 namespace razer {
 
 inline constexpr std::size_t kReportSize = 90;
-// the Win32 HID API expects a leading report-id byte in front of the report itself
+// Win32 HID API expects leading report-id byte.
 inline constexpr std::size_t kBufferSize = kReportSize + 1;
 
 inline constexpr std::uint8_t kCommandClassPower = 0x07;
@@ -27,23 +27,21 @@ enum class Status : std::uint8_t {
 // XOR of report bytes 2..87.
 std::uint8_t checksum(const std::vector<std::uint8_t>& buffer);
 
-// Builds a request buffer (report id byte + 90-byte report) for a power-class command.
+// Build request buffer for power-class command.
 std::vector<std::uint8_t> buildRequest(std::uint8_t transactionId, std::uint8_t commandId);
 
 Status statusOf(const std::vector<std::uint8_t>& buffer);
 
-// True when the buffer is the device's answer to the given request rather than one of the
-// unrelated reports it also emits.
+// True when buffer is device answer for given request.
 bool isReplyTo(const std::vector<std::uint8_t>& buffer, std::uint8_t transactionId, std::uint8_t commandId);
 
 // Battery level is reported on a 0-255 scale, not 0-100.
 int percentFromRaw(std::uint8_t raw);
 
-// Extracts the battery percentage from a successful reply, or -1 if it isn't one.
+// Extract battery percentage from successful reply. Return -1 on failure.
 int batteryPercent(const std::vector<std::uint8_t>& buffer, std::uint8_t transactionId);
 
-// Extracts charging state from a successful reply; 'supported' is false when the device
-// answers NotSupported, which several wireless models do.
+// Extract charging state from successful reply. supported is false for NotSupported.
 bool chargingState(const std::vector<std::uint8_t>& buffer, std::uint8_t transactionId, bool& supported);
 
 } // namespace razer

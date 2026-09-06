@@ -10,8 +10,8 @@ namespace {
 constexpr USHORT kLogitechVendorId = 0x046D;
 constexpr USAGE kVendorUsagePage = 0xFF00;
 
-// Writes a HID++ report and waits for the reply addressed to the same device index.
-// Windows requires the write buffer to be exactly the collection's output report length.
+// Write HID++ report. Wait for reply to same device index.
+// Windows requires exact output report length.
 bool exchange(HANDLE device, const HidCollection& collection, const std::vector<std::uint8_t>& request,
               std::uint8_t deviceIndex, std::vector<std::uint8_t>& reply) {
     std::vector<std::uint8_t> padded = request;
@@ -25,8 +25,7 @@ bool exchange(HANDLE device, const HidCollection& collection, const std::vector<
         WaitForSingleObject(writeOv.hEvent, 300);
     CloseHandle(writeOv.hEvent);
 
-    // Kept short: a vendor collection that isn't HID++ (some G headsets) never answers, and
-    // this runs for every device index on every poll.
+    // Keep timeout short. Non-HID++ vendor collections do not answer.
     for(int attempt = 0; attempt < 4; ++attempt) {
         reply.assign(collection.inputLength, 0);
         OVERLAPPED readOv = {};
@@ -49,7 +48,7 @@ bool exchange(HANDLE device, const HidCollection& collection, const std::vector<
     return false;
 }
 
-// Resolves a feature id to this device's index for it; 0 means unsupported.
+// Resolve feature id to device feature index. 0 means unsupported.
 std::uint8_t featureIndex(HANDLE device, const HidCollection& collection, std::uint8_t deviceIndex,
                           std::uint16_t featureId) {
     std::vector<std::uint8_t> reply;
@@ -58,8 +57,8 @@ std::uint8_t featureIndex(HANDLE device, const HidCollection& collection, std::u
     return hidpp::featureIndexOf(reply);
 }
 
-// Tries the modern unified battery feature first, then the legacy one. 'answered' reports
-// whether the collection spoke HID++ at all, so callers can stop probing dead collections.
+// Try unified battery first. Then try legacy battery.
+// Flag answered tells if collection spoke HID++.
 int readBattery(HANDLE device, const HidCollection& collection, std::uint8_t deviceIndex, bool& answered) {
     std::vector<std::uint8_t> reply;
     answered = exchange(device, collection,
@@ -101,7 +100,7 @@ QVector<BatteryDeviceInfo> LogitechBatteryProvider::poll() {
         if(device == INVALID_HANDLE_VALUE)
             continue;
 
-        // 0xFF is a directly attached device; receivers expose their paired devices in slots
+        // 0xFF is directly attached device. Receivers use slots.
         std::vector<std::uint8_t> indices{hidpp::kDirectDeviceIndex};
         for(std::uint8_t slot = 0x01; slot <= hidpp::kMaxReceiverSlot; ++slot)
             indices.push_back(slot);
@@ -112,8 +111,8 @@ QVector<BatteryDeviceInfo> LogitechBatteryProvider::poll() {
             bool answered = false;
             const int percent = readBattery(device, collection, deviceIndex, answered);
             collectionSpeaksHidpp = collectionSpeaksHidpp || answered;
-            // a collection that ignored both the direct index and the first receiver slot
-            // isn't HID++ at all; don't spend a poll walking the remaining slots
+            // Collection ignored direct index and first receiver slot.
+            // Treat as not HID++. Stop probing remaining slots.
             if(!collectionSpeaksHidpp && position >= 1)
                 break;
             if(percent < 0)

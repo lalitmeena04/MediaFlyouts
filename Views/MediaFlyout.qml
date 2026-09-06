@@ -12,7 +12,7 @@ FlyoutBase {
 
     readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
 
-    // tracks the pinned state to detect when the user unpins while the flyout is up
+    // Track pinned state while flyout is visible.
     property bool prevAlwaysDisplay: settings.mediaFlyoutAlwaysDisplay
 
     function showFlyout() {
@@ -23,7 +23,7 @@ FlyoutBase {
         if(nowPlaying.hasMedia && !settings.playerAllowed(nowPlaying.playerName))
             return
         present()
-        // pinned flyouts stay up: cancel the auto-hide countdown present() started
+        // Pinned flyout stays visible. Stop auto-hide timer.
         if(settings.mediaFlyoutAlwaysDisplay)
             stopAutoHide()
     }
@@ -41,7 +41,7 @@ FlyoutBase {
     Connections {
         target: settings
         function onChanged() {
-            // unpinned while the flyout is up -> resume the auto-hide countdown
+            // User unpinned visible flyout. Restart auto-hide timer.
             if(root.prevAlwaysDisplay && !settings.mediaFlyoutAlwaysDisplay && root.visible)
                 root.restartAutoHide()
             root.prevAlwaysDisplay = settings.mediaFlyoutAlwaysDisplay
@@ -65,7 +65,7 @@ FlyoutBase {
             onClicked: if(!settings.mediaFlyoutAlwaysDisplay) root.restartAutoHide()
         }
 
-        // dismiss button, shown only when the flyout is pinned (always-display)
+        // Dismiss button. Show only for pinned flyout.
         IconLabel {
             id: closeButton
             z: 100
@@ -151,7 +151,7 @@ FlyoutBase {
                     horizontalAlignment: settings.centerTitleArtist ? Text.AlignHCenter : Text.AlignLeft
                 }
 
-                // transport controls in their own row so the seekbar can be hidden independently
+                // Transport controls have own row. Seekbar can hide separately.
                 Item {
                     width: parent.width
                     height: controls.height
@@ -196,7 +196,7 @@ FlyoutBase {
                     }
                 }
 
-                // seekbar (hidden in compact layout or when disabled)
+                // Seekbar. Hidden in compact layout or when disabled.
                 Column {
                     width: parent.width
                     visible: settings.seekbarEnabled && !root.compact
@@ -209,7 +209,7 @@ FlyoutBase {
                         radius: 2.5
                         color: theme.track
 
-                        // -1 when not scrubbing; otherwise the dragged position (0..1)
+                        // -1 when not scrubbing. Otherwise dragged position.
                         property real dragFraction: -1
                         readonly property real shownFraction: dragFraction >= 0 ? dragFraction : nowPlaying.progress
 
@@ -218,7 +218,7 @@ FlyoutBase {
                             height: parent.height
                             radius: parent.radius
                             color: root.accentColor
-                            // don't animate the fill while the user is scrubbing
+                            // Do not animate fill while user scrubs.
                             Behavior on width { enabled: seekTrack.dragFraction < 0; NumberAnimation { duration: 250 } }
                         }
 

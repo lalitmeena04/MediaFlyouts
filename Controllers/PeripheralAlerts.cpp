@@ -25,8 +25,7 @@ PeripheralAlerts::PeripheralAlerts(BatteryStatusController* status, QObject* par
     : QObject(parent), m_status(status) {
     if(m_status) {
         connect(m_status, &BatteryStatusController::devicesChanged, this, &PeripheralAlerts::onDevicesChanged);
-        // seed the baseline from whatever is already connected, so launching the app
-        // doesn't announce every device at once
+        // Seed baseline from connected devices. Do not announce all at launch.
         onDevicesChanged();
     }
 }

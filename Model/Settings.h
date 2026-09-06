@@ -97,10 +97,10 @@ class Settings : public QObject {
     public:
         explicit Settings(QObject* parent = nullptr);
 
-        // write / read every setting to a portable ini file (for backup & restore)
+        // Write and read settings from portable ini file.
         Q_INVOKABLE bool exportTo(const QUrl& file) const;
         Q_INVOKABLE bool importFrom(const QUrl& file);
-        // folder containing the settings ini, for the "open config folder" action
+        // Folder that contains settings ini.
         Q_INVOKABLE QString configDir() const;
 
         bool mediaFlyoutEnabled() const;
@@ -131,12 +131,12 @@ class Settings : public QObject {
         bool taskbarWidgetControlsEnabled() const;
         int flyoutPosition() const;
         int flyoutMonitor() const;
-        // independent of the media flyout; indexes mf::FlyoutPosition like flyoutPosition
+        // Independent of media flyout. Indexes mf::FlyoutPosition.
         int volumeFlyoutPosition() const;
         int volumeFlyoutMonitor() const;
         int flyoutDuration() const;
         int flyoutAnimationSpeed() const;
-        // fade duration in ms derived from flyoutAnimationSpeed
+        // Fade duration in ms. Derived from flyoutAnimationSpeed.
         int flyoutAnimationMs() const;
         int flyoutAnimationEasingStyle() const;
         int volumeFlyoutDuration() const;
@@ -152,7 +152,7 @@ class Settings : public QObject {
         int visualizerStyle() const;
         bool peripheralsWidgetEnabled() const;
         QStringList peripheralsWidgetExcluded() const;
-        // true unless the named device has been explicitly hidden in the peripherals-widget device picker
+        // True unless device is hidden in peripherals-widget picker.
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
         bool batteryRingUseAccent() const;
@@ -174,7 +174,7 @@ class Settings : public QObject {
         int filterMode() const;
         QStringList filterList() const;
         bool autoCheckUpdates() const;
-        // true when a player's flyout should be shown given the current filter mode/list
+        // True when current filter allows player flyout.
         Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
         void setMediaFlyoutEnabled(bool v);

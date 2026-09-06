@@ -2,21 +2,20 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// A small always-on-top battery widget for user-selected peripherals, docked on the
-// taskbar like TaskbarWidget.qml.
+// Small always-on-top battery widget for selected peripherals.
+// Docks on taskbar like TaskbarWidget.qml.
 DockableWidget {
     id: root
     logName: "PeripheralsWidget"
     pollActive: settings.peripheralsWidgetEnabled
-    // the now-playing taskbar widget, set by App.qml, so this widget can dock next to
-    // it instead of overlapping when both share the same monitor/side
+    // Now-playing taskbar widget from App.qml.
+    // Used to dock next to it without overlap.
     property var mediaWidget: null
 
     readonly property var devices: {
         var picked = []
         var all = batteryStatus.devices
-        // read the property directly (not the peripheralSelected() method) so this
-        // binding actually re-evaluates when the selection changes in the Dashboard
+        // Read property directly. Binding updates when Dashboard selection changes.
         var excluded = settings.peripheralsWidgetExcluded
         for(var i = 0; i < all.length; i++)
             if(excluded.indexOf(all[i].name) === -1)
@@ -38,12 +37,10 @@ DockableWidget {
                 + deviceSections.length * 22 + (dongleDevices.length > 0 && bluetoothDevices.length > 0 ? 14 : 0)
             height: 32
 
-    // shown only once onboarding is done, when enabled, at least one selected device is currently
-    // reporting battery, and not blocked by fullscreen / lock screen
+    // Show after onboarding, when enabled, devices exist, and not blocked.
     visible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
 
-    // true once this widget has been placed once, so later moves (media widget showing up or
-    // going away) slide smoothly instead of snapping
+    // True after first placement. Later moves animate.
     property bool positioned: false
     Behavior on x {
         enabled: root.positioned
@@ -51,9 +48,8 @@ DockableWidget {
     }
 
     function updatePosition() {
-        // shares the media widget's monitor and taskbar edge; only reserve space next to it
-        // while it is actually showing (media playing), so this widget slides in to fill the
-        // gap when nothing is playing and slides back out once playback starts again
+        // Share media widget monitor and taskbar edge.
+        // Reserve space only while media widget is visible.
         var extraOffset = 0
         if(root.mediaWidget && root.mediaWidget.visible)
             extraOffset = root.mediaWidget.width + 8
@@ -88,8 +84,8 @@ DockableWidget {
         function onWidthChanged() { root.updatePosition() }
     }
 
-    // a plain Popup/ToolTip would be clipped to this tiny frameless window's own bounds,
-    // so the hover tooltip is its own small top-level window instead
+    // Popup or ToolTip would clip to this window bounds.
+    // Use small top-level window for hover tooltip.
     Window {
         id: tip
         flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus

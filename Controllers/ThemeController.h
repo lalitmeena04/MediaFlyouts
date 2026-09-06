@@ -6,9 +6,9 @@
 class Settings;
 class NowPlaying;
 
-// Exposes a semantic color palette to QML that follows the appTheme setting
-// (0 = system, 1 = light, 2 = dark). QML singletons can't read context
-// properties, so this lives as the context object "theme".
+// Expose semantic color palette to QML.
+// Theme values. 0 = system. 1 = light. 2 = dark.
+// QML singletons cannot read context properties.
 class ThemeController : public QObject {
         Q_OBJECT
 
@@ -52,9 +52,9 @@ class ThemeController : public QObject {
         QColor track() const;
 
     public slots:
-        // recompute from the setting / system scheme and notify QML if it changed
+        // Recompute from setting and system scheme. Notify QML if changed.
         void refresh();
-        // the OS accent color, fed by a Windows accent watcher
+        // OS accent color from Windows accent watcher.
         void setSystemAccent(const QColor& color);
 
     signals:

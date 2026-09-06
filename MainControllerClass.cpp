@@ -47,7 +47,7 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     TRC_INFO("log file: {}", logFile.toStdString());
     logScreens();
 
-    // a second launch signals the running instance, then exits (see SingleInstance)
+    // Second launch signals running instance and exits.
     m_instance = std::make_unique<SingleInstance>(QStringLiteral("MediaFlyouts.singleInstance"));
     if(!m_instance->isPrimary())
         return;
@@ -85,7 +85,7 @@ void MainControllerClass::logScreens() const {
 }
 
 void MainControllerClass::loadIconFont() {
-    // load the icon font in C++ too so the tray glyph can be rendered (QML loads it via FontLoader)
+    // Load icon font for tray glyph. QML also loads it with FontLoader.
     const int fontId = QFontDatabase::addApplicationFont(
         QStringLiteral(":/qt/qml/MediaFlyouts/assets/fonts/FluentSystemIcons-Filled.ttf"));
     const QStringList families = QFontDatabase::applicationFontFamilies(fontId);
@@ -98,19 +98,19 @@ void MainControllerClass::buildCoreSubsystems() {
     m_placement = std::make_unique<FlyoutPlacement>(m_settings.get());
     m_theme = std::make_unique<ThemeController>(m_settings.get(), m_nowPlaying.get());
     m_updateChecker = std::make_unique<UpdateChecker>();
-    // tracks which platform subsystems came up so the UI can hide/disable dead features
+    // Track platform subsystem availability. UI hides unavailable features.
     m_capabilities = std::make_unique<Capabilities>();
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_qmlLog = std::make_unique<QmlLogger>();
 
-    // engine takes ownership of the image provider
+    // Engine owns image provider.
     m_artProvider = new AlbumArtProvider();
     m_engine->addImageProvider(QStringLiteral("albumart"), m_artProvider);
     m_nowPlaying->setArtProvider(m_artProvider);
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
-    // notify from the tray when an update check finds a newer release
+    // Notify from tray when newer release exists.
     QObject::connect(m_updateChecker.get(), &UpdateChecker::changed, m_tray.get(), [this] {
         if(m_updateChecker->updateAvailable())
             m_tray->notify(QStringLiteral("MediaFlyouts update available"), m_updateChecker->status());
@@ -136,13 +136,12 @@ void MainControllerClass::buildPlatformSubsystems() {
     QObject::connect(m_volumeController.get(), &VolumeController::availabilityChanged, m_capabilities.get(),
                      [this] { m_capabilities->setAudioAvailable(m_volumeController->available()); });
 
-    // replace the native Windows volume OSD with our flyout (when enabled). Left alone until
-    // onboarding finishes, otherwise neither OSD would show during the wizard.
+    // Replace native Windows volume OSD when enabled. Wait until onboarding is done.
     m_nativeSuppressor = std::make_unique<NativeFlyoutSuppressor>();
     if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted())
         m_nativeSuppressor->start();
 
-    // skip flyouts (and native-OSD suppression) while a fullscreen/exclusive-D3D app is foreground
+    // Skip flyouts and native OSD suppression during fullscreen apps.
     m_fullscreen = std::make_unique<FullscreenDetector>();
     QObject::connect(m_volumeController.get(), &VolumeController::volumeChangedExternally, m_nativeSuppressor.get(),
                      [this] {
@@ -151,7 +150,7 @@ void MainControllerClass::buildPlatformSubsystems() {
                                                           m_settings->volumeFlyoutMonitor()))
                              m_nativeSuppressor->arm();
                      });
-    // apply the override-native-OSD toggle at runtime
+    // Apply override-native-OSD toggle at runtime.
     QObject::connect(m_settings.get(), &Settings::changed, m_nativeSuppressor.get(), [this] {
         if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted())
             m_nativeSuppressor->arm();
@@ -165,50 +164,49 @@ void MainControllerClass::buildPlatformSubsystems() {
     QObject::connect(m_lockKeys.get(), &LockKeysController::availabilityChanged, m_capabilities.get(),
                      [this] { m_capabilities->setLockKeysAvailable(m_lockKeys->available()); });
 
-    // keep the Windows startup (Run) entry in sync with the saved setting
+    // Keep Windows startup entry in sync with saved setting.
     m_startup = std::make_unique<StartupController>();
     m_startup->setEnabled(m_settings->launchOnStartup());
     QObject::connect(m_settings.get(), &Settings::changed, m_startup.get(),
                      [this] { m_startup->setEnabled(m_settings->launchOnStartup()); });
 
-    // locates the taskbar / tray so the taskbar widget can dock without overlapping the tray
+    // Locate taskbar and tray. Taskbar widget avoids tray overlap.
     m_taskbar = std::make_unique<TaskbarInfo>();
 
-    // per-application volume control for the mixer window
+    // Per-app volume control for mixer window.
     m_volumeMixer = std::make_unique<VolumeMixer>();
 
-    // WASAPI loopback capture -> FFT bands for the taskbar visualizer. Capture is started and
-    // stopped from QML based on whether the visualizer is actually on screen (see TaskbarWidget).
+    // WASAPI loopback capture for taskbar visualizer. QML starts and stops capture.
     m_audioCapture = std::make_unique<AudioCapture>(28);
 
-    // exposes the themed (dark/light) title-bar helper to QML
+    // Expose title-bar helper to QML.
     m_windowEffects = std::make_unique<WindowEffects>();
 
-    // follow the OS accent color when the theme's accent mode is "match system"
+    // Follow OS accent color when accent mode is match system.
     m_accentWatcher = std::make_unique<AccentWatcher>();
     QObject::connect(m_accentWatcher.get(), &AccentWatcher::accentChanged, m_theme.get(),
                      &ThemeController::setSystemAccent);
     m_accentWatcher->start();
     m_theme->setSystemAccent(m_accentWatcher->accent());
 
-    // media keys let us tell a manual skip (media flyout) from an auto-advance (Next Up flyout)
+    // Media keys identify manual skips.
     m_mediaKeys = std::make_unique<MediaKeyController>();
     m_mediaKeys->start();
     QObject::connect(m_mediaKeys.get(), &MediaKeyController::mediaKeyPressed, m_nowPlaying.get(),
                      &NowPlaying::noteMediaKey);
-    // volume keys show the flyout even at min/max, where the audio callback doesn't fire
+    // Volume keys show flyout at min/max too.
     QObject::connect(m_mediaKeys.get(), &MediaKeyController::volumeKeyPressed, m_volumeController.get(),
                      &VolumeController::handleVolumeKey);
     m_capabilities->setMediaKeysAvailable(m_mediaKeys->available());
     QObject::connect(m_mediaKeys.get(), &MediaKeyController::availabilityChanged, m_capabilities.get(),
                      [this] { m_capabilities->setMediaKeysAvailable(m_mediaKeys->available()); });
 
-    // battery level of paired wireless peripherals (headsets, mice, keyboards, ...)
+    // Battery level of paired wireless peripherals.
     m_batteryStatus = std::make_unique<BatteryStatusController>();
 
     m_peripheralAlerts = std::make_unique<PeripheralAlerts>(m_batteryStatus.get());
 
-    // a low battery can happen at any moment, so it also gets a tray notification
+    // Low battery can happen any time. Also send tray notification.
     QObject::connect(m_peripheralAlerts.get(), &PeripheralAlerts::lowBattery, m_tray.get(),
                      [this](const QString& device, int percent, bool veryLow) {
                          if(!m_settings->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())

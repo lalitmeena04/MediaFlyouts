@@ -4,9 +4,9 @@
 
 namespace {
 
-// Walks the shell's window tree to the volume OSD host, then parks it off-screen:
-//   XamlExplorerHostIslandWindow > DesktopWindowContentBridge("DesktopWindowXamlSource") > InputSite.WindowClass
-// The OSD island is the one whose InputSite child has a non-empty rect.
+// Find volume OSD host in shell window tree. Move it off-screen.
+// Tree: XamlExplorerHostIslandWindow > DesktopWindowContentBridge > InputSite.WindowClass.
+// OSD island has an InputSite child with a non-empty rect.
 HWND findOsdHost() {
     HWND island = nullptr;
     while((island = FindWindowExW(nullptr, island, L"XamlExplorerHostIslandWindow", nullptr)) != nullptr) {

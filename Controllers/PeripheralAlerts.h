@@ -7,13 +7,11 @@
 
 class BatteryStatusController;
 
-// Turns the peripheral snapshots published by BatteryStatusController into the events
-// worth telling the user about: a device connected, disconnected, or its battery crossed
-// a low threshold. The decision rules live in mf::BatteryAlertPolicy; this class only
-// bridges them to Qt/QML.
+// Convert peripheral snapshots into user alerts.
+// BatteryAlertPolicy owns decision rules. This class connects Qt and QML.
 class PeripheralAlerts : public QObject {
         Q_OBJECT
-        // the alerts raised by the most recent snapshot, for the flyout to display
+    // Alerts from most recent snapshot. Flyout displays this list.
         Q_PROPERTY(QVariantList pending READ pending NOTIFY alertsRaised)
 
     public:
@@ -23,14 +21,13 @@ class PeripheralAlerts : public QObject {
 
         Q_INVOKABLE void clear();
 
-        // Human-readable battery bucket ("Full", "Low", ...) for a percentage.
+        // Battery bucket label for a percentage.
         Q_INVOKABLE static QString bucketLabel(int percent);
 
     signals:
-        // emitted once per snapshot that produced at least one alert
+        // Emitted once per snapshot with at least one alert.
         void alertsRaised();
-        // low/very-low battery separately: it can arrive at any moment, so it also goes
-        // to a tray notification rather than only an on-screen flyout
+        // Low battery also goes to tray notification.
         void lowBattery(const QString& deviceName, int percent, bool veryLow);
 
     private slots:

@@ -7,7 +7,7 @@
 #include <bluetoothapis.h>
 #include <cfgmgr32.h>
 #include <combaseapi.h>
-// devpkey.h only defines storage for its DEVPKEY_* GUIDs when INITGUID is set
+// Header devpkey.h defines DEVPKEY GUID storage with INITGUID.
 #include <initguid.h>
 #include <devpkey.h>
 
@@ -17,20 +17,18 @@
 
 namespace {
 
-// Undocumented but stable PnP property Windows Settings itself uses to show battery
-// level for classic-Bluetooth devices (0-100, DEVPROP_TYPE_BYTE). Lives on whichever
-// BTHENUM sub-node actually tracks it for that device (e.g. HID devices report it on
-// their main node, audio headsets report it on their "Hands-Free AG" profile node).
+// Stable PnP property for classic Bluetooth battery.
+// Value is 0-100, DEVPROP_TYPE_BYTE. BTHENUM sub-node varies by device.
 constexpr DEVPROPKEY kBluetoothBatteryKey = {
     {0x104ea319, 0x6ee2, 0x4701, {0xbd, 0x47, 0x8d, 0xdb, 0xf4, 0x25, 0xbb, 0xe5}}, 2};
 
-// Also not declared in any SDK header (resolved only via the OS's runtime property
-// schema); the classic Bluetooth device's MAC address as a hex string.
+// Runtime property schema defines this key. SDK headers do not.
+// Value is classic Bluetooth MAC address as hex string.
 constexpr DEVPROPKEY kBluetoothDeviceAddressKey = {
     {0x2bd67d8b, 0x8beb, 0x48d5, {0x87, 0xe0, 0x6c, 0xda, 0x34, 0x28, 0x04, 0x0a}}, 1};
 
-// Same undeclared-property situation; the 24-bit Bluetooth Class of Device field
-// (major/minor device class), used to identify the actual device category.
+// Runtime property schema defines this key. SDK headers do not.
+// Value is 24-bit Bluetooth Class of Device.
 constexpr DEVPROPKEY kBluetoothClassOfDeviceKey = {
     {0x2bd67d8b, 0x8beb, 0x48d5, {0x87, 0xe0, 0x6c, 0xda, 0x34, 0x28, 0x04, 0x0a}}, 4};
 
@@ -47,8 +45,7 @@ QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key) {
     return QString::fromWCharArray(buf.data());
 }
 
-// The device's PnP container id, used to dedupe multiple profile sub-nodes reporting
-// battery for the same physical device.
+// Device PnP container id. Dedupes profile sub-nodes.
 QString devNodeContainerId(DEVINST devInst) {
     DEVPROPTYPE type = 0;
     GUID containerId = {};
@@ -63,9 +60,8 @@ QString devNodeContainerId(DEVINST devInst) {
     return QString::fromWCharArray(buf);
 }
 
-// Only report devices that are actually present/connected right now, matching
-// Get-PnpDevice's "OK" status filter (avoids showing a stale battery % for a device
-// that's been off for days).
+// Report active devices only. Matches Get-PnpDevice "OK" filter.
+// Avoid stale battery values for disconnected devices.
 bool devNodeIsActive(DEVINST devInst) {
     ULONG status = 0, problem = 0;
     if(CM_Get_DevNode_Status(&status, &problem, devInst, 0) != CR_SUCCESS)
@@ -73,9 +69,8 @@ bool devNodeIsActive(DEVINST devInst) {
     return (status & DN_STARTED) && !(status & DN_HAS_PROBLEM);
 }
 
-// DN_STARTED only means the device node is paired/present, not actively connected -
-// Windows keeps paired Bluetooth nodes started for quick reconnect even when the radio
-// link is down. Ask the Bluetooth API directly for the live connection state instead.
+// DN_STARTED means paired or present. It does not mean connected.
+// Ask Bluetooth API for live connection state.
 bool isBluetoothAddressConnected(const QString& addressHex) {
     bool ok = false;
     const quint64 address = addressHex.toULongLong(&ok, 16);
@@ -95,9 +90,7 @@ bool isBluetoothAddressConnected(const QString& addressHex) {
 QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
     QVector<BatteryDeviceInfo> result;
 
-    // enumerate by PnP enumerator (BTHENUM) rather than the "Bluetooth" setup class:
-    // per-profile sub-nodes (e.g. Hands-Free AG, where audio-headset battery lives)
-    // aren't reliably included under the class filter, but all of them share BTHENUM.
+    // Enumerate BTHENUM. Bluetooth setup class can miss profile sub-nodes.
     ULONG len = 0;
     if(CM_Get_Device_ID_List_SizeW(&len, L"BTHENUM", CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS || len < 2)
         return result;
@@ -106,8 +99,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
     if(CM_Get_Device_ID_ListW(L"BTHENUM", ids.data(), len, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS)
         return result;
 
-    // a physical device can expose the battery property on more than one profile
-    // sub-node; keep only the first hit per device (by container id)
+    // Device can expose battery on more than one profile sub-node. Keep first hit.
     QSet<QString> seenContainers;
     QSet<QString> seenNames;
 
@@ -153,8 +145,8 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
         result.append({name, static_cast<int>(percent), QStringLiteral("bluetooth"), category});
     }
 
-    // second pass: paired + connected devices that don't expose a battery reading anywhere,
-    // still reported (with an unknown battery) so their connect/disconnect events surface
+    // Second pass reports connected devices with unknown battery.
+    // Connect/disconnect events still surface.
     for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
         DEVINST devInst = 0;
         if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)

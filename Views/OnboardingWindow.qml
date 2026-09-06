@@ -48,7 +48,7 @@ Window {
             }
         }
 
-        // step content, bounded by the header and footer so it can never overlap them
+        // Step content is between header and footer. It cannot overlap them.
         Item {
             anchors.top: header.bottom
             anchors.topMargin: 18
@@ -168,7 +168,7 @@ Window {
             }
         }
 
-        // pinned to the bottom; the step content sizes itself around it
+        // Pinned to bottom. Step content sizes around it.
         Column {
             id: footer
             anchors.bottom: parent.bottom

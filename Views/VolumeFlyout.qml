@@ -5,9 +5,9 @@ import MediaFlyouts
 FlyoutBase {
     id: root
     width: 320
-    // grows to fit the per-app mixer when expanded
+    // Grow to fit per-app mixer when expanded.
     property bool expanded: false
-    // true while an app slider is being dragged, so the refresh timer doesn't rebuild the list
+    // True while app slider is dragged. Prevent list rebuild.
     property bool appDragging: false
     readonly property int sessionCount: volumeMixer.sessions.length
     height: 64 + (expanded ? (16 + Math.max(1, sessionCount) * 48) : 0)
@@ -31,12 +31,12 @@ FlyoutBase {
         present()
     }
 
-    // collapse the mixer once the flyout finishes fading out
+    // Collapse mixer after fade-out.
     function afterHide() {
         root.expanded = false
     }
 
-    // reveal / hide the per-app mixer, keeping the flyout open while it's showing
+    // Toggle per-app mixer. Keep flyout open while shown.
     function toggleMixer() {
         root.expanded = !root.expanded
         if(root.expanded) {
@@ -47,7 +47,7 @@ FlyoutBase {
         }
     }
 
-    // keep the app levels fresh while the mixer is open
+    // Refresh app levels while mixer is open.
     Timer {
         interval: 1000
         running: root.visible && root.expanded && !root.appDragging
@@ -85,7 +85,7 @@ FlyoutBase {
             anchors.rightMargin: 12
             spacing: 8
 
-            // master volume row
+            // Master volume row.
             Row {
                 width: parent.width
                 height: 40
@@ -152,7 +152,7 @@ FlyoutBase {
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                // expand toggle for the per-app mixer
+                // Expand toggle for per-app mixer.
                 Text {
                     visible: settings.volumeFlyoutMixerEnabled
                     text: root.expanded ? "\u25B4" : "\u25BE"
@@ -179,7 +179,7 @@ FlyoutBase {
                 color: theme.flyoutBorder
             }
 
-            // per-application mixer
+            // Per-application mixer.
             Column {
                 visible: root.expanded
                 width: parent.width
@@ -197,13 +197,13 @@ FlyoutBase {
                     delegate: Row {
                         id: appRow
                         required property var modelData
-                        // optimistic value so the handle tracks the pointer instead of the 1s refresh
+                        // Optimistic value. Handle tracks pointer before refresh.
                         property real shown: modelData.volume
                         width: parent.width
                         height: 40
                         spacing: 10
 
-                        // real app icon when we have one, else a speaker glyph; the mute glyph wins when muted
+                        // Use app icon when available. Mute glyph wins when muted.
                         Item {
                             width: 18
                             height: 18

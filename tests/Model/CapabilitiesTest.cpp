@@ -4,8 +4,7 @@
 
 #include "Capabilities.h"
 
-// Every capability starts optimistically available so features stay visible until a
-// subsystem reports a definite failure.
+// Capabilities start available. Subsystem failure clears them.
 TEST(CapabilitiesTest, DefaultsToAvailable) {
     Capabilities caps;
     EXPECT_TRUE(caps.audioAvailable());

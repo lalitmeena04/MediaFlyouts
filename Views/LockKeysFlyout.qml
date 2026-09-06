@@ -8,7 +8,7 @@ FlyoutBase {
     height: 80
     hideInterval: settings.lockKeysDuration
 
-    // per-key toggle for the currently reported lock key (keyType: 0=Caps,1=Num,2=Scroll,3=Insert)
+    // Per-key toggle for current lock key. 0=Caps. 1=Num. 2=Scroll. 3=Insert.
     function keyEnabled() {
         switch(lockKeys.keyType) {
         case 0: return settings.lockKeysCapsEnabled

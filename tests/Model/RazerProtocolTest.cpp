@@ -26,7 +26,7 @@ TEST(RazerProtocolTest, ChecksumCoversTheCommandBytes) {
 }
 
 TEST(RazerProtocolTest, ScalesTheRawByteFrom255To100) {
-    // captured from a Basilisk V3 X HyperSpeed sitting at 53%
+    // Captured from Basilisk V3 X HyperSpeed at 53%.
     EXPECT_EQ(percentFromRaw(135), 53);
     EXPECT_EQ(percentFromRaw(0), 0);
     EXPECT_EQ(percentFromRaw(255), 100);
@@ -62,7 +62,7 @@ TEST(RazerProtocolTest, TreatsBusyAndTimeoutAsNoAnswer) {
 }
 
 TEST(RazerProtocolTest, RejectsUnrelatedReports) {
-    // the device also emits 0x0F/0x03 reports that must not be mistaken for answers
+    // Device also emits 0x0F/0x03 reports. They are not answers.
     auto other = buildRequest(0x1F, kCommandBatteryLevel);
     other[1] = static_cast<std::uint8_t>(Status::Successful);
     other[7] = 0x0F;
@@ -77,7 +77,7 @@ TEST(RazerProtocolTest, ReportsChargingSupportSeparatelyFromState) {
     notSupported[1] = static_cast<std::uint8_t>(Status::NotSupported);
     bool supported = true;
     EXPECT_FALSE(chargingState(notSupported, 0x2F, supported));
-    EXPECT_FALSE(supported); // several wireless models don't implement 0x84
+    EXPECT_FALSE(supported); // Several wireless models lack 0x84.
 
     auto charging = buildRequest(0x2F, kCommandChargingStatus);
     charging[1] = static_cast<std::uint8_t>(Status::Successful);

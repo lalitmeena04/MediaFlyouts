@@ -7,7 +7,7 @@ struct IAudioEndpointVolume;
 struct VolumeCallback;
 struct DeviceNotificationClient;
 
-// Bridges the default render endpoint's master volume (Core Audio) to Qt.
+// Bridge default render endpoint volume to Qt.
 class VolumeController : public QObject {
         Q_OBJECT
         Q_PROPERTY(int volume READ volume NOTIFY changed)
@@ -21,16 +21,16 @@ class VolumeController : public QObject {
 
         int volume() const;
         bool muted() const;
-        // true once a default render endpoint has been acquired (Core Audio available)
+        // True after default render endpoint is acquired.
         bool available() const;
 
         Q_INVOKABLE void setVolume(int percent);
         Q_INVOKABLE void toggleMute();
 
-        // re-reads the endpoint and always signals, so the flyout shows even at min/max
+        // Read endpoint again. Always signal. Flyout shows at min/max.
         void handleVolumeKey();
 
-        // re-bind to whatever the current default render device is (after a device switch)
+        // Re-bind to current default render device after switch.
         void rebindDefaultDevice();
 
     signals:

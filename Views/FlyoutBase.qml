@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// Shared window chrome, fade in/out and auto-hide timing for every flyout. Derived flyouts
-// bind hideInterval to their own duration setting, override showFlyout() to apply their
-// guards and then call present(); onExit/hover handlers use stopAutoHide()/restartAutoHide().
+// Shared window and timing for all flyouts.
+// Each flyout checks its own rules before it calls present().
 Window {
     id: base
     visible: false
@@ -12,18 +11,17 @@ Window {
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
 
-    // auto-hide delay; each flyout binds its own duration setting
+    // Auto-hide delay.
     property int hideInterval: settings.flyoutDuration
 
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
+    // True after App places this flyout once.
     property bool positioned: false
     Behavior on y {
         enabled: base.positioned
         NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
     }
 
-    // shows the flyout with the auto-hide countdown running; derived flyouts call this once
-    // their own guard checks have passed
+    // Show the flyout and start auto-hide.
     function present() {
         hideTimer.restart()
         base.visible = true
@@ -32,7 +30,7 @@ Window {
         fadeIn.restart()
     }
 
-    // default entry point; derived flyouts override this with their guards + present()
+    // Default entry point.
     function showFlyout() {
         present()
     }
@@ -49,7 +47,7 @@ Window {
         hideTimer.restart()
     }
 
-    // hook invoked once the fade-out completes; overridden where extra teardown is needed
+    // Runs after fade-out finishes.
     function afterHide() {}
 
     Timer {

@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-// Detects a fullscreen video game in the foreground so flyouts don't steal focus and minimize it.
+// Detect fullscreen game in foreground. Prevent flyout focus issues.
 class FullscreenDetector : public QObject {
         Q_OBJECT
 

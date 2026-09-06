@@ -2,46 +2,44 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// Shared chrome, taskbar docking and fullscreen/lock blocking for the always-on-top taskbar
-// widgets. Derived widgets bind pollActive (when to keep polling) and logName, and may override
-// updatePosition() for custom docking next to a sibling widget.
+// Shared chrome, taskbar docking, and fullscreen blocking for taskbar widgets.
+// Derived widgets bind pollActive and logName. They can override updatePosition().
 Window {
     id: base
     color: "transparent"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
 
-    // fullscreen/lock state is polled (no change signal) so this can't be a binding
+    // Fullscreen/lock state is polled. No change signal exists.
     property bool blocked: false
-    // the monitor this widget docks on; drives both placement and the block check
+    // Monitor for widget docking and block checks.
     property int dockMonitor: settings.taskbarWidgetMonitor
-    // keep the 500ms poll running while the widget is enabled (even when hidden), so it
-    // reappears once a fullscreen app or the lock screen goes away
+    // Keep 500 ms poll active while widget is enabled.
+    // Widget can reappear after fullscreen or lock screen.
     property bool pollActive: false
-    // identifies this widget in the debug log
+    // Widget name in debug log.
     property string logName: "DockableWidget"
 
-    // docks at the configured taskbar edge and keeps the widget above the taskbar; overridden by
-    // widgets that need custom placement (e.g. docking next to another widget)
+    // Dock at configured taskbar edge. Keep widget above taskbar.
+    // Widgets can override for custom placement.
     function updatePosition() {
         var p = taskbar.widgetPosition(base.dockMonitor, settings.taskbarWidgetSide,
                                        settings.taskbarWidgetOffset, width, height)
         base.x = p.x
         base.y = p.y
-        // keep the widget above the (possibly transparent) taskbar so it stays clickable
+        // Keep widget above taskbar. It stays clickable.
         if(base.visible)
             taskbar.pinAboveTaskbar(base)
     }
 
     Component.onCompleted: base.updatePosition()
 
-    // reposition immediately when the offset (or other settings) change
+    // Reposition when settings change.
     Connections {
         target: settings
         function onChanged() { base.updatePosition() }
     }
 
-    // poll fullscreen/lock state and re-assert placement/z-order while active, even when hidden,
-    // so the widget reappears once the fullscreen app or lock screen is gone
+    // Poll fullscreen/lock state. Reassert placement and z-order while active.
     Timer {
         interval: 500
         running: base.pollActive

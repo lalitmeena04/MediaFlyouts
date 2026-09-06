@@ -3,7 +3,7 @@
 #include <QString>
 #include <QVector>
 
-// One battery of a multi-battery device, e.g. the left bud of a true-wireless set.
+// One battery of multi-battery device.
 struct BatteryComponentInfo {
         QString label; // "L", "R", "Case", ...
         int percent = -1;
@@ -14,25 +14,23 @@ struct BatteryComponentInfo {
 struct BatteryDeviceInfo {
         QString name;
         int percent = -1;
-        // "bluetooth", "ble", "gamepad", ... — used as an icon fallback in QML
+        // "bluetooth", "ble", "gamepad". Icon fallback in QML.
         QString connectionKind;
-        // "mouse", "keyboard", "headset", "gamepad", or empty if unknown - decoded from the
-        // Bluetooth Class of Device where available, more reliable than guessing from the name
+        // Device category. Empty if unknown. Prefer decoded class over name guess.
         QString category;
         bool charging = false;
-        // populated only when the device reports more than one battery; 'percent' above is
-        // then the lowest of these
+        // Populated only for multi-battery devices.
+        // Field percent then stores lowest component.
         QVector<BatteryComponentInfo> components;
 };
 
-// A source of battery info for one class of peripheral connection (Bluetooth Classic,
-// BLE, game controllers, ...). Devices with no readable battery level are still
-// returned (with percent left at -1) so their connect/disconnect events surface.
+// Battery info source for one peripheral connection class.
+// Return devices with unknown battery too. Connect/disconnect events stay visible.
 class IBatteryProvider {
     public:
         virtual ~IBatteryProvider() = default;
 
-        // Synchronous snapshot of currently readable battery levels. Called periodically
-        // by BatteryStatusController off a timer.
+        // Synchronous snapshot of readable battery levels.
+        // BatteryStatusController calls this from timer.
         virtual QVector<BatteryDeviceInfo> poll() = 0;
 };

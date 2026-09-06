@@ -2,17 +2,16 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// A small always-on-top media widget docked on the primary taskbar near the tray.
+// Small always-on-top media widget. Docks near taskbar tray.
 DockableWidget {
     id: root
     width: 220
     height: 40
     logName: "TaskbarWidget"
-    // keep polling (even when hidden) while media is playing so it reappears after fullscreen
+    // Keep polling while media plays. Reappear after fullscreen.
     pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
 
-    // shown only once onboarding is done, when enabled, something is playing, and not blocked by
-    // fullscreen / lock screen
+    // Show after onboarding, when enabled, media plays, and not blocked.
     visible: settings.onboardingCompleted && settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
                 && settings.playerAllowed(nowPlaying.playerName)
 
@@ -30,20 +29,18 @@ DockableWidget {
 
     signal activated()
 
-    // only capture system audio while the visualizer is actually on screen, so nothing is
-    // sampled while the widget is hidden by fullscreen / no media / onboarding
+    // Capture system audio only when visualizer is visible.
     readonly property bool visualizerLive: root.visible && settings.taskbarVisualizerEnabled
     onVisualizerLiveChanged: root.visualizerLive ? audioCapture.start() : audioCapture.stop()
 
-    // DockableWidget's Component.onCompleted only places the widget; extend it to also honor the
-    // initial capture state (a plain override would otherwise shadow the base placement call)
+    // Place widget and apply initial capture state.
     Component.onCompleted: {
         updatePosition()
         if(root.visualizerLive)
             audioCapture.start()
     }
 
-    // throttle source-switching so touchpad inertia doesn't skip several sources at once
+    // Throttle source switching from touchpad inertia.
     property bool scrollCooldown: false
     Timer {
         id: cooldownTimer
@@ -61,7 +58,7 @@ DockableWidget {
             id: hover
         }
 
-        // spectrum visualizer drawn behind the media info; style is user-selectable
+        // Spectrum visualizer behind media info. Style is user-selectable.
         TaskbarVisualizer {
             id: visualizer
             visible: settings.taskbarVisualizerEnabled
@@ -76,7 +73,7 @@ DockableWidget {
             property bool swiped: false
             onPressed: (mouse) => { pressX = mouse.x; swiped = false }
             onPositionChanged: (mouse) => {
-                // horizontal drag / touch swipe switches media source
+                // Horizontal drag or touch swipe switches media source.
                 if(!swiped && nowPlaying.sessionCount > 1 && Math.abs(mouse.x - pressX) > 40) {
                     nowPlaying.cycleSession(mouse.x < pressX ? 1 : -1)
                     swiped = true
@@ -84,7 +81,7 @@ DockableWidget {
             }
             onClicked: if(!swiped) root.activated()
             onWheel: (wheel) => {
-                // scroll wheel / touchpad scroll switches media source
+                // Scroll wheel or touchpad scroll switches media source.
                 if(nowPlaying.sessionCount > 1 && !root.scrollCooldown) {
                     nowPlaying.cycleSession(wheel.angleDelta.y > 0 ? -1 : 1)
                     root.scrollCooldown = true
@@ -93,7 +90,7 @@ DockableWidget {
             }
         }
 
-        // source indicator dots, shown when several apps are playing
+        // Source indicator dots. Show for multiple apps.
         Row {
             z: 50
             visible: nowPlaying.sessionCount > 1
@@ -143,7 +140,7 @@ DockableWidget {
                     font.pixelSize: 18
                 }
 
-                // dim + pause glyph when playback is paused
+                // Dim overlay and pause glyph for paused playback.
                 Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -170,7 +167,7 @@ DockableWidget {
                     height: titleText.implicitHeight
                     clip: true
 
-                    // measure the full (un-elided) title so overflow detection is stable
+                    // Measure full title. Overflow detection stays stable.
                     TextMetrics {
                         id: titleMetrics
                         font: titleText.font
@@ -182,7 +179,7 @@ DockableWidget {
                         text: nowPlaying.title
                         color: "white"
                         font.pixelSize: 12
-                        // when scrolling, size to content and slide; otherwise elide
+                        // Scrolling mode sizes to content. Else elide.
                         property bool overflow: settings.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
                         width: overflow ? titleMetrics.width : titleClip.width
                         elide: overflow ? Text.ElideNone : Text.ElideRight

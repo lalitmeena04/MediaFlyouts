@@ -6,11 +6,11 @@
   The certificate subject MUST match the manifest Publisher (CN=MediaFlyouts).
 
 .EXAMPLE
-  # create the cert (if needed) and sign the release package
+    # Create cert if needed. Sign release package.
   .\tools\new-signing-cert.ps1 -Msix release\MediaFlyouts-1.0.0.msix
 
 .EXAMPLE
-  # also export a PFX + base64 for the MSIX_CERT_BASE64 / MSIX_CERT_PASSWORD secrets
+    # Export PFX and base64 for CI secrets.
   .\tools\new-signing-cert.ps1 -ExportPfx -PfxPassword (Read-Host 'PFX password' -AsSecureString)
 #>
 [CmdletBinding()]
@@ -25,7 +25,7 @@ param(
 $ErrorActionPreference = 'Stop'
 New-Item -ItemType Directory -Force $OutDir | Out-Null
 
-# reuse an existing matching code-signing cert, otherwise create one
+# Reuse matching code-signing cert. Else create one.
 $cert = Get-ChildItem Cert:\CurrentUser\My |
     Where-Object { $_.Subject -eq $Subject -and $_.EnhancedKeyUsageList.ObjectId -contains '1.3.6.1.5.5.7.3.3' } |
     Select-Object -First 1
@@ -39,12 +39,12 @@ if (-not $cert) {
     Write-Host "Reusing certificate $($cert.Thumbprint)"
 }
 
-# export the public .cer used to trust the package on target machines
+# Export public .cer for package trust.
 $cer = Join-Path $OutDir 'MediaFlyouts.cer'
 Export-Certificate -Cert $cert -FilePath $cer | Out-Null
 Write-Host "Public certificate -> $cer"
 
-# a self-signed package only installs once its cert is a trusted root on the machine
+# Self-signed package needs cert in trusted root.
 $trustCmd = "Import-Certificate -FilePath '$cer' -CertStoreLocation Cert:\LocalMachine\Root"
 if ($Trust) {
     $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(

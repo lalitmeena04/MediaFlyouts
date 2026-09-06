@@ -7,7 +7,7 @@ namespace {
 LockKeysController* g_instance = nullptr;
 HHOOK g_hook = nullptr;
 
-// runs on the thread that installed the hook (Qt main thread pumps the messages)
+// Hook install thread runs callback. Qt main thread pumps messages.
 LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if(nCode == HC_ACTION && wParam == WM_KEYUP) {
         const DWORD vk = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam)->vkCode;

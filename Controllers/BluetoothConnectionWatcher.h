@@ -4,8 +4,8 @@
 
 #include <winrt/Windows.Devices.Enumeration.h>
 
-// Watches for Bluetooth (classic + BLE) devices connecting/disconnecting so
-// BatteryStatusController can react immediately instead of waiting for the next poll.
+// Watch Bluetooth devices connect and disconnect.
+// BatteryStatusController reacts before next poll.
 class BluetoothConnectionWatcher : public QObject {
         Q_OBJECT
 
@@ -16,7 +16,7 @@ class BluetoothConnectionWatcher : public QObject {
         void start();
 
     signals:
-        // a device was added, removed, or had a property (e.g. connection state) change
+        // Device was added, removed, or changed.
         void deviceChanged();
 
     private:

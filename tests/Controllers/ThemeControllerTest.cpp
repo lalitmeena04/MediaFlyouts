@@ -10,7 +10,7 @@
 #include "ThemeController.h"
 
 namespace {
-// Redirect QSettings to a throwaway location so appTheme changes don't touch real settings.
+// Redirect QSettings to test location. Real settings stay unchanged.
 class ThemeControllerTest : public ::testing::Test {
     protected:
         void SetUp() override {
@@ -99,6 +99,6 @@ TEST_F(ThemeControllerTest, AlbumArtAccentIgnoredAppWideWhenSubOptionOff) {
     art.fill(Qt::red);
     nowPlaying.applyArt(art);
 
-    // flyout tinting stays local; the app-wide accent keeps the theme default
+    // Flyout tinting stays local. App-wide accent keeps theme default.
     EXPECT_EQ(t.accent(), QColor("#FFFFFF"));
 }

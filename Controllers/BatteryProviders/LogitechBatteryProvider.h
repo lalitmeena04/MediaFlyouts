@@ -5,14 +5,13 @@
 #include <QSet>
 #include <QString>
 
-// Reads battery from Logitech devices over HID++ 2.0, covering both directly attached
-// devices and those paired to a Unifying / Lightspeed / Bolt receiver.
+// Read Logitech battery over HID++ 2.0.
+// Covers direct devices and receiver slots.
 class LogitechBatteryProvider : public IBatteryProvider {
     public:
         QVector<BatteryDeviceInfo> poll() override;
 
     private:
-        // vendor collections that turned out not to speak HID++ (some G headsets); probing
-        // them costs a timeout per device index, so only do it once
+        // Vendor collections can fail HID++ probe. Avoid repeated timeouts.
         QSet<QString> m_notHidpp;
 };

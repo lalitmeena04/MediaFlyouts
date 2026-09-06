@@ -10,7 +10,7 @@
 #include "Logging.h"
 
 namespace {
-// Convert a native window rect (physical pixels) into Qt logical coordinates.
+// Convert a native rect to Qt logical pixels.
 QRect toLogical(HWND hwnd) {
     if(!hwnd)
         return QRect();
@@ -38,8 +38,8 @@ void pinWindowTopmost(HWND hwnd) {
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 }
 
-// Fires when the foreground window or a window's minimize state changes; the shell re-tops the
-// taskbar on these, which can push our always-on-top widgets behind it, so re-pin immediately.
+// Runs on foreground change or minimize.
+// Shell can move taskbar above app windows. Re-pin tracked windows.
 void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DWORD, DWORD) {
     TRC_DEBUG("winEventProc: event={:#x} hwnd={:#x}", event, reinterpret_cast<std::uintptr_t>(hwnd));
     if(g_taskbarInfo)
@@ -49,15 +49,15 @@ void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DW
 
 TaskbarInfo::TaskbarInfo(QObject* parent) : QObject(parent) {
     g_taskbarInfo = this;
-    // keep re-pinning across the ~300ms minimize/restore animation, during which the taskbar
-    // repeatedly re-tops itself and would otherwise cover the widgets until the next 500ms poll
+    // Keep pinning during the minimize animation.
+    // The taskbar can move above widgets more than once.
     m_repinBurst.setInterval(30);
     connect(&m_repinBurst, &QTimer::timeout, this, [this] {
         repinTracked();
         if(--m_repinBurstTicks <= 0)
             m_repinBurst.stop();
     });
-    // OUTOFCONTEXT delivers the callback on this (the GUI) thread, so touching QWindow is safe
+    // OUTOFCONTEXT runs the callback on this GUI thread.
     g_winEventHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MINIMIZEEND, nullptr, winEventProc, 0, 0,
                                      WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
     TRC_INFO("TaskbarInfo: WinEvent hook installed={}", g_winEventHook != nullptr);
@@ -91,11 +91,11 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
         monitor = 0;
     const QScreen* screen = screens.at(monitor);
 
-    // QScreen geometry is already logical and per-monitor DPI aware
+    // QScreen geometry already uses logical pixels.
     const QRect full = screen->geometry();
     const QRect avail = screen->availableGeometry();
 
-    // taskbar strip height for a bottom taskbar; fall back to 40px if none is docked here
+    // Use the bottom taskbar height. Use 40 px if none is found.
     int taskbarHeight = full.bottom() - avail.bottom();
     int taskbarTop;
     if(taskbarHeight > 0) {
@@ -108,14 +108,14 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
 
     int x;
     if(side == 0) {
-        // left edge; offset nudges it right
+        // Left edge. Offset moves it right.
         x = full.left() + 8 + qMax(0, offset);
     } else if(side == 1) {
-        // centered on the monitor; signed offset nudges it left or right
+        // Center. Offset moves it left or right.
         x = full.left() + (full.width() - width) / 2 + offset;
     } else {
         int rightEdge = full.right() + 1 - 200;
-        // use the precise tray boundary only on the monitor that hosts the primary tray
+        // Use the tray edge only on the primary screen.
         if(screen == QGuiApplication::primaryScreen()) {
             const QRect tray = trayGeometry();
             if(!tray.isEmpty())
@@ -141,7 +141,7 @@ void TaskbarInfo::pinTopmost(QWindow* window) const {
     if(!m_pinned.contains(window))
         m_pinned.append(window);
     HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    // move to the top of the topmost band (above the taskbar) without stealing focus
+    // Move above other topmost windows. Do not take focus.
     pinWindowTopmost(hwnd);
 }
 
@@ -171,7 +171,7 @@ void TaskbarInfo::repinTracked() const {
 void TaskbarInfo::handleShellEvent(unsigned long event) {
     repinTracked();
     if(event == EVENT_SYSTEM_MINIMIZESTART || event == EVENT_SYSTEM_MINIMIZEEND || event == EVENT_SYSTEM_FOREGROUND) {
-        m_repinBurstTicks = 15; // ~450ms of coverage over the animation
+        m_repinBurstTicks = 15; // About 450 ms.
         m_repinBurst.start();
     }
 }

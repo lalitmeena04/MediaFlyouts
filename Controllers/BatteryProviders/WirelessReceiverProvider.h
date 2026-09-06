@@ -9,11 +9,11 @@ struct WirelessReceiverProfile {
         QString category;
 };
 
-// Returns a known receiver profile, or nullptr when the receiver is unsupported.
+// Return known receiver profile. Return nullptr for unsupported receiver.
 const WirelessReceiverProfile* wirelessReceiverProfile(quint16 vendorId, quint16 productId);
 
-// Reports known proprietary wireless receivers that cannot provide battery telemetry.
-// Their presence still enables normal peripheral connect/disconnect alerts.
+// Report known proprietary wireless receivers without battery telemetry.
+// Presence still enables connect/disconnect alerts.
 class WirelessReceiverProvider : public IBatteryProvider {
     public:
         QVector<BatteryDeviceInfo> poll() override;

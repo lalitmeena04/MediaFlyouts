@@ -64,14 +64,14 @@ TEST(QmlContractTest, DashboardHasTheRequestedTenPagesInOrder) {
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
     const QString source = loadSource("Views/DeviceIcons.qml");
 
-    // Fluent covers most peripheral categories
+    // Fluent covers most device types.
     expectContains(source, QStringLiteral("import MediaFlyouts"));
     expectContains(source, QStringLiteral("Fluent.keyboard"));
     expectContains(source, QStringLiteral("Fluent.gamepad"));
     expectContains(source, QStringLiteral("Fluent.headset"));
     expectContains(source, QStringLiteral("Fluent.headphones"));
 
-    // mouse has no Fluent glyph, so it falls back to the bundled Font Awesome font
+    // Mouse uses bundled Font Awesome glyph.
     expectContains(source, QStringLiteral("FontAwesome6-Solid.ttf"));
     expectContains(source, QStringLiteral("\"fa\": true"));
     expectContains(source, QStringLiteral("\\uF8CC")); // Font Awesome computer-mouse
@@ -89,8 +89,7 @@ TEST(QmlContractTest, FluentDefinesPeripheralGlyphs) {
 }
 
 TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
-    // every place that renders a device glyph must also pick the matching font family,
-    // otherwise a Font Awesome fallback glyph would render as tofu in the Fluent font
+    // Each device glyph site must choose the matching font.
     for(const char* path : {"Views/PeripheralsWidget.qml", "Views/PeripheralCard.qml", "Views/Dashboard.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("font.family: DeviceIcons.family("));
@@ -112,7 +111,7 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
 }
 
 TEST(QmlContractTest, WidgetsHideForEveryFullscreenApp) {
-    // the taskbar widgets hide for every fullscreen app via the shared DockableWidget base
+    // DockableWidget hides taskbar widgets for fullscreen apps.
     const QString base = loadSource("Views/DockableWidget.qml");
     expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
     EXPECT_FALSE(base.contains(QStringLiteral("fullscreen.shouldBlock(")));
@@ -168,7 +167,7 @@ TEST(QmlContractTest, FlyoutsDeriveFromFlyoutBaseWithoutDuplicatingChrome) {
                             "Views/NowPlayingFlyout.qml", "Views/PeripheralFlyout.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("FlyoutBase {"));
-        // the shared chrome and timers now live only in FlyoutBase
+        // FlyoutBase owns chrome and timers.
         EXPECT_FALSE(source.contains(QStringLiteral("flags: Qt.FramelessWindowHint")))
             << "Duplicated window chrome still present in " << path;
         EXPECT_FALSE(source.contains(QStringLiteral("id: hideTimer")))
@@ -190,8 +189,8 @@ TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingCh
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("DockableWidget {"));
         expectContains(source, QStringLiteral("pollActive:"));
-        // the shared block state and fullscreen poll now live only in DockableWidget
-        // (a bare "flags:" check would trip on PeripheralsWidget's inner tooltip Window)
+        // DockableWidget owns block state and fullscreen polling.
+        // PeripheralsWidget has a tooltip Window with flags.
         EXPECT_FALSE(source.contains(QStringLiteral("property bool blocked")))
             << "Duplicated block state still present in " << path;
         EXPECT_FALSE(source.contains(QStringLiteral("interval: 500")))
@@ -201,7 +200,7 @@ TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingCh
 
 TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     const QString source = loadSource("Views/TaskbarWidget.qml");
-    // capture only runs while the visualizer is actually on screen
+    // Capture runs only while the visualizer is on screen.
     expectContains(source, QStringLiteral("visualizerLive: root.visible && settings.taskbarVisualizerEnabled"));
     expectContains(source, QStringLiteral("audioCapture.start()"));
     expectContains(source, QStringLiteral("audioCapture.stop()"));
@@ -210,7 +209,7 @@ TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));
-    // the icon fill tracks the reported battery percentage
+    // Fill follows the battery percent.
     expectContains(source, QStringLiteral("modelData.percent / 100"));
 }
 

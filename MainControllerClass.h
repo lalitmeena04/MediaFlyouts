@@ -36,14 +36,14 @@ class BatteryStatusController;
 class PeripheralAlerts;
 #endif
 
-// Composition root: constructs, wires and owns every subsystem, exposes them to QML and
-// loads the UI. Keeps main() down to creating the QApplication and calling run().
+// Composition root. Owns subsystems and exposes them to QML.
+// Keeps main() small.
 class MainControllerClass {
     public:
         explicit MainControllerClass(QApplication& app);
         ~MainControllerClass();
 
-        // loads the UI on the primary instance and runs the event loop; returns the exit code
+        // Load UI on primary instance. Run event loop. Return exit code.
         int run();
 
     private:
@@ -59,7 +59,7 @@ class MainControllerClass {
         bool m_primary = false;
         QString m_iconFamily;
 
-        // declared in construction order so teardown mirrors the original main() ordering
+        // Construction order also sets teardown order.
         std::unique_ptr<SingleInstance> m_instance;
         std::unique_ptr<NowPlaying> m_nowPlaying;
         std::unique_ptr<Settings> m_settings;
@@ -70,7 +70,7 @@ class MainControllerClass {
         std::unique_ptr<QQmlApplicationEngine> m_engine;
         std::unique_ptr<QmlLogger> m_qmlLog;
         std::unique_ptr<TrayController> m_tray;
-        AlbumArtProvider* m_artProvider = nullptr; // owned by the QML engine
+        AlbumArtProvider* m_artProvider = nullptr; // Owned by QML engine.
 
 #ifdef Q_OS_WIN
         std::unique_ptr<WinMediaProvider> m_provider;

@@ -14,7 +14,7 @@ Window {
     title: "MediaFlyouts"
     color: theme.window
 
-    // keep the title bar matching the theme
+    // Keep title bar matching theme.
     function applyChrome() {
         windowEffects.setDarkFrame(dash, theme.dark)
     }
@@ -47,7 +47,7 @@ Window {
         { "icon": Fluent.info,      "name": "About",        "desc": "App info and updates." }
     ]
 
-    // searchable index of settings -> the page that hosts them
+    // Searchable settings index. Values map to host pages.
     readonly property var searchIndex: [
         { "label": "Seekbar", "page": 1 }, { "label": "Interactive seekbar", "page": 1 },
         { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
@@ -85,7 +85,7 @@ Window {
     property string searchQuery: ""
     property bool sidebarSearchOpen: false
 
-    // hide to tray instead of quitting the app
+    // Hide to tray. Do not quit app.
     onClosing: (event) => {
         event.accepted = false
         dash.hide()
@@ -200,7 +200,7 @@ Window {
                     anchors.right: parent.right
                     clip: true
 
-                    // search results replace the nav list while searching
+                    // Search results replace nav list.
                     Column {
                     width: navigationScroll.availableWidth
                     spacing: 4
@@ -491,7 +491,7 @@ Window {
                 wrapMode: Text.WordWrap
             }
 
-            // scrollable so long pages (e.g. the media flyout options) aren't cut off
+            // Scroll long pages. Prevent content cut-off.
             ScrollView {
                 id: pageScroll
                 anchors.top: pageDesc.bottom
@@ -515,7 +515,7 @@ Window {
                         width: parent.width
                         spacing: 16
 
-                        // live feature state, kept reactive by reading the settings properties directly
+                        // Live feature state. Direct setting reads keep binding reactive.
                         function featureOn(key) {
                             switch(key) {
                             case "media": return settings.mediaFlyoutEnabled
@@ -528,7 +528,7 @@ Window {
                             return false
                         }
 
-                        // Now playing hero card
+                        // Now Playing hero card.
                         Rectangle {
                             width: parent.width
                             height: 176
@@ -611,7 +611,7 @@ Window {
                                         }
                                     }
 
-                                    // progress bar + times
+                                    // Progress bar and times.
                                     Column {
                                         width: parent.width
                                         spacing: 4
@@ -649,7 +649,7 @@ Window {
                                         }
                                     }
 
-                                    // transport controls
+                                    // Transport controls.
                                     Row {
                                         spacing: 22
                                         topPadding: 8
@@ -703,7 +703,7 @@ Window {
                             topPadding: 4
                         }
 
-                        // feature status cards; click to jump to that section
+                        // Feature status cards. Click jumps to section.
                         Flow {
                             width: parent.width
                             spacing: 12
@@ -765,7 +765,7 @@ Window {
                             }
                         }
 
-                        // wireless peripherals with a readable battery level (Bluetooth today; see BatteryStatusController)
+                        // Wireless peripherals with readable battery.
                         Text {
                             visible: batteryStatus.devices.length > 0
                             text: "Peripherals"
@@ -927,7 +927,7 @@ Window {
                         onToggled: settings.seekbarEnabled = value
                     }
                     SettingRow {
-                        // sub-option, shown only when the seekbar itself is enabled
+                        // Sub-option. Visible only when seekbar is enabled.
                         visible: settings.seekbarEnabled
                         x: 16
                         width: parent.width - 16
@@ -972,7 +972,7 @@ Window {
                         onToggled: settings.accentFromArt = value
                     }
                     SettingRow {
-                        // sub-option, shown only when accent from album art is enabled
+                        // Sub-option. Visible only when album-art accent is enabled.
                         visible: settings.accentFromArt
                         x: 16
                         width: parent.width - 16
@@ -1274,7 +1274,7 @@ Window {
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"
-                        // centered widgets can be nudged either way; edge-docked only inward
+                        // Centered widgets move both ways. Edge widgets move inward.
                         description: settings.taskbarWidgetSide === 1
                             ? "Shift the centered widget left or right along the taskbar."
                             : "Fine-tune the widget's horizontal position on the taskbar."
@@ -1695,7 +1695,7 @@ Window {
                         onToggled: settings.autoCheckUpdates = value
                     }
 
-                    // icon-only link to the project page
+                    // Icon-only link to project page.
                     Rectangle {
                         width: 40
                         height: 40

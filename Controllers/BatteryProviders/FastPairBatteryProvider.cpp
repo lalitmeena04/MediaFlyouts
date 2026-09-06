@@ -42,8 +42,7 @@ QString devNodePropertyText(DEVINST devInst, const DEVPROPKEY& key) {
     return QString::fromWCharArray(buf.data());
 }
 
-// The RFCOMM socket can stay open for a while after the device drops off, so connection
-// state is taken from the Bluetooth API rather than inferred from the socket.
+// RFCOMM socket can stay open after disconnect. Use Bluetooth API state.
 bool isAddressConnected(quint64 address) {
     BLUETOOTH_DEVICE_INFO info = {};
     info.dwSize = sizeof(info);
@@ -51,8 +50,8 @@ bool isAddressConnected(quint64 address) {
     return BluetoothGetDeviceInfo(nullptr, &info) == ERROR_SUCCESS && info.fConnected;
 }
 
-// The PnP service sub-node is only ever called "Bluetooth Peripheral Device", so ask the
-// Bluetooth API for the paired name (and skip devices that aren't currently connected).
+// PnP service sub-node has generic name. Ask Bluetooth API for paired name.
+// Skip devices that are not connected.
 bool connectedDeviceInfo(quint64 address, QString& name, QString& category) {
     BLUETOOTH_DEVICE_INFO info = {};
     info.dwSize = sizeof(info);
@@ -64,7 +63,7 @@ bool connectedDeviceInfo(quint64 address, QString& name, QString& category) {
     return !name.isEmpty();
 }
 
-// The 12 hex digits before "_C" in a BTHENUM service instance id are the device address.
+// Device address is 12 hex digits before "_C" in BTHENUM service id.
 bool addressFromServiceId(const std::wstring& id, quint64& out) {
     const size_t marker = id.rfind(L"_C");
     if(marker == std::wstring::npos || marker < 12)
@@ -77,9 +76,8 @@ bool addressFromServiceId(const std::wstring& id, quint64& out) {
     return true;
 }
 
-// Paired devices that advertise the Fast Pair message stream, with the friendly name
-// taken from the device's own BTHENUM\DEV_<addr> node rather than the service sub-node
-// (which is just called "Bluetooth Peripheral Device").
+// Paired devices that advertise Fast Pair message stream.
+// Use device BTHENUM node for friendly name.
 std::vector<FastPairDevice> enumerateFastPairDevices() {
     ULONG listSize = 0;
     if(CM_Get_Device_ID_List_SizeW(&listSize, L"BTHENUM", CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS
@@ -116,7 +114,7 @@ std::vector<FastPairDevice> enumerateFastPairDevices() {
         QString name;
         QString category;
         if(!connectedDeviceInfo(address, name, category))
-            continue; // paired but not connected right now
+            continue; // Paired but not connected now.
 
         FastPairDevice device;
         device.address = address;
@@ -127,7 +125,7 @@ std::vector<FastPairDevice> enumerateFastPairDevices() {
     return devices;
 }
 
-// Blocking connect with a bounded wait, so an off/idle device can't stall the thread.
+// Blocking connect with bounded wait. Off device cannot stall thread.
 SOCKET connectFastPair(quint64 address, int timeoutMs) {
     SOCKET sock = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
     if(sock == INVALID_SOCKET)
@@ -137,7 +135,7 @@ SOCKET connectFastPair(quint64 address, int timeoutMs) {
     sa.addressFamily = AF_BTH;
     sa.btAddr = address;
     sa.serviceClassId = kFastPairMessageStream;
-    sa.port = BT_PORT_ANY; // resolve the RFCOMM channel via SDP
+    sa.port = BT_PORT_ANY; // Resolve RFCOMM channel with SDP.
 
     u_long nonBlocking = 1;
     ioctlsocket(sock, FIONBIO, &nonBlocking);
@@ -162,9 +160,9 @@ SOCKET connectFastPair(quint64 address, int timeoutMs) {
 QVector<BatteryComponentInfo> describeComponents(const std::vector<fastpair::BatteryComponent>& components) {
     QVector<BatteryComponentInfo> described;
     if(components.size() < 2)
-        return described; // single-battery device, the headline percent says it all
+        return described; // Single-battery device has headline percent.
 
-    // a 3-component device is a true-wireless set; anything else is labelled positionally
+    // Three components mean true wireless set. Other counts use position labels.
     static const char* twsLabels[] = {"L", "R", "Case"};
     for(size_t i = 0; i < components.size(); ++i) {
         if(components[i].percent < 0)
@@ -197,8 +195,7 @@ QVector<BatteryDeviceInfo> FastPairBatteryProvider::poll() {
     std::lock_guard<std::mutex> lock(m_mutex);
     QVector<BatteryDeviceInfo> devices;
     for(auto it = m_latest.begin(); it != m_latest.end();) {
-        // never report a device that has already dropped off, even if the worker thread
-        // hasn't noticed its socket die yet
+        // Do not report disconnected device before worker sees socket close.
         if(!isAddressConnected(it.key())) {
             it = m_latest.erase(it);
             continue;
@@ -231,14 +228,14 @@ void FastPairBatteryProvider::run() {
     };
 
     while(!m_stop) {
-        // a disconnect doesn't always break the socket, so poll the link state too
+        // Disconnect does not always break socket. Poll link state too.
         if(std::chrono::steady_clock::now() >= nextLivenessCheck) {
             nextLivenessCheck = std::chrono::steady_clock::now() + std::chrono::seconds(1);
             for(size_t i = connections.size(); i-- > 0;)
                 if(!isAddressConnected(connections[i].address))
                     dropConnection(i);
         }
-        // periodically pick up newly connected devices
+        // Periodically pick up newly connected devices.
         if(std::chrono::steady_clock::now() >= nextScan) {
             nextScan = std::chrono::steady_clock::now() + std::chrono::seconds(3);
             for(const FastPairDevice& device : enumerateFastPairDevices()) {

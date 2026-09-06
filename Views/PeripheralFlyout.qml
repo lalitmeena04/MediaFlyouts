@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// Shows peripheral events (connect / disconnect / battery) as a row of cards. Several
-// devices reported in the same snapshot appear side by side in one window rather than as
-// separate flyouts fighting over the same screen edge.
+// Show peripheral events as card row.
+// Devices from same snapshot share one window.
 FlyoutBase {
     id: root
 

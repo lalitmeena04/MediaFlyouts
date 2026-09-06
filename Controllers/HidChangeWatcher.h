@@ -2,9 +2,9 @@
 
 #include <QObject>
 
-// Watches for HID devices (game controllers, mice, keyboards, ...) being plugged in or
-// unplugged, so BatteryStatusController can react immediately instead of waiting for
-// the next poll. Windows-only: uses RegisterDeviceNotification on a hidden message window.
+// Watch HID devices plug and unplug.
+// BatteryStatusController reacts before next poll.
+// Windows-only. Uses RegisterDeviceNotification on hidden message window.
 class HidChangeWatcher : public QObject {
         Q_OBJECT
 

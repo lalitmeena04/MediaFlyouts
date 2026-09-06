@@ -12,7 +12,8 @@
 
 class AlbumArtProvider;
 
-// QML-facing now-playing model; fed by a media provider and forwards transport commands to a controller.
+// QML-facing now-playing model. Gets data from media provider.
+// Sends transport commands to controller.
 class NowPlaying : public QObject {
         Q_OBJECT
         Q_PROPERTY(QString title READ title NOTIFY changed)
@@ -65,14 +66,14 @@ class NowPlaying : public QObject {
         Q_INVOKABLE void seekToFraction(double fraction);
         Q_INVOKABLE void cycleRepeat();
         Q_INVOKABLE void toggleShuffle();
-        // cycle the displayed media source (multi-app switcher on the widget)
+        // Cycle displayed media source for widget switcher.
         Q_INVOKABLE void cycleSession(int delta);
 
     public slots:
         void applyTrack(const mf::TrackInfo& track);
         void applyArt(const QImage& art);
         void noteMediaKey();
-        // provider reports the set of media sessions changed
+        // Provider reports media session set change.
         void noteSessionsChanged();
 
     signals:

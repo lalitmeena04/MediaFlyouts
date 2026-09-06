@@ -4,11 +4,11 @@
 #include <QString>
 #include <QVector>
 
-// Decides which peripheral events are worth showing. Kept free of Windows/Qt-GUI types
-// so the rules can be unit tested without real hardware.
+// Decide which peripheral events are worth showing.
+// Keep rules free of Windows and Qt GUI types.
 namespace mf {
 
-// Battery buckets, aligned with BatteryRing's colours so the label and the ring agree.
+// Battery buckets align with BatteryRing colors.
 enum class BatteryBucket { Unknown, VeryLow, Low, Half, Good, Full };
 
 enum class PeripheralEvent { Connected, Disconnected, LowBattery, VeryLowBattery, ChargingStarted, ChargingStopped };
@@ -18,7 +18,7 @@ struct PeripheralAlert {
         QString deviceName;
         int percent = -1;
         BatteryBucket bucket = BatteryBucket::Unknown;
-        // carried through so the card can show the right icon and link type
+        // Card uses these for icon and link type.
         QString category;
         QString connectionKind;
 };
@@ -35,19 +35,18 @@ struct PeripheralSnapshot {
 BatteryBucket bucketOf(int percent);
 QString bucketLabel(BatteryBucket bucket);
 
-// Tracks device state across snapshots and reports only the transitions worth alerting on.
+// Track device state across snapshots. Report useful transitions only.
 class BatteryAlertPolicy {
     public:
         // Thresholds are the levels a device must cross *downward* to alert.
         static constexpr int kLowThreshold = 20;
         static constexpr int kVeryLowThreshold = 10;
 
-        // The first snapshot only establishes a baseline: on launch every already-connected
-        // device would otherwise look newly connected.
+        // First snapshot sets baseline. Existing devices are not new connections.
         QVector<PeripheralAlert> update(const QVector<PeripheralSnapshot>& snapshot, qint64 timestampMs);
 
-        // Repeated connect/disconnect of the same device inside this window collapses into
-        // one alert, so a flapping Bluetooth link doesn't spam the screen.
+        // Collapse repeated connect/disconnect inside this window.
+        // Prevent alert spam from unstable Bluetooth links.
         void setDebounceMs(qint64 ms) { m_debounceMs = ms; }
 
         bool hasBaseline() const { return m_seeded; }
@@ -58,7 +57,7 @@ class BatteryAlertPolicy {
                 bool charging = false;
                 bool lowAlerted = false;
                 bool veryLowAlerted = false;
-                // kept briefly after a missing snapshot so transient provider omissions are ignored
+                // Keep briefly after missing snapshot. Ignore transient provider gaps.
                 bool present = true;
                 bool disconnectReported = false;
                 qint64 absentSinceMs = 0;

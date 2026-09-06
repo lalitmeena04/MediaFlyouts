@@ -28,12 +28,12 @@ QVector<BatteryDeviceInfo> GameControllerBatteryProvider::poll() {
             if(name.isEmpty())
                 name = QStringLiteral("Game controller");
 
-            // still reported (with an unknown battery) for wired/non-reporting controllers,
-            // so their connect/disconnect events surface too
+            // Report wired or non-reporting controllers with unknown battery.
+            // Connect/disconnect events still surface.
             result.append({name, percent, QStringLiteral("gamepad")});
         }
     } catch(...) {
-        // battery reporting is best-effort; skip this cycle on any WinRT failure
+        // Battery reporting is best effort. Skip this cycle on WinRT failure.
     }
 
     return result;

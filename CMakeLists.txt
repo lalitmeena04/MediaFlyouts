@@ -1,18 +1,17 @@
 cmake_minimum_required(VERSION 3.21)
 
-# single source of truth for the version, shared by the app, packaging and CI
+# Single version source for app, packaging, and CI.
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" MEDIAFLYOUTS_VERSION_BASE)
 string(STRIP "${MEDIAFLYOUTS_VERSION_BASE}" MEDIAFLYOUTS_VERSION_BASE)
 
-# project() needs a strict numeric x.y.z, so strip any pre-release suffix for it
+# CMake project version needs numeric x.y.z. Strip pre-release suffix.
 string(REGEX MATCH "^[0-9]+(\\.[0-9]+)*" MEDIAFLYOUTS_VERSION_NUMERIC "${MEDIAFLYOUTS_VERSION_BASE}")
 
 project(MediaFlyouts VERSION ${MEDIAFLYOUTS_VERSION_NUMERIC} LANGUAGES CXX)
 
-# Release builds ship the plain version; dev builds get a "-<build number>" suffix so local
-# and CI builds are traceable. The suffix is applied to any non-Release build, or whenever a
-# build number is passed explicitly (e.g. a dev-versioned release: -DMEDIAFLYOUTS_BUILD_NUMBER=123).
-# The number defaults to the git commit count and short hash.
+# Release builds have plain version.
+# Dev builds have "-<build number>" suffix.
+# Build number can be explicit or use git count and short hash.
 set(MEDIAFLYOUTS_VERSION "${MEDIAFLYOUTS_VERSION_BASE}")
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" OR DEFINED MEDIAFLYOUTS_BUILD_NUMBER)
     if(NOT DEFINED MEDIAFLYOUTS_BUILD_NUMBER)
@@ -37,7 +36,7 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" OR DEFINED MEDIAFLYOUTS_BUILD_NUMBER)
 endif()
 message(STATUS "MediaFlyouts version: ${MEDIAFLYOUTS_VERSION}")
 
-# expose the version to C++ (main.cpp, UpdateChecker, ...) via Version.h
+# Expose version to C++ through Version.h.
 add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -46,7 +45,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Network Qml Quick Test Widgets)
 qt_standard_project_setup(REQUIRES 6.5)
 
-# spdlog for file logging; prefer a system/package copy, otherwise fetch a pinned release
+# File logging uses spdlog. Prefer system package. Else fetch pinned release.
 find_package(spdlog QUIET)
 if(NOT spdlog_FOUND)
     include(FetchContent)
@@ -63,7 +62,7 @@ if(MEDIAFLYOUTS_BUILD_TESTS)
     enable_testing()
 endif()
 
-# --- Model: cross-platform domain logic, shared by the app and the tests ---
+# --- Model: cross-platform domain logic for app and tests ---
 qt_add_library(mediaflyout_core STATIC
     Logging.cpp
     Logging.h
@@ -96,8 +95,8 @@ target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
     spdlog::spdlog
 )
-# Logging: when enabled TRC_DEBUG is compiled in; when disabled SPDLOG_LEVEL_OFF compiles every
-# TRC_* call out to nothing (zero overhead) and initLogging() skips creating the log file.
+# Logging on compiles TRC_DEBUG. Logging off removes TRC calls.
+# Logging setup omits log file if logging is off.
 option(MEDIAFLYOUTS_ENABLE_LOGGING "Enable spdlog file logging" ON)
 if(MEDIAFLYOUTS_ENABLE_LOGGING)
     set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_DEBUG)
@@ -140,7 +139,7 @@ target_include_directories(MediaFlyouts PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Model
 )
 
-# Emit the runnable app (and its windeployqt runtime) into <root>/bin instead of the build tree.
+# Emit runnable app and windeployqt runtime into <root>/bin.
 set_target_properties(MediaFlyouts PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
@@ -148,7 +147,7 @@ set_target_properties(MediaFlyouts PROPERTIES
 set_source_files_properties(Views/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(Views/Anim.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(Views/DeviceIcons.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
-# keep the font at a stable resource path regardless of its source folder
+# Keep font at stable resource path.
 set_source_files_properties(Views/assets/fonts/FluentSystemIcons-Filled.ttf
     PROPERTIES QT_RESOURCE_ALIAS assets/fonts/FluentSystemIcons-Filled.ttf)
 set_source_files_properties(Views/assets/fonts/FontAwesome6-Solid.ttf

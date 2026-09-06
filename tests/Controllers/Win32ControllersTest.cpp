@@ -15,8 +15,8 @@
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
 
-// These Windows-only controllers wrap COM / DWM APIs; without a device or window
-// we can still verify their construction and out-of-range operations are safe.
+// These Windows controllers wrap COM and DWM APIs.
+// Tests use no real device or window.
 
 TEST(Win32ControllersTest, AudioCaptureStartsSilentAndInactive) {
     AudioCapture capture(24);
@@ -75,8 +75,8 @@ TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {
     }
 }
 
-// With COM initialised we can exercise the real enumeration / capture code paths.
-// These degrade gracefully whether or not the CI runner exposes an audio device.
+// COM lets tests use the real list and capture paths.
+// Tests pass with or without an audio device.
 class Win32ComTest : public ::testing::Test {
     protected:
         void SetUp() override {

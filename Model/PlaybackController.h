@@ -4,7 +4,7 @@
 
 namespace mf {
 
-// Abstraction over a media transport so playback logic stays testable and mockable.
+// Media transport abstraction. Playback logic stays testable.
 class IPlaybackController {
     public:
         virtual ~IPlaybackController() = default;
@@ -12,7 +12,7 @@ class IPlaybackController {
         virtual void pause() = 0;
         virtual void next() = 0;
         virtual void previous() = 0;
-        // optional transport extras; no-ops unless a provider supports them
+        // Optional transport extras. No-op if provider lacks support.
         virtual void seek(qint64 positionMs) {
             (void)positionMs;
         }
@@ -22,21 +22,21 @@ class IPlaybackController {
         virtual void setShuffle(bool on) {
             (void)on;
         }
-        // number of detected media sessions; 1 unless a provider tracks several
+        // Number of detected media sessions. Default is 1.
         virtual int sessionCount() const {
             return 1;
         }
-        // index of the currently displayed session within the session list
+        // Index of displayed session in session list.
         virtual int selectedSessionIndex() const {
             return 0;
         }
-        // move the displayed/controlled session by delta (for multi-app switching)
+        // Move displayed session by delta.
         virtual void cycleSession(int delta) {
             (void)delta;
         }
 };
 
-// Pauses when currently playing, otherwise resumes playback.
+// Pause if playing. Otherwise resume playback.
 void togglePlayPause(IPlaybackController& controller, PlaybackState state);
 
 } // namespace mf

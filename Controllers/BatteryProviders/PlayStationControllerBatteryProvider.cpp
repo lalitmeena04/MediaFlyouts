@@ -26,8 +26,8 @@ struct ScopedHandle {
         }
 };
 
-// Reads one input report from an already-opened HID device, with a short timeout so a
-// device that's gone quiet (e.g. asleep) doesn't block the poll thread forever.
+// Read one input report from open HID device. Use short timeout.
+// Sleeping device must not block poll thread.
 bool readInputReport(HANDLE device, std::vector<BYTE>& buffer) {
     OVERLAPPED ov = {};
     ov.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
@@ -68,9 +68,8 @@ bool writeReport(HANDLE device, const std::vector<BYTE>& buffer) {
     return ok;
 }
 
-// Over Bluetooth, DualSense defaults to a "simple" input report (id 0x01) with no
-// battery/touchpad data until the host sends this signed output report requesting the
-// extended report (id 0x31) - same trick DS4Windows uses (SendInitialBTOutputReport).
+// Bluetooth DualSense starts with simple input report id 0x01.
+// Send signed report to enable extended report id 0x31.
 bool enableExtendedBluetoothReport(HANDLE device) {
     return writeReport(device, DualSenseProtocol::buildEnableExtendedReportPacket());
 }
@@ -128,8 +127,8 @@ QVector<BatteryDeviceInfo> PlayStationControllerBatteryProvider::poll() {
 
         const bool isBluetooth = caps.InputReportByteLength != 64;
 
-        // over Bluetooth the controller starts in "simple" mode; ask it to switch to the
-        // extended report (battery included) and give it a few reads to catch up
+        // Bluetooth controller starts in simple mode.
+        // Enable extended report and read a few times.
         if(isBluetooth)
             enableExtendedBluetoothReport(handle);
 

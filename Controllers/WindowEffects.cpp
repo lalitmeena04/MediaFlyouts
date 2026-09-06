@@ -7,7 +7,7 @@
 #include <dwmapi.h>
 
 namespace {
-// DWM immersive dark mode (Windows 10 20H1+); harmless no-op elsewhere.
+// DWM dark mode for Windows 10 20H1 and later.
 constexpr DWORD kUseImmersiveDarkMode = 20;
 
 HWND hwndOf(QWindow* window) {

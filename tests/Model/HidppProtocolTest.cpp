@@ -28,12 +28,12 @@ TEST(HidppProtocolTest, AcceptsRepliesCarryingOurSoftwareId) {
     std::vector<std::uint8_t> reply{kShortReportId, 0xFF, 0x06, kSoftwareId, 0x00, 0x00, 0x00};
     EXPECT_TRUE(isReplyFor(reply, 0xFF));
 
-    reply[3] = 0x1D; // a function reply keeps the software id in the low nibble
+    reply[3] = 0x1D; // Function reply keeps software id in low nibble.
     EXPECT_TRUE(isReplyFor(reply, 0xFF));
 }
 
 TEST(HidppProtocolTest, RejectsNotificationsAndOtherDevices) {
-    // a notification from the device uses a different software id
+    // Device notification uses different software id.
     std::vector<std::uint8_t> notification{kShortReportId, 0xFF, 0x06, 0x00, 0x00, 0x00, 0x00};
     EXPECT_FALSE(isReplyFor(notification, 0xFF));
 
@@ -51,7 +51,7 @@ TEST(HidppProtocolTest, ReadsTheFeatureIndex) {
     std::vector<std::uint8_t> reply{kShortReportId, 0xFF, 0x00, kSoftwareId, 0x06, 0x00, 0x00};
     EXPECT_EQ(featureIndexOf(reply), 0x06);
 
-    // index 0 means the device doesn't implement the feature
+    // Index 0 means device lacks feature.
     std::vector<std::uint8_t> unsupported{kShortReportId, 0xFF, 0x00, kSoftwareId, 0x00, 0x00, 0x00};
     EXPECT_EQ(featureIndexOf(unsupported), 0);
 }

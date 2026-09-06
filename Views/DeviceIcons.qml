@@ -2,19 +2,17 @@ pragma Singleton
 import QtQuick
 import MediaFlyouts
 
-// Device-type glyph for the battery widgets. Prefers the real device category (decoded
-// from the Bluetooth Class of Device where available); falls back to a name-keyword guess.
-// Icons come from Fluent, with Font Awesome filling gaps Fluent lacks (e.g. a mouse).
+// Device-type glyph for battery widgets.
+// Prefer real device category. Fall back to name-keyword guess.
+// Font Awesome fills Fluent gaps.
 QtObject {
-    // Font Awesome only covers peripherals Fluent has no glyph for; loaded here since this
-    // is its sole consumer
+    // Font Awesome is only used here.
     property FontLoader _fa: FontLoader {
         source: "qrc:/qt/qml/MediaFlyouts/assets/fonts/FontAwesome6-Solid.ttf"
     }
     readonly property string faFamily: _fa.name
 
-    // resolves a device to { glyph, fa }; fa marks a Font Awesome glyph so the caller can
-    // pick the matching font family
+    // Resolve device to glyph and font source.
     function _resolve(name, connectionKind, category) {
         var cat = category
         if(!cat) {
@@ -25,26 +23,26 @@ QtObject {
                 cat = "keyboard"
         }
         if(cat === "mouse")
-            return { "glyph": "\uF8CC", "fa": true } // Font Awesome computer-mouse; Fluent has none
+            return { "glyph": "\uF8CC", "fa": true } // Font Awesome computer-mouse. Fluent has none.
         if(cat === "keyboard")
             return { "glyph": Fluent.keyboard, "fa": false }
         if(cat === "gamepad" || connectionKind === "gamepad")
             return { "glyph": Fluent.gamepad, "fa": false }
         if(cat === "headset")
             return { "glyph": Fluent.headset, "fa": false }
-        return { "glyph": Fluent.headphones, "fa": false } // default: headphones / earbuds / other audio
+        return { "glyph": Fluent.headphones, "fa": false } // Default audio glyph.
     }
 
     function glyph(name, connectionKind, category) {
         return _resolve(name, connectionKind, category).glyph
     }
 
-    // font family to render glyph() with, since Fluent and Font Awesome are separate fonts
+    // Font family for glyph(). Fluent and Font Awesome are separate.
     function family(name, connectionKind, category) {
         return _resolve(name, connectionKind, category).fa ? faFamily : Fluent.fontFamily
     }
 
-    // How the device is connected, for tooltips.
+    // Device transport label for tooltips.
     function transport(connectionKind) {
         switch(connectionKind) {
         case "bluetooth":

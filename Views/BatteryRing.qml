@@ -1,14 +1,14 @@
 import QtQuick
 import MediaFlyouts
 
-// A circular battery gauge (PS5-widget style): a dim track ring plus a colored progress
-// arc for the percentage, with room for a centered icon via the default 'content' alias.
+// Circular battery gauge. Shows track ring and progress arc.
+// Default content alias holds centered icon.
 Item {
     id: ring
     property real percent: 0
     property color trackColor: "#3A3A3A"
-    // by default the arc color reflects charge level; when enabled in settings it instead
-    // follows the app accent (which itself follows album art when that mode is on)
+    // Arc color reflects charge level by default.
+    // Setting can make it follow app accent.
     property color progressColor: settings.batteryRingUseAccent
         ? (settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent)
         : (percent <= 20 ? "#E06C75" : (percent <= 40 ? "#E5C07B" : "#6FCF7F"))
@@ -34,8 +34,7 @@ Item {
             ctx.arc(cx, cy, r, 0, Math.PI * 2, false)
             ctx.stroke()
 
-            // devices with no battery reading draw a full neutral ring instead of an empty
-            // one, so they read as "connected" rather than "flat"
+            // Unknown battery draws full neutral ring. Device reads as connected.
             var unknown = ring.percent < 0
             var pct = unknown ? 1 : Math.max(0, Math.min(100, ring.percent)) / 100
             if(pct > 0) {

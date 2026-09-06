@@ -4,15 +4,14 @@
 
 namespace {
 
-// Seeds the widget to the taskbar edge the shell leaves free: a centered taskbar (Windows 11
-// Explorer\Advanced\TaskbarAl = 1) keeps its buttons in the middle, so we sit on the left; a
-// left-aligned taskbar pushes us to the right. Windows 10 has no such key and is always left.
+// Seed widget from taskbar alignment. Centered taskbar: use left side.
+// Left-aligned taskbar: use right side. Windows 10 always reports left.
 int systemTaskbarSide() {
 #ifdef Q_OS_WIN
     const QSettings explorer(
         QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
         QSettings::NativeFormat);
-    // widget side: 0 = left, 2 = right
+    // Widget side. 0 = left. 2 = right.
     return explorer.value(QStringLiteral("TaskbarAl"), 0).toInt() == 1 ? 0 : 2;
 #else
     return 2;
@@ -54,11 +53,10 @@ void Settings::reload() {
     m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), true).toBool();
     m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), true).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
-    // flyoutPosition indexes mf::FlyoutPosition (4 = BottomCenter); duration in milliseconds
+    // Field flyoutPosition is position index. 4 = BottomCenter. Duration is ms.
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
-    // -1 keeps the volume flyout wherever the media flyout is, which is how it behaved
-    // before it got its own position controls
+    // -1 keeps volume flyout with media flyout.
     m_volumeFlyoutPosition = m_store.value(QStringLiteral("volumeFlyoutPosition"), 4).toInt();
     m_volumeFlyoutMonitor = m_store.value(QStringLiteral("volumeFlyoutMonitor"), 0).toInt();
     m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
@@ -66,12 +64,11 @@ void Settings::reload() {
     m_flyoutAnimationEasingStyle = m_store.value(QStringLiteral("flyoutAnimationEasingStyle"), 3).toInt();
     m_volumeFlyoutDuration = m_store.value(QStringLiteral("volumeFlyoutDuration"), 1800).toInt();
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
-    // nextUpStyle: 0 = now-playing card, 1 = compact "up next" pill
+    // Next-up style values. 0 = now-playing card. 1 = compact pill.
     m_nextUpStyle = m_store.value(QStringLiteral("nextUpStyle"), 0).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
-    // widget side: 0 = left, 1 = center, 2 = right
-    // On first run, seed it from the system taskbar alignment and pin it so later system changes
-    // don't move a widget the user has already positioned.
+    // Widget side. 0 = left. 1 = center. 2 = right.
+    // First run uses system taskbar alignment. Later system changes leave widget position.
     if(!m_store.contains(QStringLiteral("taskbarWidgetSide")))
         m_store.setValue(QStringLiteral("taskbarWidgetSide"), systemTaskbarSide());
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
@@ -79,17 +76,17 @@ void Settings::reload() {
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
-    // centered = mirrored bars around the middle; otherwise they grow from the bottom
+    // Centered mirrors bars around middle. Other mode grows from bottom.
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
-    // visualizerStyle: 0 = bars, 1 = radial, 2 = waveform, 3 = particles
+    // Visualizer style values. 0 = bars. 1 = radial. 2 = waveform. 3 = particles.
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
-    // devices are shown by default; this only lists ones the user has explicitly hidden
+    // Devices show by default. This list stores hidden devices.
     m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
     m_peripheralFlyoutEnabled = m_store.value(QStringLiteral("peripheralFlyoutEnabled"), false).toBool();
     m_peripheralFlyoutDuration = m_store.value(QStringLiteral("peripheralFlyoutDuration"), 3000).toInt();
-    // indexes mf::FlyoutPosition like flyoutPosition (4 = BottomCenter)
+    // Indexes mf::FlyoutPosition. 4 = BottomCenter.
     m_peripheralFlyoutPosition = m_store.value(QStringLiteral("peripheralFlyoutPosition"), 4).toInt();
     m_peripheralFlyoutMonitor = m_store.value(QStringLiteral("peripheralFlyoutMonitor"), 0).toInt();
     m_peripheralFlyoutOnConnect = m_store.value(QStringLiteral("peripheralFlyoutOnConnect"), true).toBool();
@@ -99,14 +96,14 @@ void Settings::reload() {
     m_peripheralLowBatteryToast = m_store.value(QStringLiteral("peripheralLowBatteryToast"), true).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
-    // when accentFromArt is on, also tint the whole app (dashboard etc.), not just the flyouts
+    // Album-art accent also tints full app.
     m_accentFromArtAppWide = m_store.value(QStringLiteral("accentFromArtAppWide"), true).toBool();
-    // accentMode: 0 = theme default, 1 = match system, 2 = custom
+    // Accent mode values. 0 = theme default. 1 = match system. 2 = custom.
     m_accentMode = m_store.value(QStringLiteral("accentMode"), 0).toInt();
     m_customAccent = m_store.value(QStringLiteral("customAccent"), QStringLiteral("#4CC2FF")).toString();
-    // appTheme: 0 = follow system, 1 = light, 2 = dark
+    // App theme values. 0 = follow system. 1 = light. 2 = dark.
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
-    // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
+    // Filter mode values. 0 = off. 1 = blacklist. 2 = whitelist.
     m_filterMode = m_store.value(QStringLiteral("filterMode"), 0).toInt();
     m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
     m_autoCheckUpdates = m_store.value(QStringLiteral("autoCheckUpdates"), false).toBool();
@@ -308,7 +305,7 @@ bool Settings::playerAllowed(const QString& player) const {
             break;
         }
     }
-    // blacklist hides listed players; whitelist shows only listed players
+    // Blacklist hides listed players. Whitelist allows listed players.
     return m_filterMode == 1 ? !listed : listed;
 }
 int Settings::taskbarWidgetSide() const {

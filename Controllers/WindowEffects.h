@@ -4,16 +4,16 @@
 
 class QWindow;
 
-// Small helper for Windows-specific window chrome tweaks (DWM).
+// Helper for Windows window effects.
 class WindowEffects : public QObject {
         Q_OBJECT
 
     public:
         explicit WindowEffects(QObject* parent = nullptr);
 
-        // toggle the dark title bar / frame to match the theme
+        // Match the title bar to the theme.
         Q_INVOKABLE void setDarkFrame(QWindow* window, bool dark);
 
-        // reassert topmost placement without taking focus from the active app
+        // Move above other topmost windows. Do not take focus.
         Q_INVOKABLE void pinTopmost(QWindow* window);
 };

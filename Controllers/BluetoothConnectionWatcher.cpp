@@ -24,9 +24,7 @@ void BluetoothConnectionWatcher::onDeviceEvent() {
 }
 
 void BluetoothConnectionWatcher::attach(DeviceWatcher& watcher) {
-    // any of these firing means "something about a Bluetooth device changed" - good
-    // enough to trigger a re-poll; BatteryStatusController::refresh() is cheap to call
-    // spuriously (guarded against overlap), so we don't filter which property changed
+    // Any event means Bluetooth device changed. Re-poll. Overlap is guarded.
     watcher.Added([this](const DeviceWatcher&, const DeviceInformation&) { onDeviceEvent(); });
     watcher.Removed([this](const DeviceWatcher&, const DeviceInformationUpdate&) { onDeviceEvent(); });
     watcher.Updated([this](const DeviceWatcher&, const DeviceInformationUpdate&) { onDeviceEvent(); });
@@ -34,8 +32,7 @@ void BluetoothConnectionWatcher::attach(DeviceWatcher& watcher) {
 }
 
 void BluetoothConnectionWatcher::start() {
-    // requesting this property explicitly is required for Updated to actually fire on
-    // connect/disconnect - without it the watcher only reports pair/unpair (verified empirically)
+    // Request this property. Updated fires on connect/disconnect only with it.
     winrt::Windows::Foundation::Collections::IVector<winrt::hstring> extraProperties =
         winrt::single_threaded_vector<winrt::hstring>({L"System.Devices.Aep.IsConnected"});
 
@@ -44,8 +41,7 @@ void BluetoothConnectionWatcher::start() {
                                                              extraProperties);
         attach(m_classicWatcher);
     } catch(...) {
-        // watcher creation can fail if the Bluetooth radio is off/absent; battery polling
-        // still works via the timer fallback, just without instant connect/disconnect
+        // Watcher creation can fail without Bluetooth radio. Timer polling still works.
     }
 
     try {
