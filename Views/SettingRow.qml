@@ -1,16 +1,24 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// A labelled toggle row used in the dashboard settings pages.
+// Labelled toggle row for dashboard settings pages.
 Item {
     id: row
     property string label: ""
     property string description: ""
     property bool value: false
+    // False dims row and disables switch. unavailableNote replaces description.
+    property bool available: true
+    property string unavailableNote: ""
     signal toggled(bool value)
 
+    readonly property bool showNote: !row.available && row.unavailableNote.length > 0
+    readonly property string detail: row.showNote ? row.unavailableNote : row.description
+
     width: parent ? parent.width : 400
-    height: description.length > 0 ? 58 : 44
+    height: detail.length > 0 ? 58 : 44
+    enabled: row.available
+    opacity: row.available ? 1.0 : 0.5
 
     Column {
         anchors.left: parent.left
@@ -24,9 +32,9 @@ Item {
             font.pixelSize: 14
         }
         Text {
-            visible: row.description.length > 0
+            visible: row.detail.length > 0
             width: parent.width
-            text: row.description
+            text: row.detail
             color: theme.textTertiary
             font.pixelSize: 11
             wrapMode: Text.WordWrap
@@ -38,6 +46,7 @@ Item {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         checked: row.value
+        enabled: row.available
         onToggled: row.toggled(checked)
     }
 }

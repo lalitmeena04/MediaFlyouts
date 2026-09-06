@@ -32,7 +32,8 @@ Qt objects that wire the model to Windows and to QML:
 - **TrayController** — tray icon + context menu.
 - **ThemeController** — theme/accent palette exposed to QML.
 - **FlyoutPlacement** — screen placement from settings.
-- **SingleInstance** — single-instance guard (surfaces the dashboard on relaunch).
+- **SingleInstance** — single-instance guard (surfaces the dashboard on relaunch
+  only when the tray icon is hidden).
 - **UpdateChecker** — GitHub releases update check.
 - Windows-only: **VolumeController**, **VolumeMixer**, **AudioCapture**,
   **AccentWatcher**, **WindowEffects** (dark title bar), **LockKeysController**,

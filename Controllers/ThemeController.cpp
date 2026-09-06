@@ -23,7 +23,7 @@ bool ThemeController::computeDark() const {
         return false;
     if(mode == 2)
         return true;
-    // system: follow the OS color scheme
+    // System mode follows OS color scheme.
     if(const QStyleHints* hints = QGuiApplication::styleHints())
         return hints->colorScheme() != Qt::ColorScheme::Light;
     return true;
@@ -31,7 +31,7 @@ bool ThemeController::computeDark() const {
 
 void ThemeController::refresh() {
     m_dark = computeDark();
-    // accent may also depend on settings that changed, so always notify
+    // Accent can depend on settings. Always notify.
     emit changed();
 }
 
@@ -80,7 +80,8 @@ QColor ThemeController::textMuted() const {
     return m_dark ? QColor("#7A7A7A") : QColor("#8A8A8A");
 }
 QColor ThemeController::accent() const {
-    if(m_settings && m_settings->accentFromArt() && m_nowPlaying && m_nowPlaying->hasArt())
+    if(m_settings && m_settings->accentFromArt() && m_settings->accentFromArtAppWide() && m_nowPlaying
+       && m_nowPlaying->hasArt())
         return m_nowPlaying->artAccent();
     const int mode = m_settings ? m_settings->accentMode() : 0;
     if(mode == 1 && m_systemAccent.isValid())

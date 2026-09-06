@@ -1,4 +1,4 @@
-# Generates the MediaFlyouts app icon (.ico) and MSIX tile logos from code.
+# Generate MediaFlyouts app icon and MSIX tile logos from code.
 # Design: a Fluent-blue rounded tile with a white beamed eighth-note pair.
 # Run:  powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1
 Add-Type -AssemblyName System.Drawing
@@ -20,7 +20,7 @@ function New-RoundedPath([single]$x, [single]$y, [single]$w, [single]$h, [single
     return $p
 }
 
-# a merged "MF" monogram (Before the Rain), the F overlapping the M into one mark
+# Merged "MF" monogram. F overlaps M into one mark.
 function New-Monogram([single]$cx, [single]$cy, [single]$S) {
     try { $ff = New-Object System.Drawing.FontFamily('Before the Rain') }
     catch { throw "Font 'Before the Rain' is not installed on this system." }
@@ -33,7 +33,7 @@ function New-Monogram([single]$cx, [single]$cy, [single]$S) {
     $pF = New-Object System.Drawing.Drawing2D.GraphicsPath
     $pF.AddString('F', $ff, $style, 100, $origin, $sf)
 
-    # slide the F left so it overlaps the right of the M (shared, merged strokes)
+    # Slide F left. It overlaps right side of M.
     $bM = $pM.GetBounds(); $bF = $pF.GetBounds()
     $overlap = 0.42 * $bM.Width
     $mv = New-Object System.Drawing.Drawing2D.Matrix

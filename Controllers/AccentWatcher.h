@@ -6,7 +6,7 @@
 
 #include <memory>
 
-// Reads the Windows accent color and notifies when the user changes it.
+// Read Windows accent color. Notify on change.
 class AccentWatcher : public QObject {
         Q_OBJECT
 

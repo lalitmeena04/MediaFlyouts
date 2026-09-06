@@ -28,8 +28,7 @@ QString processImagePath(DWORD pid) {
     return path;
 }
 
-// Copies the pixels out of an HICON into an ARGB image, rebuilding the alpha
-// channel from the AND mask for legacy icons that ship without one.
+// Convert HICON pixels to ARGB. Rebuild alpha from AND mask for legacy icons.
 QImage imageFromHICON(HICON icon) {
     if(!icon)
         return {};
@@ -173,7 +172,7 @@ void VolumeMixer::refresh() {
         control->QueryInterface(__uuidof(IAudioSessionControl2), reinterpret_cast<void**>(&control2));
         control->QueryInterface(__uuidof(ISimpleAudioVolume), reinterpret_cast<void**>(&volume));
 
-        // skip inactive sessions so the list stays to what's actually making sound
+        // Skip inactive sessions. Keep list to apps making sound.
         AudioSessionState state = AudioSessionStateInactive;
         control->GetState(&state);
 
@@ -225,7 +224,7 @@ void VolumeMixer::refresh() {
     }
 
     cleanup();
-    // only notify when the list actually changed so the mixer isn't rebuilt every tick
+    // Notify only when list changed. Avoid mixer rebuild every tick.
     if(m_sessions != previous)
         emit sessionsChanged();
 }

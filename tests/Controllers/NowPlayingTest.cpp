@@ -79,7 +79,7 @@ TEST(NowPlayingTest, ManualSkipRaisesTrackUpdated) {
     QSignalSpy trackUpdated(&np, &NowPlaying::trackUpdated);
     QSignalSpy nextUp(&np, &NowPlaying::nextUpRequested);
 
-    np.noteMediaKey(); // a key press just before the track change means a manual skip
+    np.noteMediaKey(); // Key press before track change means manual skip.
     np.applyTrack(makeTrack(QStringLiteral("Second"), QStringLiteral("Band")));
 
     EXPECT_EQ(trackUpdated.count(), 1);
@@ -156,7 +156,7 @@ TEST(NowPlayingTest, ApplyArtTogglesHasArtAndArtSource) {
 
 TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
     NowPlaying np;
-    // default accent before any art
+    // Default accent before art.
     EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
 
     QImage red(8, 8, QImage::Format_ARGB32);
@@ -166,7 +166,7 @@ TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
     EXPECT_GT(accent.red(), accent.green());
     EXPECT_GT(accent.red(), accent.blue());
 
-    // clearing art restores the default accent
+    // Clearing art restores default accent.
     np.applyArt(QImage());
     EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
 }

@@ -40,6 +40,9 @@
 .PARAMETER SkipDeploy
     (build) Skip the windeployqt step.
 
+.PARAMETER NoLogging
+    (build) Compile out spdlog file logging (MEDIAFLYOUTS_ENABLE_LOGGING=OFF).
+
 .PARAMETER SkipBuild
     (package) Reuse the existing bin\ instead of doing a clean release build.
 
@@ -101,6 +104,7 @@ param(
     [switch]$NoTests,
     [switch]$RunTests,
     [switch]$SkipDeploy,
+    [switch]$NoLogging,
     [string]$BuildNumber  = "",
 
     # -- package --------------------------------------------------------------
@@ -140,7 +144,7 @@ function Write-Step ([string]$m) {
     Write-Host ("=" * 56) -ForegroundColor Cyan
 }
 
-# -- Shared: paths derived from the selected configuration ---------------------
+# -- Shared: paths from selected configuration ---------------------------------
 function Get-BuildDir {
     if (-not [string]::IsNullOrEmpty($BuildDir)) { return $BuildDir }
     return Join-Path $RepoRoot "build\msvc-$Config"
@@ -148,9 +152,8 @@ function Get-BuildDir {
 function Get-BinDir { return Join-Path $RepoRoot "bin" }
 function Get-AppExe { return Join-Path (Get-BinDir) "$AppName.exe" }
 
-# -- Shared: run a native tool and check its exit code -------------------------
-# Runs with Continue so tool stderr (e.g. CMake warnings) isn't turned into a
-# terminating error when the caller redirects output with 2>&1.
+# -- Shared: run native tool and check exit code -------------------------------
+# Run with Continue. Tool stderr stays non-terminating during 2>&1 redirects.
 function Invoke-Native {
     param(
         [Parameter(Mandatory)][scriptblock]$Command,
@@ -180,7 +183,7 @@ function Get-QtPath ([string]$supplied) {
     return ""
 }
 
-# -- Shared: put the MSVC toolchain on PATH for the Ninja generator -------------
+# -- Shared: put MSVC toolchain on PATH for Ninja ------------------------------
 function Enter-MsvcEnv {
     if (Get-Command cl.exe -ErrorAction SilentlyContinue) {
         Write-Info "MSVC compiler environment already available."
@@ -198,7 +201,7 @@ function Enter-MsvcEnv {
     if (-not $vsPath) { throw "No Visual Studio installation with the C++ toolset was found." }
 
     Write-Info "Using Visual Studio at: $vsPath"
-    # Reset PATH first so repeated DevShell imports don't overflow the environment.
+    # Reset PATH first. Repeated DevShell imports can overflow environment.
     $env:PATH = [Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
                 [Environment]::GetEnvironmentVariable("PATH", "User")
     Import-Module (Join-Path $vsPath "Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
@@ -210,13 +213,13 @@ function Enter-MsvcEnv {
 }
 
 # -- Shared: add Qt to PATH ----------------------------------------------------
-# CTest arranges this for us, so it's only needed when launching a binary directly.
+# CTest handles this. Needed only for direct binary launch.
 function Add-QtToPath ([string]$qtPath) {
     if ([string]::IsNullOrEmpty($qtPath)) { return }
     $env:PATH = "$qtPath\bin;$env:PATH"
 }
 
-# -- Shared: stop a running instance so bin\ can be replaced -------------------
+# -- Shared: stop running instance before bin replacement ----------------------
 function Stop-RunningApp {
     Get-Process -Name $AppName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 }
@@ -355,10 +358,12 @@ function Invoke-Build {
 
     $buildPath = Get-BuildDir
     $testsFlag = if ($NoTests) { "OFF" } else { "ON" }
+    $loggingFlag = if ($NoLogging) { "OFF" } else { "ON" }
 
-    # An explicit build number stamps a "-<number>" pre-release suffix onto the version;
-    # otherwise clear any stale cached value so a normal build stays on the plain version.
-    $cmakeArgs = @("--preset", "msvc-$Config", "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag")
+    # Explicit build number adds "-<number>" suffix.
+    # Clear stale cached value for normal build.
+    $cmakeArgs = @("--preset", "msvc-$Config", "-DMEDIAFLYOUTS_BUILD_TESTS=$testsFlag",
+                   "-DMEDIAFLYOUTS_ENABLE_LOGGING=$loggingFlag")
     if ($BuildNumber) { $cmakeArgs += "-DMEDIAFLYOUTS_BUILD_NUMBER=$BuildNumber" }
     else              { $cmakeArgs += "-UMEDIAFLYOUTS_BUILD_NUMBER" }
 
@@ -372,7 +377,7 @@ function Invoke-Build {
     Write-Ok "Build succeeded: $(Get-AppExe)"
 
     if (-not $SkipDeploy) {
-        # Deploy the Qt runtime into bin so the app runs standalone (a clean build wipes it).
+        # Deploy Qt runtime into bin. App runs standalone.
         $qt = Get-QtPath $QtPath
         if ($qt) {
             Write-Info "windeployqt -> $(Get-BinDir)"
@@ -402,8 +407,8 @@ function Invoke-Test {
         exit 1
     }
 
-    # Google Test options only apply to the gtest binary, so drive it directly when
-    # any of them are used; otherwise run the whole CTest suite (gtest + Qt Test).
+    # Google Test options apply only to gtest binary.
+    # Otherwise run whole CTest suite.
     $usesGTestOptions = $Filter -or $FailFast -or $Shuffle -or $Repeat
 
     if ($usesGTestOptions) {
@@ -421,7 +426,7 @@ function Invoke-Test {
 
         Write-Info "$([System.IO.Path]::GetFileName($exe)) $($gtestArgs -join ' ')"
         Add-QtToPath (Get-QtPath $QtPath)
-        # run from the build dir so the Qt DLLs next to the binary resolve
+        # Run from build dir. Qt DLLs next to binary resolve.
         Push-Location (Split-Path $exe -Parent)
         try { Invoke-Native { & $exe @gtestArgs } "Tests failed." } finally { Pop-Location }
     } else {
@@ -459,7 +464,7 @@ function Invoke-Package {
 # Command: run
 # ==============================================================================
 function Invoke-Run {
-    # Prefer an explicit -AppDir install; fall back to the dev bin\ folder.
+    # Prefer explicit -AppDir install. Else use dev bin\ folder.
     if (-not [string]::IsNullOrEmpty($AppDir)) {
         $exePath = Join-Path $AppDir "$AppName.exe"
         if (-not (Test-Path $exePath)) {
@@ -474,7 +479,7 @@ function Invoke-Run {
         }
     }
 
-    # single-instance: a second launch only surfaces the running dashboard
+    # Single instance. Second launch signals running instance and exits.
     Stop-RunningApp
     Write-Info "Launching: $exePath"
     Start-Process -FilePath $exePath -WorkingDirectory (Split-Path $exePath -Parent)

@@ -5,7 +5,8 @@
 
 class QLocalServer;
 
-// Ensures only one MediaFlyouts runs; a second launch signals the first to show its dashboard.
+// Ensure only one MediaFlyouts instance runs.
+// Second launch signals the first instance.
 class SingleInstance : public QObject {
         Q_OBJECT
 
@@ -15,7 +16,7 @@ class SingleInstance : public QObject {
         bool isPrimary() const;
 
     signals:
-        // another instance tried to start and asked us to surface the dashboard
+        // Another instance asked this instance to show dashboard.
         void activated();
 
     private:

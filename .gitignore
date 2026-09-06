@@ -38,6 +38,7 @@ ui_*.h
 .vs/
 .vscode/
 .idea/
+.qtcreator/
 *.user
 *.suo
 *.VC.db
@@ -59,4 +60,4 @@ e.log
 /dist/
 
 # --- Signing material (never commit certificates or keys) ---
-/signing/
+signing/

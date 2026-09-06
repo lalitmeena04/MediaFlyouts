@@ -22,7 +22,7 @@ QColor AccentWatcher::accent() const {
 void AccentWatcher::start() {
     m_impl->settings = UISettings();
     refresh();
-    // poll for accent changes (the WinRT event handler is awkward to link)
+    // Poll accent changes. WinRT event handler is hard to link.
     m_timer.start();
 }
 

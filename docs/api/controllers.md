@@ -26,7 +26,7 @@ Resolves a flyout's screen position from the placement settings for QML
 
 ### SingleInstance
 Ensures a single running instance (via a local server); a second launch signals
-the primary to surface its dashboard.
+the primary, which surfaces its dashboard only if the tray icon is hidden.
 
 ### UpdateChecker
 Queries the GitHub releases API and exposes `updateAvailable`, `latestVersion`,
@@ -51,3 +51,14 @@ running version comes from `MEDIAFLYOUTS_VERSION`.
   working during the first-run wizard.
 - **StartupController** — launch-on-startup via the `Run` registry key.
 - **TaskbarInfo** — taskbar geometry for placing the widget.
+- **BatteryStatusController** — aggregates peripheral battery from all providers
+  into one list for QML. Real providers poll on a worker thread; connect and
+  disconnect events arriving mid-poll are coalesced rather than dropped.
+- **BatteryProviders/** — one per transport: Bluetooth Classic (Hands-Free
+  battery property), Bluetooth LE (GATT), Fast Pair (RFCOMM message stream),
+  DualSense (raw HID), Razer (90-byte feature reports) and Logitech (HID++).
+  `HidCollections` is the shared HID enumeration helper.
+- **BluetoothConnectionWatcher / HidChangeWatcher** — instant connect and
+  disconnect notifications, so the UI doesn't wait for the next poll.
+- **PeripheralAlerts** — turns battery snapshots into connect / disconnect /
+  low-battery events using `mf::BatteryAlertPolicy`.

@@ -1,9 +1,9 @@
 pragma Singleton
 import QtQuick
 
-// Shared animation helpers so every flyout uses the same easing mapping.
+// Shared animation helpers. All flyouts use same easing mapping.
 QtObject {
-    // maps the flyoutAnimationEasingStyle setting (0..3) to a QML easing curve
+    // Map flyoutAnimationEasingStyle setting to QML easing curve.
     function easingFor(style) {
         switch(style) {
         case 0: return Easing.Linear

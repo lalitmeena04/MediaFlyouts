@@ -16,6 +16,8 @@ properties and QML binds to their properties/signals.
 - **VolumeFlyout.qml** — master volume slider + the expandable per-app mixer.
 - **LockKeysFlyout.qml** — Caps/Num/Scroll/Insert indicators.
 - **NowPlayingFlyout.qml** — the "now playing" / "up next" flyout (card or pill).
+- **PeripheralFlyout.qml** + **PeripheralCard.qml** — peripheral connect /
+  disconnect / low-battery events, several devices side by side in one window.
 
 ## Windows
 
@@ -26,6 +28,11 @@ properties and QML binds to their properties/signals.
   taskbar widget's `visible` binding stays false.
 - **TaskbarWidget.qml** + **TaskbarVisualizer.qml** — the taskbar now-playing
   widget and its multi-style audio visualizer.
+- **PeripheralsWidget.qml** — battery rings for the selected peripherals,
+  docked alongside the now-playing widget.
+- **BatteryRing.qml** — the reusable circular battery gauge.
+- **DeviceIcons.qml** (singleton) — device glyph and transport label
+  ("Bluetooth", "2.4 GHz", "USB") for the battery UI.
 
 ## Shared components
 

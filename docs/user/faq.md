@@ -39,6 +39,21 @@ DPI). Use the Taskbar Widget page to set the side, monitor and offset. On first
 run the side is chosen to avoid your taskbar buttons — left for a center-aligned
 taskbar, right for a left-aligned one — and is never changed again once set.
 
+## One of my peripherals shows no battery
+The device has to report its level over a transport we can read: Bluetooth
+Hands-Free, Bluetooth LE, Google Fast Pair, or a supported vendor protocol
+(DualSense, Razer, Logitech HID++). Devices that report nothing include:
+
+- Bluetooth **speakers**, which have no microphone and therefore no Hands-Free
+  profile — Windows itself shows no battery for them either.
+- Keyboards and mice on a **generic 2.4GHz dongle** using an undocumented
+  vendor protocol.
+- Some headsets on their own dongle, even when the same headset reports fine
+  over Bluetooth — pairing it over Bluetooth instead will show the battery.
+
+If Windows Settings → Bluetooth & devices shows no battery for the device
+either, there is nothing for MediaFlyouts to read.
+
 ## Where are my settings stored?
 Use **Open Config Folder** in the tray menu. Settings live in a per-user `.ini`
 file; you can also **export/import** them from the dashboard.

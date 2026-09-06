@@ -14,7 +14,7 @@ Window {
     title: "MediaFlyouts"
     color: theme.window
 
-    // keep the title bar matching the theme
+    // Keep title bar matching theme.
     function applyChrome() {
         windowEffects.setDarkFrame(dash, theme.dark)
     }
@@ -26,40 +26,56 @@ Window {
     }
 
     property int currentIndex: 0
+    // Reset scroll position. Keep new page starting at top.
+    onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
+    readonly property var peripheralSections: [
+        { "label": "2.4 GHz", "devices": batteryStatus.devices.filter(function(device) {
+            return device.connectionKind === "wireless"
+        }) },
+        { "label": "Bluetooth", "devices": batteryStatus.devices.filter(function(device) {
+            return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
+        }) }
+    ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
-        { "icon": Fluent.musicNote, "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
+        { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
+        { "icon": Fluent.plugConnected, "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
+        { "icon": Fluent.musicNote, "name": "Media Widget", "desc": "A compact now-playing widget docked on the taskbar." },
+        { "icon": Fluent.usbStick,  "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
         { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
-        { "icon": Fluent.musicNote, "name": "Taskbar Widget", "desc": "A compact now-playing widget docked on the taskbar." },
-        { "icon": Fluent.dismiss,   "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
-        { "icon": Fluent.settings,  "name": "About",        "desc": "MediaFlyouts — a Fluent-style media overlay built with Qt 6." }
+        { "icon": Fluent.filter,    "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
+        { "icon": Fluent.settings,  "name": "Additional Settings", "desc": "Theme, accent, startup, tray and settings backup." },
+        { "icon": Fluent.info,      "name": "About",        "desc": "App info and updates." }
     ]
 
-    // searchable index of settings -> the page that hosts them
+    // Searchable settings index. Values map to host pages.
     readonly property var searchIndex: [
         { "label": "Seekbar", "page": 1 }, { "label": "Interactive seekbar", "page": 1 },
         { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
         { "label": "Always display", "page": 1 }, { "label": "Show player name", "page": 1 },
-        { "label": "Accent from album art", "page": 1 }, { "label": "Repeat button", "page": 1 },
+        { "label": "Accent from album art", "page": 1 }, { "label": "Apply accent app-wide", "page": 1 }, { "label": "Repeat button", "page": 1 },
         { "label": "Shuffle button", "page": 1 }, { "label": "Up next flyout", "page": 1 },
         { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
         { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
         { "label": "Animation speed", "page": 1 }, { "label": "Animation easing", "page": 1 },
-        { "label": "Volume flyout", "page": 2 }, { "label": "Override native OSD", "page": 2 },
-        { "label": "Volume flyout duration", "page": 2 }, { "label": "Lock keys flyout", "page": 3 },
-        { "label": "Caps lock", "page": 3 }, { "label": "Num lock", "page": 3 },
-        { "label": "Scroll lock", "page": 3 }, { "label": "Insert key", "page": 3 },
-        { "label": "Bold indicator text", "page": 3 }, { "label": "Lock keys duration", "page": 3 },
-        { "label": "Taskbar widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
-        { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
-        { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
-        { "label": "Audio visualizer", "page": 4 }, { "label": "Blacklist", "page": 5 },
-        { "label": "Whitelist", "page": 5 }, { "label": "Filter mode", "page": 5 },
-        { "label": "Theme", "page": 6 }, { "label": "Acrylic backdrop", "page": 6 },
-        { "label": "Launch on startup", "page": 6 }, { "label": "Hide tray icon", "page": 6 },
-        { "label": "Check for updates", "page": 6 }, { "label": "Export settings", "page": 6 },
-        { "label": "Import settings", "page": 6 }
+        { "label": "Volume flyout", "page": 5 }, { "label": "Override native OSD", "page": 5 },
+        { "label": "Volume flyout duration", "page": 5 }, { "label": "Lock keys flyout", "page": 6 },
+        { "label": "Caps lock", "page": 6 }, { "label": "Num lock", "page": 6 },
+        { "label": "Scroll lock", "page": 6 }, { "label": "Insert key", "page": 6 },
+        { "label": "Bold indicator text", "page": 6 }, { "label": "Lock keys duration", "page": 6 },
+        { "label": "Media widget", "page": 3 }, { "label": "Widget controls", "page": 3 },
+        { "label": "Widget alignment", "page": 3 }, { "label": "Widget offset", "page": 3 },
+        { "label": "Pause overlay", "page": 3 }, { "label": "Scroll long titles", "page": 3 },
+        { "label": "Audio visualizer", "page": 3 },
+        { "label": "Peripheral flyout", "page": 2 }, { "label": "Low battery warning", "page": 2 },
+        { "label": "Peripherals widget", "page": 4 }, { "label": "Battery rings", "page": 4 },
+        { "label": "Blacklist", "page": 7 },
+        { "label": "Whitelist", "page": 7 }, { "label": "Filter mode", "page": 7 },
+        { "label": "Theme", "page": 8 }, { "label": "Accent color", "page": 8 },
+        { "label": "Launch on startup", "page": 8 }, { "label": "Hide tray icon", "page": 8 },
+        { "label": "Export settings", "page": 8 }, { "label": "Import settings", "page": 8 },
+        { "label": "Check for updates", "page": 9 }, { "label": "Version", "page": 9 }
     ]
 
     readonly property var searchResults: {
@@ -69,8 +85,9 @@ Window {
         return searchIndex.filter(function(e) { return e.label.toLowerCase().indexOf(q) >= 0 })
     }
     property string searchQuery: ""
+    property bool sidebarSearchOpen: false
 
-    // hide to tray instead of quitting the app
+    // Hide to tray. Do not quit app.
     onClosing: (event) => {
         event.accepted = false
         dash.hide()
@@ -81,24 +98,40 @@ Window {
 
         Rectangle {
             id: sidebar
-            width: 240
+            property bool collapsed: false
+            width: collapsed ? 64 : 240
             height: parent.height
             color: theme.sidebar
 
-            Column {
+            Behavior on width {
+                NumberAnimation { duration: 140; easing.type: Easing.OutQuad }
+            }
+
+            Item {
+                id: sidebarContent
                 anchors.fill: parent
-                anchors.margins: 18
-                spacing: 8
+                anchors.leftMargin: sidebar.collapsed ? 8 : 18
+                anchors.topMargin: 18
+                anchors.rightMargin: sidebar.collapsed ? 8 : 18
+                anchors.bottomMargin: 48
 
                 Row {
+                    id: sidebarHeader
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.leftMargin: sidebar.collapsed ? 8 : 9
                     spacing: 12
                     bottomPadding: 12
                     IconLabel {
                         glyph: Fluent.musicNote
                         size: 24
+                        width: 24
+                        height: 24
+                        anchors.verticalCenter: parent.verticalCenter
                         color: theme.accent
                     }
                     Text {
+                        visible: !sidebar.collapsed
                         text: "MediaFlyouts"
                         color: theme.textPrimary
                         font.pixelSize: 18
@@ -109,7 +142,10 @@ Window {
 
                 TextField {
                     id: searchField
-                    width: sidebar.width - 36
+                    visible: !sidebar.collapsed
+                    anchors.top: sidebarHeader.bottom
+                    anchors.topMargin: 8
+                    width: parent.width
                     placeholderText: "Search settings…"
                     color: theme.textPrimary
                     placeholderTextColor: theme.textMuted
@@ -121,14 +157,62 @@ Window {
                     onTextChanged: dash.searchQuery = text
                 }
 
-                // search results replace the nav list while searching
-                Column {
-                    width: sidebar.width - 36
+                Rectangle {
+                    id: sidebarSearchButton
+                    visible: sidebar.collapsed
+                    anchors.top: sidebarHeader.bottom
+                    anchors.topMargin: 8
+                    width: 40
+                    height: 32
+                    radius: 8
+                    color: sidebarSearchMouse.containsMouse ? theme.card : "transparent"
+
+                    IconLabel {
+                        anchors.centerIn: parent
+                        glyph: Fluent.search
+                        size: 16
+                        color: theme.textSecondary
+                    }
+                    MouseArea {
+                        id: sidebarSearchMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            dash.sidebarSearchOpen = !dash.sidebarSearchOpen
+                            if(dash.sidebarSearchOpen) {
+                                popupSearchField.text = ""
+                                sidebarSearchPopup.open()
+                            } else {
+                                sidebarSearchPopup.close()
+                            }
+                        }
+                        InfoTooltip {
+                            text: "Search settings"
+                            hovered: sidebar.collapsed && sidebarSearchMouse.containsMouse
+                        }
+                    }                }
+
+                ScrollView {
+                    id: navigationScroll
+                    anchors.top: sidebar.collapsed ? sidebarSearchButton.bottom : searchField.bottom
+                    anchors.topMargin: 8
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    clip: true
+
+                    // Search results replace nav list.
+                    Column {
+                    width: navigationScroll.availableWidth
                     spacing: 4
-                    visible: dash.searchQuery.length > 0
-                    Repeater {
-                        model: dash.searchResults
-                        delegate: Rectangle {
+                    Column {
+                        width: parent.width
+                        visible: dash.searchQuery.length > 0 && !sidebar.collapsed
+                        spacing: 4
+                        Repeater {
+                            model: dash.searchResults
+                            delegate: Rectangle {
                             required property var modelData
                             width: parent.width
                             height: 38
@@ -159,25 +243,29 @@ Window {
                                     searchField.text = ""
                                 }
                             }
+                            }
+                        }
+                        Text {
+                            visible: dash.searchResults.length === 0
+                            text: "No matching settings."
+                            color: theme.textMuted
+                            font.pixelSize: 12
+                            leftPadding: 12
                         }
                     }
-                    Text {
-                        visible: dash.searchResults.length === 0
-                        text: "No matching settings."
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                        leftPadding: 12
-                    }
-                }
 
-                Repeater {
-                    model: dash.pages
+                    Column {
+                        width: parent.width
+                        visible: dash.searchQuery.length === 0 || sidebar.collapsed
+                        spacing: 4
+                        Repeater {
+                            model: dash.pages
 
-                    delegate: Rectangle {
+                            delegate: Rectangle {
                         required property int index
                         required property var modelData
 
-                        width: sidebar.width - 36
+                        width: sidebar.collapsed ? 40 : sidebar.width - 36
                         visible: dash.searchQuery.length === 0
                         height: visible ? 40 : 0
                         radius: 8
@@ -186,14 +274,17 @@ Window {
                         Row {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 12
+                            anchors.leftMargin: sidebar.collapsed ? 11 : 12
                             spacing: 12
                             IconLabel {
                                 glyph: modelData.icon
                                 size: 18
+                                width: 18
+                                height: 18
                                 color: dash.currentIndex === index ? theme.accent : theme.textSecondary
                             }
                             Text {
+                                visible: !sidebar.collapsed
                                 text: modelData.name
                                 color: theme.textPrimary
                                 font.pixelSize: 14
@@ -207,23 +298,181 @@ Window {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: dash.currentIndex = index
+                            InfoTooltip {
+                                text: modelData.name
+                                hovered: sidebar.collapsed && navMouse.containsMouse
+                            }
+                        }
+                            }
+                        }
+                    }
+                    }
+                }
+
+            }
+
+            Rectangle {
+                id: collapseButton
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 8
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                width: sidebar.collapsed ? 40 : sidebar.width - 16
+                height: 32
+                radius: 8
+                color: collapseMouse.containsMouse ? theme.card : "transparent"
+
+                IconLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 11
+                    glyph: sidebar.collapsed ? Fluent.chevronDoubleRight : Fluent.chevronDoubleLeft
+                    size: 16
+                    color: theme.textSecondary
+                }
+                Text {
+                    visible: !sidebar.collapsed
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 40
+                    color: theme.textMuted
+                    font.pixelSize: 12
+                }
+                MouseArea {
+                    id: collapseMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    InfoTooltip {
+                        text: "Expand"
+                        hovered: sidebar.collapsed && collapseMouse.containsMouse
+                    }
+                    onClicked: {
+                        sidebar.collapsed = !sidebar.collapsed
+                        if(sidebar.collapsed) {
+                            searchField.text = ""
+                            dash.searchQuery = ""
+                            sidebarSearchPopup.close()
                         }
                     }
                 }
             }
         }
 
+    Popup {
+        id: sidebarSearchPopup
+        parent: sidebarSearchButton
+        x: sidebarSearchButton.width + 8
+        y: 0
+        width: 280
+        height: Math.min(360, dash.height - 120)
+        padding: 8
+        modal: false
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        onOpened: popupSearchField.forceActiveFocus()
+        onClosed: {
+            dash.sidebarSearchOpen = false
+            dash.searchQuery = ""
+        }
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 8
+            TextField {
+                id: popupSearchField
+                width: parent.width
+                placeholderText: "Search settings..."
+                color: theme.textPrimary
+                placeholderTextColor: theme.textMuted
+                background: Rectangle {
+                    radius: 6
+                    color: theme.window
+                    border.color: theme.border
+                }
+                onTextChanged: dash.searchQuery = text
+            }
+            ScrollView {
+                id: popupResultsScroll
+                width: parent.width
+                height: parent.height - popupSearchField.height - parent.spacing
+                clip: true
+                Column {
+                    width: popupResultsScroll.availableWidth
+                    spacing: 4
+                    Repeater {
+                        model: dash.searchResults
+                        delegate: Rectangle {
+                            required property var modelData
+                            width: parent.width
+                            height: 38
+                            radius: 6
+                            color: popupResultMouse.containsMouse ? theme.cardHover : "transparent"
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 12
+                                Text {
+                                    text: modelData.label
+                                    color: theme.textPrimary
+                                    font.pixelSize: 13
+                                }
+                                Text {
+                                    text: dash.pages[modelData.page].name
+                                    color: theme.textMuted
+                                    font.pixelSize: 10
+                                }
+                            }
+                            MouseArea {
+                                id: popupResultMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    dash.currentIndex = modelData.page
+                                    sidebarSearchPopup.close()
+                                }
+                            }
+                        }
+                    }
+                    Text {
+                        visible: dash.searchResults.length === 0
+                        text: "No matching settings."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                        leftPadding: 12
+                    }
+                }
+            }
+        }
+    }
+
         Rectangle {
             width: dash.width - sidebar.width
             height: parent.height
             color: theme.window
 
+            IconLabel {
+                id: pageIcon
+                anchors.left: parent.left
+                anchors.leftMargin: 32
+                anchors.verticalCenter: pageTitle.verticalCenter
+                glyph: dash.pages[dash.currentIndex].icon
+                size: 26
+                color: theme.accent
+            }
+
             Text {
                 id: pageTitle
                 anchors.top: parent.top
-                anchors.left: parent.left
+                anchors.left: pageIcon.right
                 anchors.right: parent.right
-                anchors.margins: 32
+                anchors.topMargin: 32
+                anchors.leftMargin: 12
+                anchors.rightMargin: 32
                 text: dash.pages[dash.currentIndex].name
                 color: theme.textPrimary
                 font.pixelSize: 26
@@ -244,7 +493,7 @@ Window {
                 wrapMode: Text.WordWrap
             }
 
-            // scrollable so long pages (e.g. the media flyout options) aren't cut off
+            // Scroll long pages. Prevent content cut-off.
             ScrollView {
                 id: pageScroll
                 anchors.top: pageDesc.bottom
@@ -268,7 +517,7 @@ Window {
                         width: parent.width
                         spacing: 16
 
-                        // live feature state, kept reactive by reading the settings properties directly
+                        // Live feature state. Direct setting reads keep binding reactive.
                         function featureOn(key) {
                             switch(key) {
                             case "media": return settings.mediaFlyoutEnabled
@@ -281,7 +530,7 @@ Window {
                             return false
                         }
 
-                        // Now playing hero card
+                        // Now Playing hero card.
                         Rectangle {
                             width: parent.width
                             height: 176
@@ -364,7 +613,7 @@ Window {
                                         }
                                     }
 
-                                    // progress bar + times
+                                    // Progress bar and times.
                                     Column {
                                         width: parent.width
                                         spacing: 4
@@ -402,7 +651,7 @@ Window {
                                         }
                                     }
 
-                                    // transport controls
+                                    // Transport controls.
                                     Row {
                                         spacing: 22
                                         topPadding: 8
@@ -456,7 +705,7 @@ Window {
                             topPadding: 4
                         }
 
-                        // feature status cards; click to jump to that section
+                        // Feature status cards. Click jumps to section.
                         Flow {
                             width: parent.width
                             spacing: 12
@@ -464,11 +713,11 @@ Window {
                             Repeater {
                                 model: [
                                     { "name": "Media flyout", "icon": Fluent.play, "key": "media", "page": 1 },
-                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 2 },
-                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 3 },
-                                    { "name": "Taskbar widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
+                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 5 },
+                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 6 },
+                                    { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 3 },
                                     { "name": "Up next", "icon": Fluent.next, "key": "nextup", "page": 1 },
-                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 2 }
+                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 5 }
                                 ]
                                 delegate: Rectangle {
                                     required property var modelData
@@ -518,6 +767,135 @@ Window {
                             }
                         }
 
+                        // Wireless peripherals with readable battery.
+                        Text {
+                            visible: batteryStatus.devices.length > 0
+                            text: "Peripherals"
+                            color: theme.textPrimary
+                            font.pixelSize: 16
+                            font.bold: true
+                            topPadding: 4
+                        }
+
+                        Repeater {
+                            width: parent.width
+                            model: dash.peripheralSections
+                            delegate: Column {
+                                required property var modelData
+                                width: parent.width
+                                spacing: 8
+
+                                Text {
+                                    text: modelData.label
+                                    color: theme.textSecondary
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                }
+
+                                Flow {
+                                    width: parent.width
+                                    spacing: 12
+
+                                    Repeater {
+                                        model: modelData.devices
+                                        delegate: Rectangle {
+                                    required property var modelData
+                                    width: 108
+                                    height: modelData.components.length > 1 ? 168 : 128
+                                    radius: 12
+                                    color: theme.card
+                                    border.color: theme.border
+
+                                    Column {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        BatteryRing {
+                                            id: ring
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            width: 64
+                                            height: 64
+                                            thickness: 5
+                                            percent: modelData.percent
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
+                                                font.family: DeviceIcons.family(modelData.name, modelData.connectionKind, modelData.category)
+                                                font.pixelSize: 26
+                                                color: theme.accent
+                                            }
+                                        }
+
+                                        Row {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            spacing: 4
+                                            BatteryIcon {
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                implicitWidth: 8
+                                                implicitHeight: 13
+                                                level: modelData.percent >= 0 ? modelData.percent / 100 : 1
+                                                color: modelData.percent >= 0 ? ring.progressColor : theme.textMuted
+                                            }
+                                            Text {
+                                                text: modelData.percent >= 0
+                                                          ? modelData.percent + "%" + (modelData.charging ? " \u26A1" : "")
+                                                          : "Unknown"
+                                                color: theme.textPrimary
+                                                font.pixelSize: 12
+                                                font.bold: true
+                                            }
+                                        }
+
+                                        Row {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            spacing: 8
+                                            visible: modelData.components.length > 1
+
+                                            Repeater {
+                                                model: modelData.components
+                                                delegate: Column {
+                                                    required property var modelData
+                                                    spacing: 1
+
+                                                    BatteryRing {
+                                                        anchors.horizontalCenter: parent.horizontalCenter
+                                                        width: 22
+                                                        height: 22
+                                                        thickness: 2
+                                                        percent: modelData.percent
+                                                    }
+                                                    Text {
+                                                        anchors.horizontalCenter: parent.horizontalCenter
+                                                        text: modelData.label + (modelData.charging ? " \u26A1" : "")
+                                                        color: theme.textMuted
+                                                        font.pixelSize: 9
+                                                    }
+                                                    Text {
+                                                        anchors.horizontalCenter: parent.horizontalCenter
+                                                        text: modelData.percent >= 0 ? modelData.percent + "%" : "Unknown"
+                                                        color: theme.textPrimary
+                                                        font.pixelSize: 9
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        Text {
+                                            width: 100
+                                            horizontalAlignment: Text.AlignHCenter
+                                            text: modelData.name
+                                            color: theme.textMuted
+                                            font.pixelSize: 10
+                                            elide: Text.ElideRight
+                                        }
+                                    }
+                                }
+                            }
+                                }
+                            }
+                        }
+
                         Text {
                             width: parent.width
                             wrapMode: Text.WordWrap
@@ -538,6 +916,8 @@ Window {
                         width: parent.width
                         label: "Media flyout"
                         description: "Show the now-playing flyout on media key presses."
+                        available: capabilities.mediaSessionAvailable
+                        unavailableNote: "Unavailable: no system media session was detected on this PC."
                         value: settings.mediaFlyoutEnabled
                         onToggled: settings.mediaFlyoutEnabled = value
                     }
@@ -549,7 +929,7 @@ Window {
                         onToggled: settings.seekbarEnabled = value
                     }
                     SettingRow {
-                        // sub-option, shown only when the seekbar itself is enabled
+                        // Sub-option. Visible only when seekbar is enabled.
                         visible: settings.seekbarEnabled
                         x: 16
                         width: parent.width - 16
@@ -594,6 +974,16 @@ Window {
                         onToggled: settings.accentFromArt = value
                     }
                     SettingRow {
+                        // Sub-option. Visible only when album-art accent is enabled.
+                        visible: settings.accentFromArt
+                        x: 16
+                        width: parent.width - 16
+                        label: "Apply accent app-wide"
+                        description: "Also tint the dashboard and other windows, not just the flyouts."
+                        value: settings.accentFromArtAppWide
+                        onToggled: settings.accentFromArtAppWide = value
+                    }
+                    SettingRow {
                         width: parent.width
                         label: "Repeat button"
                         description: "Show a repeat control on the media flyout."
@@ -611,13 +1001,15 @@ Window {
                         width: parent.width
                         label: "Up next flyout"
                         description: "Show a compact card with the next track when one auto-advances."
+                        available: capabilities.mediaSessionAvailable
+                        unavailableNote: "Unavailable: no system media session was detected on this PC."
                         value: settings.nextUpEnabled
                         onToggled: settings.nextUpEnabled = value
                     }
                     SettingRow {
                         width: parent.width
                         label: "Hide during fullscreen"
-                        description: "Suppress flyouts while a fullscreen or exclusive app is in the foreground."
+                        description: "Suppress flyouts while a fullscreen video game is in the foreground."
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
@@ -688,7 +1080,7 @@ Window {
 
                 // Volume page
                 Column {
-                    visible: dash.currentIndex === 2
+                    visible: dash.currentIndex === 5
                     width: parent.width
                     spacing: 12
 
@@ -696,6 +1088,8 @@ Window {
                         width: parent.width
                         label: "Volume flyout"
                         description: "Show the volume flyout on volume key presses."
+                        available: capabilities.audioAvailable
+                        unavailableNote: "Unavailable: no audio output device was detected."
                         value: settings.volumeFlyoutEnabled
                         onToggled: settings.volumeFlyoutEnabled = value
                     }
@@ -744,7 +1138,7 @@ Window {
 
                 // Lock Keys page
                 Column {
-                    visible: dash.currentIndex === 3
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 
@@ -752,6 +1146,8 @@ Window {
                         width: parent.width
                         label: "Lock key indicators"
                         description: "Show a flyout when Caps, Num, or Scroll lock is toggled."
+                        available: capabilities.lockKeysAvailable
+                        unavailableNote: "Unavailable: the keyboard hook could not be installed."
                         value: settings.lockKeysEnabled
                         onToggled: settings.lockKeysEnabled = value
                     }
@@ -799,9 +1195,9 @@ Window {
                     }
                 }
 
-                // Taskbar Widget page
+                // Media Widget page
                 Column {
-                    visible: dash.currentIndex === 4
+                    visible: dash.currentIndex === 3
                     width: parent.width
                     spacing: 12
 
@@ -845,6 +1241,8 @@ Window {
                         width: parent.width
                         label: "Audio visualizer"
                         description: "Show a live spectrum of the system audio behind the widget."
+                        available: capabilities.audioAvailable
+                        unavailableNote: "Unavailable: no audio output device was detected."
                         value: settings.taskbarVisualizerEnabled
                         onToggled: settings.taskbarVisualizerEnabled = value
                     }
@@ -878,7 +1276,7 @@ Window {
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"
-                        // centered widgets can be nudged either way; edge-docked only inward
+                        // Centered widgets move both ways. Edge widgets move inward.
                         description: settings.taskbarWidgetSide === 1
                             ? "Shift the centered widget left or right along the taskbar."
                             : "Fine-tune the widget's horizontal position on the taskbar."
@@ -889,11 +1287,174 @@ Window {
                         valueText: settings.taskbarWidgetOffset + " px"
                         onMoved: settings.taskbarWidgetOffset = Math.round(value)
                     }
+
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Battery rings for your peripherals are configured on the Peripheral Widget page."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                        topPadding: 8
+                    }
+                }
+
+                // Peripheral Widget page
+                Column {
+                    visible: dash.currentIndex === 4
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Peripherals widget"
+                        description: "Dock a battery widget for selected wireless peripherals on the taskbar."
+                        value: settings.peripheralsWidgetEnabled
+                        onToggled: settings.peripheralsWidgetEnabled = value
+                    }
+                    SettingRow {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        label: "Match app accent"
+                        description: "Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level."
+                        value: settings.batteryRingUseAccent
+                        onToggled: settings.batteryRingUseAccent = value
+                    }
+
+                    Text {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Choose which detected peripherals to show on the widget:"
+                        color: theme.textSecondary
+                        font.pixelSize: 12
+                        topPadding: 4
+                    }
+                    Text {
+                        visible: settings.peripheralsWidgetEnabled && batteryStatus.devices.length === 0
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "No peripherals are currently connected."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+                    Repeater {
+                        model: settings.peripheralsWidgetEnabled ? batteryStatus.devices : []
+                        delegate: SettingRow {
+                            required property var modelData
+                            width: parent.width
+                            label: modelData.name
+                            description: {
+                                var text = modelData.percent >= 0 ? "Currently at " + modelData.percent + "%" : "Battery level unknown"
+                                var parts = []
+                                for(var i = 0; i < modelData.components.length; i++)
+                                    parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
+                                if(parts.length > 1)
+                                    text += " (" + parts.join(", ") + ")"
+                                var link = DeviceIcons.transport(modelData.connectionKind)
+                                return link ? text + ", over " + link + "." : text + "."
+                            }
+                            value: settings.peripheralSelected(modelData.name)
+                            onToggled: settings.setPeripheralSelected(modelData.name, value)
+                        }
+                    }
+
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Connect and low-battery announcements are configured on the Peripheral Flyout page."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                        topPadding: 8
+                    }
+                }
+
+                // Peripheral Flyout page
+                Column {
+                    visible: dash.currentIndex === 2
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Peripheral flyout"
+                        description: "Show a flyout when a peripheral connects, disconnects or runs low on battery."
+                        value: settings.peripheralFlyoutEnabled
+                        onToggled: settings.peripheralFlyoutEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "On connect"
+                        description: "Announce a peripheral when it connects."
+                        value: settings.peripheralFlyoutOnConnect
+                        onToggled: settings.peripheralFlyoutOnConnect = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "On disconnect"
+                        description: "Announce a peripheral when it disconnects."
+                        value: settings.peripheralFlyoutOnDisconnect
+                        onToggled: settings.peripheralFlyoutOnDisconnect = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "On low battery"
+                        description: "Warn once when a battery drops below 20%, and again below 10%."
+                        value: settings.peripheralFlyoutOnLowBattery
+                        onToggled: settings.peripheralFlyoutOnLowBattery = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "On charging"
+                        description: "Announce when a peripheral starts or stops charging."
+                        value: settings.peripheralFlyoutOnCharging
+                        onToggled: settings.peripheralFlyoutOnCharging = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Low battery notification"
+                        description: "Also show a tray notification for a low battery, so it isn't missed."
+                        value: settings.peripheralLowBatteryToast
+                        onToggled: settings.peripheralLowBatteryToast = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Hide during fullscreen"
+                        description: "Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts."
+                        value: settings.disableOnFullscreen
+                        onToggled: settings.disableOnFullscreen = value
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Peripheral flyout position"
+                        description: "Place the peripheral flyout independently of the other flyouts."
+                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        currentIndex: settings.peripheralFlyoutPosition
+                        onActivated: settings.peripheralFlyoutPosition = index
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Peripheral flyout monitor"
+                        description: "Which display the peripheral flyout is shown on."
+                        model: placement.monitorNames()
+                        currentIndex: settings.peripheralFlyoutMonitor
+                        onActivated: settings.peripheralFlyoutMonitor = index
+                    }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Peripheral flyout duration"
+                        description: "How long the peripheral flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.peripheralFlyoutDuration
+                        valueText: (settings.peripheralFlyoutDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.peripheralFlyoutDuration = Math.round(value)
+                    }
                 }
 
                 // App Filtering page
                 Column {
-                    visible: dash.currentIndex === 5
+                    visible: dash.currentIndex === 7
                     width: parent.width
                     spacing: 12
 
@@ -992,9 +1553,9 @@ Window {
                     }
                 }
 
-                // About page
+                // Additional Settings page
                 Column {
-                    visible: dash.currentIndex === 6
+                    visible: dash.currentIndex === 8
                     width: parent.width
                     spacing: 12
 
@@ -1070,6 +1631,47 @@ Window {
                             onClicked: importDialog.open()
                         }
                     }
+                }
+
+                // About page
+                Column {
+                    visible: dash.currentIndex === 9
+                    width: parent.width
+                    spacing: 12
+
+                    Row {
+                        spacing: 12
+                        IconLabel {
+                            anchors.verticalCenter: parent.verticalCenter
+                            glyph: Fluent.musicNote
+                            size: 32
+                            color: theme.accent
+                        }
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 2
+                            Text {
+                                text: "MediaFlyouts"
+                                color: theme.textPrimary
+                                font.pixelSize: 20
+                                font.bold: true
+                            }
+                            Text {
+                                text: "Version " + updateChecker.currentVersion
+                                color: theme.textMuted
+                                font.pixelSize: 12
+                            }
+                        }
+                    }
+
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Fluent-style media, volume, lock-key and peripheral overlays for Windows, built with Qt 6."
+                        color: theme.textSecondary
+                        font.pixelSize: 13
+                        topPadding: 4
+                    }
 
                     Row {
                         spacing: 12
@@ -1095,11 +1697,32 @@ Window {
                         onToggled: settings.autoCheckUpdates = value
                     }
 
-                    Text {
-                        text: "Version " + updateChecker.currentVersion
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                        topPadding: 4
+                    // Icon-only link to project page.
+                    Rectangle {
+                        width: 40
+                        height: 40
+                        radius: 8
+                        color: repoHover.containsMouse ? theme.cardHover : theme.card
+                        border.color: theme.border
+
+                        Image {
+                            anchors.centerIn: parent
+                            width: 18
+                            height: 18
+                            source: theme.dark
+                                     ? "qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-light.svg"
+                                     : "qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-dark.svg"
+                            fillMode: Image.PreserveAspectFit
+                            smooth: true
+                            mipmap: true
+                        }
+                        MouseArea {
+                            id: repoHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: Qt.openUrlExternally("https://github.com/scleaverzer0ne/MediaFlyouts")
+                        }
                     }
                 }
                 }

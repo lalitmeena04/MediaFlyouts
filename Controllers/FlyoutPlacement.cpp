@@ -21,7 +21,7 @@ QPoint FlyoutPlacement::positionAt(int width, int height, int positionIndex, int
     if(monitor < 0 || monitor >= screens.size())
         monitor = 0;
 
-    // availableGeometry already excludes the taskbar, so a small uniform margin is enough
+    // Screen availableGeometry excludes taskbar. Use small uniform margin.
     const QRect work = screens.at(monitor)->availableGeometry();
     const auto pos = mf::FlyoutPosition(qBound(0, positionIndex, int(mf::FlyoutPosition::BottomRight)));
     return mf::computeFlyoutRect(work, QSize(width, height), pos, 24).topLeft();

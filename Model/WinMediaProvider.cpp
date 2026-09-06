@@ -48,15 +48,21 @@ void WinMediaProvider::start() {
     initAsync();
 }
 
+bool WinMediaProvider::available() const {
+    return m_manager != nullptr;
+}
+
 winrt::fire_and_forget WinMediaProvider::initAsync() {
     try {
         m_manager = co_await SessionManager::RequestAsync();
     } catch(...) {
+        QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
         co_return;
     }
+    QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
 
     m_currentChangedToken = m_manager.CurrentSessionChanged([this](auto&&, auto&&) {
-        // the OS current session drives us unless the user manually picked one
+        // OS current session controls. User selection overrides it.
         if(!m_manual) {
             hookSession(m_manager.GetCurrentSession());
             refreshSessionMeta();
@@ -65,7 +71,7 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
     });
 
     m_sessionsChangedToken = m_manager.SessionsChanged([this](auto&&, auto&&) {
-        // if the user's chosen session vanished, fall back to the OS current one
+        // If chosen session is gone, use OS current session.
         if(m_manual) {
             auto sessions = m_manager.GetSessions();
             QString selectedAppId;
@@ -108,9 +114,7 @@ void WinMediaProvider::refreshSessionMeta() {
     const int n = static_cast<int>(sessions.Size());
     m_sessionCount = mf::normalizedSessionCount(n);
 
-    // match by app id rather than WinRT object identity: GetCurrentSession() and GetSessions()
-    // are separate calls that can hand back distinct proxy objects for the same session, so
-    // comparing them with == unreliably misses the match
+    // Match by app id, not WinRT identity. Separate calls can return different proxy objects.
     QString selectedAppId;
     if(const Session sel = currentSession()) {
         try {
@@ -208,7 +212,7 @@ void WinMediaProvider::queueRefresh(Session session) {
     QMetaObject::invokeMethod(this, [this, session] { refresh(session); }, Qt::QueuedConnection);
 }
 
-// runs as a coroutine: awaiting (never .get()) keeps it safe to resume on the STA thread
+// Coroutine. Use co_await. Safe for STA thread.
 winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     if(!session)
         co_return;
@@ -228,8 +232,7 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     } catch(...) {
     }
 
-    // video apps (Netflix, Prime Video, ...) commonly leave Artist empty but put the
-    // episode/secondary line in Subtitle — surface that instead of a blank second line
+    // Video apps often leave Artist empty. Use Subtitle as second line.
     if(track.artist.isEmpty())
         track.artist = subtitle;
 
@@ -298,9 +301,8 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     const bool freshEmpty = track.title.isEmpty() && track.artist.isEmpty() && track.album.isEmpty();
     const bool active = track.state == mf::PlaybackState::Playing || track.state == mf::PlaybackState::Paused;
 
-    // Streaming/video apps momentarily report empty metadata during buffering, ad breaks or
-    // title transitions. Keep the last known good title/artist/album/art for the same source
-    // app so the flyout doesn't collapse to just the app name and generic artwork.
+    // Streaming apps can report empty metadata during buffering.
+    // Keep last good metadata for same source app.
     {
         std::lock_guard<std::mutex> lock(m_lastMutex);
         const bool lastHadMeta =
@@ -317,7 +319,7 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
         if(!art.isNull())
             m_lastArt = art;
         else if(!active)
-            m_lastArt = QImage(); // media stopped: drop stale artwork
+            m_lastArt = QImage(); // Media stopped. Drop stale artwork.
     }
 
     QMetaObject::invokeMethod(
@@ -328,8 +330,7 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
         },
         Qt::QueuedConnection);
 
-    // some apps populate metadata a beat after playback starts without firing another
-    // MediaPropertiesChanged; re-poll a few times so the title/art aren't stuck empty
+    // Some apps send metadata after playback starts. Re-poll a few times.
     if(freshEmpty && active && attempt < 3) {
         co_await winrt::resume_after(std::chrono::milliseconds(500));
         QString stillApp;

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// A labelled dropdown row used in the dashboard settings pages.
+// Labelled dropdown row for dashboard settings pages.
 Item {
     id: root
     property string label: ""

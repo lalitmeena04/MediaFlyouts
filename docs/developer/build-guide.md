@@ -47,8 +47,9 @@ The release consists of four artifacts (see the
 ### Automated (CI)
 Push a `v*.*.*` tag to run
 [`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
-builds, tests, packages all four artifacts, signs the MSIX (from the
-`MSIX_CERT_*` secrets) and publishes a GitHub Release.
+builds, tests, packages all four artifacts, signs the MSIX (with the stored
+`MSIX_CERT_*` certificate, or a self-signed one generated on the runner) and
+publishes a GitHub Release.
 
 Before tagging, make sure both of these are on `main`:
 

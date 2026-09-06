@@ -77,7 +77,7 @@ function Enter-MsvcEnv {
     Write-Host "[MSVC] Initializing MSVC x64 environment from $vsPath ..."
     Import-Module (Join-Path $vsPath 'Common7\Tools\Microsoft.VisualStudio.DevShell.dll')
     Enter-VsDevShell -VsInstallPath $vsPath -DevCmdArguments '-arch=x64 -host_arch=x64' -SkipAutomaticLocation | Out-Null
-    # Enter-VsDevShell resets PATH, so re-add the Qt bin dir afterwards.
+    # Enter-VsDevShell resets PATH. Add Qt bin dir again.
     if (-not ($env:PATH -split ';' | Where-Object { $_ -ieq "$qtDir\bin" })) {
         $env:PATH = "$qtDir\bin;$env:PATH"
     }
@@ -93,8 +93,8 @@ if (Get-Command cl.exe -ErrorAction SilentlyContinue) {
 
 Write-Host '[ENV] Environment configuration complete.'
 
-# --- 3. Build (if needed), deploy Qt dependencies, and launch ---
-# The app target emits to <root>/bin (see RUNTIME_OUTPUT_DIRECTORY in CMakeLists.txt).
+# --- 3. Build, deploy Qt dependencies, and launch ---
+# App target emits to <root>/bin.
 $appExe = Join-Path $PSScriptRoot 'bin\MediaFlyouts.exe'
 
 if (-not (Test-Path $appExe)) {

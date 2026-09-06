@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// A labelled slider row used in the dashboard settings pages.
+// Labelled slider row for dashboard settings pages.
 Item {
     id: root
     property string label: ""

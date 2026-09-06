@@ -7,7 +7,7 @@
 NowPlaying::NowPlaying(QObject* parent) : QObject(parent) {
     m_sinceUpdate.start();
 
-    // repaint interval so the interpolated position advances smoothly between provider updates
+    // Repaint interval for smooth position between updates.
     m_timer.setInterval(500);
     connect(&m_timer, &QTimer::timeout, this, [this] {
         if(m_track.state == mf::PlaybackState::Playing)
@@ -82,7 +82,7 @@ QColor NowPlaying::artAccent() const {
 QColor NowPlaying::computeArtAccent(const QImage& art) {
     if(art.isNull())
         return QColor("#4CC2FF");
-    // average a downscaled copy, weighting saturated pixels so the accent isn't muddy
+    // Average downscaled copy. Favor saturated pixels.
     const QImage small =
         art.scaled(24, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation).convertToFormat(QImage::Format_ARGB32);
     double r = 0, g = 0, b = 0, weight = 0;
@@ -91,7 +91,7 @@ QColor NowPlaying::computeArtAccent(const QImage& art) {
         for(int x = 0; x < small.width(); ++x) {
             const QColor c(line[x]);
             const double s = c.saturationF();
-            const double w = 0.1 + s * s; // favour colourful pixels
+            const double w = 0.1 + s * s; // Favor colorful pixels.
             r += c.redF() * w;
             g += c.greenF() * w;
             b += c.blueF() * w;
@@ -101,7 +101,7 @@ QColor NowPlaying::computeArtAccent(const QImage& art) {
     if(weight <= 0)
         return QColor("#4CC2FF");
     QColor c = QColor::fromRgbF(r / weight, g / weight, b / weight);
-    // ensure it stays vivid and readable on both light and dark surfaces
+    // Keep accent vivid and readable on light and dark surfaces.
     float h, s, l, a;
     c.getHslF(&h, &s, &l, &a);
     s = qBound(0.45f, s < 0.35f ? 0.5f : s, 1.0f);
@@ -112,7 +112,7 @@ QColor NowPlaying::computeArtAccent(const QImage& art) {
 
 QString NowPlaying::playerName() const {
     QString id = m_track.sourceApp;
-    // AUMIDs look like "Family!AppId" for packaged apps, or "Spotify.exe" for desktop apps
+    // AUMID examples: "Family!AppId" or "Spotify.exe".
     const int bang = id.lastIndexOf(QLatin1Char('!'));
     if(bang >= 0)
         id = id.mid(bang + 1);
@@ -191,8 +191,8 @@ void NowPlaying::noteSessionsChanged() {
 }
 
 void NowPlaying::applyTrack(const mf::TrackInfo& track) {
-    // only a new track identity or a play/pause change should reveal the flyout;
-    // frequent timeline/position updates must not keep resetting the auto-hide timer
+    // Reveal flyout only for new track identity or play/pause change.
+    // Timeline updates must not reset auto-hide timer.
     const bool identityChanged =
         track.title != m_track.title || track.artist != m_track.artist || track.album != m_track.album;
     const bool stateChanged = track.state != m_track.state;
@@ -201,7 +201,7 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     m_sinceUpdate.restart();
     emit changed();
 
-    // don't pop any flyout for the initial media state sync at launch
+    // Do not show flyout for initial media state sync at launch.
     if(!m_seenFirstUpdate) {
         m_seenFirstUpdate = true;
         return;
@@ -209,8 +209,8 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
 
     if(identityChanged) {
         const bool stopped = track.title.isEmpty() && track.artist.isEmpty();
-        // a title change within the manual window means the user pressed next/prev -> media flyout;
-        // otherwise the track auto-advanced -> Next Up flyout (which now shows the newly started track)
+        // Title change inside manual window means user pressed next/prev.
+        // Otherwise track auto-advanced. Show Next Up flyout.
         const bool manual = (QDateTime::currentMSecsSinceEpoch() - m_lastMediaKeyMs) < 1500;
         if(stopped || manual)
             emit trackUpdated();

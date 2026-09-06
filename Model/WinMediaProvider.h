@@ -11,7 +11,7 @@
 #include "PlaybackController.h"
 #include "TrackInfo.h"
 
-// Bridges Windows System Media Transport Controls (SMTC) to Qt, and drives the active session.
+// Bridge Windows SMTC to Qt. Control active session.
 class WinMediaProvider : public QObject, public mf::IPlaybackController {
         Q_OBJECT
 
@@ -21,7 +21,10 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
 
         void start();
 
-        // mf::IPlaybackController — forwarded to the currently active session.
+        // True after SMTC session manager is available.
+        bool available() const;
+
+        // IPlaybackController methods forward to active session.
         void play() override;
         void pause() override;
         void next() override;
@@ -37,6 +40,7 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         void trackChanged(const mf::TrackInfo& track);
         void artChanged(const QImage& art);
         void sessionsChanged();
+        void availabilityChanged();
 
     private:
         using SessionManager = winrt::Windows::Media::Control::GlobalSystemMediaTransportControlsSessionManager;
@@ -59,7 +63,7 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         std::mutex m_mutex;
         std::atomic<int> m_sessionCount{1};
         std::atomic<int> m_selectedIndex{0};
-        bool m_manual = false; // true once the user picked a session to override the OS current one
+        bool m_manual = false; // True after user picks session.
         std::mutex m_lastMutex;
         mf::TrackInfo m_lastTrack; // last non-empty metadata, to bridge transient empty updates
         QImage m_lastArt;

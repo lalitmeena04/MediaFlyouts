@@ -2,42 +2,28 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-Window {
+FlyoutBase {
     id: root
     readonly property bool compact: settings.nextUpStyle === 1
-    // widen to fit the track text, clamped to a sensible range
+    // Flyout accent follows album art when enabled. Else use theme accent.
+    readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+    // Width fits track text. Clamp to range.
     readonly property int contentWidth: Math.max(titleMetrics.implicitWidth, artistMetrics.implicitWidth, 80)
     width: Math.round(Math.max(300, Math.min(560, (root.compact ? 190 : 100) + contentWidth)))
     height: root.compact ? 64 : 96
-    visible: false
-    opacity: 0
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
+    hideInterval: settings.nextUpDuration
 
     Text { id: titleMetrics; visible: false; text: nowPlaying.title; font.pixelSize: 15; font.bold: true }
     Text { id: artistMetrics; visible: false; text: nowPlaying.artist; font.pixelSize: 12 }
 
-    // true once App has placed this flyout, so re-stacking animates while the first show snaps
-    property bool positioned: false
-    Behavior on y {
-        enabled: root.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
-    }
-
     function showFlyout() {
         if(!settings.onboardingCompleted)
             return
-        if(!settings.nextUpEnabled || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen))
+        if(!settings.nextUpEnabled || !capabilities.mediaSessionAvailable || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))
             return
         if(!settings.playerAllowed(nowPlaying.playerName))
             return
-        hideTimer.restart()
-        root.visible = true
-        fadeIn.restart()
-    }
-
-    function hideFlyout() {
-        fadeOut.restart()
+        present()
     }
 
     Connections {
@@ -45,31 +31,6 @@ Window {
         function onNextUpRequested() {
             root.showFlyout()
         }
-    }
-
-    Timer {
-        id: hideTimer
-        interval: settings.nextUpDuration
-        onTriggered: root.hideFlyout()
-    }
-
-    NumberAnimation {
-        id: fadeIn
-        target: root
-        property: "opacity"
-        to: 1
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-    }
-
-    NumberAnimation {
-        id: fadeOut
-        target: root
-        property: "opacity"
-        to: 0
-        duration: settings.flyoutAnimationMs
-        easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
-        onFinished: root.visible = false
     }
 
     Rectangle {
@@ -83,8 +44,8 @@ Window {
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: hideTimer.stop()
-            onExited: hideTimer.restart()
+            onEntered: root.stopAutoHide()
+            onExited: root.restartAutoHide()
         }
 
         Row {
@@ -122,7 +83,7 @@ Window {
 
                 Text {
                     text: "Now playing"
-                    color: theme.accent
+                    color: root.accentColor
                     font.pixelSize: 11
                     font.bold: true
                 }
@@ -144,7 +105,7 @@ Window {
             }
         }
 
-        // compact pill: [note Now playing:] [art] [title / artist]
+        // Compact pill layout. Note, art, title, artist.
         Row {
             anchors.fill: parent
             anchors.leftMargin: 14
@@ -160,12 +121,12 @@ Window {
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: Fluent.musicNote
                     size: 14
-                    color: theme.accent
+                    color: root.accentColor
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Now playing:"
-                    color: theme.accent
+                    color: root.accentColor
                     font.pixelSize: 12
                     font.bold: true
                 }

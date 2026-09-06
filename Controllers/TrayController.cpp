@@ -16,7 +16,7 @@
 
 namespace {
 
-// renders a Fluent glyph to a tray-sized icon so we don't need a separate PNG asset
+// Render Fluent glyph to tray-sized icon. No PNG asset needed.
 QIcon renderGlyphIcon(const QString& family, QChar glyph) {
     QPixmap pm(32, 32);
     pm.fill(Qt::transparent);
@@ -36,7 +36,7 @@ QIcon renderGlyphIcon(const QString& family, QChar glyph) {
 TrayController::TrayController(const QString& iconFamily, Settings* settings, QObject* parent)
     : QObject(parent), m_iconFamily(iconFamily), m_settings(settings) {
     m_menu = new QMenu();
-    // dark, rounded, icon-per-item menu to match a Fluent-style tray menu
+    // Dark rounded menu. Match Fluent-style tray menu.
     m_menu->setStyleSheet(QStringLiteral(
         "QMenu { background-color: #2b2b2b; color: #ffffff; border: 1px solid #3d3d3d; border-radius: 8px; "
         "padding: 6px; }"
@@ -78,7 +78,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
 
-    // in flyout mode a single click is held briefly so a double-click can open the dashboard instead
+    // Hold single click briefly. Double-click can open dashboard.
     m_singleClickTimer = new QTimer(this);
     m_singleClickTimer->setSingleShot(true);
     m_singleClickTimer->setInterval(QApplication::doubleClickInterval());
@@ -87,7 +87,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     connect(m_tray, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
         const bool flyoutMode = m_settings && m_settings->trayLeftClickShowsFlyout();
         if(reason == QSystemTrayIcon::DoubleClick) {
-            // cancel the pending single-click flyout and show the dashboard
+            // Cancel pending single-click flyout. Show dashboard.
             if(flyoutMode) {
                 m_singleClickTimer->stop();
                 emit openDashboardRequested();

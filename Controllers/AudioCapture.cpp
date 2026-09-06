@@ -23,7 +23,7 @@ AudioCapture::AudioCapture(int bandCount, QObject* parent)
     m_smoothed.assign(m_bandCount, 0.0);
     for(int i = 0; i < m_bandCount; ++i)
         m_bands.append(0.0);
-    // ~60 fps polling keeps the loopback buffer drained and the bars smooth
+    // Poll at ~60 fps. Keep loopback buffer clear. Update bars often.
     m_timer.setInterval(16);
     connect(&m_timer, &QTimer::timeout, this, &AudioCapture::poll);
 }
@@ -147,8 +147,8 @@ void AudioCapture::publishSilence() {
 }
 
 void AudioCapture::handleDeviceLoss() {
-    // a WASAPI call failed (endpoint invalidated / default device changed);
-    // drop the stale device so poll() re-acquires the current endpoint
+    // WASAPI call failed. Endpoint is stale.
+    // Release device. poll() can acquire current endpoint.
     if(m_client)
         m_client->Stop();
     releaseDevice();
@@ -157,8 +157,8 @@ void AudioCapture::handleDeviceLoss() {
 }
 
 void AudioCapture::tryRecover() {
-    // re-acquire the default render endpoint after a device loss, throttled so a
-    // missing/failing device doesn't spin the audio stack every poll tick
+    // Re-acquire default render endpoint after device loss.
+    // Throttle to avoid retry on every poll tick.
     const qint64 now = QDateTime::currentMSecsSinceEpoch();
     if(now - m_lastRecoverMs < 750)
         return;
@@ -212,7 +212,7 @@ void AudioCapture::poll() {
     if(static_cast<int>(m_accum.size()) < kFftSize)
         return;
 
-    // use the most recent window and apply a Hann taper to reduce spectral leakage
+    // Use most recent window. Apply Hann taper.
     std::vector<double> window(m_accum.end() - kFftSize, m_accum.end());
     m_accum.clear();
     for(int i = 0; i < kFftSize; ++i)
@@ -223,7 +223,7 @@ void AudioCapture::poll() {
 
     bool changed = false;
     for(int i = 0; i < m_bandCount; ++i) {
-        // rise quickly, fall slowly for a natural-looking meter
+        // Rise quickly. Fall slowly.
         const double target = raw[i];
         if(target > m_smoothed[i])
             m_smoothed[i] = target;
@@ -238,7 +238,7 @@ void AudioCapture::poll() {
     if(changed)
         emit bandsChanged();
 
-    // overall level (particle intensity) and a simple bass-energy beat detector
+    // Overall level and bass-energy beat detector.
     double sum = 0.0;
     const int bassCount = std::max(1, m_bandCount / 4);
     double bass = 0.0;

@@ -2,57 +2,45 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// A small always-on-top media widget docked on the primary taskbar near the tray.
-Window {
+// Small always-on-top media widget. Docks near taskbar tray.
+DockableWidget {
     id: root
     width: 220
     height: 40
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
+    logName: "TaskbarWidget"
+    // Keep polling while media plays. Reappear after fullscreen.
+    pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
 
-    // shown only once onboarding is done, when enabled, something is playing, and not blocked by
-    // fullscreen / lock screen
+    // Show after onboarding, when enabled, media plays, and not blocked.
     visible: settings.onboardingCompleted && settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
                 && settings.playerAllowed(nowPlaying.playerName)
 
-    // fullscreen/lock state is polled (shouldBlock has no change signal) so this can't be a binding
-    property bool blocked: false
+    onVisibleChanged: {
+        log.debug("TaskbarWidget.visible=" + visible
+            + " onboardingCompleted=" + settings.onboardingCompleted
+            + " enabled=" + settings.taskbarWidgetEnabled
+            + " hasMedia=" + nowPlaying.hasMedia
+            + " playerAllowed=" + settings.playerAllowed(nowPlaying.playerName)
+            + " blocked=" + root.blocked
+            + " monitor=" + settings.taskbarWidgetMonitor)
+        if(visible)
+            updatePosition()
+    }
 
     signal activated()
 
-    function updatePosition() {
-        var p = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
-                                       settings.taskbarWidgetOffset, width, height)
-        root.x = p.x
-        root.y = p.y
-        // keep the widget above the (possibly transparent) taskbar so it stays clickable
-        if(root.visible)
-            taskbar.pinAboveTaskbar(root)
+    // Capture system audio only when visualizer is visible.
+    readonly property bool visualizerLive: root.visible && settings.taskbarVisualizerEnabled
+    onVisualizerLiveChanged: root.visualizerLive ? audioCapture.start() : audioCapture.stop()
+
+    // Place widget and apply initial capture state.
+    Component.onCompleted: {
+        updatePosition()
+        if(root.visualizerLive)
+            audioCapture.start()
     }
 
-    Component.onCompleted: updatePosition()
-    onVisibleChanged: if(visible) updatePosition()
-
-    // reposition immediately when the offset (or other settings) change
-    Connections {
-        target: settings
-        function onChanged() { root.updatePosition() }
-    }
-
-    // poll fullscreen/lock state and re-assert placement/z-order while media is playing,
-    // even when hidden, so the widget reappears once the fullscreen app is gone
-    Timer {
-        interval: 500
-        running: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            root.blocked = fullscreen.shouldBlock(settings.disableOnFullscreen)
-            root.updatePosition()
-        }
-    }
-
-    // throttle source-switching so touchpad inertia doesn't skip several sources at once
+    // Throttle source switching from touchpad inertia.
     property bool scrollCooldown: false
     Timer {
         id: cooldownTimer
@@ -70,7 +58,7 @@ Window {
             id: hover
         }
 
-        // spectrum visualizer drawn behind the media info; style is user-selectable
+        // Spectrum visualizer behind media info. Style is user-selectable.
         TaskbarVisualizer {
             id: visualizer
             visible: settings.taskbarVisualizerEnabled
@@ -85,7 +73,7 @@ Window {
             property bool swiped: false
             onPressed: (mouse) => { pressX = mouse.x; swiped = false }
             onPositionChanged: (mouse) => {
-                // horizontal drag / touch swipe switches media source
+                // Horizontal drag or touch swipe switches media source.
                 if(!swiped && nowPlaying.sessionCount > 1 && Math.abs(mouse.x - pressX) > 40) {
                     nowPlaying.cycleSession(mouse.x < pressX ? 1 : -1)
                     swiped = true
@@ -93,7 +81,7 @@ Window {
             }
             onClicked: if(!swiped) root.activated()
             onWheel: (wheel) => {
-                // scroll wheel / touchpad scroll switches media source
+                // Scroll wheel or touchpad scroll switches media source.
                 if(nowPlaying.sessionCount > 1 && !root.scrollCooldown) {
                     nowPlaying.cycleSession(wheel.angleDelta.y > 0 ? -1 : 1)
                     root.scrollCooldown = true
@@ -102,7 +90,7 @@ Window {
             }
         }
 
-        // source indicator dots, shown when several apps are playing
+        // Source indicator dots. Show for multiple apps.
         Row {
             z: 50
             visible: nowPlaying.sessionCount > 1
@@ -152,7 +140,7 @@ Window {
                     font.pixelSize: 18
                 }
 
-                // dim + pause glyph when playback is paused
+                // Dim overlay and pause glyph for paused playback.
                 Rectangle {
                     anchors.fill: parent
                     radius: 5
@@ -179,7 +167,7 @@ Window {
                     height: titleText.implicitHeight
                     clip: true
 
-                    // measure the full (un-elided) title so overflow detection is stable
+                    // Measure full title. Overflow detection stays stable.
                     TextMetrics {
                         id: titleMetrics
                         font: titleText.font
@@ -191,7 +179,7 @@ Window {
                         text: nowPlaying.title
                         color: "white"
                         font.pixelSize: 12
-                        // when scrolling, size to content and slide; otherwise elide
+                        // Scrolling mode sizes to content. Else elide.
                         property bool overflow: settings.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
                         width: overflow ? titleMetrics.width : titleClip.width
                         elide: overflow ? Text.ElideNone : Text.ElideRight

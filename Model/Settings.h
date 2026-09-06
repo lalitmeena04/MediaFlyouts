@@ -62,8 +62,31 @@ class Settings : public QObject {
         Q_PROPERTY(bool taskbarVisualizerCentered READ taskbarVisualizerCentered WRITE setTaskbarVisualizerCentered
                        NOTIFY changed)
         Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
+        Q_PROPERTY(bool peripheralsWidgetEnabled READ peripheralsWidgetEnabled WRITE setPeripheralsWidgetEnabled
+                       NOTIFY changed)
+        Q_PROPERTY(QStringList peripheralsWidgetExcluded READ peripheralsWidgetExcluded NOTIFY changed)
+        Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralFlyoutDuration READ peripheralFlyoutDuration WRITE setPeripheralFlyoutDuration
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralFlyoutPosition READ peripheralFlyoutPosition WRITE setPeripheralFlyoutPosition
+                       NOTIFY changed)
+        Q_PROPERTY(int peripheralFlyoutMonitor READ peripheralFlyoutMonitor WRITE setPeripheralFlyoutMonitor
+                       NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnConnect READ peripheralFlyoutOnConnect WRITE setPeripheralFlyoutOnConnect
+                       NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnDisconnect READ peripheralFlyoutOnDisconnect WRITE
+                       setPeripheralFlyoutOnDisconnect NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnLowBattery READ peripheralFlyoutOnLowBattery WRITE
+                       setPeripheralFlyoutOnLowBattery NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnCharging READ peripheralFlyoutOnCharging WRITE
+                       setPeripheralFlyoutOnCharging NOTIFY changed)
+        Q_PROPERTY(bool peripheralLowBatteryToast READ peripheralLowBatteryToast WRITE setPeripheralLowBatteryToast
+                       NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
+        Q_PROPERTY(bool accentFromArtAppWide READ accentFromArtAppWide WRITE setAccentFromArtAppWide NOTIFY changed)
         Q_PROPERTY(int accentMode READ accentMode WRITE setAccentMode NOTIFY changed)
         Q_PROPERTY(QString customAccent READ customAccent WRITE setCustomAccent NOTIFY changed)
         Q_PROPERTY(int appTheme READ appTheme WRITE setAppTheme NOTIFY changed)
@@ -74,10 +97,10 @@ class Settings : public QObject {
     public:
         explicit Settings(QObject* parent = nullptr);
 
-        // write / read every setting to a portable ini file (for backup & restore)
+        // Write and read settings from portable ini file.
         Q_INVOKABLE bool exportTo(const QUrl& file) const;
         Q_INVOKABLE bool importFrom(const QUrl& file);
-        // folder containing the settings ini, for the "open config folder" action
+        // Folder that contains settings ini.
         Q_INVOKABLE QString configDir() const;
 
         bool mediaFlyoutEnabled() const;
@@ -108,12 +131,12 @@ class Settings : public QObject {
         bool taskbarWidgetControlsEnabled() const;
         int flyoutPosition() const;
         int flyoutMonitor() const;
-        // independent of the media flyout; indexes mf::FlyoutPosition like flyoutPosition
+        // Independent of media flyout. Indexes mf::FlyoutPosition.
         int volumeFlyoutPosition() const;
         int volumeFlyoutMonitor() const;
         int flyoutDuration() const;
         int flyoutAnimationSpeed() const;
-        // fade duration in ms derived from flyoutAnimationSpeed
+        // Fade duration in ms. Derived from flyoutAnimationSpeed.
         int flyoutAnimationMs() const;
         int flyoutAnimationEasingStyle() const;
         int volumeFlyoutDuration() const;
@@ -127,15 +150,31 @@ class Settings : public QObject {
         bool taskbarVisualizerEnabled() const;
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
+        bool peripheralsWidgetEnabled() const;
+        QStringList peripheralsWidgetExcluded() const;
+        // True unless device is hidden in peripherals-widget picker.
+        Q_INVOKABLE bool peripheralSelected(const QString& name) const;
+        Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
+        bool batteryRingUseAccent() const;
+        bool peripheralFlyoutEnabled() const;
+        int peripheralFlyoutDuration() const;
+        int peripheralFlyoutPosition() const;
+        int peripheralFlyoutMonitor() const;
+        bool peripheralFlyoutOnConnect() const;
+        bool peripheralFlyoutOnDisconnect() const;
+        bool peripheralFlyoutOnLowBattery() const;
+        bool peripheralFlyoutOnCharging() const;
+        bool peripheralLowBatteryToast() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
+        bool accentFromArtAppWide() const;
         int accentMode() const;
         QString customAccent() const;
         int appTheme() const;
         int filterMode() const;
         QStringList filterList() const;
         bool autoCheckUpdates() const;
-        // true when a player's flyout should be shown given the current filter mode/list
+        // True when current filter allows player flyout.
         Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
         void setMediaFlyoutEnabled(bool v);
@@ -182,8 +221,20 @@ class Settings : public QObject {
         void setTaskbarVisualizerEnabled(bool v);
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
+        void setPeripheralsWidgetEnabled(bool v);
+        void setBatteryRingUseAccent(bool v);
+        void setPeripheralFlyoutEnabled(bool v);
+        void setPeripheralFlyoutDuration(int v);
+        void setPeripheralFlyoutPosition(int v);
+        void setPeripheralFlyoutMonitor(int v);
+        void setPeripheralFlyoutOnConnect(bool v);
+        void setPeripheralFlyoutOnDisconnect(bool v);
+        void setPeripheralFlyoutOnLowBattery(bool v);
+        void setPeripheralFlyoutOnCharging(bool v);
+        void setPeripheralLowBatteryToast(bool v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
+        void setAccentFromArtAppWide(bool v);
         void setAccentMode(int v);
         void setCustomAccent(const QString& v);
         void setAppTheme(int v);
@@ -245,8 +296,21 @@ class Settings : public QObject {
         bool m_taskbarVisualizerEnabled;
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;
+        bool m_peripheralsWidgetEnabled;
+        QStringList m_peripheralsWidgetExcluded;
+        bool m_batteryRingUseAccent;
+        bool m_peripheralFlyoutEnabled;
+        int m_peripheralFlyoutDuration;
+        int m_peripheralFlyoutPosition;
+        int m_peripheralFlyoutMonitor;
+        bool m_peripheralFlyoutOnConnect;
+        bool m_peripheralFlyoutOnDisconnect;
+        bool m_peripheralFlyoutOnLowBattery;
+        bool m_peripheralFlyoutOnCharging;
+        bool m_peripheralLowBatteryToast;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
+        bool m_accentFromArtAppWide;
         int m_accentMode;
         QString m_customAccent;
         int m_appTheme;

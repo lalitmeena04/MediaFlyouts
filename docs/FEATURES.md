@@ -53,8 +53,44 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 - Center alignment, a pause overlay, and marquee scrolling for long titles.
 - Scroll wheel / swipe to switch between multiple simultaneous media sources,
   with source indicator dots.
-- Hidden automatically over fullscreen apps and kept out of screen captures.
+- Hidden automatically over fullscreen apps.
 - Optional integrated playback controls.
+
+## Peripheral battery
+
+- Battery level for wireless peripherals, read over several transports:
+  - **Bluetooth Classic** via the Hands-Free profile (headsets, mice, keyboards)
+  - **Bluetooth LE** via the GATT Battery Service
+  - **Google Fast Pair**, which reports each battery of a true-wireless set
+    (left / right / case) and whether it is charging
+  - **DualSense / DualSense Edge** controllers over raw HID
+  - **Razer** wireless devices on their 2.4GHz dongle
+  - **Logitech** HID++ devices (Unifying / Lightspeed / Bolt receivers)
+- Device type (mouse / keyboard / headset / gamepad) is decoded from the
+  Bluetooth Class of Device or the HID usage, not guessed from the name.
+- Connect and disconnect are picked up immediately by device watchers rather
+  than waiting for the next poll.
+
+## Peripherals widget
+
+- A compact taskbar widget with a battery ring per selected peripheral.
+- Pick which devices appear; hover for the exact level, charging state and the
+  per-component breakdown.
+- Follows the now-playing widget's monitor, side and offset so the two line up.
+- Optional accent-coloured rings instead of green / amber / red.
+
+## Peripheral flyout
+
+- Announces peripherals as they connect, disconnect, or run low on battery.
+- Several devices reported at once appear side by side in one flyout.
+- Battery is shown as a bucket (Full / Good / Half / Low / Very low) alongside
+  the exact percentage and a ring.
+- Low battery warns once when crossing 20%, and again below 10% — it does not
+  repeat on every poll, and re-arms only after charging back up.
+- Per-event toggles (connect / disconnect / low battery / charging), its own
+  position, monitor and duration.
+- Optional tray notification for a low battery, so it isn't missed if the
+  flyout is not seen.
 
 ## Taskbar visualizer
 
@@ -96,11 +132,10 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
   each with an icon.
 - Option to hide the tray icon and to choose the left-click behavior; the
   dashboard opens on double-click when single-click is set to show the flyout.
-- Single-instance handling: a second launch surfaces the running instance's
-  dashboard and exits.
+- Single-instance handling: a second launch exits after signaling the running
+  instance, which only surfaces its dashboard if the tray icon is hidden.
 
 ## Onboarding & updates
-
 - First-run onboarding wizard. Flyouts and the taskbar widget stay hidden, and
   the native volume OSD is left alone, until you finish it.
 - Update checker against the GitHub releases API, with an optional automatic

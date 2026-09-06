@@ -24,7 +24,7 @@ void fft(std::vector<double>& re, std::vector<double>& im) {
     if(n < 2 || re.size() != im.size() || !isPowerOfTwo(n))
         return;
 
-    // bit-reversal permutation
+    // Bit-reversal permutation.
     for(std::size_t i = 1, j = 0; i < n; ++i) {
         std::size_t bit = n >> 1;
         for(; j & bit; bit >>= 1)
@@ -82,7 +82,7 @@ std::vector<double> spectrumBands(const std::vector<double>& magnitudes, int ban
     const std::size_t bins = magnitudes.size();
     double peak = 1e-9;
     for(int b = 0; b < bands; ++b) {
-        // log-spaced bin ranges so low frequencies aren't all squashed into one bar
+        // Log-spaced bin ranges. Low frequencies keep separate bars.
         const double lo = std::pow(static_cast<double>(bins), static_cast<double>(b) / bands);
         const double hi = std::pow(static_cast<double>(bins), static_cast<double>(b + 1) / bands);
         std::size_t start = static_cast<std::size_t>(lo);
@@ -134,7 +134,7 @@ std::vector<double> frequencyBars(const std::vector<double>& magnitudes, double 
                 maxAmp = magnitudes[j];
 
         const double progress = static_cast<double>(i) / bars;
-        double amp = (maxAmp / norm) * (1.0 + progress * 4.0); // lift treble so it stays visible
+        double amp = (maxAmp / norm) * (1.0 + progress * 4.0); // Lift treble for visibility.
         if(amp < 1e-4)
             amp = 1e-4;
 

@@ -1,17 +1,17 @@
 import QtQuick
 import MediaFlyouts
 
-// Audio visualizer for the taskbar widget. Reuses audioCapture.bands for the
-// bars/radial/waveform styles and audioCapture.beat for the particle burst.
+// Audio visualizer for taskbar widget.
+// Bands drive bars, radial, and waveform. Beat drives particles.
 Item {
     id: viz
     clip: true
 
     readonly property int style: settings.visualizerStyle
-    readonly property color col: theme.accent
+    readonly property color col: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
     property var particles: []
 
-    // style 0: mirrored / bottom-anchored bars
+    // Style 0. Mirrored or bottom-anchored bars.
     Row {
         anchors.fill: parent
         spacing: 2
@@ -39,7 +39,7 @@ Item {
         }
     }
 
-    // styles 1-3: radial rays, mirrored waveform, and beat-driven particles
+    // Styles 1-3. Radial rays, waveform, and particles.
     Canvas {
         id: field
         anchors.fill: parent

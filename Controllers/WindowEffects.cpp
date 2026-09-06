@@ -7,7 +7,7 @@
 #include <dwmapi.h>
 
 namespace {
-// DWM immersive dark mode (Windows 10 20H1+); harmless no-op elsewhere.
+// DWM dark mode for Windows 10 20H1 and later.
 constexpr DWORD kUseImmersiveDarkMode = 20;
 
 HWND hwndOf(QWindow* window) {
@@ -23,4 +23,13 @@ void WindowEffects::setDarkFrame(QWindow* window, bool dark) {
         return;
     BOOL value = dark ? TRUE : FALSE;
     DwmSetWindowAttribute(hwnd, kUseImmersiveDarkMode, &value, sizeof(value));
+}
+
+void WindowEffects::pinTopmost(QWindow* window) {
+    HWND hwnd = hwndOf(window);
+    if(!hwnd)
+        return;
+
+    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 }

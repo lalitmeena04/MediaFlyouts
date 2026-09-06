@@ -52,7 +52,7 @@ $ver = $verBase
 $buildNumber = $null
 $msixRevision = 0
 if ($DevBuild) {
-    # derive a traceable pre-release build number from git: <commit count>.<short sha>
+    # Derive pre-release build number from git: <commit count>.<short sha>.
     $count = (git -C $root rev-list --count HEAD 2>$null)
     $sha   = (git -C $root rev-parse --short HEAD 2>$null)
     if     ($count -and $sha) { $buildNumber = "$count.$sha" }
@@ -63,40 +63,40 @@ if ($DevBuild) {
 }
 Step "MediaFlyouts $ver -> $OutDir"
 
-# stop any running instance so bin\ can be cleaned/rebuilt
+# Stop running instance before bin cleanup.
 Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\bin\*" } | Stop-Process -Force -ErrorAction SilentlyContinue
 
-# 1) clean release build (+ windeployqt into bin\)
+# 1. Clean release build. windeployqt goes into bin\.
 if (-not $SkipBuild) {
     Step 'Clean release build'
     if ($DevBuild) {
-        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -BuildNumber $buildNumber | Out-Host
+        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging -BuildNumber $buildNumber | Out-Host
     } else {
-        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests | Out-Host
+        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging | Out-Host
     }
 } else {
     Step 'Reusing existing bin\ (-SkipBuild)'
 }
 if (-not (Test-Path (Join-Path $root 'bin\MediaFlyouts.exe'))) { throw 'bin\MediaFlyouts.exe not found; build first.' }
 
-# fresh output folder
+# Fresh output folder.
 $out = Join-Path $root $OutDir
 if (Test-Path $out) { Remove-Item $out -Recurse -Force }
 New-Item -ItemType Directory -Force $out | Out-Null
 
 $results = [ordered]@{}
 
-# 2) source ZIP
+# 2. Source ZIP.
 Step 'Source ZIP'
 git archive --format=zip -o (Join-Path $out "MediaFlyouts-$ver-src.zip") HEAD
 $results['Source ZIP'] = "MediaFlyouts-$ver-src.zip"
 
-# 3) portable ZIP
+# 3. Portable ZIP.
 Step 'Portable ZIP'
 Compress-Archive -Path (Join-Path $root 'bin\*') -DestinationPath (Join-Path $out "MediaFlyouts-$ver-win64.zip")
 $results['Portable ZIP'] = "MediaFlyouts-$ver-win64.zip"
 
-# 4) installer (Inno Setup)
+# 4. Installer. Inno Setup.
 $iscc = Find-Tool @("$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
     "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe")
 if ($iscc) {
@@ -108,7 +108,7 @@ if ($iscc) {
     $results['Installer'] = 'SKIPPED (install Inno Setup 6)'
 }
 
-# 5) MSIX (+ optional signing)
+# 5. MSIX. Optional signing.
 $makeappx = Find-SdkTool 'makeappx.exe'
 if ($makeappx) {
     Step 'MSIX package'
@@ -137,7 +137,7 @@ if ($makeappx) {
     $results['MSIX'] = 'SKIPPED (install the Windows SDK)'
 }
 
-# summary
+# Summary.
 Write-Host ''
 Step 'Done'
 $results.GetEnumerator() | ForEach-Object { '{0,-12} {1}' -f $_.Key, $_.Value } | Write-Host

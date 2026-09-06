@@ -1,9 +1,8 @@
 import QtQuick
 import QtQuick.Effects
 
-// Album art clipped to rounded corners. A Rectangle's `clip` only clips to its
-// rectangular bounds, so source art with baked-in rounded corners would otherwise
-// show its (often white) square corners; this masks the image to a rounded shape.
+// Album art with rounded corners.
+// Mask image. Rectangle clip uses rectangular bounds.
 Item {
     id: root
 

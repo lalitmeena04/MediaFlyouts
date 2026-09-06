@@ -4,15 +4,14 @@
 
 namespace {
 
-// Seeds the widget to the taskbar edge the shell leaves free: a centered taskbar (Windows 11
-// Explorer\Advanced\TaskbarAl = 1) keeps its buttons in the middle, so we sit on the left; a
-// left-aligned taskbar pushes us to the right. Windows 10 has no such key and is always left.
+// Seed widget from taskbar alignment. Centered taskbar: use left side.
+// Left-aligned taskbar: use right side. Windows 10 always reports left.
 int systemTaskbarSide() {
 #ifdef Q_OS_WIN
     const QSettings explorer(
         QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
         QSettings::NativeFormat);
-    // widget side: 0 = left, 2 = right
+    // Widget side. 0 = left. 2 = right.
     return explorer.value(QStringLiteral("TaskbarAl"), 0).toInt() == 1 ? 0 : 2;
 #else
     return 2;
@@ -54,11 +53,10 @@ void Settings::reload() {
     m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), true).toBool();
     m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), true).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
-    // flyoutPosition indexes mf::FlyoutPosition (4 = BottomCenter); duration in milliseconds
+    // Field flyoutPosition is position index. 4 = BottomCenter. Duration is ms.
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
-    // -1 keeps the volume flyout wherever the media flyout is, which is how it behaved
-    // before it got its own position controls
+    // -1 keeps volume flyout with media flyout.
     m_volumeFlyoutPosition = m_store.value(QStringLiteral("volumeFlyoutPosition"), 4).toInt();
     m_volumeFlyoutMonitor = m_store.value(QStringLiteral("volumeFlyoutMonitor"), 0).toInt();
     m_flyoutDuration = m_store.value(QStringLiteral("flyoutDuration"), 4500).toInt();
@@ -66,12 +64,11 @@ void Settings::reload() {
     m_flyoutAnimationEasingStyle = m_store.value(QStringLiteral("flyoutAnimationEasingStyle"), 3).toInt();
     m_volumeFlyoutDuration = m_store.value(QStringLiteral("volumeFlyoutDuration"), 1800).toInt();
     m_nextUpDuration = m_store.value(QStringLiteral("nextUpDuration"), 2000).toInt();
-    // nextUpStyle: 0 = now-playing card, 1 = compact "up next" pill
+    // Next-up style values. 0 = now-playing card. 1 = compact pill.
     m_nextUpStyle = m_store.value(QStringLiteral("nextUpStyle"), 0).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
-    // widget side: 0 = left, 1 = center, 2 = right
-    // On first run, seed it from the system taskbar alignment and pin it so later system changes
-    // don't move a widget the user has already positioned.
+    // Widget side. 0 = left. 1 = center. 2 = right.
+    // First run uses system taskbar alignment. Later system changes leave widget position.
     if(!m_store.contains(QStringLiteral("taskbarWidgetSide")))
         m_store.setValue(QStringLiteral("taskbarWidgetSide"), systemTaskbarSide());
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
@@ -79,18 +76,34 @@ void Settings::reload() {
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
-    // centered = mirrored bars around the middle; otherwise they grow from the bottom
+    // Centered mirrors bars around middle. Other mode grows from bottom.
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
-    // visualizerStyle: 0 = bars, 1 = radial, 2 = waveform, 3 = particles
+    // Visualizer style values. 0 = bars. 1 = radial. 2 = waveform. 3 = particles.
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
+    m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
+    // Devices show by default. This list stores hidden devices.
+    m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
+    m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
+    m_peripheralFlyoutEnabled = m_store.value(QStringLiteral("peripheralFlyoutEnabled"), false).toBool();
+    m_peripheralFlyoutDuration = m_store.value(QStringLiteral("peripheralFlyoutDuration"), 3000).toInt();
+    // Indexes mf::FlyoutPosition. 4 = BottomCenter.
+    m_peripheralFlyoutPosition = m_store.value(QStringLiteral("peripheralFlyoutPosition"), 4).toInt();
+    m_peripheralFlyoutMonitor = m_store.value(QStringLiteral("peripheralFlyoutMonitor"), 0).toInt();
+    m_peripheralFlyoutOnConnect = m_store.value(QStringLiteral("peripheralFlyoutOnConnect"), true).toBool();
+    m_peripheralFlyoutOnDisconnect = m_store.value(QStringLiteral("peripheralFlyoutOnDisconnect"), true).toBool();
+    m_peripheralFlyoutOnLowBattery = m_store.value(QStringLiteral("peripheralFlyoutOnLowBattery"), true).toBool();
+    m_peripheralFlyoutOnCharging = m_store.value(QStringLiteral("peripheralFlyoutOnCharging"), false).toBool();
+    m_peripheralLowBatteryToast = m_store.value(QStringLiteral("peripheralLowBatteryToast"), true).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
-    // accentMode: 0 = theme default, 1 = match system, 2 = custom
+    // Album-art accent also tints full app.
+    m_accentFromArtAppWide = m_store.value(QStringLiteral("accentFromArtAppWide"), true).toBool();
+    // Accent mode values. 0 = theme default. 1 = match system. 2 = custom.
     m_accentMode = m_store.value(QStringLiteral("accentMode"), 0).toInt();
     m_customAccent = m_store.value(QStringLiteral("customAccent"), QStringLiteral("#4CC2FF")).toString();
-    // appTheme: 0 = follow system, 1 = light, 2 = dark
+    // App theme values. 0 = follow system. 1 = light. 2 = dark.
     m_appTheme = m_store.value(QStringLiteral("appTheme"), 0).toInt();
-    // filterMode: 0 = off, 1 = blacklist (hide listed), 2 = whitelist (show only listed)
+    // Filter mode values. 0 = off. 1 = blacklist. 2 = whitelist.
     m_filterMode = m_store.value(QStringLiteral("filterMode"), 0).toInt();
     m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
     m_autoCheckUpdates = m_store.value(QStringLiteral("autoCheckUpdates"), false).toBool();
@@ -292,7 +305,7 @@ bool Settings::playerAllowed(const QString& player) const {
             break;
         }
     }
-    // blacklist hides listed players; whitelist shows only listed players
+    // Blacklist hides listed players. Whitelist allows listed players.
     return m_filterMode == 1 ? !listed : listed;
 }
 int Settings::taskbarWidgetSide() const {
@@ -316,11 +329,69 @@ bool Settings::taskbarVisualizerCentered() const {
 int Settings::visualizerStyle() const {
     return m_visualizerStyle;
 }
+bool Settings::peripheralsWidgetEnabled() const {
+    return m_peripheralsWidgetEnabled;
+}
+
+QStringList Settings::peripheralsWidgetExcluded() const {
+    return m_peripheralsWidgetExcluded;
+}
+bool Settings::peripheralSelected(const QString& name) const {
+    return !m_peripheralsWidgetExcluded.contains(name, Qt::CaseInsensitive);
+}
+void Settings::setPeripheralSelected(const QString& name, bool selected) {
+    const bool alreadySelected = !m_peripheralsWidgetExcluded.contains(name, Qt::CaseInsensitive);
+    if(selected == alreadySelected)
+        return;
+
+    if(selected) {
+        for(int i = m_peripheralsWidgetExcluded.size() - 1; i >= 0; --i)
+            if(m_peripheralsWidgetExcluded.at(i).compare(name, Qt::CaseInsensitive) == 0)
+                m_peripheralsWidgetExcluded.removeAt(i);
+    } else {
+        m_peripheralsWidgetExcluded.append(name);
+    }
+    m_store.setValue(QStringLiteral("peripheralsWidgetExcluded"), m_peripheralsWidgetExcluded);
+    emit changed();
+}
+bool Settings::batteryRingUseAccent() const {
+    return m_batteryRingUseAccent;
+}
+bool Settings::peripheralFlyoutEnabled() const {
+    return m_peripheralFlyoutEnabled;
+}
+int Settings::peripheralFlyoutDuration() const {
+    return m_peripheralFlyoutDuration;
+}
+int Settings::peripheralFlyoutPosition() const {
+    return m_peripheralFlyoutPosition;
+}
+int Settings::peripheralFlyoutMonitor() const {
+    return m_peripheralFlyoutMonitor;
+}
+bool Settings::peripheralFlyoutOnConnect() const {
+    return m_peripheralFlyoutOnConnect;
+}
+bool Settings::peripheralFlyoutOnDisconnect() const {
+    return m_peripheralFlyoutOnDisconnect;
+}
+bool Settings::peripheralFlyoutOnLowBattery() const {
+    return m_peripheralFlyoutOnLowBattery;
+}
+bool Settings::peripheralFlyoutOnCharging() const {
+    return m_peripheralFlyoutOnCharging;
+}
+bool Settings::peripheralLowBatteryToast() const {
+    return m_peripheralLowBatteryToast;
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
 bool Settings::accentFromArt() const {
     return m_accentFromArt;
+}
+bool Settings::accentFromArtAppWide() const {
+    return m_accentFromArtAppWide;
 }
 int Settings::accentMode() const {
     return m_accentMode;
@@ -493,11 +564,47 @@ void Settings::setTaskbarVisualizerCentered(bool v) {
 void Settings::setVisualizerStyle(int v) {
     assignInt("visualizerStyle", m_visualizerStyle, v);
 }
+void Settings::setPeripheralsWidgetEnabled(bool v) {
+    assign("peripheralsWidgetEnabled", m_peripheralsWidgetEnabled, v);
+}
+void Settings::setBatteryRingUseAccent(bool v) {
+    assign("batteryRingUseAccent", m_batteryRingUseAccent, v);
+}
+void Settings::setPeripheralFlyoutEnabled(bool v) {
+    assign("peripheralFlyoutEnabled", m_peripheralFlyoutEnabled, v);
+}
+void Settings::setPeripheralFlyoutDuration(int v) {
+    assignInt("peripheralFlyoutDuration", m_peripheralFlyoutDuration, v);
+}
+void Settings::setPeripheralFlyoutPosition(int v) {
+    assignInt("peripheralFlyoutPosition", m_peripheralFlyoutPosition, v);
+}
+void Settings::setPeripheralFlyoutMonitor(int v) {
+    assignInt("peripheralFlyoutMonitor", m_peripheralFlyoutMonitor, v);
+}
+void Settings::setPeripheralFlyoutOnConnect(bool v) {
+    assign("peripheralFlyoutOnConnect", m_peripheralFlyoutOnConnect, v);
+}
+void Settings::setPeripheralFlyoutOnDisconnect(bool v) {
+    assign("peripheralFlyoutOnDisconnect", m_peripheralFlyoutOnDisconnect, v);
+}
+void Settings::setPeripheralFlyoutOnLowBattery(bool v) {
+    assign("peripheralFlyoutOnLowBattery", m_peripheralFlyoutOnLowBattery, v);
+}
+void Settings::setPeripheralFlyoutOnCharging(bool v) {
+    assign("peripheralFlyoutOnCharging", m_peripheralFlyoutOnCharging, v);
+}
+void Settings::setPeripheralLowBatteryToast(bool v) {
+    assign("peripheralLowBatteryToast", m_peripheralLowBatteryToast, v);
+}
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);
 }
 void Settings::setAccentFromArt(bool v) {
     assign("accentFromArt", m_accentFromArt, v);
+}
+void Settings::setAccentFromArtAppWide(bool v) {
+    assign("accentFromArtAppWide", m_accentFromArtAppWide, v);
 }
 void Settings::setAccentMode(int v) {
     assignInt("accentMode", m_accentMode, v);

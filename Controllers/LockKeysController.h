@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QString>
 
-// Watches Caps/Num/Scroll lock toggles via a low-level keyboard hook and drives the lock-keys flyout.
+// Watch Caps, Num, Scroll, and Insert toggles with low-level keyboard hook.
 class LockKeysController : public QObject {
         Q_OBJECT
         Q_PROPERTY(QString keyName READ keyName NOTIFY changed)
@@ -20,16 +20,20 @@ class LockKeysController : public QObject {
         QString keyName() const;
         bool on() const;
         int keyType() const;
+        // True after low-level keyboard hook installs.
+        bool available() const;
 
-        // internal: invoked by the keyboard hook on the main thread
+        // Internal. Called by keyboard hook on main thread.
         void handleToggle(int vk);
 
     signals:
         void changed();
         void lockKeyToggled();
+        void availabilityChanged();
 
     private:
         QString m_keyName;
         bool m_on = false;
         int m_keyType = 0;
+        bool m_available = false;
 };

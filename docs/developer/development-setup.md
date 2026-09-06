@@ -44,8 +44,8 @@ runtime are written to `bin/`.
 .\bin\MediaFlyouts.exe
 ```
 
-It starts minimized to the tray. A second launch just surfaces the dashboard of
-the already-running instance.
+It starts minimized to the tray. A second launch just activates the
+already-running instance; open the dashboard from the tray icon.
 
 ## Editor
 

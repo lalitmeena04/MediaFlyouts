@@ -48,7 +48,7 @@ Window {
             }
         }
 
-        // step content, bounded by the header and footer so it can never overlap them
+        // Step content is between header and footer. It cannot overlap them.
         Item {
             anchors.top: header.bottom
             anchors.topMargin: 18
@@ -115,6 +115,8 @@ Window {
                     width: parent.width
                     label: "Media flyout"
                     description: "Show now-playing info on media keys."
+                    available: capabilities.mediaSessionAvailable
+                    unavailableNote: "Unavailable: no system media session was detected."
                     value: settings.mediaFlyoutEnabled
                     onToggled: settings.mediaFlyoutEnabled = value
                 }
@@ -122,6 +124,8 @@ Window {
                     width: parent.width
                     label: "Volume flyout"
                     description: "Replace the native volume popup."
+                    available: capabilities.audioAvailable
+                    unavailableNote: "Unavailable: no audio output device was detected."
                     value: settings.volumeFlyoutEnabled
                     onToggled: settings.volumeFlyoutEnabled = value
                 }
@@ -129,6 +133,8 @@ Window {
                     width: parent.width
                     label: "Lock keys flyout"
                     description: "Show Caps / Num / Scroll indicators."
+                    available: capabilities.lockKeysAvailable
+                    unavailableNote: "Unavailable: the keyboard hook could not be installed."
                     value: settings.lockKeysEnabled
                     onToggled: settings.lockKeysEnabled = value
                 }
@@ -162,7 +168,7 @@ Window {
             }
         }
 
-        // pinned to the bottom; the step content sizes itself around it
+        // Pinned to bottom. Step content sizes around it.
         Column {
             id: footer
             anchors.bottom: parent.bottom

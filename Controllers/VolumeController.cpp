@@ -11,12 +11,12 @@
 
 namespace {
 
-// our own write context (reserved for future filtering of self-initiated changes)
+// Write context for own changes. Reserved for future filtering.
 const GUID kVolumeEventContext = {0x9a1b2c3d, 0x1234, 0x5678, {0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56, 0x78}};
 
 } // namespace
 
-// classic-COM sink that forwards endpoint volume notifications onto the Qt thread
+// COM sink. Forward endpoint volume notifications to Qt thread.
 struct VolumeCallback : IAudioEndpointVolumeCallback {
         LONG ref = 1;
         VolumeController* owner = nullptr;
@@ -54,7 +54,7 @@ struct VolumeCallback : IAudioEndpointVolumeCallback {
         }
 };
 
-// classic-COM sink that re-binds us to the new default output when the user switches devices
+// COM sink. Re-bind to new default output on device switch.
 struct DeviceNotificationClient : IMMNotificationClient {
         LONG ref = 1;
         VolumeController* owner = nullptr;
@@ -81,7 +81,7 @@ struct DeviceNotificationClient : IMMNotificationClient {
         }
 
         HRESULT STDMETHODCALLTYPE OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR) override {
-            // only the console render endpoint drives the flyout
+            // Only console render endpoint controls flyout.
             if(flow == eRender && role == eConsole) {
                 VolumeController* o = owner;
                 QMetaObject::invokeMethod(o, [o] { o->rebindDefaultDevice(); }, Qt::QueuedConnection);
@@ -124,6 +124,7 @@ void VolumeController::releaseEndpoint() {
     if(m_endpoint) {
         m_endpoint->Release();
         m_endpoint = nullptr;
+        emit availabilityChanged();
     }
 }
 
@@ -149,6 +150,7 @@ bool VolumeController::acquireEndpoint() {
     m_endpoint->GetMasterVolumeLevelScalar(&level);
     m_endpoint->GetMute(&muted);
     applyState(static_cast<int>(std::lround(level * 100.0f)), muted != FALSE, false);
+    emit availabilityChanged();
     return true;
 }
 
@@ -163,7 +165,7 @@ void VolumeController::start() {
     if(FAILED(hr) || !m_enumerator)
         return;
 
-    // follow the default output device so the flyout always reflects the current one
+    // Follow default output device. Flyout reflects current endpoint.
     m_deviceNotifier = new DeviceNotificationClient(this);
     m_enumerator->RegisterEndpointNotificationCallback(m_deviceNotifier);
 
@@ -172,6 +174,10 @@ void VolumeController::start() {
 
 int VolumeController::volume() const {
     return m_volume;
+}
+
+bool VolumeController::available() const {
+    return m_endpoint != nullptr;
 }
 
 bool VolumeController::muted() const {

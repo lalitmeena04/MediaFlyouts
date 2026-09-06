@@ -53,6 +53,25 @@ center-aligned, right if it is left-aligned. You can:
 - turn on the **audio visualizer** and pick a style — **Bars**, **Radial**,
   **Waveform** or **Particles**.
 
+## Peripheral battery
+
+MediaFlyouts reads the battery of wireless peripherals — Bluetooth headsets,
+mice and keyboards, earbuds that support Google Fast Pair, DualSense
+controllers, and Razer or Logitech devices on their 2.4GHz dongles.
+
+- The **Peripherals widget** shows a battery ring per device next to the tray.
+  Choose which devices appear on the Taskbar Widget page, and hover a ring for
+  the exact level, charging state and — for earbuds — the left / right / case
+  breakdown.
+- The **Peripheral flyout** announces devices as they connect or disconnect and
+  warns when a battery gets low. If several devices connect at once they appear
+  side by side. Turn individual events on or off on the Taskbar Widget page.
+- A **low battery** also raises a tray notification, so it isn't missed.
+
+Not every device can report a battery: it needs one of the supported
+transports. A Bluetooth speaker with no microphone, for example, has no
+Hands-Free profile and so reports nothing.
+
 The widget hides automatically over fullscreen apps and stays out of screen
 captures.
 

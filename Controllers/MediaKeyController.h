@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-// Watches hardware media keys (play/pause, next, prev, stop) so we can tell a manual skip from an auto-advance.
+// Watch hardware media keys. Detect manual skip.
 class MediaKeyController : public QObject {
         Q_OBJECT
 
@@ -12,11 +12,18 @@ class MediaKeyController : public QObject {
 
         void start();
 
-        // internal: invoked by the keyboard hook on the main thread
+        // True after low-level keyboard hook installs.
+        bool available() const;
+
+        // Internal. Called by keyboard hook on main thread.
         void notifyPressed();
         void notifyVolumePressed();
 
     signals:
         void mediaKeyPressed();
         void volumeKeyPressed();
+        void availabilityChanged();
+
+    private:
+        bool m_available = false;
 };
