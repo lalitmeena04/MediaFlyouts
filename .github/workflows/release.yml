@@ -55,7 +55,7 @@ jobs:
 
       - name: Configure & build (release)
         run: |
-          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR"
+          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR" -D MEDIAFLYOUTS_ENABLE_LOGGING=OFF
           cmake --build --preset msvc-release
 
       - name: Test
@@ -102,12 +102,31 @@ jobs:
           $msix = "dist/MediaFlyouts-${{ steps.ver.outputs.version }}.msix"
           & "$tools\makeappx.exe" pack /o /d $layout /p $msix
 
+          # Prefer a stored certificate so every release is signed with the same
+          # one (users trust MediaFlyouts.cer once). Fall back to a self-signed
+          # certificate generated on the runner when no secret is configured.
           if ("${{ secrets.MSIX_CERT_BASE64 }}" -ne "") {
-            [IO.File]::WriteAllBytes("cert.pfx", [Convert]::FromBase64String("${{ secrets.MSIX_CERT_BASE64 }}"))
-            & "$tools\signtool.exe" sign /fd SHA256 /a /f cert.pfx /p "${{ secrets.MSIX_CERT_PASSWORD }}" $msix
-            Remove-Item cert.pfx
+            $pfx = Join-Path $env:RUNNER_TEMP 'MediaFlyouts.pfx'
+            [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String("${{ secrets.MSIX_CERT_BASE64 }}"))
+            $password = ConvertTo-SecureString "${{ secrets.MSIX_CERT_PASSWORD }}" -AsPlainText -Force
+            $certificate = (Get-PfxData -FilePath $pfx -Password $password).EndEntityCertificates | Select-Object -First 1
+            if (-not $certificate -or $certificate.Subject -ne 'CN=MediaFlyouts') {
+              throw "MSIX signing certificate subject must be CN=MediaFlyouts, got '$($certificate.Subject)'."
+            }
+            Export-Certificate -Cert $certificate -FilePath dist\MediaFlyouts.cer | Out-Null
+            & "$tools\signtool.exe" sign /fd SHA256 /a /f $pfx /p "${{ secrets.MSIX_CERT_PASSWORD }}" $msix
+            if ($LASTEXITCODE -ne 0) { throw "signtool failed to sign the MSIX." }
+            Remove-Item $pfx -Force
           } else {
-            Write-Warning "MSIX built unsigned (no MSIX_CERT_BASE64 secret); it must be signed before distribution."
+            Write-Warning "No MSIX_CERT_BASE64 secret set; generating a throwaway self-signed certificate. Store a certificate as a secret to reuse the same one across releases."
+            & tools\new-signing-cert.ps1 -Msix $msix
+            if ($LASTEXITCODE -ne 0) { throw "signtool failed to sign the MSIX." }
+            Copy-Item signing\MediaFlyouts.cer dist\MediaFlyouts.cer -Force
+          }
+
+          & "$tools\signtool.exe" verify /pa /all $msix
+          if ($LASTEXITCODE -ne 0) {
+            Write-Warning "MSIX signature is valid but is not trusted by the GitHub runner; users must trust MediaFlyouts.cer for a self-signed certificate."
           }
 
       - name: Extract release notes

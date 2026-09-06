@@ -72,10 +72,22 @@ Import-Certificate -FilePath signing\MediaFlyouts.cer -CertStoreLocation Cert:\L
 .\tools\new-signing-cert.ps1 -ExportPfx -PfxPassword (Read-Host 'PFX password' -AsSecureString)
 ```
 
-Set these repository secrets so the release workflow signs the MSIX:
+The release workflow signs the MSIX and uploads the public `MediaFlyouts.cer`
+alongside the package so users can trust a self-signed release.
 
-- `MSIX_CERT_BASE64` — base64 of the `.pfx`
-- `MSIX_CERT_PASSWORD` — the `.pfx` password
+To sign every release with the **same** certificate (so users trust
+`MediaFlyouts.cer` only once), export a certificate once and store it as secrets:
+
+```powershell
+.\tools\new-signing-cert.ps1 -ExportPfx -PfxPassword (Read-Host 'PFX password' -AsSecureString)
+```
+
+- `MSIX_CERT_BASE64` — contents of `signing/MediaFlyouts.pfx.base64.txt`
+- `MSIX_CERT_PASSWORD` — the PFX password
+
+Without these secrets the workflow generates a throwaway self-signed certificate
+per release, so users must re-trust `MediaFlyouts.cer` each time. Do not commit
+any `.pfx`, password, or other private signing material.
 
 For a real (non-self-signed) release, use a certificate from a trusted CA so
 users don't have to trust it manually. The installer and ZIP artifacts do not
