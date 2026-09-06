@@ -186,6 +186,8 @@ qt_add_qml_module(MediaFlyouts
     RESOURCES
         Views/assets/fonts/FluentSystemIcons-Filled.ttf
         Views/assets/fonts/FontAwesome6-Solid.ttf
+        Views/assets/github-mark-dark.svg
+        Views/assets/github-mark-light.svg
 )
 
 target_link_libraries(MediaFlyouts PRIVATE

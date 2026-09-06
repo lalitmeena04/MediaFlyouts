@@ -68,6 +68,14 @@ TEST(QmlContractTest, DashboardResetsScrollPositionWhenPageChanges) {
     expectContains(source, QStringLiteral("onCurrentIndexChanged: pageScroll.contentItem.contentY = 0"));
 }
 
+TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-light.svg"));
+    expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-dark.svg"));
+    EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
+}
+
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
     const QString source = loadSource("Views/DeviceIcons.qml");
 

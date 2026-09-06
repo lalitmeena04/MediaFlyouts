@@ -1705,11 +1705,16 @@ Window {
                         color: repoHover.containsMouse ? theme.cardHover : theme.card
                         border.color: theme.border
 
-                        IconLabel {
+                        Image {
                             anchors.centerIn: parent
-                            glyph: Fluent.link
-                            size: 18
-                            color: theme.textPrimary
+                            width: 18
+                            height: 18
+                            source: theme.dark
+                                     ? "qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-light.svg"
+                                     : "qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-dark.svg"
+                            fillMode: Image.PreserveAspectFit
+                            smooth: true
+                            mipmap: true
                         }
                         MouseArea {
                             id: repoHover
