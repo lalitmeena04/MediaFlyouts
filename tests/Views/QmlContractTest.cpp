@@ -61,6 +61,13 @@ TEST(QmlContractTest, DashboardHasTheRequestedTenPagesInOrder) {
     expectContains(source, QStringLiteral("property bool collapsed"));
 }
 
+TEST(QmlContractTest, DashboardResetsScrollPositionWhenPageChanges) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("id: pageScroll"));
+    expectContains(source, QStringLiteral("onCurrentIndexChanged: pageScroll.contentItem.contentY = 0"));
+}
+
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
     const QString source = loadSource("Views/DeviceIcons.qml");
 

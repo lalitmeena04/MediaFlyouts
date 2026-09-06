@@ -26,6 +26,8 @@ Window {
     }
 
     property int currentIndex: 0
+    // Reset scroll position. Keep new page starting at top.
+    onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
     readonly property var peripheralSections: [
         { "label": "2.4 GHz", "devices": batteryStatus.devices.filter(function(device) {
             return device.connectionKind === "wireless"
