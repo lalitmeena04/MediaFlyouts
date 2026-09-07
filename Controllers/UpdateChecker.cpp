@@ -9,7 +9,7 @@
 
 namespace {
 // GitHub releases endpoint for project. 404 means check failed.
-constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts/releases/latest";
+constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
 } // namespace
 
 UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent), m_net(new QNetworkAccessManager(this)) {}
@@ -44,6 +44,10 @@ bool UpdateChecker::checking() const {
     return m_checking;
 }
 
+QString UpdateChecker::releasesApiUrl() {
+    return QString::fromLatin1(kReleasesApi);
+}
+
 void UpdateChecker::check() {
     if(m_checking)
         return;
@@ -51,7 +55,7 @@ void UpdateChecker::check() {
     m_status = QStringLiteral("Checking for updates…");
     emit changed();
 
-    QNetworkRequest request{QUrl(QString::fromLatin1(kReleasesApi))};
+    QNetworkRequest request{QUrl(releasesApiUrl())};
     request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("MediaFlyouts"));
     QNetworkReply* reply = m_net->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply] {

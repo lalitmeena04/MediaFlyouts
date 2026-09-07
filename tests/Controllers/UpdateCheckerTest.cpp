@@ -26,3 +26,8 @@ TEST(UpdateCheckerTest, DefaultState) {
     EXPECT_FALSE(u.updateAvailable());
     EXPECT_FALSE(u.checking());
 }
+
+TEST(UpdateCheckerTest, UsesReleaseRepository) {
+    EXPECT_EQ(UpdateChecker::releasesApiUrl(),
+              QStringLiteral("https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest"));
+}

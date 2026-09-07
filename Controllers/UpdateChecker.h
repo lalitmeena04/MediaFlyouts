@@ -25,6 +25,8 @@ class UpdateChecker : public QObject {
         bool updateAvailable() const;
         bool checking() const;
 
+        static QString releasesApiUrl();
+
         // True if latest version is newer than current version.
         static bool isNewerVersion(const QString& current, const QString& latest);
 
