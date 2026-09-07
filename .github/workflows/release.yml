@@ -10,7 +10,13 @@ on:
         required: true
 
 permissions:
-  contents: write
+  contents: read
+
+# Releases ship to a separate repo. RELEASE_REPO holds the shipped app files
+# and the published GitHub Release. RELEASE_BRANCH is that repo default branch.
+env:
+  RELEASE_REPO: ${{ github.repository_owner }}/MediaFlyouts-Releases
+  RELEASE_BRANCH: main
 
 jobs:
   release:
@@ -22,6 +28,21 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          # Manual runs build the requested tag source. Tag pushes build the
+          # pushed tag. This keeps release binaries version-accurate.
+          ref: ${{ github.event.inputs.version || github.ref }}
+
+      # Mint a short-lived token for the release repo. The GitHub App must be
+      # installed on RELEASE_REPO with Contents read/write. It signs both the
+      # git push and the Release API calls.
+      - name: Generate release-repo token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: MediaFlyouts-Releases
 
       - name: Derive version
         id: ver
@@ -147,20 +168,61 @@ jobs:
           ($body -join "`n").Trim() | Set-Content release-notes.md -Encoding utf8
           Get-Content release-notes.md
 
-      - name: Publish GitHub Release
+      - name: Sync app files to release repo
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: pwsh
         run: |
           $tag = "${{ steps.ver.outputs.tag }}"
+          $repo = "${{ env.RELEASE_REPO }}"
+          $branch = "${{ env.RELEASE_BRANCH }}"
+          $token = "${{ steps.app-token.outputs.token }}"
+          $work = Join-Path $env:RUNNER_TEMP 'release-repo'
+
+          # Clone the release repo. The token goes in the URL so git can push.
+          git clone "https://x-access-token:$token@github.com/$repo.git" $work
+          if ($LASTEXITCODE -ne 0) { throw "Failed to clone $repo." }
+          Push-Location $work
+
+          # Wipe the old tree but keep git metadata. Each release is a clean
+          # snapshot of the shipped app files plus the docs.
+          Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
+          Copy-Item "${{ github.workspace }}\bin\*" . -Recurse -Force
+          Copy-Item "${{ github.workspace }}\README.md" README.md -Force
+          Copy-Item "${{ github.workspace }}\docs\RELEASE_NOTES.md" RELEASE_NOTES.md -Force
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if (git status --porcelain) {
+            git commit -m "Release $tag"
+          } else {
+            Write-Host "No file changes to commit."
+          }
+          # Force the tag so a re-run points at the fresh commit.
+          git tag -f $tag
+          git push origin "HEAD:$branch"
+          if ($LASTEXITCODE -ne 0) { throw "Failed to push to $repo." }
+          git push -f origin $tag
+          if ($LASTEXITCODE -ne 0) { throw "Failed to push tag $tag." }
+          Pop-Location
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.ver.outputs.tag }}"
+          $repo = "${{ env.RELEASE_REPO }}"
           $assets = Get-ChildItem dist | ForEach-Object FullName
 
-          gh release view $tag *> $null
+          gh release view $tag --repo $repo *> $null
           if ($LASTEXITCODE -eq 0) {
-            gh release upload $tag $assets --clobber
-            gh release edit $tag --notes-file release-notes.md
+            gh release upload $tag $assets --repo $repo --clobber
+            gh release edit $tag --repo $repo --notes-file release-notes.md
           } else {
             gh release create $tag $assets `
+              --repo $repo `
               --title "MediaFlyouts $tag" `
               --notes-file release-notes.md `
               --verify-tag
