@@ -189,7 +189,17 @@ jobs:
           Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
           Copy-Item "${{ github.workspace }}\bin\*" . -Recurse -Force
           Copy-Item "${{ github.workspace }}\README.md" README.md -Force
-          Copy-Item "${{ github.workspace }}\docs\RELEASE_NOTES.md" RELEASE_NOTES.md -Force
+          # docs/ powers the README navigation links, so ship the whole tree.
+          Copy-Item "${{ github.workspace }}\docs" docs -Recurse -Force
+          # Extra files the README links to. Copy when present so older tags
+          # that lack them still build.
+          if (Test-Path "${{ github.workspace }}\CHANGELOG.md") {
+            Copy-Item "${{ github.workspace }}\CHANGELOG.md" CHANGELOG.md -Force
+          }
+          if (Test-Path "${{ github.workspace }}\packaging\README.md") {
+            New-Item -ItemType Directory -Force packaging | Out-Null
+            Copy-Item "${{ github.workspace }}\packaging\README.md" packaging\README.md -Force
+          }
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
