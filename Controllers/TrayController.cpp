@@ -77,6 +77,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, QChar(0xE863)), this);
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
+    connect(m_tray, &QSystemTrayIcon::messageClicked, this, &TrayController::notificationClicked);
 
     // Hold single click briefly. Double-click can open dashboard.
     m_singleClickTimer = new QTimer(this);

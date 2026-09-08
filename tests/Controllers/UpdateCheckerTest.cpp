@@ -30,4 +30,21 @@ TEST(UpdateCheckerTest, DefaultState) {
 TEST(UpdateCheckerTest, UsesReleaseRepository) {
     EXPECT_EQ(UpdateChecker::releasesApiUrl(),
               QStringLiteral("https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest"));
+    EXPECT_EQ(UpdateChecker::releasesPageUrl(),
+              QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/latest"));
+}
+
+// Without a check the download button still reaches the releases index.
+TEST(UpdateCheckerTest, ReleaseUrlFallsBackToTheReleasesPage) {
+    UpdateChecker u;
+    EXPECT_EQ(u.releaseUrl(), UpdateChecker::releasesPageUrl());
+}
+
+TEST(UpdateCheckerTest, TrustsOnlyHttpsGitHubLinks) {
+    EXPECT_TRUE(UpdateChecker::isTrustedReleaseUrl(
+        QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.2.0")));
+    EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("http://github.com/owner/repo")));
+    EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("https://github.com.evil.test/owner/repo")));
+    EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("file:///C:/Windows/System32/cmd.exe")));
+    EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QString()));
 }

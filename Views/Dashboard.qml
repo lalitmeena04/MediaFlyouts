@@ -1681,12 +1681,26 @@ Window {
                             enabled: !updateChecker.checking
                             onClicked: updateChecker.check()
                         }
+                        Button {
+                            visible: updateChecker.updateAvailable
+                            text: "Download " + updateChecker.latestVersion
+                            onClicked: updateChecker.openReleasePage()
+                        }
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: updateChecker.status
                             color: updateChecker.updateAvailable ? theme.accent : theme.textTertiary
                             font.pixelSize: 13
                         }
+                    }
+
+                    Text {
+                        visible: updateChecker.updateAvailable
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "The release page opens in your browser. Download the installer there, then run it to update. Your settings are kept."
+                        color: theme.textTertiary
+                        font.pixelSize: 12
                     }
 
                     SettingRow {

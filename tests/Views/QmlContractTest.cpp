@@ -77,6 +77,14 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
     EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
 }
 
+// An available update must offer a way to get it, not just an announcement.
+TEST(QmlContractTest, AboutPageOffersTheDownloadWhenAnUpdateExists) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("visible: updateChecker.updateAvailable"));
+    expectContains(source, QStringLiteral("updateChecker.openReleasePage()"));
+}
+
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
     const QString source = loadSource("Views/DeviceIcons.qml");
 

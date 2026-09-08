@@ -113,7 +113,13 @@ void MainControllerClass::buildCoreSubsystems() {
     // Notify from tray when newer release exists.
     QObject::connect(m_updateChecker.get(), &UpdateChecker::changed, m_tray.get(), [this] {
         if(m_updateChecker->updateAvailable())
-            m_tray->notify(QStringLiteral("MediaFlyouts update available"), m_updateChecker->status());
+            m_tray->notify(QStringLiteral("MediaFlyouts update available"),
+                           QStringLiteral("%1 Click to open the download page.").arg(m_updateChecker->status()));
+    });
+    // Clicking that notification takes the user to the download.
+    QObject::connect(m_tray.get(), &TrayController::notificationClicked, m_updateChecker.get(), [this] {
+        if(m_updateChecker->updateAvailable())
+            m_updateChecker->openReleasePage();
     });
 }
 
