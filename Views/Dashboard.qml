@@ -1721,7 +1721,7 @@ Window {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: Qt.openUrlExternally("https://github.com/scleaverzer0ne/MediaFlyouts")
+                            onClicked: Qt.openUrlExternally("https://github.com/scleaverzer0ne/MediaFlyouts-Releases")
                         }
                     }
                 }
