@@ -44,6 +44,19 @@ TEST(QmlContractTest, WiredAlertsAreGatedByTheirOwnSetting) {
     expectContains(source, QStringLiteral("settings.peripheralFlyoutOnWired"));
 }
 
+// No transport signal links a dongle to the same peripheral on another radio,
+// so hiding a device has to silence it everywhere.
+TEST(QmlContractTest, HiddenDevicesAreIgnoredOnEverySurface) {
+    expectContains(loadSource("Views/PeripheralFlyout.qml"),
+                   QStringLiteral("!settings.peripheralSelected(alert.name)"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("readonly property var shownDevices"));
+    expectContains(dashboard, QStringLiteral("excluded.indexOf(device.name) === -1"));
+    // The picker itself keeps listing everything, or a hidden device is unreachable.
+    expectContains(dashboard, QStringLiteral("model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []"));
+}
+
 TEST(QmlContractTest, WidgetHidesWiredDevicesUntilEnabled) {
     const QString widget = loadSource("Views/PeripheralsWidget.qml");
 

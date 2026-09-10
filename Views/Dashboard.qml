@@ -35,14 +35,24 @@ Window {
     readonly property var wiredDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind === "usb"
     })
+    // Devices the user kept. The picker below still lists everything, so a
+    // hidden device can be brought back.
+    readonly property var shownDevices: {
+        var excluded = settings.peripheralsWidgetExcluded
+        return batteryStatus.devices.filter(function(device) {
+            return excluded.indexOf(device.name) === -1
+        })
+    }
     readonly property var peripheralSections: [
-        { "label": "2.4 GHz", "devices": batteryStatus.devices.filter(function(device) {
+        { "label": "2.4 GHz", "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "wireless"
         }) },
-        { "label": "Bluetooth", "devices": batteryStatus.devices.filter(function(device) {
+        { "label": "Bluetooth", "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
         }) },
-        { "label": "Wired", "devices": wiredDevices }
+        { "label": "Wired", "devices": shownDevices.filter(function(device) {
+            return device.connectionKind === "usb"
+        }) }
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
         { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
@@ -1338,7 +1348,7 @@ Window {
                         visible: settings.peripheralsWidgetEnabled
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Choose which detected peripherals to show on the widget:"
+                        text: "Choose which detected peripherals MediaFlyouts should show. Hidden devices are left out of the widget, the home page and the flyouts:"
                         color: theme.textSecondary
                         font.pixelSize: 12
                         topPadding: 4

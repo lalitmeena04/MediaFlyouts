@@ -29,6 +29,9 @@ FlyoutBase {
 
     // Wired devices are noisy. They stay silent until the user opts in.
     function alertEnabled(alert) {
+        // A device the user hid is ignored everywhere, not just on the widget.
+        if(!settings.peripheralSelected(alert.name))
+            return false
         if(alert.connectionKind === "usb" && !settings.peripheralFlyoutOnWired)
             return false
         return eventEnabled(alert.event)
