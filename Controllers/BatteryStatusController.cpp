@@ -14,6 +14,7 @@
 #include "BatteryProviders/LogitechBatteryProvider.h"
 #include "BatteryProviders/PlayStationControllerBatteryProvider.h"
 #include "BatteryProviders/RazerBatteryProvider.h"
+#include "BatteryProviders/WiredPeripheralProvider.h"
 #include "BatteryProviders/WirelessReceiverProvider.h"
 
 BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(parent) {
@@ -27,6 +28,8 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
     m_providers.push_back(std::make_unique<RazerBatteryProvider>());
     m_providers.push_back(std::make_unique<LogitechBatteryProvider>());
     m_providers.push_back(std::make_unique<WirelessReceiverProvider>());
+    // Wired devices carry no battery. Listed last so a wireless reading always wins the name.
+    m_providers.push_back(std::make_unique<WiredPeripheralProvider>());
     m_pollOnWorkerThread = true;
 
     // Poll as fallback. Catch missed events. Connect/disconnect reacts instantly.

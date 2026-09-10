@@ -34,7 +34,7 @@ Item {
             thickness: 4
             // Device with no reading still shows empty ring outline.
             percent: card.hasBattery ? card.alert.percent : 0
-            visible: true
+            showGauge: DeviceIcons.hasBattery(card.alert.connectionKind)
 
             Text {
                 anchors.centerIn: parent

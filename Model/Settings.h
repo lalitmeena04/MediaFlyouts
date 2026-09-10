@@ -64,6 +64,8 @@ class Settings : public QObject {
         Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
         Q_PROPERTY(bool peripheralsWidgetEnabled READ peripheralsWidgetEnabled WRITE setPeripheralsWidgetEnabled
                        NOTIFY changed)
+        Q_PROPERTY(bool peripheralsWidgetWiredEnabled READ peripheralsWidgetWiredEnabled WRITE
+                       setPeripheralsWidgetWiredEnabled NOTIFY changed)
         Q_PROPERTY(QStringList peripheralsWidgetExcluded READ peripheralsWidgetExcluded NOTIFY changed)
         Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
@@ -82,6 +84,8 @@ class Settings : public QObject {
                        setPeripheralFlyoutOnLowBattery NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutOnCharging READ peripheralFlyoutOnCharging WRITE
                        setPeripheralFlyoutOnCharging NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnWired READ peripheralFlyoutOnWired WRITE setPeripheralFlyoutOnWired
+                       NOTIFY changed)
         Q_PROPERTY(bool peripheralLowBatteryToast READ peripheralLowBatteryToast WRITE setPeripheralLowBatteryToast
                        NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
@@ -151,6 +155,8 @@ class Settings : public QObject {
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
         bool peripheralsWidgetEnabled() const;
+        // Wired devices are hidden until the user asks for them.
+        bool peripheralsWidgetWiredEnabled() const;
         QStringList peripheralsWidgetExcluded() const;
         // True unless device is hidden in peripherals-widget picker.
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
@@ -164,6 +170,7 @@ class Settings : public QObject {
         bool peripheralFlyoutOnDisconnect() const;
         bool peripheralFlyoutOnLowBattery() const;
         bool peripheralFlyoutOnCharging() const;
+        bool peripheralFlyoutOnWired() const;
         bool peripheralLowBatteryToast() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
@@ -222,6 +229,7 @@ class Settings : public QObject {
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
         void setPeripheralsWidgetEnabled(bool v);
+        void setPeripheralsWidgetWiredEnabled(bool v);
         void setBatteryRingUseAccent(bool v);
         void setPeripheralFlyoutEnabled(bool v);
         void setPeripheralFlyoutDuration(int v);
@@ -231,6 +239,7 @@ class Settings : public QObject {
         void setPeripheralFlyoutOnDisconnect(bool v);
         void setPeripheralFlyoutOnLowBattery(bool v);
         void setPeripheralFlyoutOnCharging(bool v);
+        void setPeripheralFlyoutOnWired(bool v);
         void setPeripheralLowBatteryToast(bool v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
@@ -297,6 +306,7 @@ class Settings : public QObject {
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;
         bool m_peripheralsWidgetEnabled;
+        bool m_peripheralsWidgetWiredEnabled;
         QStringList m_peripheralsWidgetExcluded;
         bool m_batteryRingUseAccent;
         bool m_peripheralFlyoutEnabled;
@@ -307,6 +317,7 @@ class Settings : public QObject {
         bool m_peripheralFlyoutOnDisconnect;
         bool m_peripheralFlyoutOnLowBattery;
         bool m_peripheralFlyoutOnCharging;
+        bool m_peripheralFlyoutOnWired;
         bool m_peripheralLowBatteryToast;
         bool m_onboardingCompleted;
         bool m_accentFromArt;

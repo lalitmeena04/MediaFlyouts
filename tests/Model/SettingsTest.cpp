@@ -90,6 +90,9 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.peripheralFlyoutOnLowBattery());
     EXPECT_FALSE(s.peripheralFlyoutOnCharging());
     EXPECT_TRUE(s.peripheralLowBatteryToast());
+    // Wired devices are opt-in on both surfaces.
+    EXPECT_FALSE(s.peripheralFlyoutOnWired());
+    EXPECT_FALSE(s.peripheralsWidgetWiredEnabled());
 }
 
 TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {

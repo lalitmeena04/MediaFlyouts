@@ -81,6 +81,8 @@ void Settings::reload() {
     // Visualizer style values. 0 = bars. 1 = radial. 2 = waveform. 3 = particles.
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
+    // Wired devices are opt-in. They would otherwise crowd the widget.
+    m_peripheralsWidgetWiredEnabled = m_store.value(QStringLiteral("peripheralsWidgetWiredEnabled"), false).toBool();
     // Devices show by default. This list stores hidden devices.
     m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
@@ -93,6 +95,7 @@ void Settings::reload() {
     m_peripheralFlyoutOnDisconnect = m_store.value(QStringLiteral("peripheralFlyoutOnDisconnect"), true).toBool();
     m_peripheralFlyoutOnLowBattery = m_store.value(QStringLiteral("peripheralFlyoutOnLowBattery"), true).toBool();
     m_peripheralFlyoutOnCharging = m_store.value(QStringLiteral("peripheralFlyoutOnCharging"), false).toBool();
+    m_peripheralFlyoutOnWired = m_store.value(QStringLiteral("peripheralFlyoutOnWired"), false).toBool();
     m_peripheralLowBatteryToast = m_store.value(QStringLiteral("peripheralLowBatteryToast"), true).toBool();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
@@ -332,6 +335,9 @@ int Settings::visualizerStyle() const {
 bool Settings::peripheralsWidgetEnabled() const {
     return m_peripheralsWidgetEnabled;
 }
+bool Settings::peripheralsWidgetWiredEnabled() const {
+    return m_peripheralsWidgetWiredEnabled;
+}
 
 QStringList Settings::peripheralsWidgetExcluded() const {
     return m_peripheralsWidgetExcluded;
@@ -380,6 +386,9 @@ bool Settings::peripheralFlyoutOnLowBattery() const {
 }
 bool Settings::peripheralFlyoutOnCharging() const {
     return m_peripheralFlyoutOnCharging;
+}
+bool Settings::peripheralFlyoutOnWired() const {
+    return m_peripheralFlyoutOnWired;
 }
 bool Settings::peripheralLowBatteryToast() const {
     return m_peripheralLowBatteryToast;
@@ -567,6 +576,9 @@ void Settings::setVisualizerStyle(int v) {
 void Settings::setPeripheralsWidgetEnabled(bool v) {
     assign("peripheralsWidgetEnabled", m_peripheralsWidgetEnabled, v);
 }
+void Settings::setPeripheralsWidgetWiredEnabled(bool v) {
+    assign("peripheralsWidgetWiredEnabled", m_peripheralsWidgetWiredEnabled, v);
+}
 void Settings::setBatteryRingUseAccent(bool v) {
     assign("batteryRingUseAccent", m_batteryRingUseAccent, v);
 }
@@ -593,6 +605,9 @@ void Settings::setPeripheralFlyoutOnLowBattery(bool v) {
 }
 void Settings::setPeripheralFlyoutOnCharging(bool v) {
     assign("peripheralFlyoutOnCharging", m_peripheralFlyoutOnCharging, v);
+}
+void Settings::setPeripheralFlyoutOnWired(bool v) {
+    assign("peripheralFlyoutOnWired", m_peripheralFlyoutOnWired, v);
 }
 void Settings::setPeripheralLowBatteryToast(bool v) {
     assign("peripheralLowBatteryToast", m_peripheralLowBatteryToast, v);

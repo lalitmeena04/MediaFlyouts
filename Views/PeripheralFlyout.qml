@@ -27,6 +27,13 @@ FlyoutBase {
         return false
     }
 
+    // Wired devices are noisy. They stay silent until the user opts in.
+    function alertEnabled(alert) {
+        if(alert.connectionKind === "usb" && !settings.peripheralFlyoutOnWired)
+            return false
+        return eventEnabled(alert.event)
+    }
+
     function showFlyout(pending) {
         if(!settings.onboardingCompleted)
             return
@@ -35,7 +42,7 @@ FlyoutBase {
 
         var shown = []
         for(var i = 0; i < pending.length; i++)
-            if(root.eventEnabled(pending[i].event))
+            if(root.alertEnabled(pending[i]))
                 shown.push(pending[i])
         if(shown.length === 0)
             return

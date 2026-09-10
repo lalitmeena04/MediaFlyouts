@@ -86,10 +86,14 @@ qt_add_library(mediaflyout_core STATIC
     Model/PlaybackController.h
     Model/RazerProtocol.cpp
     Model/RazerProtocol.h
+    Model/ReceiverProfiles.cpp
+    Model/ReceiverProfiles.h
     Model/SessionSelection.cpp
     Model/SessionSelection.h
     Model/TrackInfo.cpp
     Model/TrackInfo.h
+    Model/WiredPeripheralRules.cpp
+    Model/WiredPeripheralRules.h
 )
 target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
@@ -221,6 +225,8 @@ if (WIN32)
         Controllers/BatteryProviders/PlayStationControllerBatteryProvider.h
         Controllers/BatteryProviders/RazerBatteryProvider.cpp
         Controllers/BatteryProviders/RazerBatteryProvider.h
+        Controllers/BatteryProviders/WiredPeripheralProvider.cpp
+        Controllers/BatteryProviders/WiredPeripheralProvider.h
         Controllers/BatteryProviders/WirelessReceiverProvider.cpp
         Controllers/BatteryProviders/WirelessReceiverProvider.h
         Controllers/BatteryStatusController.cpp

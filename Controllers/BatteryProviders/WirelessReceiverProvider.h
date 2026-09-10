@@ -1,16 +1,11 @@
 #pragma once
 
 #include "IBatteryProvider.h"
-
-struct WirelessReceiverProfile {
-        quint16 vendorId;
-        quint16 productId;
-        QString name;
-        QString category;
-};
+#include "ReceiverProfiles.h"
 
 // Return known receiver profile. Return nullptr for unsupported receiver.
-const WirelessReceiverProfile* wirelessReceiverProfile(quint16 vendorId, quint16 productId);
+// Profiles come from the built-in list plus the user's receivers.json.
+const mf::ReceiverProfile* wirelessReceiverProfile(quint16 vendorId, quint16 productId);
 
 // Report known proprietary wireless receivers without battery telemetry.
 // Presence still enables connect/disconnect alerts.
