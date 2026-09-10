@@ -28,6 +28,7 @@
 #include "MediaKeyController.h"
 #include "NativeFlyoutSuppressor.h"
 #include "PeripheralAlerts.h"
+#include "PowerStatusController.h"
 #include "StartupController.h"
 #include "TaskbarInfo.h"
 #include "VolumeController.h"
@@ -113,7 +114,13 @@ void MainControllerClass::buildCoreSubsystems() {
     // Notify from tray when newer release exists.
     QObject::connect(m_updateChecker.get(), &UpdateChecker::changed, m_tray.get(), [this] {
         if(m_updateChecker->updateAvailable())
-            m_tray->notify(QStringLiteral("MediaFlyouts update available"), m_updateChecker->status());
+            m_tray->notify(QStringLiteral("MediaFlyouts update available"),
+                           QStringLiteral("%1 Click to open the download page.").arg(m_updateChecker->status()));
+    });
+    // Clicking that notification takes the user to the download.
+    QObject::connect(m_tray.get(), &TrayController::notificationClicked, m_updateChecker.get(), [this] {
+        if(m_updateChecker->updateAvailable())
+            m_updateChecker->openReleasePage();
     });
 }
 
@@ -220,6 +227,13 @@ void MainControllerClass::buildPlatformSubsystems() {
                                             .arg(m_settings->peripheralDisplayName(device))
                                             .arg(percent));
                      });
+
+    // Charger plug and unplug. Systems with no battery report unavailable.
+    m_powerStatus = std::make_unique<PowerStatusController>();
+    m_powerStatus->start();
+    m_capabilities->setChargerAvailable(m_powerStatus->available());
+    QObject::connect(m_powerStatus.get(), &PowerStatusController::availabilityChanged, m_capabilities.get(),
+                     [this] { m_capabilities->setChargerAvailable(m_powerStatus->available()); });
 }
 #endif
 
@@ -244,5 +258,6 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("windowEffects", m_windowEffects.get());
     ctx->setContextProperty("batteryStatus", m_batteryStatus.get());
     ctx->setContextProperty("peripheralAlerts", m_peripheralAlerts.get());
+    ctx->setContextProperty("powerStatus", m_powerStatus.get());
 #endif
 }

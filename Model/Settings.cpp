@@ -122,6 +122,13 @@ void Settings::reload() {
     m_peripheralFlyoutOnCharging = m_store.value(QStringLiteral("peripheralFlyoutOnCharging"), false).toBool();
     m_peripheralFlyoutOnWired = m_store.value(QStringLiteral("peripheralFlyoutOnWired"), false).toBool();
     m_peripheralLowBatteryToast = m_store.value(QStringLiteral("peripheralLowBatteryToast"), true).toBool();
+    m_chargerFlyoutEnabled = m_store.value(QStringLiteral("chargerFlyoutEnabled"), false).toBool();
+    m_chargerFlyoutOnPlug = m_store.value(QStringLiteral("chargerFlyoutOnPlug"), true).toBool();
+    m_chargerFlyoutOnUnplug = m_store.value(QStringLiteral("chargerFlyoutOnUnplug"), true).toBool();
+    m_chargerFlyoutDuration = m_store.value(QStringLiteral("chargerFlyoutDuration"), 3000).toInt();
+    // Indexes mf::FlyoutPosition. 4 = BottomCenter.
+    m_chargerFlyoutPosition = m_store.value(QStringLiteral("chargerFlyoutPosition"), 4).toInt();
+    m_chargerFlyoutMonitor = m_store.value(QStringLiteral("chargerFlyoutMonitor"), 0).toInt();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
     // Album-art accent also tints full app.
@@ -444,6 +451,24 @@ bool Settings::peripheralFlyoutOnWired() const {
 bool Settings::peripheralLowBatteryToast() const {
     return m_peripheralLowBatteryToast;
 }
+bool Settings::chargerFlyoutEnabled() const {
+    return m_chargerFlyoutEnabled;
+}
+bool Settings::chargerFlyoutOnPlug() const {
+    return m_chargerFlyoutOnPlug;
+}
+bool Settings::chargerFlyoutOnUnplug() const {
+    return m_chargerFlyoutOnUnplug;
+}
+int Settings::chargerFlyoutDuration() const {
+    return m_chargerFlyoutDuration;
+}
+int Settings::chargerFlyoutPosition() const {
+    return m_chargerFlyoutPosition;
+}
+int Settings::chargerFlyoutMonitor() const {
+    return m_chargerFlyoutMonitor;
+}
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
 }
@@ -662,6 +687,24 @@ void Settings::setPeripheralFlyoutOnWired(bool v) {
 }
 void Settings::setPeripheralLowBatteryToast(bool v) {
     assign("peripheralLowBatteryToast", m_peripheralLowBatteryToast, v);
+}
+void Settings::setChargerFlyoutEnabled(bool v) {
+    assign("chargerFlyoutEnabled", m_chargerFlyoutEnabled, v);
+}
+void Settings::setChargerFlyoutOnPlug(bool v) {
+    assign("chargerFlyoutOnPlug", m_chargerFlyoutOnPlug, v);
+}
+void Settings::setChargerFlyoutOnUnplug(bool v) {
+    assign("chargerFlyoutOnUnplug", m_chargerFlyoutOnUnplug, v);
+}
+void Settings::setChargerFlyoutDuration(int v) {
+    assignInt("chargerFlyoutDuration", m_chargerFlyoutDuration, v);
+}
+void Settings::setChargerFlyoutPosition(int v) {
+    assignInt("chargerFlyoutPosition", m_chargerFlyoutPosition, v);
+}
+void Settings::setChargerFlyoutMonitor(int v) {
+    assignInt("chargerFlyoutMonitor", m_chargerFlyoutMonitor, v);
 }
 void Settings::setOnboardingCompleted(bool v) {
     assign("onboardingCompleted", m_onboardingCompleted, v);

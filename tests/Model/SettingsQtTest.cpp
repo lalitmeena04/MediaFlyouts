@@ -140,6 +140,10 @@ void SettingsQtTest::legacySettingsKeepTheirValuesAndGainNewDefaults() {
     QVERIFY(settings.peripheralLowBatteryToast());
     QVERIFY(!settings.peripheralFlyoutOnWired());
     QVERIFY(!settings.peripheralsWidgetWiredEnabled());
+    QVERIFY(!settings.chargerFlyoutEnabled());
+    QVERIFY(settings.chargerFlyoutOnPlug());
+    QVERIFY(settings.chargerFlyoutOnUnplug());
+    QCOMPARE(settings.chargerFlyoutDuration(), 3000);
 }
 
 QTEST_GUILESS_MAIN(SettingsQtTest)

@@ -91,6 +91,12 @@ class Settings : public QObject {
                        NOTIFY changed)
         Q_PROPERTY(bool peripheralLowBatteryToast READ peripheralLowBatteryToast WRITE setPeripheralLowBatteryToast
                        NOTIFY changed)
+        Q_PROPERTY(bool chargerFlyoutEnabled READ chargerFlyoutEnabled WRITE setChargerFlyoutEnabled NOTIFY changed)
+        Q_PROPERTY(bool chargerFlyoutOnPlug READ chargerFlyoutOnPlug WRITE setChargerFlyoutOnPlug NOTIFY changed)
+        Q_PROPERTY(bool chargerFlyoutOnUnplug READ chargerFlyoutOnUnplug WRITE setChargerFlyoutOnUnplug NOTIFY changed)
+        Q_PROPERTY(int chargerFlyoutDuration READ chargerFlyoutDuration WRITE setChargerFlyoutDuration NOTIFY changed)
+        Q_PROPERTY(int chargerFlyoutPosition READ chargerFlyoutPosition WRITE setChargerFlyoutPosition NOTIFY changed)
+        Q_PROPERTY(int chargerFlyoutMonitor READ chargerFlyoutMonitor WRITE setChargerFlyoutMonitor NOTIFY changed)
         Q_PROPERTY(bool onboardingCompleted READ onboardingCompleted WRITE setOnboardingCompleted NOTIFY changed)
         Q_PROPERTY(bool accentFromArt READ accentFromArt WRITE setAccentFromArt NOTIFY changed)
         Q_PROPERTY(bool accentFromArtAppWide READ accentFromArtAppWide WRITE setAccentFromArtAppWide NOTIFY changed)
@@ -180,6 +186,13 @@ class Settings : public QObject {
         bool peripheralFlyoutOnCharging() const;
         bool peripheralFlyoutOnWired() const;
         bool peripheralLowBatteryToast() const;
+        bool chargerFlyoutEnabled() const;
+        bool chargerFlyoutOnPlug() const;
+        bool chargerFlyoutOnUnplug() const;
+        int chargerFlyoutDuration() const;
+        // Independent of the other flyouts. Indexes mf::FlyoutPosition.
+        int chargerFlyoutPosition() const;
+        int chargerFlyoutMonitor() const;
         bool onboardingCompleted() const;
         bool accentFromArt() const;
         bool accentFromArtAppWide() const;
@@ -249,6 +262,12 @@ class Settings : public QObject {
         void setPeripheralFlyoutOnCharging(bool v);
         void setPeripheralFlyoutOnWired(bool v);
         void setPeripheralLowBatteryToast(bool v);
+        void setChargerFlyoutEnabled(bool v);
+        void setChargerFlyoutOnPlug(bool v);
+        void setChargerFlyoutOnUnplug(bool v);
+        void setChargerFlyoutDuration(int v);
+        void setChargerFlyoutPosition(int v);
+        void setChargerFlyoutMonitor(int v);
         void setOnboardingCompleted(bool v);
         void setAccentFromArt(bool v);
         void setAccentFromArtAppWide(bool v);
@@ -328,6 +347,12 @@ class Settings : public QObject {
         bool m_peripheralFlyoutOnCharging;
         bool m_peripheralFlyoutOnWired;
         bool m_peripheralLowBatteryToast;
+        bool m_chargerFlyoutEnabled;
+        bool m_chargerFlyoutOnPlug;
+        bool m_chargerFlyoutOnUnplug;
+        int m_chargerFlyoutDuration;
+        int m_chargerFlyoutPosition;
+        int m_chargerFlyoutMonitor;
         bool m_onboardingCompleted;
         bool m_accentFromArt;
         bool m_accentFromArtAppWide;

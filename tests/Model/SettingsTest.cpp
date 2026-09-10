@@ -93,6 +93,13 @@ TEST_F(SettingsTest, Defaults) {
     // Wired devices are opt-in on both surfaces.
     EXPECT_FALSE(s.peripheralFlyoutOnWired());
     EXPECT_FALSE(s.peripheralsWidgetWiredEnabled());
+    // Charger flyout starts off. Both events start on.
+    EXPECT_FALSE(s.chargerFlyoutEnabled());
+    EXPECT_TRUE(s.chargerFlyoutOnPlug());
+    EXPECT_TRUE(s.chargerFlyoutOnUnplug());
+    EXPECT_EQ(s.chargerFlyoutDuration(), 3000);
+    EXPECT_EQ(s.chargerFlyoutPosition(), 4);
+    EXPECT_EQ(s.chargerFlyoutMonitor(), 0);
 }
 
 // A dongle often reports something unhelpful, so the user can rename it.

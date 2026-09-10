@@ -21,9 +21,36 @@ TEST(QmlContractTest, RegistersAndStacksThePeripheralFlyout) {
     const QString source = loadSource("Views/App.qml");
 
     expectContains(source, QStringLiteral("property PeripheralFlyout peripheralFlyout"));
-    expectContains(source, QStringLiteral("flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout]"));
+    expectContains(source, QStringLiteral("flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout, chargerFlyout]"));
     expectContains(source, QStringLiteral("settings.peripheralFlyoutPosition"));
     expectContains(source, QStringLiteral("settings.peripheralFlyoutMonitor"));
+}
+
+TEST(QmlContractTest, RegistersAndStacksTheChargerFlyout) {
+    const QString source = loadSource("Views/App.qml");
+
+    expectContains(source, QStringLiteral("property ChargerFlyout chargerFlyout"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutPosition"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutMonitor"));
+}
+
+TEST(QmlContractTest, ChargerFlyoutGatesOnCapabilityAndEventSettings) {
+    const QString source = loadSource("Views/ChargerFlyout.qml");
+
+    expectContains(source, QStringLiteral("target: powerStatus"));
+    expectContains(source, QStringLiteral("function onChargerChanged(pluggedIn)"));
+    expectContains(source, QStringLiteral("capabilities.chargerAvailable"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutOnPlug"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutOnUnplug"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutDuration"));
+}
+
+TEST(QmlContractTest, DashboardHidesTheChargerPageOnSystemsWithNoBattery) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("available: capabilities.chargerAvailable"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
 }
 
 TEST(QmlContractTest, ConnectsTheFlyoutToPeripheralAlertsAndEventSettings) {
@@ -78,13 +105,13 @@ TEST(QmlContractTest, CardUsesAlertCategoryAndTransport) {
     expectContains(source, QStringLiteral("DeviceIcons.transport"));
 }
 
-TEST(QmlContractTest, DashboardHasTheRequestedTenPagesInOrder) {
+TEST(QmlContractTest, DashboardHasTheRequestedPagesInOrder) {
     const QString source = loadSource("Views/Dashboard.qml");
     const QStringList pages{
         QStringLiteral("Home"), QStringLiteral("Media Flyout"), QStringLiteral("Peripheral Flyout"),
-        QStringLiteral("Media Widget"), QStringLiteral("Peripheral Widget"), QStringLiteral("Volume"),
-        QStringLiteral("Lock Keys"), QStringLiteral("App Filtering"), QStringLiteral("Additional Settings"),
-        QStringLiteral("About")};
+        QStringLiteral("Charger Flyout"), QStringLiteral("Media Widget"), QStringLiteral("Peripheral Widget"),
+        QStringLiteral("Volume"), QStringLiteral("Lock Keys"), QStringLiteral("App Filtering"),
+        QStringLiteral("Additional Settings"), QStringLiteral("About")};
 
     int previous = -1;
     for(const QString& page : pages) {
@@ -109,6 +136,14 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
     expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-dark.svg"));
     expectContains(source, QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases"));
     EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
+}
+
+// An available update must offer a way to get it, not just an announcement.
+TEST(QmlContractTest, AboutPageOffersTheDownloadWhenAnUpdateExists) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("visible: updateChecker.updateAvailable"));
+    expectContains(source, QStringLiteral("updateChecker.openReleasePage()"));
 }
 
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
