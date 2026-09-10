@@ -50,6 +50,7 @@ add_executable(mediaflyout_gtest
     Model/FlyoutPositionerTest.cpp
     Model/HidppProtocolTest.cpp
     Model/PlaybackControllerTest.cpp
+    Model/PowerAlertPolicyTest.cpp
     Model/RazerProtocolTest.cpp
     Model/SessionSelectionTest.cpp
     Model/SettingsTest.cpp
@@ -82,6 +83,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/BluetoothConnectionWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/HidChangeWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/PowerStatusController.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarInfo.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp

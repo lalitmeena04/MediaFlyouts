@@ -34,6 +34,7 @@ class AccentWatcher;
 class MediaKeyController;
 class BatteryStatusController;
 class PeripheralAlerts;
+class PowerStatusController;
 #endif
 
 // Composition root. Owns subsystems and exposes them to QML.
@@ -87,5 +88,6 @@ class MainControllerClass {
         std::unique_ptr<MediaKeyController> m_mediaKeys;
         std::unique_ptr<BatteryStatusController> m_batteryStatus;
         std::unique_ptr<PeripheralAlerts> m_peripheralAlerts;
+        std::unique_ptr<PowerStatusController> m_powerStatus;
 #endif
 };

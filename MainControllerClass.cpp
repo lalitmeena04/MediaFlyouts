@@ -28,6 +28,7 @@
 #include "MediaKeyController.h"
 #include "NativeFlyoutSuppressor.h"
 #include "PeripheralAlerts.h"
+#include "PowerStatusController.h"
 #include "StartupController.h"
 #include "TaskbarInfo.h"
 #include "VolumeController.h"
@@ -221,6 +222,13 @@ void MainControllerClass::buildPlatformSubsystems() {
                                                 : QStringLiteral("Peripheral battery low"),
                                         QStringLiteral("%1 is at %2%").arg(device).arg(percent));
                      });
+
+    // Charger plug and unplug. Systems with no battery report unavailable.
+    m_powerStatus = std::make_unique<PowerStatusController>();
+    m_powerStatus->start();
+    m_capabilities->setChargerAvailable(m_powerStatus->available());
+    QObject::connect(m_powerStatus.get(), &PowerStatusController::availabilityChanged, m_capabilities.get(),
+                     [this] { m_capabilities->setChargerAvailable(m_powerStatus->available()); });
 }
 #endif
 
@@ -245,5 +253,6 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("windowEffects", m_windowEffects.get());
     ctx->setContextProperty("batteryStatus", m_batteryStatus.get());
     ctx->setContextProperty("peripheralAlerts", m_peripheralAlerts.get());
+    ctx->setContextProperty("powerStatus", m_powerStatus.get());
 #endif
 }

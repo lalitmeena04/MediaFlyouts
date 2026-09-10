@@ -11,6 +11,7 @@
 #include "AudioCapture.h"
 #include "BluetoothConnectionWatcher.h"
 #include "HidChangeWatcher.h"
+#include "PowerStatusController.h"
 #include "TaskbarInfo.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
@@ -54,6 +55,21 @@ TEST(Win32ControllersTest, DeviceWatchersCanStartRepeatedly) {
     hid.start();
     QCoreApplication::processEvents();
     SUCCEED();
+}
+
+// The first reading only seeds the baseline, so no charger event fires at startup.
+TEST(Win32ControllersTest, PowerStatusStartRaisesNoChargerEvent) {
+    PowerStatusController power;
+    int events = 0;
+    QObject::connect(&power, &PowerStatusController::chargerChanged, &power, [&events] { ++events; });
+
+    power.start();
+    power.refresh();
+    QCoreApplication::processEvents();
+
+    EXPECT_EQ(events, 0);
+    EXPECT_GE(power.percent(), -1);
+    EXPECT_LE(power.percent(), 100);
 }
 
 TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {

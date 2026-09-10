@@ -84,6 +84,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/HidppProtocol.h
     Model/PlaybackController.cpp
     Model/PlaybackController.h
+    Model/PowerAlertPolicy.cpp
+    Model/PowerAlertPolicy.h
     Model/RazerProtocol.cpp
     Model/RazerProtocol.h
     Model/SessionSelection.cpp
@@ -161,6 +163,7 @@ qt_add_qml_module(MediaFlyouts
         Views/App.qml
         Views/BatteryIcon.qml
         Views/BatteryRing.qml
+        Views/ChargerFlyout.qml
         Views/Dashboard.qml
         Views/DeviceIcons.qml
         Views/DockableWidget.qml
@@ -239,6 +242,8 @@ if (WIN32)
         Controllers/NativeFlyoutSuppressor.h
         Controllers/PeripheralAlerts.cpp
         Controllers/PeripheralAlerts.h
+        Controllers/PowerStatusController.cpp
+        Controllers/PowerStatusController.h
         Controllers/StartupController.cpp
         Controllers/StartupController.h
         Controllers/TaskbarInfo.cpp
