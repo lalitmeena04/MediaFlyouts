@@ -2,7 +2,7 @@
 # Used to confirm a glyph exists before hardcoding its codepoint in QML.
 param(
     [string]$FontPath = 'Views/assets/fonts/FluentSystemIcons-Filled.ttf',
-    [string]$Match = 'camera'
+    [string]$Match = 'charge'
 )
 
 $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path $FontPath).Path)

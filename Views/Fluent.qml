@@ -40,4 +40,5 @@ QtObject {
     readonly property string link: "\uF4E9"
     readonly property string chevronLeft: "\uEA4D"
     readonly property string chevronRight: "\uEA50"
+    readonly property string charge: "\uF1CF"
 }

@@ -58,7 +58,7 @@ Window {
         { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
         { "icon": Fluent.plugConnected, "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
-        { "icon": Fluent.plugConnected, "name": "Charger Flyout", "desc": "Announce the charger as it is plugged in or unplugged." },
+        { "icon": Fluent.charge, "name": "Charger Flyout", "desc": "Announce the charger as it is plugged in or unplugged." },
         { "icon": Fluent.musicNote, "name": "Media Widget", "desc": "A compact now-playing widget docked on the taskbar." },
         { "icon": Fluent.usbStick,  "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
@@ -742,7 +742,7 @@ Window {
                                     { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
                                     { "name": "Up next", "icon": Fluent.next, "key": "nextup", "page": 1 },
                                     { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 6 },
-                                    { "name": "Charger flyout", "icon": Fluent.plugConnected, "key": "charger", "page": 3 }
+                                    { "name": "Charger flyout", "icon": Fluent.charge, "key": "charger", "page": 3 }
                                 ]
                                 delegate: Rectangle {
                                     required property var modelData
