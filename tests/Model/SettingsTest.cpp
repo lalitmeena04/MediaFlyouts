@@ -95,6 +95,60 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_FALSE(s.peripheralsWidgetWiredEnabled());
 }
 
+// A dongle often reports something unhelpful, so the user can rename it.
+TEST_F(SettingsTest, PeripheralNameFallsBackToTheDetectedName) {
+    Settings s;
+    EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("2.4G Wireless Receiver")),
+              QStringLiteral("2.4G Wireless Receiver"));
+    EXPECT_TRUE(s.peripheralNames().isEmpty());
+}
+
+TEST_F(SettingsTest, PeripheralRenameIsStoredAndRestorable) {
+    Settings s;
+    QSignalSpy spy(&s, &Settings::changed);
+
+    s.setPeripheralDisplayName(QStringLiteral("2.4G Wireless Receiver"), QStringLiteral("AULA F75"));
+    EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("2.4G Wireless Receiver")), QStringLiteral("AULA F75"));
+    EXPECT_EQ(spy.count(), 1);
+
+    // Renaming to the same thing again must not churn the settings file.
+    s.setPeripheralDisplayName(QStringLiteral("2.4G Wireless Receiver"), QStringLiteral("AULA F75"));
+    EXPECT_EQ(spy.count(), 1);
+
+    // Clearing restores the detected name and drops the entry.
+    s.setPeripheralDisplayName(QStringLiteral("2.4G Wireless Receiver"), QString());
+    EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("2.4G Wireless Receiver")),
+              QStringLiteral("2.4G Wireless Receiver"));
+    EXPECT_TRUE(s.peripheralNames().isEmpty());
+    EXPECT_EQ(spy.count(), 2);
+}
+
+TEST_F(SettingsTest, PeripheralRenameMatchingTheDetectedNameStoresNothing) {
+    Settings s;
+    s.setPeripheralDisplayName(QStringLiteral("Gaming Keyboard"), QStringLiteral("  Gaming Keyboard  "));
+    EXPECT_TRUE(s.peripheralNames().isEmpty());
+}
+
+// Names with separators would need escaping as ini keys, so they are stored as JSON.
+TEST_F(SettingsTest, PeripheralRenameSurvivesReloadAndAwkwardNames) {
+    const QString awkward = QStringLiteral("Owl Lite / Audio = [main]");
+    {
+        Settings first;
+        first.setPeripheralDisplayName(awkward, QStringLiteral("Webcam"));
+    }
+    Settings second;
+    EXPECT_EQ(second.peripheralDisplayName(awkward), QStringLiteral("Webcam"));
+}
+
+TEST_F(SettingsTest, PeripheralRenameIgnoresEmptyDeviceAndCapsLength) {
+    Settings s;
+    s.setPeripheralDisplayName(QString(), QStringLiteral("nothing"));
+    EXPECT_TRUE(s.peripheralNames().isEmpty());
+
+    s.setPeripheralDisplayName(QStringLiteral("Mouse"), QString(200, QLatin1Char('x')));
+    EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("Mouse")).size(), 64);
+}
+
 TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {
     Settings s;
     QSignalSpy spy(&s, &Settings::changed);

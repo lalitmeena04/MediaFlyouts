@@ -163,6 +163,26 @@ TEST(QmlContractTest, WiredWidgetToggleIsSeparatedFromWirelessDevices) {
     EXPECT_GT(wiredToggle, separator) << "Wired toggle must sit below the separator.";
 }
 
+// Renaming must not change the identity used for hiding or for alerts.
+TEST(QmlContractTest, PeripheralRowRenamesWithoutLosingTheDetectedName) {
+    const QString row = loadSource("Views/PeripheralRow.qml");
+
+    expectContains(row, QStringLiteral("required property string deviceName"));
+    expectContains(row, QStringLiteral("settings.peripheralNames[row.deviceName] || row.deviceName"));
+    expectContains(row, QStringLiteral("settings.setPeripheralDisplayName(row.deviceName, text)"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("delegate: PeripheralRow"));
+    expectContains(dashboard, QStringLiteral("settings.setPeripheralSelected(modelData.name, value)"));
+}
+
+TEST(QmlContractTest, RenamedDevicesShowTheirNewNameEverywhere) {
+    expectContains(loadSource("Views/PeripheralsWidget.qml"),
+                   QStringLiteral("settings.peripheralNames[modelData.name] || modelData.name"));
+    expectContains(loadSource("Views/PeripheralCard.qml"),
+                   QStringLiteral("settings.peripheralNames[card.alert.name] || card.alert.name"));
+}
+
 TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
     // Each device glyph site must choose the matching font.
     for(const char* path : {"Views/PeripheralsWidget.qml", "Views/PeripheralCard.qml", "Views/Dashboard.qml"}) {
@@ -178,6 +198,8 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
         expectContains(source, QStringLiteral("Bluetooth"));
         expectContains(source, QStringLiteral("connectionKind === \"wireless\""));
         expectContains(source, QStringLiteral("connectionKind === \"bluetooth\""));
+        // The home overview lists wired devices beside the wireless ones.
+        expectContains(source, QStringLiteral("\"label\": \"Wired\""));
     }
 
     const QString widget = loadSource("Views/PeripheralsWidget.qml");

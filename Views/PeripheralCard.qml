@@ -51,7 +51,7 @@ Item {
 
             Text {
                 width: 118
-                text: card.alert.name
+                text: settings.peripheralNames[card.alert.name] || card.alert.name
                 color: theme.textPrimary
                 font.pixelSize: 12
                 font.bold: true

@@ -207,7 +207,7 @@ DockableWidget {
                                         HoverHandler {
                                             onHoveredChanged: {
                                                 if(hovered) {
-                                                    var tipText = modelData.name
+                                                    var tipText = settings.peripheralNames[modelData.name] || modelData.name
                                                     if(DeviceIcons.hasBattery(modelData.connectionKind)) {
                                                         tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
                                                         if(modelData.charging)

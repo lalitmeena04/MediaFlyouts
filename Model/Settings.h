@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QUrl>
+#include <QVariantMap>
 
 // Persistent user settings, stored per-user (MSIX-safe) via QSettings. Exposed to QML.
 class Settings : public QObject {
@@ -67,6 +68,8 @@ class Settings : public QObject {
         Q_PROPERTY(bool peripheralsWidgetWiredEnabled READ peripheralsWidgetWiredEnabled WRITE
                        setPeripheralsWidgetWiredEnabled NOTIFY changed)
         Q_PROPERTY(QStringList peripheralsWidgetExcluded READ peripheralsWidgetExcluded NOTIFY changed)
+        // Detected name mapped to the name the user prefers.
+        Q_PROPERTY(QVariantMap peripheralNames READ peripheralNames NOTIFY changed)
         Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
                        NOTIFY changed)
@@ -161,6 +164,11 @@ class Settings : public QObject {
         // True unless device is hidden in peripherals-widget picker.
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
+        QVariantMap peripheralNames() const;
+        // Name to show for a device. Falls back to the detected name.
+        Q_INVOKABLE QString peripheralDisplayName(const QString& name) const;
+        // Empty or unchanged custom name restores the detected one.
+        Q_INVOKABLE void setPeripheralDisplayName(const QString& name, const QString& custom);
         bool batteryRingUseAccent() const;
         bool peripheralFlyoutEnabled() const;
         int peripheralFlyoutDuration() const;
@@ -308,6 +316,7 @@ class Settings : public QObject {
         bool m_peripheralsWidgetEnabled;
         bool m_peripheralsWidgetWiredEnabled;
         QStringList m_peripheralsWidgetExcluded;
+        QVariantMap m_peripheralNames;
         bool m_batteryRingUseAccent;
         bool m_peripheralFlyoutEnabled;
         int m_peripheralFlyoutDuration;

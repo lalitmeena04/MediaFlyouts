@@ -213,7 +213,9 @@ void MainControllerClass::buildPlatformSubsystems() {
                              return;
                          m_tray->notify(veryLow ? QStringLiteral("Peripheral battery very low")
                                                 : QStringLiteral("Peripheral battery low"),
-                                        QStringLiteral("%1 is at %2%").arg(device).arg(percent));
+                                        QStringLiteral("%1 is at %2%")
+                                            .arg(m_settings->peripheralDisplayName(device))
+                                            .arg(percent));
                      });
 }
 #endif

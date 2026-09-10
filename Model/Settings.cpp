@@ -1,8 +1,32 @@
 #include "Settings.h"
 
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace {
+
+// Device names carry spaces, slashes and brackets, so an ini key per device
+// would need escaping. One JSON blob sidesteps that.
+QVariantMap parseNameMap(const QString& json) {
+    QVariantMap names;
+    if(json.trimmed().isEmpty())
+        return names;
+    const QJsonObject object = QJsonDocument::fromJson(json.toUtf8()).object();
+    for(auto it = object.begin(); it != object.end(); ++it) {
+        const QString custom = it.value().toString().trimmed();
+        if(!it.key().isEmpty() && !custom.isEmpty())
+            names.insert(it.key(), custom);
+    }
+    return names;
+}
+
+QString serializeNameMap(const QVariantMap& names) {
+    QJsonObject object;
+    for(auto it = names.begin(); it != names.end(); ++it)
+        object.insert(it.key(), it.value().toString());
+    return QString::fromUtf8(QJsonDocument(object).toJson(QJsonDocument::Compact));
+}
 
 // Seed widget from taskbar alignment. Centered taskbar: use left side.
 // Left-aligned taskbar: use right side. Windows 10 always reports left.
@@ -85,6 +109,7 @@ void Settings::reload() {
     m_peripheralsWidgetWiredEnabled = m_store.value(QStringLiteral("peripheralsWidgetWiredEnabled"), false).toBool();
     // Devices show by default. This list stores hidden devices.
     m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
+    m_peripheralNames = parseNameMap(m_store.value(QStringLiteral("peripheralNames")).toString());
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
     m_peripheralFlyoutEnabled = m_store.value(QStringLiteral("peripheralFlyoutEnabled"), false).toBool();
     m_peripheralFlyoutDuration = m_store.value(QStringLiteral("peripheralFlyoutDuration"), 3000).toInt();
@@ -358,6 +383,32 @@ void Settings::setPeripheralSelected(const QString& name, bool selected) {
         m_peripheralsWidgetExcluded.append(name);
     }
     m_store.setValue(QStringLiteral("peripheralsWidgetExcluded"), m_peripheralsWidgetExcluded);
+    emit changed();
+}
+QVariantMap Settings::peripheralNames() const {
+    return m_peripheralNames;
+}
+QString Settings::peripheralDisplayName(const QString& name) const {
+    const QString custom = m_peripheralNames.value(name).toString();
+    return custom.isEmpty() ? name : custom;
+}
+void Settings::setPeripheralDisplayName(const QString& name, const QString& custom) {
+    if(name.isEmpty())
+        return;
+
+    // Long enough for any product name, short enough to keep the widget sane.
+    const QString trimmed = custom.trimmed().left(64);
+    const QString previous = m_peripheralNames.value(name).toString();
+    // Blank, or back to the detected name, means the user wants the default.
+    const QString next = (trimmed == name) ? QString() : trimmed;
+    if(next == previous)
+        return;
+
+    if(next.isEmpty())
+        m_peripheralNames.remove(name);
+    else
+        m_peripheralNames.insert(name, next);
+    m_store.setValue(QStringLiteral("peripheralNames"), serializeNameMap(m_peripheralNames));
     emit changed();
 }
 bool Settings::batteryRingUseAccent() const {

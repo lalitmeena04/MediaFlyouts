@@ -41,7 +41,8 @@ Window {
         }) },
         { "label": "Bluetooth", "devices": batteryStatus.devices.filter(function(device) {
             return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
-        }) }
+        }) },
+        { "label": "Wired", "devices": wiredDevices }
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
         { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
@@ -776,7 +777,7 @@ Window {
                             }
                         }
 
-                        // Wireless peripherals with readable battery.
+                        // Connected peripherals, grouped by how they attach.
                         Text {
                             visible: dash.peripheralSections.length > 0
                             text: "Peripherals"
@@ -809,8 +810,10 @@ Window {
                                         model: modelData.devices
                                         delegate: Rectangle {
                                     required property var modelData
+                                    // A cable-powered device has no gauge and no reading to show.
+                                    readonly property bool hasBattery: DeviceIcons.hasBattery(modelData.connectionKind)
                                     width: 108
-                                    height: modelData.components.length > 1 ? 168 : 128
+                                    height: modelData.components.length > 1 ? 168 : (hasBattery ? 128 : 112)
                                     radius: 12
                                     color: theme.card
                                     border.color: theme.border
@@ -826,6 +829,7 @@ Window {
                                             height: 64
                                             thickness: 5
                                             percent: modelData.percent
+                                            showGauge: hasBattery
 
                                             Text {
                                                 anchors.centerIn: parent
@@ -839,6 +843,7 @@ Window {
                                         Row {
                                             anchors.horizontalCenter: parent.horizontalCenter
                                             spacing: 4
+                                            visible: hasBattery
                                             BatteryIcon {
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 implicitWidth: 8
@@ -893,7 +898,7 @@ Window {
                                         Text {
                                             width: 100
                                             horizontalAlignment: Text.AlignHCenter
-                                            text: modelData.name
+                                            text: settings.peripheralNames[modelData.name] || modelData.name
                                             color: theme.textMuted
                                             font.pixelSize: 10
                                             elide: Text.ElideRight
@@ -1348,10 +1353,10 @@ Window {
                     }
                     Repeater {
                         model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []
-                        delegate: SettingRow {
+                        delegate: PeripheralRow {
                             required property var modelData
                             width: parent.width
-                            label: modelData.name
+                            deviceName: modelData.name
                             description: {
                                 var text = modelData.percent >= 0 ? "Currently at " + modelData.percent + "%" : "Battery level unknown"
                                 var parts = []
@@ -1393,10 +1398,10 @@ Window {
                     Repeater {
                         model: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
                                ? dash.wiredDevices : []
-                        delegate: SettingRow {
+                        delegate: PeripheralRow {
                             required property var modelData
                             width: parent.width
-                            label: modelData.name
+                            deviceName: modelData.name
                             description: "Plugged in over USB."
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)

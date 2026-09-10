@@ -178,6 +178,7 @@ qt_add_qml_module(MediaFlyouts
         Views/OnboardingWindow.qml
         Views/PeripheralCard.qml
         Views/PeripheralFlyout.qml
+        Views/PeripheralRow.qml
         Views/PeripheralsWidget.qml
         Views/RoundedArt.qml
         Views/SettingCombo.qml
