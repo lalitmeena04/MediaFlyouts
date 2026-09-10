@@ -1,5 +1,6 @@
 #include "UpdateChecker.h"
 
+#include <QDesktopServices>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkAccessManager>
@@ -10,6 +11,7 @@
 namespace {
 // GitHub releases endpoint for project. 404 means check failed.
 constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
+constexpr char kReleasesPage[] = "https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
 } // namespace
 
 UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent), m_net(new QNetworkAccessManager(this)) {}
@@ -44,8 +46,25 @@ bool UpdateChecker::checking() const {
     return m_checking;
 }
 
+QString UpdateChecker::releaseUrl() const {
+    return isTrustedReleaseUrl(m_releaseUrl) ? m_releaseUrl : releasesPageUrl();
+}
+
 QString UpdateChecker::releasesApiUrl() {
     return QString::fromLatin1(kReleasesApi);
+}
+
+QString UpdateChecker::releasesPageUrl() {
+    return QString::fromLatin1(kReleasesPage);
+}
+
+bool UpdateChecker::isTrustedReleaseUrl(const QString& url) {
+    const QUrl parsed(url);
+    return parsed.scheme() == QLatin1String("https") && parsed.host() == QLatin1String("github.com");
+}
+
+void UpdateChecker::openReleasePage() {
+    QDesktopServices::openUrl(QUrl(releaseUrl()));
 }
 
 void UpdateChecker::check() {
@@ -77,6 +96,8 @@ void UpdateChecker::check() {
         }
 
         m_latest = tag;
+        // Only follow a GitHub link. Anything else falls back to the releases index.
+        m_releaseUrl = obj.value(QStringLiteral("html_url")).toString();
         m_available = isNewerVersion(m_current, tag);
         m_status = m_available ? QStringLiteral("Update available: %1").arg(tag)
                                : QStringLiteral("You're on the latest version.");

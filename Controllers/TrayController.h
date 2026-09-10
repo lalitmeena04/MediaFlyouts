@@ -24,6 +24,8 @@ class TrayController : public QObject {
         void openDashboardRequested();
         void showFlyoutRequested();
         void openMixerRequested();
+        // Raised when the user clicks a balloon notification.
+        void notificationClicked();
 
     private:
         void applyVisibility();

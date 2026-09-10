@@ -73,7 +73,16 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
 
     expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-light.svg"));
     expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-dark.svg"));
+    expectContains(source, QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases"));
     EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
+}
+
+// An available update must offer a way to get it, not just an announcement.
+TEST(QmlContractTest, AboutPageOffersTheDownloadWhenAnUpdateExists) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("visible: updateChecker.updateAvailable"));
+    expectContains(source, QStringLiteral("updateChecker.openReleasePage()"));
 }
 
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
