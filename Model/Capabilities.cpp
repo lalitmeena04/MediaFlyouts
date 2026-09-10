@@ -20,6 +20,10 @@ bool Capabilities::mediaKeysAvailable() const {
     return m_mediaKeysAvailable;
 }
 
+bool Capabilities::chargerAvailable() const {
+    return m_chargerAvailable;
+}
+
 void Capabilities::setAudioAvailable(bool available) {
     if(m_audioAvailable == available)
         return;
@@ -49,5 +53,13 @@ void Capabilities::setMediaKeysAvailable(bool available) {
         return;
     m_mediaKeysAvailable = available;
     TRC_INFO("capability mediaKeysAvailable -> {}", available);
+    emit changed();
+}
+
+void Capabilities::setChargerAvailable(bool available) {
+    if(m_chargerAvailable == available)
+        return;
+    m_chargerAvailable = available;
+    TRC_INFO("capability chargerAvailable -> {}", available);
     emit changed();
 }

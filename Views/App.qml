@@ -23,6 +23,9 @@ QtObject {
         onVisibleChanged: app.restack()
         onWidthChanged: app.restack()
     }
+    property ChargerFlyout chargerFlyout: ChargerFlyout {
+        onVisibleChanged: app.restack()
+    }
     property Dashboard dashboard: Dashboard {}
     property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
     property OnboardingWindow onboarding: OnboardingWindow {}
@@ -44,14 +47,16 @@ QtObject {
     }
 
     // Stacking order. Bottom-most first.
-    readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout]
+    readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout, chargerFlyout]
 
-    // Volume and peripheral flyouts have separate placement settings.
+    // Volume, peripheral and charger flyouts have separate placement settings.
     function positionIndexFor(f) {
         if(f === volumeFlyout)
             return settings.volumeFlyoutPosition
         if(f === peripheralFlyout)
             return settings.peripheralFlyoutPosition
+        if(f === chargerFlyout)
+            return settings.chargerFlyoutPosition
         return settings.flyoutPosition
     }
     function monitorFor(f) {
@@ -59,6 +64,8 @@ QtObject {
             return settings.volumeFlyoutMonitor
         if(f === peripheralFlyout)
             return settings.peripheralFlyoutMonitor
+        if(f === chargerFlyout)
+            return settings.chargerFlyoutMonitor
         return settings.flyoutMonitor
     }
 

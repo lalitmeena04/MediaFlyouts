@@ -11,6 +11,7 @@ TEST(CapabilitiesTest, DefaultsToAvailable) {
     EXPECT_TRUE(caps.mediaSessionAvailable());
     EXPECT_TRUE(caps.lockKeysAvailable());
     EXPECT_TRUE(caps.mediaKeysAvailable());
+    EXPECT_TRUE(caps.chargerAvailable());
 }
 
 TEST(CapabilitiesTest, SettersUpdateEachFlagIndependently) {
@@ -25,9 +26,11 @@ TEST(CapabilitiesTest, SettersUpdateEachFlagIndependently) {
     caps.setMediaSessionAvailable(false);
     caps.setLockKeysAvailable(false);
     caps.setMediaKeysAvailable(false);
+    caps.setChargerAvailable(false);
     EXPECT_FALSE(caps.mediaSessionAvailable());
     EXPECT_FALSE(caps.lockKeysAvailable());
     EXPECT_FALSE(caps.mediaKeysAvailable());
+    EXPECT_FALSE(caps.chargerAvailable());
 }
 
 TEST(CapabilitiesTest, EmitsChangedOnlyOnTransition) {

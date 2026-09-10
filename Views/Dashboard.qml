@@ -40,6 +40,7 @@ Window {
         { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
         { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
         { "icon": Fluent.plugConnected, "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
+        { "icon": Fluent.plugConnected, "name": "Charger Flyout", "desc": "Announce the charger as it is plugged in or unplugged." },
         { "icon": Fluent.musicNote, "name": "Media Widget", "desc": "A compact now-playing widget docked on the taskbar." },
         { "icon": Fluent.usbStick,  "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
         { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
@@ -59,23 +60,25 @@ Window {
         { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
         { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
         { "label": "Animation speed", "page": 1 }, { "label": "Animation easing", "page": 1 },
-        { "label": "Volume flyout", "page": 5 }, { "label": "Override native OSD", "page": 5 },
-        { "label": "Volume flyout duration", "page": 5 }, { "label": "Lock keys flyout", "page": 6 },
-        { "label": "Caps lock", "page": 6 }, { "label": "Num lock", "page": 6 },
-        { "label": "Scroll lock", "page": 6 }, { "label": "Insert key", "page": 6 },
-        { "label": "Bold indicator text", "page": 6 }, { "label": "Lock keys duration", "page": 6 },
-        { "label": "Media widget", "page": 3 }, { "label": "Widget controls", "page": 3 },
-        { "label": "Widget alignment", "page": 3 }, { "label": "Widget offset", "page": 3 },
-        { "label": "Pause overlay", "page": 3 }, { "label": "Scroll long titles", "page": 3 },
-        { "label": "Audio visualizer", "page": 3 },
+        { "label": "Volume flyout", "page": 6 }, { "label": "Override native OSD", "page": 6 },
+        { "label": "Volume flyout duration", "page": 6 }, { "label": "Lock keys flyout", "page": 7 },
+        { "label": "Caps lock", "page": 7 }, { "label": "Num lock", "page": 7 },
+        { "label": "Scroll lock", "page": 7 }, { "label": "Insert key", "page": 7 },
+        { "label": "Bold indicator text", "page": 7 }, { "label": "Lock keys duration", "page": 7 },
+        { "label": "Media widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
+        { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
+        { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
+        { "label": "Audio visualizer", "page": 4 },
         { "label": "Peripheral flyout", "page": 2 }, { "label": "Low battery warning", "page": 2 },
-        { "label": "Peripherals widget", "page": 4 }, { "label": "Battery rings", "page": 4 },
-        { "label": "Blacklist", "page": 7 },
-        { "label": "Whitelist", "page": 7 }, { "label": "Filter mode", "page": 7 },
-        { "label": "Theme", "page": 8 }, { "label": "Accent color", "page": 8 },
-        { "label": "Launch on startup", "page": 8 }, { "label": "Hide tray icon", "page": 8 },
-        { "label": "Export settings", "page": 8 }, { "label": "Import settings", "page": 8 },
-        { "label": "Check for updates", "page": 9 }, { "label": "Version", "page": 9 }
+        { "label": "Charger flyout", "page": 3 }, { "label": "On plug in", "page": 3 },
+        { "label": "On unplug", "page": 3 }, { "label": "Charger flyout duration", "page": 3 },
+        { "label": "Peripherals widget", "page": 5 }, { "label": "Battery rings", "page": 5 },
+        { "label": "Blacklist", "page": 8 },
+        { "label": "Whitelist", "page": 8 }, { "label": "Filter mode", "page": 8 },
+        { "label": "Theme", "page": 9 }, { "label": "Accent color", "page": 9 },
+        { "label": "Launch on startup", "page": 9 }, { "label": "Hide tray icon", "page": 9 },
+        { "label": "Export settings", "page": 9 }, { "label": "Import settings", "page": 9 },
+        { "label": "Check for updates", "page": 10 }, { "label": "Version", "page": 10 }
     ]
 
     readonly property var searchResults: {
@@ -526,6 +529,7 @@ Window {
                             case "widget": return settings.taskbarWidgetEnabled
                             case "nextup": return settings.nextUpEnabled
                             case "osd": return settings.overrideNativeOsd
+                            case "charger": return settings.chargerFlyoutEnabled
                             }
                             return false
                         }
@@ -713,11 +717,12 @@ Window {
                             Repeater {
                                 model: [
                                     { "name": "Media flyout", "icon": Fluent.play, "key": "media", "page": 1 },
-                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 5 },
-                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 6 },
-                                    { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 3 },
+                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 6 },
+                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 7 },
+                                    { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
                                     { "name": "Up next", "icon": Fluent.next, "key": "nextup", "page": 1 },
-                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 5 }
+                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 6 },
+                                    { "name": "Charger flyout", "icon": Fluent.plugConnected, "key": "charger", "page": 3 }
                                 ]
                                 delegate: Rectangle {
                                     required property var modelData
@@ -1080,7 +1085,7 @@ Window {
 
                 // Volume page
                 Column {
-                    visible: dash.currentIndex === 5
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 
@@ -1138,7 +1143,7 @@ Window {
 
                 // Lock Keys page
                 Column {
-                    visible: dash.currentIndex === 6
+                    visible: dash.currentIndex === 7
                     width: parent.width
                     spacing: 12
 
@@ -1197,7 +1202,7 @@ Window {
 
                 // Media Widget page
                 Column {
-                    visible: dash.currentIndex === 3
+                    visible: dash.currentIndex === 4
                     width: parent.width
                     spacing: 12
 
@@ -1300,7 +1305,7 @@ Window {
 
                 // Peripheral Widget page
                 Column {
-                    visible: dash.currentIndex === 4
+                    visible: dash.currentIndex === 5
                     width: parent.width
                     spacing: 12
 
@@ -1452,9 +1457,76 @@ Window {
                     }
                 }
 
+                // Charger Flyout page
+                Column {
+                    visible: dash.currentIndex === 3
+                    width: parent.width
+                    spacing: 12
+
+                    SettingRow {
+                        width: parent.width
+                        label: "Charger flyout"
+                        description: "Show a flyout when the charger is plugged in or unplugged."
+                        available: capabilities.chargerAvailable
+                        unavailableNote: "Unavailable: this PC has no battery, so it never changes power source."
+                        value: settings.chargerFlyoutEnabled
+                        onToggled: settings.chargerFlyoutEnabled = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "On plug in"
+                        description: "Announce when the charger is connected."
+                        available: capabilities.chargerAvailable
+                        value: settings.chargerFlyoutOnPlug
+                        onToggled: settings.chargerFlyoutOnPlug = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "On unplug"
+                        description: "Announce when the charger is disconnected."
+                        available: capabilities.chargerAvailable
+                        value: settings.chargerFlyoutOnUnplug
+                        onToggled: settings.chargerFlyoutOnUnplug = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Hide during fullscreen"
+                        description: "Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts."
+                        value: settings.disableOnFullscreen
+                        onToggled: settings.disableOnFullscreen = value
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Charger flyout position"
+                        description: "Place the charger flyout independently of the other flyouts."
+                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        currentIndex: settings.chargerFlyoutPosition
+                        onActivated: settings.chargerFlyoutPosition = index
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Charger flyout monitor"
+                        description: "Which display the charger flyout is shown on."
+                        model: placement.monitorNames()
+                        currentIndex: settings.chargerFlyoutMonitor
+                        onActivated: settings.chargerFlyoutMonitor = index
+                    }
+                    SettingSlider {
+                        width: parent.width
+                        label: "Charger flyout duration"
+                        description: "How long the charger flyout stays on screen."
+                        from: 1000
+                        to: 10000
+                        stepSize: 500
+                        value: settings.chargerFlyoutDuration
+                        valueText: (settings.chargerFlyoutDuration / 1000).toFixed(1) + " s"
+                        onMoved: settings.chargerFlyoutDuration = Math.round(value)
+                    }
+                }
+
                 // App Filtering page
                 Column {
-                    visible: dash.currentIndex === 7
+                    visible: dash.currentIndex === 8
                     width: parent.width
                     spacing: 12
 
@@ -1555,7 +1627,7 @@ Window {
 
                 // Additional Settings page
                 Column {
-                    visible: dash.currentIndex === 8
+                    visible: dash.currentIndex === 9
                     width: parent.width
                     spacing: 12
 
@@ -1635,7 +1707,7 @@ Window {
 
                 // About page
                 Column {
-                    visible: dash.currentIndex === 9
+                    visible: dash.currentIndex === 10
                     width: parent.width
                     spacing: 12
 
