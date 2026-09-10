@@ -351,6 +351,60 @@ TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     expectContains(source, QStringLiteral("audioCapture.stop()"));
 }
 
+TEST(QmlContractTest, PeekAreaHoldsTheFlyoutOpenWhileHovered) {
+    const QString source = loadSource("Views/PeekArea.qml");
+    expectContains(source, QStringLiteral("property var flyout"));
+    expectContains(source, QStringLiteral("property bool pinned"));
+    expectContains(source, QStringLiteral("hoverEnabled: true"));
+    expectContains(source, QStringLiteral("onEntered: if(peek.flyout) peek.flyout.stopAutoHide()"));
+    expectContains(source, QStringLiteral("onExited: if(peek.flyout && !peek.pinned) peek.flyout.restartAutoHide()"));
+}
+
+TEST(QmlContractTest, FlyoutsUsePeekAreaInsteadOfInlineHoverHandling) {
+    for(const char* path : {"Views/MediaFlyout.qml", "Views/VolumeFlyout.qml", "Views/NowPlayingFlyout.qml",
+                            "Views/PeripheralFlyout.qml", "Views/ChargerFlyout.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("PeekArea {"));
+        expectContains(source, QStringLiteral("flyout: root"));
+    }
+    // Pinned flyouts stay open after the pointer leaves.
+    expectContains(loadSource("Views/MediaFlyout.qml"), QStringLiteral("pinned: settings.mediaFlyoutAlwaysDisplay"));
+    expectContains(loadSource("Views/VolumeFlyout.qml"), QStringLiteral("pinned: root.expanded"));
+}
+
+TEST(QmlContractTest, ScrubAreaReportsTrackPositionAsFraction) {
+    const QString source = loadSource("Views/ScrubArea.qml");
+    expectContains(source, QStringLiteral("property real trackWidth"));
+    expectContains(source, QStringLiteral("signal scrubStarted(real fraction)"));
+    expectContains(source, QStringLiteral("signal scrubMoved(real fraction)"));
+    expectContains(source, QStringLiteral("signal scrubEnded(real fraction)"));
+    // Fraction stays inside the track.
+    expectContains(source, QStringLiteral("Math.max(0, Math.min(1, px / scrub.trackWidth))"));
+}
+
+TEST(QmlContractTest, DraggableTracksUseScrubAreaWithoutInlineMath) {
+    for(const char* path : {"Views/MediaFlyout.qml", "Views/VolumeFlyout.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("ScrubArea {"));
+        expectContains(source, QStringLiteral("trackWidth:"));
+        EXPECT_FALSE(source.contains(QStringLiteral("function setFromX(")))
+            << "Duplicated drag math still present in " << path;
+        EXPECT_FALSE(source.contains(QStringLiteral("function fractionAt(")))
+            << "Duplicated drag math still present in " << path;
+    }
+}
+
+TEST(QmlContractTest, SharedAnimationDurationsComeFromAnim) {
+    const QString anim = loadSource("Views/Anim.qml");
+    expectContains(anim, QStringLiteral("readonly property int moveMs"));
+    expectContains(anim, QStringLiteral("readonly property int fillMs"));
+    expectContains(anim, QStringLiteral("readonly property int hoverMs"));
+    expectContains(loadSource("Views/FlyoutBase.qml"), QStringLiteral("duration: Anim.moveMs"));
+    expectContains(loadSource("Views/PeripheralsWidget.qml"), QStringLiteral("duration: Anim.moveMs"));
+    expectContains(loadSource("Views/MediaFlyout.qml"), QStringLiteral("duration: Anim.fillMs"));
+    expectContains(loadSource("Views/MediaFlyout.qml"), QStringLiteral("duration: Anim.hoverMs"));
+}
+
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));

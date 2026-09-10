@@ -43,11 +43,8 @@ FlyoutBase {
         border.color: theme.flyoutBorder
         border.width: 1
 
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: root.stopAutoHide()
-            onExited: root.restartAutoHide()
+        PeekArea {
+            flyout: root
         }
 
         Row {

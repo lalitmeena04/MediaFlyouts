@@ -21,6 +21,11 @@ FlyoutBase {
         return Fluent.speaker2
     }
 
+    function setMasterVolume(fraction) {
+        volumeController.setVolume(Math.round(fraction * 100))
+        root.restartAutoHide()
+    }
+
     Component.onCompleted: windowEffects.setDarkFrame(root, theme.dark)
 
     function showFlyout() {
@@ -70,11 +75,9 @@ FlyoutBase {
         border.color: theme.flyoutBorder
         border.width: 1
 
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: root.stopAutoHide()
-            onExited: if(!root.expanded) root.restartAutoHide()
+        PeekArea {
+            flyout: root
+            pinned: root.expanded
         }
 
         Column {
@@ -127,19 +130,11 @@ FlyoutBase {
                         x: Math.max(0, Math.min(track.width - width, track.width * (volumeController.volume / 100) - width / 2))
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
+                    ScrubArea {
                         anchors.margins: -8
-                        function setFromX(px) {
-                            const ratio = Math.max(0, Math.min(1, px / track.width))
-                            volumeController.setVolume(Math.round(ratio * 100))
-                            root.restartAutoHide()
-                        }
-                        onPressed: (mouse) => setFromX(mouse.x)
-                        onPositionChanged: (mouse) => {
-                            if(pressed)
-                                setFromX(mouse.x)
-                        }
+                        trackWidth: track.width
+                        onScrubStarted: (fraction) => root.setMasterVolume(fraction)
+                        onScrubMoved: (fraction) => root.setMasterVolume(fraction)
                     }
                 }
 
@@ -202,6 +197,12 @@ FlyoutBase {
                         width: parent.width
                         height: 40
                         spacing: 10
+
+                        function applyVolume(fraction) {
+                            appRow.shown = Math.round(fraction * 100)
+                            volumeMixer.setSessionVolume(appRow.modelData.index, appRow.shown)
+                            root.stopAutoHide()
+                        }
 
                         // Use app icon when available. Mute glyph wins when muted.
                         Item {
@@ -266,21 +267,12 @@ FlyoutBase {
                                     y: (parent.height - height) / 2
                                     x: Math.max(0, Math.min(appTrack.width - width, appTrack.width * (appRow.shown / 100) - width / 2))
                                 }
-                                MouseArea {
-                                    anchors.fill: parent
+                                ScrubArea {
                                     anchors.margins: -8
-                                    function setFromX(px) {
-                                        const ratio = Math.max(0, Math.min(1, px / appTrack.width))
-                                        appRow.shown = Math.round(ratio * 100)
-                                        volumeMixer.setSessionVolume(modelData.index, appRow.shown)
-                                        root.stopAutoHide()
-                                    }
-                                    onPressed: (mouse) => { root.appDragging = true; setFromX(mouse.x) }
-                                    onReleased: root.appDragging = false
-                                    onPositionChanged: (mouse) => {
-                                        if(pressed)
-                                            setFromX(mouse.x)
-                                    }
+                                    trackWidth: appTrack.width
+                                    onScrubStarted: (fraction) => { root.appDragging = true; appRow.applyVolume(fraction) }
+                                    onScrubMoved: (fraction) => appRow.applyVolume(fraction)
+                                    onScrubEnded: root.appDragging = false
                                 }
                             }
                         }

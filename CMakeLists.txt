@@ -179,11 +179,13 @@ qt_add_qml_module(MediaFlyouts
         Views/MediaFlyout.qml
         Views/NowPlayingFlyout.qml
         Views/OnboardingWindow.qml
+        Views/PeekArea.qml
         Views/PeripheralCard.qml
         Views/PeripheralFlyout.qml
         Views/PeripheralRow.qml
         Views/PeripheralsWidget.qml
         Views/RoundedArt.qml
+        Views/ScrubArea.qml
         Views/SettingCombo.qml
         Views/SettingRow.qml
         Views/SettingSlider.qml
