@@ -218,9 +218,14 @@ void MainControllerClass::buildPlatformSubsystems() {
                      [this](const QString& device, int percent, bool veryLow) {
                          if(!m_settings->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())
                              return;
+                         // A hidden device is ignored everywhere, toasts included.
+                         if(!m_settings->peripheralSelected(device))
+                             return;
                          m_tray->notify(veryLow ? QStringLiteral("Peripheral battery very low")
                                                 : QStringLiteral("Peripheral battery low"),
-                                        QStringLiteral("%1 is at %2%").arg(device).arg(percent));
+                                        QStringLiteral("%1 is at %2%")
+                                            .arg(m_settings->peripheralDisplayName(device))
+                                            .arg(percent));
                      });
 
     // Charger plug and unplug. Systems with no battery report unavailable.

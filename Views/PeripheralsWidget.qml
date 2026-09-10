@@ -17,9 +17,13 @@ DockableWidget {
         var all = batteryStatus.devices
         // Read property directly. Binding updates when Dashboard selection changes.
         var excluded = settings.peripheralsWidgetExcluded
-        for(var i = 0; i < all.length; i++)
+        var wiredOn = settings.peripheralsWidgetWiredEnabled
+        for(var i = 0; i < all.length; i++) {
+            if(all[i].connectionKind === "usb" && !wiredOn)
+                continue
             if(excluded.indexOf(all[i].name) === -1)
                 picked.push(all[i])
+        }
         return picked
     }
     readonly property var dongleDevices: devices.filter(function(device) {
@@ -28,14 +32,31 @@ DockableWidget {
     readonly property var bluetoothDevices: devices.filter(function(device) {
         return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
     })
+    readonly property var wiredDevices: devices.filter(function(device) {
+        return device.connectionKind === "usb"
+    })
     readonly property var deviceSections: [
         { "label": "2.4 GHz", "devices": dongleDevices },
-        { "label": "Bluetooth", "devices": bluetoothDevices }
+        { "label": "Bluetooth", "devices": bluetoothDevices },
+        { "label": "Wired", "devices": wiredDevices }
     ].filter(function(section) { return section.devices.length > 0 })
 
-        width: Math.max(1, dongleDevices.length) * 32 + Math.max(1, bluetoothDevices.length) * 32
-                + deviceSections.length * 22 + (dongleDevices.length > 0 && bluetoothDevices.length > 0 ? 14 : 0)
-            height: 32
+    function sectionGlyph(label) {
+        if(label === "Bluetooth")
+            return Fluent.bluetooth
+        if(label === "Wired")
+            return Fluent.plugConnected
+        return Fluent.usbStick
+    }
+
+    // One ring per device, one icon per section, one separator between sections.
+    width: {
+        var total = 0
+        for(var i = 0; i < deviceSections.length; i++)
+            total += deviceSections[i].devices.length * 32 + 22
+        return Math.max(32, total + Math.max(0, deviceSections.length - 1) * 14)
+    }
+    height: 32
 
     // Show after onboarding, when enabled, devices exist, and not blocked.
     visible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
@@ -155,7 +176,7 @@ DockableWidget {
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: modelData.label === "Bluetooth" ? Fluent.bluetooth : Fluent.usbStick
+                            text: root.sectionGlyph(modelData.label)
                             font.family: Fluent.fontFamily
                             font.pixelSize: 17
                             color: theme.accent
@@ -170,6 +191,7 @@ DockableWidget {
                                     height: 26
                                     thickness: 3
                                     percent: modelData.percent
+                                    showGauge: DeviceIcons.hasBattery(modelData.connectionKind)
 
                                     Text {
                                         anchors.centerIn: parent
@@ -185,10 +207,12 @@ DockableWidget {
                                         HoverHandler {
                                             onHoveredChanged: {
                                                 if(hovered) {
-                                                    var tipText = modelData.name
-                                                    tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
-                                                    if(modelData.charging)
-                                                        tipText += " \u26A1"
+                                                    var tipText = settings.peripheralNames[modelData.name] || modelData.name
+                                                    if(DeviceIcons.hasBattery(modelData.connectionKind)) {
+                                                        tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
+                                                        if(modelData.charging)
+                                                            tipText += " \u26A1"
+                                                    }
                                                     var link = DeviceIcons.transport(modelData.connectionKind)
                                                     if(link)
                                                         tipText += "   \u00B7 " + link

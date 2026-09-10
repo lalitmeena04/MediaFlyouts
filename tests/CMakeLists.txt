@@ -52,9 +52,11 @@ add_executable(mediaflyout_gtest
     Model/PlaybackControllerTest.cpp
     Model/PowerAlertPolicyTest.cpp
     Model/RazerProtocolTest.cpp
+    Model/ReceiverProfilesTest.cpp
     Model/SessionSelectionTest.cpp
     Model/SettingsTest.cpp
     Model/TrackInfoTest.cpp
+    Model/WiredPeripheralRulesTest.cpp
     Views/QmlContractTest.cpp
 )
 target_link_libraries(mediaflyout_gtest PRIVATE
@@ -78,6 +80,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/LogitechBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/RazerBatteryProvider.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/WiredPeripheralProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/WirelessReceiverProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryStatusController.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BluetoothConnectionWatcher.cpp

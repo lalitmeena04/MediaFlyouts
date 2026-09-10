@@ -14,6 +14,10 @@ Item {
         : (percent <= 20 ? "#E06C75" : (percent <= 40 ? "#E5C07B" : "#6FCF7F"))
     property color unknownColor: theme.textMuted
     property real thickness: 4
+    // False keeps the outline but drops the charge arc, for devices with no battery.
+    property bool showGauge: true
+    // Outline for a device with no battery. Solid stroke, nothing filled in.
+    property color outlineColor: theme.textMuted
 
     default property alias content: contentItem.children
 
@@ -30,9 +34,12 @@ Item {
 
             ctx.beginPath()
             ctx.lineWidth = ring.thickness
-            ctx.strokeStyle = ring.trackColor
+            ctx.strokeStyle = ring.showGauge ? ring.trackColor : ring.outlineColor
             ctx.arc(cx, cy, r, 0, Math.PI * 2, false)
             ctx.stroke()
+
+            if(!ring.showGauge)
+                return
 
             // Unknown battery draws full neutral ring. Device reads as connected.
             var unknown = ring.percent < 0
@@ -53,6 +60,8 @@ Item {
     onPercentChanged: canvas.requestPaint()
     onProgressColorChanged: canvas.requestPaint()
     onUnknownColorChanged: canvas.requestPaint()
+    onShowGaugeChanged: canvas.requestPaint()
+    onOutlineColorChanged: canvas.requestPaint()
     Component.onCompleted: canvas.requestPaint()
 
     Item {

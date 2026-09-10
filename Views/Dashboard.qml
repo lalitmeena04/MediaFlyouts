@@ -28,12 +28,30 @@ Window {
     property int currentIndex: 0
     // Reset scroll position. Keep new page starting at top.
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
+    // Wired devices carry no battery, so they stay out of the battery lists.
+    readonly property var wirelessDevices: batteryStatus.devices.filter(function(device) {
+        return device.connectionKind !== "usb"
+    })
+    readonly property var wiredDevices: batteryStatus.devices.filter(function(device) {
+        return device.connectionKind === "usb"
+    })
+    // Devices the user kept. The picker below still lists everything, so a
+    // hidden device can be brought back.
+    readonly property var shownDevices: {
+        var excluded = settings.peripheralsWidgetExcluded
+        return batteryStatus.devices.filter(function(device) {
+            return excluded.indexOf(device.name) === -1
+        })
+    }
     readonly property var peripheralSections: [
-        { "label": "2.4 GHz", "devices": batteryStatus.devices.filter(function(device) {
+        { "label": "2.4 GHz", "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "wireless"
         }) },
-        { "label": "Bluetooth", "devices": batteryStatus.devices.filter(function(device) {
+        { "label": "Bluetooth", "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
+        }) },
+        { "label": "Wired", "devices": shownDevices.filter(function(device) {
+            return device.connectionKind === "usb"
         }) }
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
@@ -70,9 +88,11 @@ Window {
         { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
         { "label": "Audio visualizer", "page": 4 },
         { "label": "Peripheral flyout", "page": 2 }, { "label": "Low battery warning", "page": 2 },
+        { "label": "Wired devices", "page": 2 },
         { "label": "Charger flyout", "page": 3 }, { "label": "On plug in", "page": 3 },
         { "label": "On unplug", "page": 3 }, { "label": "Charger flyout duration", "page": 3 },
         { "label": "Peripherals widget", "page": 5 }, { "label": "Battery rings", "page": 5 },
+        { "label": "Wired devices in widget", "page": 5 },
         { "label": "Blacklist", "page": 8 },
         { "label": "Whitelist", "page": 8 }, { "label": "Filter mode", "page": 8 },
         { "label": "Theme", "page": 9 }, { "label": "Accent color", "page": 9 },
@@ -772,9 +792,9 @@ Window {
                             }
                         }
 
-                        // Wireless peripherals with readable battery.
+                        // Connected peripherals, grouped by how they attach.
                         Text {
-                            visible: batteryStatus.devices.length > 0
+                            visible: dash.peripheralSections.length > 0
                             text: "Peripherals"
                             color: theme.textPrimary
                             font.pixelSize: 16
@@ -805,8 +825,10 @@ Window {
                                         model: modelData.devices
                                         delegate: Rectangle {
                                     required property var modelData
+                                    // A cable-powered device has no gauge and no reading to show.
+                                    readonly property bool hasBattery: DeviceIcons.hasBattery(modelData.connectionKind)
                                     width: 108
-                                    height: modelData.components.length > 1 ? 168 : 128
+                                    height: modelData.components.length > 1 ? 168 : (hasBattery ? 128 : 112)
                                     radius: 12
                                     color: theme.card
                                     border.color: theme.border
@@ -822,6 +844,7 @@ Window {
                                             height: 64
                                             thickness: 5
                                             percent: modelData.percent
+                                            showGauge: hasBattery
 
                                             Text {
                                                 anchors.centerIn: parent
@@ -835,6 +858,7 @@ Window {
                                         Row {
                                             anchors.horizontalCenter: parent.horizontalCenter
                                             spacing: 4
+                                            visible: hasBattery
                                             BatteryIcon {
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 implicitWidth: 8
@@ -889,7 +913,7 @@ Window {
                                         Text {
                                             width: 100
                                             horizontalAlignment: Text.AlignHCenter
-                                            text: modelData.name
+                                            text: settings.peripheralNames[modelData.name] || modelData.name
                                             color: theme.textMuted
                                             font.pixelSize: 10
                                             elide: Text.ElideRight
@@ -1329,13 +1353,13 @@ Window {
                         visible: settings.peripheralsWidgetEnabled
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Choose which detected peripherals to show on the widget:"
+                        text: "Choose which detected peripherals MediaFlyouts should show. Hidden devices are left out of the widget, the home page and the flyouts:"
                         color: theme.textSecondary
                         font.pixelSize: 12
                         topPadding: 4
                     }
                     Text {
-                        visible: settings.peripheralsWidgetEnabled && batteryStatus.devices.length === 0
+                        visible: settings.peripheralsWidgetEnabled && dash.wirelessDevices.length === 0
                         width: parent.width
                         wrapMode: Text.WordWrap
                         text: "No peripherals are currently connected."
@@ -1343,11 +1367,11 @@ Window {
                         font.pixelSize: 12
                     }
                     Repeater {
-                        model: settings.peripheralsWidgetEnabled ? batteryStatus.devices : []
-                        delegate: SettingRow {
+                        model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []
+                        delegate: PeripheralRow {
                             required property var modelData
                             width: parent.width
-                            label: modelData.name
+                            deviceName: modelData.name
                             description: {
                                 var text = modelData.percent >= 0 ? "Currently at " + modelData.percent + "%" : "Battery level unknown"
                                 var parts = []
@@ -1358,6 +1382,42 @@ Window {
                                 var link = DeviceIcons.transport(modelData.connectionKind)
                                 return link ? text + ", over " + link + "." : text + "."
                             }
+                            value: settings.peripheralSelected(modelData.name)
+                            onToggled: settings.setPeripheralSelected(modelData.name, value)
+                        }
+                    }
+
+                    Rectangle {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        height: 1
+                        color: theme.border
+                    }
+                    SettingRow {
+                        visible: settings.peripheralsWidgetEnabled
+                        width: parent.width
+                        label: "Wired devices"
+                        description: "List plugged-in USB peripherals."
+                        value: settings.peripheralsWidgetWiredEnabled
+                        onToggled: settings.peripheralsWidgetWiredEnabled = value
+                    }
+                    Text {
+                        visible: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
+                                 && dash.wiredDevices.length === 0
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "No wired peripherals are currently plugged in."
+                        color: theme.textMuted
+                        font.pixelSize: 12
+                    }
+                    Repeater {
+                        model: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
+                               ? dash.wiredDevices : []
+                        delegate: PeripheralRow {
+                            required property var modelData
+                            width: parent.width
+                            deviceName: modelData.name
+                            description: "Plugged in over USB."
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
                         }
@@ -1413,6 +1473,13 @@ Window {
                         description: "Announce when a peripheral starts or stops charging."
                         value: settings.peripheralFlyoutOnCharging
                         onToggled: settings.peripheralFlyoutOnCharging = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: "Wired devices"
+                        description: "Announce USB peripherals as they are plugged in or removed."
+                        value: settings.peripheralFlyoutOnWired
+                        onToggled: settings.peripheralFlyoutOnWired = value
                     }
                     SettingRow {
                         width: parent.width

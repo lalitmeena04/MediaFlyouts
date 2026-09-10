@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QUrl>
+#include <QVariantMap>
 
 // Persistent user settings, stored per-user (MSIX-safe) via QSettings. Exposed to QML.
 class Settings : public QObject {
@@ -64,7 +65,11 @@ class Settings : public QObject {
         Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
         Q_PROPERTY(bool peripheralsWidgetEnabled READ peripheralsWidgetEnabled WRITE setPeripheralsWidgetEnabled
                        NOTIFY changed)
+        Q_PROPERTY(bool peripheralsWidgetWiredEnabled READ peripheralsWidgetWiredEnabled WRITE
+                       setPeripheralsWidgetWiredEnabled NOTIFY changed)
         Q_PROPERTY(QStringList peripheralsWidgetExcluded READ peripheralsWidgetExcluded NOTIFY changed)
+        // Detected name mapped to the name the user prefers.
+        Q_PROPERTY(QVariantMap peripheralNames READ peripheralNames NOTIFY changed)
         Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
                        NOTIFY changed)
@@ -82,6 +87,8 @@ class Settings : public QObject {
                        setPeripheralFlyoutOnLowBattery NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutOnCharging READ peripheralFlyoutOnCharging WRITE
                        setPeripheralFlyoutOnCharging NOTIFY changed)
+        Q_PROPERTY(bool peripheralFlyoutOnWired READ peripheralFlyoutOnWired WRITE setPeripheralFlyoutOnWired
+                       NOTIFY changed)
         Q_PROPERTY(bool peripheralLowBatteryToast READ peripheralLowBatteryToast WRITE setPeripheralLowBatteryToast
                        NOTIFY changed)
         Q_PROPERTY(bool chargerFlyoutEnabled READ chargerFlyoutEnabled WRITE setChargerFlyoutEnabled NOTIFY changed)
@@ -157,10 +164,17 @@ class Settings : public QObject {
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
         bool peripheralsWidgetEnabled() const;
+        // Wired devices are hidden until the user asks for them.
+        bool peripheralsWidgetWiredEnabled() const;
         QStringList peripheralsWidgetExcluded() const;
         // True unless device is hidden in peripherals-widget picker.
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
+        QVariantMap peripheralNames() const;
+        // Name to show for a device. Falls back to the detected name.
+        Q_INVOKABLE QString peripheralDisplayName(const QString& name) const;
+        // Empty or unchanged custom name restores the detected one.
+        Q_INVOKABLE void setPeripheralDisplayName(const QString& name, const QString& custom);
         bool batteryRingUseAccent() const;
         bool peripheralFlyoutEnabled() const;
         int peripheralFlyoutDuration() const;
@@ -170,6 +184,7 @@ class Settings : public QObject {
         bool peripheralFlyoutOnDisconnect() const;
         bool peripheralFlyoutOnLowBattery() const;
         bool peripheralFlyoutOnCharging() const;
+        bool peripheralFlyoutOnWired() const;
         bool peripheralLowBatteryToast() const;
         bool chargerFlyoutEnabled() const;
         bool chargerFlyoutOnPlug() const;
@@ -235,6 +250,7 @@ class Settings : public QObject {
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
         void setPeripheralsWidgetEnabled(bool v);
+        void setPeripheralsWidgetWiredEnabled(bool v);
         void setBatteryRingUseAccent(bool v);
         void setPeripheralFlyoutEnabled(bool v);
         void setPeripheralFlyoutDuration(int v);
@@ -244,6 +260,7 @@ class Settings : public QObject {
         void setPeripheralFlyoutOnDisconnect(bool v);
         void setPeripheralFlyoutOnLowBattery(bool v);
         void setPeripheralFlyoutOnCharging(bool v);
+        void setPeripheralFlyoutOnWired(bool v);
         void setPeripheralLowBatteryToast(bool v);
         void setChargerFlyoutEnabled(bool v);
         void setChargerFlyoutOnPlug(bool v);
@@ -316,7 +333,9 @@ class Settings : public QObject {
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;
         bool m_peripheralsWidgetEnabled;
+        bool m_peripheralsWidgetWiredEnabled;
         QStringList m_peripheralsWidgetExcluded;
+        QVariantMap m_peripheralNames;
         bool m_batteryRingUseAccent;
         bool m_peripheralFlyoutEnabled;
         int m_peripheralFlyoutDuration;
@@ -326,6 +345,7 @@ class Settings : public QObject {
         bool m_peripheralFlyoutOnDisconnect;
         bool m_peripheralFlyoutOnLowBattery;
         bool m_peripheralFlyoutOnCharging;
+        bool m_peripheralFlyoutOnWired;
         bool m_peripheralLowBatteryToast;
         bool m_chargerFlyoutEnabled;
         bool m_chargerFlyoutOnPlug;

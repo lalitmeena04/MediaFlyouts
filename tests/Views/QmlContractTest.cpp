@@ -63,6 +63,40 @@ TEST(QmlContractTest, ConnectsTheFlyoutToPeripheralAlertsAndEventSettings) {
     expectContains(source, QStringLiteral("settings.peripheralFlyoutDuration"));
 }
 
+// Wired devices stay silent until the user opts in.
+TEST(QmlContractTest, WiredAlertsAreGatedByTheirOwnSetting) {
+    const QString source = loadSource("Views/PeripheralFlyout.qml");
+
+    expectContains(source, QStringLiteral("connectionKind === \"usb\""));
+    expectContains(source, QStringLiteral("settings.peripheralFlyoutOnWired"));
+}
+
+// No transport signal links a dongle to the same peripheral on another radio,
+// so hiding a device has to silence it everywhere.
+TEST(QmlContractTest, HiddenDevicesAreIgnoredOnEverySurface) {
+    expectContains(loadSource("Views/PeripheralFlyout.qml"),
+                   QStringLiteral("!settings.peripheralSelected(alert.name)"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("readonly property var shownDevices"));
+    expectContains(dashboard, QStringLiteral("excluded.indexOf(device.name) === -1"));
+    // The picker itself keeps listing everything, or a hidden device is unreachable.
+    expectContains(dashboard, QStringLiteral("model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []"));
+}
+
+TEST(QmlContractTest, WidgetHidesWiredDevicesUntilEnabled) {
+    const QString widget = loadSource("Views/PeripheralsWidget.qml");
+
+    expectContains(widget, QStringLiteral("settings.peripheralsWidgetWiredEnabled"));
+    expectContains(widget, QStringLiteral("\"label\": \"Wired\""));
+
+    // Dashboard offers the group toggle plus a row per wired device.
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("settings.peripheralsWidgetWiredEnabled = value"));
+    expectContains(dashboard, QStringLiteral("dash.wiredDevices"));
+    expectContains(dashboard, QStringLiteral("settings.setPeripheralSelected(modelData.name, value)"));
+}
+
 TEST(QmlContractTest, CardUsesAlertCategoryAndTransport) {
     const QString source = loadSource("Views/PeripheralCard.qml");
 
@@ -137,6 +171,64 @@ TEST(QmlContractTest, FluentDefinesPeripheralGlyphs) {
     expectContains(source, QStringLiteral("gamepad: \"\\uEEB9\""));
     expectContains(source, QStringLiteral("bluetooth: \"\\uE15E\""));
     expectContains(source, QStringLiteral("usbStick: \"\\uF857\""));
+    expectContains(source, QStringLiteral("camera: \"\\uF255\""));
+}
+
+TEST(QmlContractTest, CamerasUseTheCameraGlyph) {
+    const QString source = loadSource("Views/DeviceIcons.qml");
+
+    expectContains(source, QStringLiteral("cat === \"camera\""));
+    expectContains(source, QStringLiteral("Fluent.camera"));
+}
+
+// A cable-powered device has no battery. That is not the same as an unknown reading.
+TEST(QmlContractTest, WiredDevicesShowNoBatteryInfo) {
+    const QString icons = loadSource("Views/DeviceIcons.qml");
+    expectContains(icons, QStringLiteral("function hasBattery(connectionKind)"));
+    expectContains(icons, QStringLiteral("connectionKind !== \"usb\""));
+
+    // The gauge can be switched off, leaving a plain outline around the icon.
+    const QString bring = loadSource("Views/BatteryRing.qml");
+    expectContains(bring, QStringLiteral("property bool showGauge"));
+    expectContains(bring, QStringLiteral("property color outlineColor"));
+    expectContains(bring, QStringLiteral("if(!ring.showGauge)"));
+
+    const QString widget = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(widget, QStringLiteral("showGauge: DeviceIcons.hasBattery(modelData.connectionKind)"));
+    expectContains(widget, QStringLiteral("if(DeviceIcons.hasBattery(modelData.connectionKind))"));
+
+    expectContains(loadSource("Views/PeripheralCard.qml"),
+                   QStringLiteral("showGauge: DeviceIcons.hasBattery(card.alert.connectionKind)"));
+}
+
+TEST(QmlContractTest, WiredWidgetToggleIsSeparatedFromWirelessDevices) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    const int separator = source.indexOf(QStringLiteral("color: theme.border"),
+                                         source.indexOf(QStringLiteral("dash.wirelessDevices")));
+    const int wiredToggle = source.indexOf(QStringLiteral("settings.peripheralsWidgetWiredEnabled = value"));
+
+    EXPECT_GT(separator, 0);
+    EXPECT_GT(wiredToggle, separator) << "Wired toggle must sit below the separator.";
+}
+
+// Renaming must not change the identity used for hiding or for alerts.
+TEST(QmlContractTest, PeripheralRowRenamesWithoutLosingTheDetectedName) {
+    const QString row = loadSource("Views/PeripheralRow.qml");
+
+    expectContains(row, QStringLiteral("required property string deviceName"));
+    expectContains(row, QStringLiteral("settings.peripheralNames[row.deviceName] || row.deviceName"));
+    expectContains(row, QStringLiteral("settings.setPeripheralDisplayName(row.deviceName, text)"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("delegate: PeripheralRow"));
+    expectContains(dashboard, QStringLiteral("settings.setPeripheralSelected(modelData.name, value)"));
+}
+
+TEST(QmlContractTest, RenamedDevicesShowTheirNewNameEverywhere) {
+    expectContains(loadSource("Views/PeripheralsWidget.qml"),
+                   QStringLiteral("settings.peripheralNames[modelData.name] || modelData.name"));
+    expectContains(loadSource("Views/PeripheralCard.qml"),
+                   QStringLiteral("settings.peripheralNames[card.alert.name] || card.alert.name"));
 }
 
 TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
@@ -154,6 +246,8 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
         expectContains(source, QStringLiteral("Bluetooth"));
         expectContains(source, QStringLiteral("connectionKind === \"wireless\""));
         expectContains(source, QStringLiteral("connectionKind === \"bluetooth\""));
+        // The home overview lists wired devices beside the wireless ones.
+        expectContains(source, QStringLiteral("\"label\": \"Wired\""));
     }
 
     const QString widget = loadSource("Views/PeripheralsWidget.qml");

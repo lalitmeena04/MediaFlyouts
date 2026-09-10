@@ -26,6 +26,8 @@ QtObject {
             return { "glyph": "\uF8CC", "fa": true } // Font Awesome computer-mouse. Fluent has none.
         if(cat === "keyboard")
             return { "glyph": Fluent.keyboard, "fa": false }
+        if(cat === "camera")
+            return { "glyph": Fluent.camera, "fa": false }
         if(cat === "gamepad" || connectionKind === "gamepad")
             return { "glyph": Fluent.gamepad, "fa": false }
         if(cat === "headset")
@@ -54,5 +56,10 @@ QtObject {
             return "USB"
         }
         return ""
+    }
+
+    // Wired devices run off the cable. Absent is not the same as unknown.
+    function hasBattery(connectionKind) {
+        return connectionKind !== "usb"
     }
 }

@@ -9,12 +9,14 @@
 #include <objbase.h>
 
 #include "AudioCapture.h"
+#include "BatteryProviders/WiredPeripheralProvider.h"
 #include "BluetoothConnectionWatcher.h"
 #include "HidChangeWatcher.h"
 #include "PowerStatusController.h"
 #include "TaskbarInfo.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
+#include "WiredPeripheralRules.h"
 
 // These Windows controllers wrap COM and DWM APIs.
 // Tests use no real device or window.
@@ -55,6 +57,20 @@ TEST(Win32ControllersTest, DeviceWatchersCanStartRepeatedly) {
     hid.start();
     QCoreApplication::processEvents();
     SUCCEED();
+}
+
+// Runs against whatever is plugged into the test machine.
+// Every entry must look like a wired peripheral, never a disk.
+TEST(Win32ControllersTest, WiredProviderReportsUsableDevicesOnly) {
+    WiredPeripheralProvider provider;
+    const QVector<BatteryDeviceInfo> devices = provider.poll();
+
+    for(const BatteryDeviceInfo& device : devices) {
+        EXPECT_EQ(device.connectionKind, QStringLiteral("usb"));
+        EXPECT_EQ(device.percent, -1);
+        EXPECT_FALSE(device.name.trimmed().isEmpty());
+        EXPECT_FALSE(mf::isGenericDeviceName(device.name));
+    }
 }
 
 // The first reading only seeds the baseline, so no charger event fires at startup.

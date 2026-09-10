@@ -27,6 +27,7 @@ QtObject {
     readonly property string chevronDoubleLeft: "\uF285"
     readonly property string chevronDoubleRight: "\uF2A7"
     readonly property string keyboard: "\uF4C3"
+    readonly property string camera: "\uF255"
     readonly property string headphones: "\uF476"
     readonly property string headset: "\uF478"
     readonly property string gamepad: "\uEEB9"
