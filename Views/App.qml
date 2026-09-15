@@ -92,7 +92,7 @@ QtObject {
                 var anchor = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
                                                     settings.taskbarWidgetOffset, taskbarWidget.width,
                                                     taskbarWidget.height)
-                var screen = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
+                var screen = monitors.geometry(settings.taskbarWidgetMonitor)
                 // Center flyout over widget. Clamp to screen.
                 var fx = anchor.x + (taskbarWidget.width - f.width) / 2
                 fx = Math.max(screen.x + 8, Math.min(fx, screen.x + screen.width - f.width - 8))

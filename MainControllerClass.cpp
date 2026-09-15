@@ -4,12 +4,12 @@
 #include <QFontDatabase>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QScreen>
 
 #include "AlbumArtProvider.h"
 #include "Capabilities.h"
 #include "FlyoutPlacement.h"
 #include "Logging.h"
+#include "MonitorMapper.h"
 #include "NowPlaying.h"
 #include "QmlLogger.h"
 #include "Settings.h"
@@ -46,7 +46,6 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     const QString logFile = mf::initLogging();
     TRC_INFO("==== MediaFlyouts {} starting ====", MEDIAFLYOUTS_VERSION);
     TRC_INFO("log file: {}", logFile.toStdString());
-    logScreens();
 
     // Second launch signals running instance and exits.
     m_instance = std::make_unique<SingleInstance>(QStringLiteral("MediaFlyouts.singleInstance"));
@@ -75,16 +74,6 @@ int MainControllerClass::run() {
     return m_app.exec();
 }
 
-void MainControllerClass::logScreens() const {
-    for(const QScreen* s : QApplication::screens()) {
-        const QRect g = s->geometry();
-        const QRect a = s->availableGeometry();
-        TRC_DEBUG("screen '{}' geometry=({},{} {}x{}) available=({},{} {}x{}) dpr={} primary={}",
-                  s->name().toStdString(), g.x(), g.y(), g.width(), g.height(), a.x(), a.y(), a.width(), a.height(),
-                  s->devicePixelRatio(), s == QApplication::primaryScreen());
-    }
-}
-
 void MainControllerClass::loadIconFont() {
     // Load icon font for tray glyph. QML also loads it with FontLoader.
     const int fontId = QFontDatabase::addApplicationFont(
@@ -96,7 +85,10 @@ void MainControllerClass::loadIconFont() {
 void MainControllerClass::buildCoreSubsystems() {
     m_nowPlaying = std::make_unique<NowPlaying>();
     m_settings = std::make_unique<Settings>();
-    m_placement = std::make_unique<FlyoutPlacement>(m_settings.get());
+    m_monitors = std::make_unique<MonitorMapper>();
+    // Log the layout once at startup. Later changes log on rebuild.
+    m_monitors->count();
+    m_placement = std::make_unique<FlyoutPlacement>(m_settings.get(), m_monitors.get());
     m_theme = std::make_unique<ThemeController>(m_settings.get(), m_nowPlaying.get());
     m_updateChecker = std::make_unique<UpdateChecker>();
     // Track platform subsystem availability. UI hides unavailable features.
@@ -150,7 +142,7 @@ void MainControllerClass::buildPlatformSubsystems() {
         m_nativeSuppressor->start();
 
     // Skip flyouts and native OSD suppression during fullscreen apps.
-    m_fullscreen = std::make_unique<FullscreenDetector>();
+    m_fullscreen = std::make_unique<FullscreenDetector>(m_monitors.get());
     QObject::connect(m_volumeController.get(), &VolumeController::volumeChangedExternally, m_nativeSuppressor.get(),
                      [this] {
                          if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted()
@@ -179,7 +171,7 @@ void MainControllerClass::buildPlatformSubsystems() {
                      [this] { m_startup->setEnabled(m_settings->launchOnStartup()); });
 
     // Locate taskbar and tray. Taskbar widget avoids tray overlap.
-    m_taskbar = std::make_unique<TaskbarInfo>();
+    m_taskbar = std::make_unique<TaskbarInfo>(m_monitors.get());
 
     // Per-app volume control for mixer window.
     m_volumeMixer = std::make_unique<VolumeMixer>();
@@ -247,6 +239,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("placement", m_placement.get());
+    ctx->setContextProperty("monitors", m_monitors.get());
     ctx->setContextProperty("instance", m_instance.get());
     ctx->setContextProperty("tray", m_tray.get());
 #ifdef Q_OS_WIN

@@ -8,10 +8,8 @@
 #include <shlobj.h>
 #include <tlhelp32.h>
 
-#include <QGuiApplication>
-#include <QScreen>
-
 #include "Logging.h"
+#include "MonitorMapper.h"
 
 namespace {
 
@@ -87,33 +85,10 @@ bool hasGraphicsApiLoaded(DWORD pid) {
     return found;
 }
 
-// Get HMONITOR for screen index. QScreen::name() is not GDI device name.
-// Map by screen center point.
-HMONITOR monitorHandleForScreen(int index) {
-    const QList<QScreen*> screens = QGuiApplication::screens();
-    if(screens.isEmpty()) {
-        TRC_WARN("monitorHandleForScreen: no screens available");
-        return nullptr;
-    }
-    if(index < 0 || index >= screens.size()) {
-        TRC_DEBUG("monitorHandleForScreen: index {} out of range (screenCount={}), clamping to 0", index,
-                  screens.size());
-        index = 0;
-    }
-    const QScreen* screen = screens.at(index);
-    const qreal dpr = screen->devicePixelRatio();
-    const QRect g = screen->geometry();
-    const POINT center{static_cast<LONG>(qRound((g.left() + g.width() / 2.0) * dpr)),
-                       static_cast<LONG>(qRound((g.top() + g.height() / 2.0) * dpr))};
-    const HMONITOR handle = MonitorFromPoint(center, MONITOR_DEFAULTTONULL);
-    TRC_DEBUG("monitorHandleForScreen: index={} name='{}' center=({},{}) -> HMONITOR={:#x}", index,
-              screen->name().toStdString(), center.x, center.y, handleId(handle));
-    return handle;
-}
-
 } // namespace
 
-FullscreenDetector::FullscreenDetector(QObject* parent) : QObject(parent) {}
+FullscreenDetector::FullscreenDetector(const MonitorMapper* monitors, QObject* parent)
+    : QObject(parent), m_monitors(monitors) {}
 
 bool FullscreenDetector::isLocked() const {
     const bool locked = isWorkstationLocked();
@@ -156,7 +131,8 @@ bool FullscreenDetector::isFullscreen(int monitor) const {
 
     // Fullscreen app blocks only its own monitor. Other monitors stay visible.
     if(monitor >= 0) {
-        const HMONITOR target = monitorHandleForScreen(monitor);
+        const MonitorEntry* entry = m_monitors ? m_monitors->entry(monitor) : nullptr;
+        const HMONITOR target = entry ? static_cast<HMONITOR>(entry->nativeHandle) : nullptr;
         const HMONITOR fgMonitor = MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST);
         TRC_DEBUG("isFullscreen: monitor gate: targetHMONITOR={:#x} foregroundHMONITOR={:#x}", handleId(target),
                   handleId(fgMonitor));

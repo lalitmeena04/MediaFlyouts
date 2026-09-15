@@ -1097,7 +1097,7 @@ Window {
                         width: parent.width
                         label: "Monitor"
                         description: "Which display flyouts are shown on."
-                        model: placement.monitorNames()
+                        model: monitors.names
                         currentIndex: settings.flyoutMonitor
                         onActivated: settings.flyoutMonitor = index
                     }
@@ -1190,7 +1190,7 @@ Window {
                         width: parent.width
                         label: "Volume flyout monitor"
                         description: "Which display the volume flyout is shown on."
-                        model: placement.monitorNames()
+                        model: monitors.names
                         currentIndex: settings.volumeFlyoutMonitor
                         onActivated: settings.volumeFlyoutMonitor = index
                     }
@@ -1340,7 +1340,7 @@ Window {
                         width: parent.width
                         label: "Widget monitor"
                         description: "Which display's taskbar the widget docks to."
-                        model: placement.monitorNames()
+                        model: monitors.names
                         currentIndex: settings.taskbarWidgetMonitor
                         onActivated: settings.taskbarWidgetMonitor = index
                     }
@@ -1549,7 +1549,7 @@ Window {
                         width: parent.width
                         label: "Peripheral flyout monitor"
                         description: "Which display the peripheral flyout is shown on."
-                        model: placement.monitorNames()
+                        model: monitors.names
                         currentIndex: settings.peripheralFlyoutMonitor
                         onActivated: settings.peripheralFlyoutMonitor = index
                     }
@@ -1616,7 +1616,7 @@ Window {
                         width: parent.width
                         label: "Charger flyout monitor"
                         description: "Which display the charger flyout is shown on."
-                        model: placement.monitorNames()
+                        model: monitors.names
                         currentIndex: settings.chargerFlyoutMonitor
                         onActivated: settings.chargerFlyoutMonitor = index
                     }

@@ -55,6 +55,7 @@ add_executable(mediaflyout_gtest
     Model/ReceiverProfilesTest.cpp
     Model/SessionSelectionTest.cpp
     Model/SettingsTest.cpp
+    Model/TaskbarLayoutTest.cpp
     Model/TrackInfoTest.cpp
     Model/WiredPeripheralRulesTest.cpp
     Views/QmlContractTest.cpp
@@ -85,6 +86,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryStatusController.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BluetoothConnectionWatcher.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/HidChangeWatcher.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/MonitorMapper.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PowerStatusController.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarInfo.cpp
@@ -92,6 +94,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
         Controllers/BatteryStatusControllerTest.cpp
         Controllers/HidCollectionsTest.cpp
+        Controllers/MonitorMapperTest.cpp
         Controllers/PeripheralAlertsTest.cpp
         Controllers/Win32ControllersTest.cpp
         Controllers/WirelessReceiverProviderTest.cpp
@@ -112,6 +115,9 @@ if(WIN32)
         hid.lib
         setupapi.lib
         ws2_32.lib
+        ole32.lib
+        oleaut32.lib
+        uiautomationcore.lib
     )
 endif()
 

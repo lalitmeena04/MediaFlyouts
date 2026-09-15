@@ -1,31 +1,125 @@
 #include "TaskbarInfo.h"
 
 #include <cstdint>
+#include <memory>
 
-#include <QGuiApplication>
-#include <QScreen>
 #include <QWindow>
 #include <windows.h>
 
+// WIN32_LEAN_AND_MEAN drops the COM headers UIAutomation.h relies on.
+#include <objbase.h>
+#include <oleauto.h>
+#include <UIAutomation.h>
+
 #include "Logging.h"
+#include "MonitorMapper.h"
+#include "TaskbarLayout.h"
 
 namespace {
-// Convert a native rect to Qt logical pixels.
-QRect toLogical(HWND hwnd) {
+
+QRect nativeWindowRect(HWND hwnd) {
     if(!hwnd)
         return QRect();
     RECT r{};
     if(!GetWindowRect(hwnd, &r))
         return QRect();
+    return QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
+}
 
-    qreal dpr = 1.0;
-    if(const QScreen* s = QGuiApplication::primaryScreen())
-        dpr = s->devicePixelRatio();
-    if(dpr <= 0)
-        dpr = 1.0;
+// Each monitor draws its own taskbar. Secondary ones use a different class.
+HWND taskbarWindowForMonitor(HMONITOR monitor) {
+    HWND primary = FindWindowW(L"Shell_TrayWnd", nullptr);
+    if(!monitor)
+        return primary;
+    if(primary && MonitorFromWindow(primary, MONITOR_DEFAULTTONULL) == monitor)
+        return primary;
 
-    return QRect(qRound(r.left / dpr), qRound(r.top / dpr), qRound((r.right - r.left) / dpr),
-                 qRound((r.bottom - r.top) / dpr));
+    HWND secondary = nullptr;
+    while((secondary = FindWindowExW(nullptr, secondary, L"Shell_SecondaryTrayWnd", nullptr)) != nullptr) {
+        if(MonitorFromWindow(secondary, MONITOR_DEFAULTTONULL) == monitor)
+            return secondary;
+    }
+    return nullptr;
+}
+
+// Secondary taskbars carry a clock instead of the full tray on Windows 10.
+HWND trayChildOf(HWND taskbar) {
+    if(!taskbar)
+        return nullptr;
+    if(HWND notify = FindWindowExW(taskbar, nullptr, L"TrayNotifyWnd", nullptr))
+        return notify;
+    return FindWindowExW(taskbar, nullptr, L"ClockButton", nullptr);
+}
+
+template <typename T> struct ComRelease {
+        void operator()(T* p) const {
+            if(p)
+                p->Release();
+        }
+};
+template <typename T> using ComPtr = std::unique_ptr<T, ComRelease<T>>;
+
+// Windows 11 secondary taskbars have no Win32 tray child. The clock and
+// notification button are XAML controls. Only UI Automation exposes their bounds.
+// Every tray control shares the SystemTrayIcon automation id.
+QRect trayRectViaAutomation(HWND taskbar) {
+    if(!taskbar)
+        return QRect();
+
+    IUIAutomation* rawAutomation = nullptr;
+    if(FAILED(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER, __uuidof(IUIAutomation),
+                               reinterpret_cast<void**>(&rawAutomation))) ||
+       !rawAutomation) {
+        return QRect();
+    }
+    ComPtr<IUIAutomation> automation(rawAutomation);
+
+    IUIAutomationElement* rawRoot = nullptr;
+    if(FAILED(automation->ElementFromHandle(taskbar, &rawRoot)) || !rawRoot)
+        return QRect();
+    ComPtr<IUIAutomationElement> root(rawRoot);
+
+    VARIANT idValue;
+    VariantInit(&idValue);
+    idValue.vt = VT_BSTR;
+    idValue.bstrVal = SysAllocString(L"SystemTrayIcon");
+    IUIAutomationCondition* rawCondition = nullptr;
+    const HRESULT condHr = automation->CreatePropertyCondition(UIA_AutomationIdPropertyId, idValue, &rawCondition);
+    VariantClear(&idValue);
+    if(FAILED(condHr) || !rawCondition)
+        return QRect();
+    ComPtr<IUIAutomationCondition> condition(rawCondition);
+
+    IUIAutomationElementArray* rawFound = nullptr;
+    if(FAILED(root->FindAll(TreeScope_Descendants, condition.get(), &rawFound)) || !rawFound)
+        return QRect();
+    ComPtr<IUIAutomationElementArray> found(rawFound);
+
+    int count = 0;
+    found->get_Length(&count);
+    QRect unionRect;
+    for(int i = 0; i < count; ++i) {
+        IUIAutomationElement* rawItem = nullptr;
+        if(FAILED(found->GetElement(i, &rawItem)) || !rawItem)
+            continue;
+        ComPtr<IUIAutomationElement> item(rawItem);
+        RECT r{};
+        if(FAILED(item->get_CurrentBoundingRectangle(&r)))
+            continue;
+        const QRect bounds(r.left, r.top, r.right - r.left, r.bottom - r.top);
+        if(bounds.isEmpty())
+            continue;
+        unionRect = unionRect.isNull() ? bounds : unionRect.united(bounds);
+    }
+    return unionRect;
+}
+
+// Prefer the Win32 child. Fall back to automation when the shell hides it.
+QRect trayRectOf(HWND taskbar) {
+    const QRect win32 = nativeWindowRect(trayChildOf(taskbar));
+    if(!win32.isEmpty())
+        return win32;
+    return trayRectViaAutomation(taskbar);
 }
 
 TaskbarInfo* g_taskbarInfo = nullptr;
@@ -47,7 +141,7 @@ void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DW
 }
 } // namespace
 
-TaskbarInfo::TaskbarInfo(QObject* parent) : QObject(parent) {
+TaskbarInfo::TaskbarInfo(const MonitorMapper* monitors, QObject* parent) : QObject(parent), m_monitors(monitors) {
     g_taskbarInfo = this;
     // Keep pinning during the minimize animation.
     // The taskbar can move above widgets more than once.
@@ -72,28 +166,37 @@ TaskbarInfo::~TaskbarInfo() {
 }
 
 
-QRect TaskbarInfo::taskbarGeometry() const {
-    return toLogical(FindWindowW(L"Shell_TrayWnd", nullptr));
-}
-
-QRect TaskbarInfo::trayGeometry() const {
-    HWND taskbar = FindWindowW(L"Shell_TrayWnd", nullptr);
+mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
+    mf::TaskbarReserve reserve;
+    HWND taskbar = taskbarWindowForMonitor(static_cast<HMONITOR>(monitor.nativeHandle));
     if(!taskbar)
-        return QRect();
-    return toLogical(FindWindowExW(taskbar, nullptr, L"TrayNotifyWnd", nullptr));
+        return reserve;
+
+    constexpr qint64 kCacheMs = 2000;
+    auto cached = m_reserveCache.find(taskbar);
+    if(cached != m_reserveCache.end() && cached->age.isValid() && cached->age.elapsed() < kCacheMs)
+        return cached->reserve;
+
+    reserve.trailing = MonitorMapper::toLogical(monitor, trayRectOf(taskbar));
+    reserve.leading =
+        MonitorMapper::toLogical(monitor, nativeWindowRect(FindWindowExW(taskbar, nullptr, L"Start", nullptr)));
+    TRC_DEBUG("taskbar reserve: monitor={} leading=({},{} {}x{}) trailing=({},{} {}x{})", monitor.index,
+              reserve.leading.x(), reserve.leading.y(), reserve.leading.width(), reserve.leading.height(),
+              reserve.trailing.x(), reserve.trailing.y(), reserve.trailing.width(), reserve.trailing.height());
+
+    CachedReserve& slot = m_reserveCache[taskbar];
+    slot.reserve = reserve;
+    slot.age.start();
+    return reserve;
 }
 
 QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width, int height) const {
-    const QList<QScreen*> screens = QGuiApplication::screens();
-    if(screens.isEmpty())
+    const MonitorEntry* entry = m_monitors ? m_monitors->entry(monitor) : nullptr;
+    if(!entry)
         return QPoint(0, 0);
-    if(monitor < 0 || monitor >= screens.size())
-        monitor = 0;
-    const QScreen* screen = screens.at(monitor);
 
-    // QScreen geometry already uses logical pixels.
-    const QRect full = screen->geometry();
-    const QRect avail = screen->availableGeometry();
+    const QRect full = entry->logicalRect;
+    const QRect avail = entry->availableRect;
 
     // Use the bottom taskbar height. Use 40 px if none is found.
     int taskbarHeight = full.bottom() - avail.bottom();
@@ -106,33 +209,9 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
     }
     const int y = taskbarTop + qMax(0, (taskbarHeight - height) / 2);
 
-    int x;
-    if(side == 0) {
-        // Left edge. Offset moves it right.
-        x = full.left() + 8 + qMax(0, offset);
-    } else if(side == 1) {
-        // Center. Offset moves it left or right.
-        x = full.left() + (full.width() - width) / 2 + offset;
-    } else {
-        int rightEdge = full.right() + 1 - 200;
-        // Use the tray edge only on the primary screen.
-        if(screen == QGuiApplication::primaryScreen()) {
-            const QRect tray = trayGeometry();
-            if(!tray.isEmpty())
-                rightEdge = tray.left();
-        }
-        x = rightEdge - width - 8 - qMax(0, offset);
-    }
+    // Measure the chrome on this monitor. Every taskbar sizes its own tray.
+    const int x = mf::taskbarWidgetX(full, reserveFor(*entry), static_cast<mf::TaskbarSide>(side), offset, width, 8);
     return QPoint(x, y);
-}
-
-QRect TaskbarInfo::monitorGeometry(int monitor) const {
-    const QList<QScreen*> screens = QGuiApplication::screens();
-    if(screens.isEmpty())
-        return QRect();
-    if(monitor < 0 || monitor >= screens.size())
-        monitor = 0;
-    return screens.at(monitor)->geometry();
 }
 
 void TaskbarInfo::pinTopmost(QWindow* window) const {

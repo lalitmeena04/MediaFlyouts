@@ -11,6 +11,7 @@ class QQmlApplicationEngine;
 class SingleInstance;
 class NowPlaying;
 class Settings;
+class MonitorMapper;
 class FlyoutPlacement;
 class ThemeController;
 class UpdateChecker;
@@ -48,7 +49,6 @@ class MainControllerClass {
         int run();
 
     private:
-        void logScreens() const;
         void loadIconFont();
         void buildCoreSubsystems();
         void registerContextProperties();
@@ -64,6 +64,8 @@ class MainControllerClass {
         std::unique_ptr<SingleInstance> m_instance;
         std::unique_ptr<NowPlaying> m_nowPlaying;
         std::unique_ptr<Settings> m_settings;
+        // Shared monitor facts. Built before any controller that places a window.
+        std::unique_ptr<MonitorMapper> m_monitors;
         std::unique_ptr<FlyoutPlacement> m_placement;
         std::unique_ptr<ThemeController> m_theme;
         std::unique_ptr<UpdateChecker> m_updateChecker;

@@ -354,6 +354,20 @@ TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingCh
     }
 }
 
+// One MonitorMapper feeds every monitor lookup. QML must not keep a second path.
+TEST(QmlContractTest, QmlReadsMonitorFactsFromTheSharedMap) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("model: monitors.names"));
+    EXPECT_FALSE(dashboard.contains(QStringLiteral("monitorNames()")));
+
+    for(const char* path : {"Views/App.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("monitors.geometry("));
+        EXPECT_FALSE(source.contains(QStringLiteral("taskbar.monitorGeometry(")))
+            << "Old per-controller monitor lookup still present in " << path;
+    }
+}
+
 TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     const QString source = loadSource("Views/TaskbarWidget.qml");
     // Capture runs only while the visualizer is on screen.

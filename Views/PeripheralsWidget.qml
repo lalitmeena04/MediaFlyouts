@@ -131,7 +131,7 @@ DockableWidget {
 
     function showTip(globalPoint, text) {
         tipText.text = text
-        var mon = taskbar.monitorGeometry(settings.taskbarWidgetMonitor)
+        var mon = monitors.geometry(settings.taskbarWidgetMonitor)
         var x = globalPoint.x - tip.width / 2
         if(mon.width > 0)
             x = Math.max(mon.x + 4, Math.min(x, mon.x + mon.width - tip.width - 4))

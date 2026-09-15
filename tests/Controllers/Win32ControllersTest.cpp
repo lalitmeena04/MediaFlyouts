@@ -12,6 +12,7 @@
 #include "BatteryProviders/WiredPeripheralProvider.h"
 #include "BluetoothConnectionWatcher.h"
 #include "HidChangeWatcher.h"
+#include "MonitorMapper.h"
 #include "PowerStatusController.h"
 #include "TaskbarInfo.h"
 #include "VolumeMixer.h"
@@ -89,10 +90,11 @@ TEST(Win32ControllersTest, PowerStatusStartRaisesNoChargerEvent) {
 }
 
 TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {
-    TaskbarInfo taskbar;
+    MonitorMapper monitors;
+    TaskbarInfo taskbar(&monitors);
     taskbar.pinTopmost(nullptr);
     taskbar.pinAboveTaskbar(nullptr);
-    const QRect screen = taskbar.monitorGeometry(0);
+    const QRect screen = monitors.geometry(0);
     if(screen.isEmpty())
         GTEST_SKIP() << "No QScreen is available in the guiless test host.";
 
@@ -136,4 +138,39 @@ TEST_F(Win32ComTest, AudioCaptureStartStopIsSafe) {
     capture.stop();
     EXPECT_FALSE(capture.active());
     EXPECT_EQ(capture.bands().size(), 16);
+}
+
+// A right-aligned widget must stop left of the tray drawn on ITS monitor.
+// Before the fix, secondary monitors reused the primary tray width.
+TEST_F(Win32ComTest, RightAlignedWidgetClearsEachMonitorsOwnTray) {
+    MonitorMapper monitors;
+    TaskbarInfo taskbar(&monitors);
+    if(monitors.count() == 0)
+        GTEST_SKIP() << "No QScreen is available in the guiless test host.";
+
+    constexpr int width = 220;
+    constexpr int height = 40;
+    constexpr int right = static_cast<int>(mf::TaskbarSide::Right);
+    for(int i = 0; i < monitors.count(); ++i) {
+        const QRect screen = monitors.geometry(i);
+        const QPoint position = taskbar.widgetPosition(i, right, 0, width, height);
+        // Never off the right edge, never pushed past the whole screen.
+        EXPECT_LT(position.x() + width, screen.right() + 1) << "monitor " << i;
+        EXPECT_GE(position.x(), screen.left()) << "monitor " << i;
+        // Clock and notification area are always narrower than half the taskbar.
+        EXPECT_GT(position.x() + width, screen.left() + screen.width() / 2) << "monitor " << i;
+    }
+}
+
+// Repeated polls must hit the cache. The automation walk is slow.
+TEST_F(Win32ComTest, WidgetPositionIsStableAcrossRapidPolls) {
+    MonitorMapper monitors;
+    TaskbarInfo taskbar(&monitors);
+    if(monitors.count() == 0)
+        GTEST_SKIP() << "No QScreen is available in the guiless test host.";
+
+    const int last = monitors.count() - 1;
+    const QPoint first = taskbar.widgetPosition(last, 2, 0, 220, 40);
+    for(int i = 0; i < 20; ++i)
+        EXPECT_EQ(taskbar.widgetPosition(last, 2, 0, 220, 40), first);
 }

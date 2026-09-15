@@ -92,6 +92,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/ReceiverProfiles.h
     Model/SessionSelection.cpp
     Model/SessionSelection.h
+    Model/TaskbarLayout.cpp
+    Model/TaskbarLayout.h
     Model/TrackInfo.cpp
     Model/TrackInfo.h
     Model/WiredPeripheralRules.cpp
@@ -119,6 +121,8 @@ target_include_directories(mediaflyout_core PUBLIC
 qt_add_executable(MediaFlyouts WIN32
     Controllers/FlyoutPlacement.cpp
     Controllers/FlyoutPlacement.h
+    Controllers/MonitorMapper.cpp
+    Controllers/MonitorMapper.h
     Controllers/NowPlaying.cpp
     Controllers/NowPlaying.h
     Controllers/QmlLogger.cpp
@@ -282,6 +286,9 @@ if (WIN32)
         hid.lib
         setupapi.lib
         ws2_32.lib
+        ole32.lib
+        oleaut32.lib
+        uiautomationcore.lib
     )
 endif()
 
