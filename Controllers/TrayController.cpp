@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QUrl>
 
+#include "Capabilities.h"
 #include "Settings.h"
 
 namespace {
@@ -110,6 +111,19 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
 void TrayController::applyVisibility() {
     if(m_tray)
         m_tray->setVisible(!(m_settings && m_settings->trayIconHidden()));
+}
+
+void TrayController::trackCapabilities(Capabilities* capabilities) {
+    m_capabilities = capabilities;
+    if(!m_capabilities)
+        return;
+    connect(m_capabilities, &Capabilities::changed, this, &TrayController::applyToolTip);
+    applyToolTip();
+}
+
+void TrayController::applyToolTip() {
+    if(m_tray && m_capabilities)
+        m_tray->setToolTip(m_capabilities->statusSummary());
 }
 
 TrayController::~TrayController() {

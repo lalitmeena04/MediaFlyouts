@@ -53,6 +53,17 @@ TEST(QmlContractTest, DashboardHidesTheChargerPageOnSystemsWithNoBattery) {
     expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
 }
 
+// A down subsystem must be explained, not silently dropped.
+TEST(QmlContractTest, DashboardBannerNamesUnavailableSubsystems) {
+    const QString source = loadSource("Views/Dashboard.qml");
+
+    expectContains(source, QStringLiteral("id: statusBanner"));
+    expectContains(source, QStringLiteral("visible: capabilities.degraded"));
+    expectContains(source, QStringLiteral("capabilities.unavailableNames.join(\", \")"));
+    // Page content sits below the banner so nothing is covered.
+    expectContains(source, QStringLiteral("anchors.top: statusBanner.bottom"));
+}
+
 TEST(QmlContractTest, ConnectsTheFlyoutToPeripheralAlertsAndEventSettings) {
     const QString source = loadSource("Views/PeripheralFlyout.qml");
 

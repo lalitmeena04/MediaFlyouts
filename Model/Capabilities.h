@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QObject>
+#include <QString>
+#include <QStringList>
 
 // Track platform subsystem availability.
 // UI hides features that need unavailable APIs.
@@ -12,6 +14,8 @@ class Capabilities : public QObject {
         Q_PROPERTY(bool lockKeysAvailable READ lockKeysAvailable NOTIFY changed)
         Q_PROPERTY(bool mediaKeysAvailable READ mediaKeysAvailable NOTIFY changed)
         Q_PROPERTY(bool chargerAvailable READ chargerAvailable NOTIFY changed)
+        Q_PROPERTY(bool degraded READ degraded NOTIFY changed)
+        Q_PROPERTY(QStringList unavailableNames READ unavailableNames NOTIFY changed)
 
     public:
         explicit Capabilities(QObject* parent = nullptr);
@@ -22,6 +26,13 @@ class Capabilities : public QObject {
         bool mediaKeysAvailable() const;
         // False on systems with no battery, such as desktops.
         bool chargerAvailable() const;
+
+        // True when a subsystem the app needs is down.
+        bool degraded() const;
+        // Display names of the down subsystems.
+        QStringList unavailableNames() const;
+        // One-line state for the tray tooltip.
+        QString statusSummary() const;
 
     public slots:
         void setAudioAvailable(bool available);

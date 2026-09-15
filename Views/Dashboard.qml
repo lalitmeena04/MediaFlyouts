@@ -516,10 +516,52 @@ Window {
                 wrapMode: Text.WordWrap
             }
 
+            // Explain silent feature loss when a subsystem is down.
+            Rectangle {
+                id: statusBanner
+                anchors.top: pageDesc.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 32
+                anchors.rightMargin: 32
+                anchors.topMargin: visible ? 16 : 0
+                visible: capabilities.degraded
+                height: visible ? bannerRow.implicitHeight + 24 : 0
+                radius: 8
+                color: Qt.rgba(theme.accent.r, theme.accent.g, theme.accent.b, 0.12)
+                border.width: 1
+                border.color: Qt.rgba(theme.accent.r, theme.accent.g, theme.accent.b, 0.35)
+
+                Row {
+                    id: bannerRow
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 10
+
+                    IconLabel {
+                        glyph: "\uE9CE"
+                        size: 18
+                        color: theme.accent
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Text {
+                        width: parent.width - 28
+                        text: "Some features are unavailable because Windows did not provide: "
+                              + capabilities.unavailableNames.join(", ")
+                              + ". Related settings are disabled."
+                        color: theme.textPrimary
+                        font.pixelSize: 13
+                        wrapMode: Text.WordWrap
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+
             // Scroll long pages. Prevent content cut-off.
             ScrollView {
                 id: pageScroll
-                anchors.top: pageDesc.bottom
+                anchors.top: statusBanner.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom

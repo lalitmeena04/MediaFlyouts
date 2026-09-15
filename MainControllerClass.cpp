@@ -111,6 +111,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_nowPlaying->setArtProvider(m_artProvider);
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
+    m_tray->trackCapabilities(m_capabilities.get());
     // Notify from tray when newer release exists.
     QObject::connect(m_updateChecker.get(), &UpdateChecker::changed, m_tray.get(), [this] {
         if(m_updateChecker->updateAvailable())
