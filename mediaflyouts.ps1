@@ -55,8 +55,8 @@
 .PARAMETER AppDir
     (run) Directory holding an installed MediaFlyouts.exe.
 
-.PARAMETER ShowOutput
-    (test) Print detailed per-test output.
+.PARAMETER Quiet
+    (test) Print only the per-target summary instead of detailed per-test output.
 
 .PARAMETER FailFast
     (test) Stop after the first failing test.
@@ -116,7 +116,7 @@ param(
     [string]$AppDir       = "",
 
     # -- test -----------------------------------------------------------------
-    [switch]$ShowOutput,
+    [switch]$Quiet,
     [switch]$FailFast,
     [string]$Filter       = "",
     [switch]$Shuffle,
@@ -265,7 +265,7 @@ function Invoke-ShowHelp {
     Write-Host ""
     Write-Host "  test options:" -ForegroundColor Cyan
     Write-Host "    -Filter <pattern>         Google Test filter (e.g. RazerProtocolTest.*)"
-    Write-Host "    -ShowOutput               Print per-test output"
+    Write-Host "    -Quiet                    Print the summary only, not every test"
     Write-Host "    -FailFast                 Stop at the first failure"
     Write-Host "    -Shuffle                  Randomise execution order"
     Write-Host "    -Repeat [-RepeatCount N]  Repeat the suite (default 10)"
@@ -431,7 +431,7 @@ function Invoke-Test {
         try { Invoke-Native { & $exe @gtestArgs } "Tests failed." } finally { Pop-Location }
     } else {
         $ctestArgs = @("--test-dir", $buildPath, "--output-on-failure")
-        if ($ShowOutput) { $ctestArgs += "--verbose" }
+        if (-not $Quiet) { $ctestArgs += "--verbose" }
         if ($FailFast)   { $ctestArgs += "--stop-on-failure" }
 
         Write-Info "ctest $($ctestArgs -join ' ')"

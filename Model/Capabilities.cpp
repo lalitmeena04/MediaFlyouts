@@ -24,6 +24,31 @@ bool Capabilities::chargerAvailable() const {
     return m_chargerAvailable;
 }
 
+// A missing charger is normal on a desktop, so it never counts as degraded.
+QStringList Capabilities::unavailableNames() const {
+    QStringList names;
+    if(!m_audioAvailable)
+        names << QStringLiteral("Audio devices");
+    if(!m_mediaSessionAvailable)
+        names << QStringLiteral("Media sessions");
+    if(!m_lockKeysAvailable)
+        names << QStringLiteral("Lock keys");
+    if(!m_mediaKeysAvailable)
+        names << QStringLiteral("Media keys");
+    return names;
+}
+
+bool Capabilities::degraded() const {
+    return !unavailableNames().isEmpty();
+}
+
+QString Capabilities::statusSummary() const {
+    const QStringList names = unavailableNames();
+    if(names.isEmpty())
+        return QStringLiteral("MediaFlyouts");
+    return QStringLiteral("MediaFlyouts\nUnavailable: %1").arg(names.join(QStringLiteral(", ")));
+}
+
 void Capabilities::setAudioAvailable(bool available) {
     if(m_audioAvailable == available)
         return;

@@ -57,12 +57,9 @@ FlyoutBase {
         border.color: theme.flyoutBorder
         border.width: 1
 
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: root.stopAutoHide()
-            onExited: if(!settings.mediaFlyoutAlwaysDisplay) root.restartAutoHide()
-            onClicked: if(!settings.mediaFlyoutAlwaysDisplay) root.restartAutoHide()
+        PeekArea {
+            flyout: root
+            pinned: settings.mediaFlyoutAlwaysDisplay
         }
 
         // Dismiss button. Show only for pinned flyout.
@@ -219,7 +216,7 @@ FlyoutBase {
                             radius: parent.radius
                             color: root.accentColor
                             // Do not animate fill while user scrubs.
-                            Behavior on width { enabled: seekTrack.dragFraction < 0; NumberAnimation { duration: 250 } }
+                            Behavior on width { enabled: seekTrack.dragFraction < 0; NumberAnimation { duration: Anim.fillMs } }
                         }
 
                         Rectangle {
@@ -234,30 +231,25 @@ FlyoutBase {
                             y: (parent.height - height) / 2
                             x: Math.max(0, Math.min(seekTrack.width - width,
                                         seekTrack.width * seekTrack.shownFraction - width / 2))
-                            Behavior on width { NumberAnimation { duration: 100 } }
+                            Behavior on width { NumberAnimation { duration: Anim.hoverMs } }
                         }
 
-                        MouseArea {
+                        ScrubArea {
                             id: seekArea
-                            anchors.fill: parent
                             anchors.topMargin: -8
                             anchors.bottomMargin: -8
+                            trackWidth: seekTrack.width
                             hoverEnabled: true
                             preventStealing: true
                             enabled: nowPlaying.canSeek && settings.seekbarInteractive
                             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
 
-                            function fractionAt(px) {
-                                return Math.max(0, Math.min(1, px / seekTrack.width))
-                            }
-
                             onEntered: root.stopAutoHide()
                             onExited: if(!settings.mediaFlyoutAlwaysDisplay && !pressed) root.restartAutoHide()
-                            onPressed: (mouse) => { root.stopAutoHide(); seekTrack.dragFraction = fractionAt(mouse.x) }
-                            onPositionChanged: (mouse) => { if(pressed) seekTrack.dragFraction = fractionAt(mouse.x) }
-                            onReleased: {
-                                if(seekTrack.dragFraction >= 0)
-                                    nowPlaying.seekToFraction(seekTrack.dragFraction)
+                            onScrubStarted: (fraction) => { root.stopAutoHide(); seekTrack.dragFraction = fraction }
+                            onScrubMoved: (fraction) => seekTrack.dragFraction = fraction
+                            onScrubEnded: (fraction) => {
+                                nowPlaying.seekToFraction(fraction)
                                 seekTrack.dragFraction = -1
                                 if(!settings.mediaFlyoutAlwaysDisplay)
                                     root.restartAutoHide()

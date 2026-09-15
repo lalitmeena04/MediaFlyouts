@@ -18,7 +18,7 @@ Window {
     property bool positioned: false
     Behavior on y {
         enabled: base.positioned
-        NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
+        NumberAnimation { duration: Anim.moveMs; easing.type: Easing.OutQuad }
     }
 
     // Show the flyout and start auto-hide.

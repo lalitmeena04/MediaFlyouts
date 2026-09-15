@@ -65,7 +65,7 @@ DockableWidget {
     property bool positioned: false
     Behavior on x {
         enabled: root.positioned
-        NumberAnimation { duration: 200; easing.type: Easing.OutQuad }
+        NumberAnimation { duration: Anim.moveMs; easing.type: Easing.OutQuad }
     }
 
     function updatePosition() {

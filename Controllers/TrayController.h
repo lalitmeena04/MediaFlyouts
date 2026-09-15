@@ -7,6 +7,7 @@ class QSystemTrayIcon;
 class QMenu;
 class QTimer;
 class Settings;
+class Capabilities;
 
 // Own notification-area icon and menu. Emit QML app intents.
 class TrayController : public QObject {
@@ -19,6 +20,8 @@ class TrayController : public QObject {
         void show();
         // Show balloon notification from tray icon.
         void notify(const QString& title, const QString& message);
+        // Report unavailable subsystems in the tray tooltip.
+        void trackCapabilities(Capabilities* capabilities);
 
     signals:
         void openDashboardRequested();
@@ -29,11 +32,13 @@ class TrayController : public QObject {
 
     private:
         void applyVisibility();
+        void applyToolTip();
 
         QSystemTrayIcon* m_tray = nullptr;
         QMenu* m_menu = nullptr;
         QString m_iconFamily;
         Settings* m_settings = nullptr;
+        Capabilities* m_capabilities = nullptr;
         // Delay single-click flyout. Double-click can open dashboard.
         QTimer* m_singleClickTimer = nullptr;
 };
