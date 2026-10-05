@@ -1,12 +1,11 @@
 #include "BluetoothClassicBatteryProvider.h"
 
 #include "BatteryUtils.h"
+#include "DevNodeHelpers.h"
 
 #include <windows.h>
 
-#include <bluetoothapis.h>
 #include <cfgmgr32.h>
-#include <combaseapi.h>
 // Header devpkey.h defines DEVPKEY GUID storage with INITGUID.
 #include <initguid.h>
 #include <devpkey.h>
@@ -32,59 +31,6 @@ constexpr DEVPROPKEY kBluetoothDeviceAddressKey = {
 constexpr DEVPROPKEY kBluetoothClassOfDeviceKey = {
     {0x2bd67d8b, 0x8beb, 0x48d5, {0x87, 0xe0, 0x6c, 0xda, 0x34, 0x28, 0x04, 0x0a}}, 4};
 
-QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key) {
-    DEVPROPTYPE type = 0;
-    ULONG size = 0;
-    CM_Get_DevNode_PropertyW(devInst, &key, &type, nullptr, &size, 0);
-    if(size == 0)
-        return {};
-
-    std::vector<wchar_t> buf(size / sizeof(wchar_t));
-    if(CM_Get_DevNode_PropertyW(devInst, &key, &type, reinterpret_cast<PBYTE>(buf.data()), &size, 0) != CR_SUCCESS)
-        return {};
-    return QString::fromWCharArray(buf.data());
-}
-
-// Device PnP container id. Dedupes profile sub-nodes.
-QString devNodeContainerId(DEVINST devInst) {
-    DEVPROPTYPE type = 0;
-    GUID containerId = {};
-    ULONG size = sizeof(containerId);
-    if(CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_ContainerId, &type, reinterpret_cast<PBYTE>(&containerId),
-                                 &size, 0) != CR_SUCCESS
-       || type != DEVPROP_TYPE_GUID)
-        return {};
-
-    wchar_t buf[64] = {};
-    StringFromGUID2(containerId, buf, static_cast<int>(std::size(buf)));
-    return QString::fromWCharArray(buf);
-}
-
-// Report active devices only. Matches Get-PnpDevice "OK" filter.
-// Avoid stale battery values for disconnected devices.
-bool devNodeIsActive(DEVINST devInst) {
-    ULONG status = 0, problem = 0;
-    if(CM_Get_DevNode_Status(&status, &problem, devInst, 0) != CR_SUCCESS)
-        return false;
-    return (status & DN_STARTED) && !(status & DN_HAS_PROBLEM);
-}
-
-// DN_STARTED means paired or present. It does not mean connected.
-// Ask Bluetooth API for live connection state.
-bool isBluetoothAddressConnected(const QString& addressHex) {
-    bool ok = false;
-    const quint64 address = addressHex.toULongLong(&ok, 16);
-    if(!ok)
-        return false;
-
-    BLUETOOTH_DEVICE_INFO info = {};
-    info.dwSize = sizeof(info);
-    info.Address.ullLong = address;
-    if(BluetoothGetDeviceInfo(nullptr, &info) != ERROR_SUCCESS)
-        return false;
-    return info.fConnected != FALSE;
-}
-
 } // namespace
 
 QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
@@ -109,7 +55,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
             continue;
         if(!devNodeIsActive(devInst))
             continue;
-        if(!isBluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
+        if(!bluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
             continue;
 
         DEVPROPTYPE type = 0;
@@ -153,7 +99,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
             continue;
         if(!devNodeIsActive(devInst))
             continue;
-        if(!isBluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
+        if(!bluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
             continue;
 
         const QString containerId = devNodeContainerId(devInst);

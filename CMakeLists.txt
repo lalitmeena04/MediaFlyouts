@@ -222,6 +222,8 @@ if (WIN32)
         Controllers/BatteryProviders/BluetoothClassicBatteryProvider.h
         Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
         Controllers/BatteryProviders/BluetoothLeBatteryProvider.h
+        Controllers/BatteryProviders/DevNodeHelpers.cpp
+        Controllers/BatteryProviders/DevNodeHelpers.h
         Controllers/BatteryProviders/FastPairBatteryProvider.cpp
         Controllers/BatteryProviders/FastPairBatteryProvider.h
         Controllers/BatteryProviders/GameControllerBatteryProvider.cpp

@@ -1,12 +1,12 @@
 #include "WiredPeripheralProvider.h"
 
+#include "DevNodeHelpers.h"
 #include "WiredPeripheralRules.h"
 #include "WirelessReceiverProvider.h"
 
 #include <windows.h>
 
 #include <cfgmgr32.h>
-#include <combaseapi.h>
 // Header devpkey.h defines DEVPKEY GUID storage with INITGUID.
 #include <initguid.h>
 #include <devpkey.h>
@@ -17,43 +17,6 @@
 #include <vector>
 
 namespace {
-
-QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key) {
-    DEVPROPTYPE type = 0;
-    ULONG size = 0;
-    CM_Get_DevNode_PropertyW(devInst, &key, &type, nullptr, &size, 0);
-    if(size == 0)
-        return {};
-
-    std::vector<wchar_t> buf(size / sizeof(wchar_t));
-    if(CM_Get_DevNode_PropertyW(devInst, &key, &type, reinterpret_cast<PBYTE>(buf.data()), &size, 0) != CR_SUCCESS
-       || type != DEVPROP_TYPE_STRING)
-        return {};
-    return QString::fromWCharArray(buf.data()).trimmed();
-}
-
-// Windows groups every function of one physical device under one container.
-QString devNodeContainerId(DEVINST devInst) {
-    DEVPROPTYPE type = 0;
-    GUID containerId = {};
-    ULONG size = sizeof(containerId);
-    if(CM_Get_DevNode_PropertyW(devInst, &DEVPKEY_Device_ContainerId, &type, reinterpret_cast<PBYTE>(&containerId),
-                                &size, 0) != CR_SUCCESS
-       || type != DEVPROP_TYPE_GUID)
-        return {};
-
-    wchar_t buf[64] = {};
-    StringFromGUID2(containerId, buf, static_cast<int>(std::size(buf)));
-    return QString::fromWCharArray(buf);
-}
-
-// Report active devices only. Matches Get-PnpDevice "OK" filter.
-bool devNodeIsActive(DEVINST devInst) {
-    ULONG status = 0, problem = 0;
-    if(CM_Get_DevNode_Status(&status, &problem, devInst, 0) != CR_SUCCESS)
-        return false;
-    return (status & DN_STARTED) && !(status & DN_HAS_PROBLEM);
-}
 
 // The device's own product string reads better than the driver description.
 QString devNodeDisplayName(DEVINST devInst) {

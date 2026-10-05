@@ -1,7 +1,8 @@
 #include "FastPairBatteryProvider.h"
 
-#include "FastPairProtocol.h"
 #include "BatteryUtils.h"
+#include "DevNodeHelpers.h"
+#include "FastPairProtocol.h"
 
 #include <winsock2.h>
 #include <ws2bth.h>
@@ -28,27 +29,6 @@ struct FastPairDevice {
         QString name;
         QString category;
 };
-
-QString devNodePropertyText(DEVINST devInst, const DEVPROPKEY& key) {
-    DEVPROPTYPE type = 0;
-    ULONG size = 0;
-    CM_Get_DevNode_PropertyW(devInst, &key, &type, nullptr, &size, 0);
-    if(size == 0)
-        return {};
-
-    std::vector<wchar_t> buf(size / sizeof(wchar_t));
-    if(CM_Get_DevNode_PropertyW(devInst, &key, &type, reinterpret_cast<PBYTE>(buf.data()), &size, 0) != CR_SUCCESS)
-        return {};
-    return QString::fromWCharArray(buf.data());
-}
-
-// RFCOMM socket can stay open after disconnect. Use Bluetooth API state.
-bool isAddressConnected(quint64 address) {
-    BLUETOOTH_DEVICE_INFO info = {};
-    info.dwSize = sizeof(info);
-    info.Address.ullLong = address;
-    return BluetoothGetDeviceInfo(nullptr, &info) == ERROR_SUCCESS && info.fConnected;
-}
 
 // PnP service sub-node has generic name. Ask Bluetooth API for paired name.
 // Skip devices that are not connected.
@@ -196,7 +176,7 @@ QVector<BatteryDeviceInfo> FastPairBatteryProvider::poll() {
     QVector<BatteryDeviceInfo> devices;
     for(auto it = m_latest.begin(); it != m_latest.end();) {
         // Do not report disconnected device before worker sees socket close.
-        if(!isAddressConnected(it.key())) {
+        if(!bluetoothAddressConnected(it.key())) {
             it = m_latest.erase(it);
             continue;
         }
@@ -232,7 +212,7 @@ void FastPairBatteryProvider::run() {
         if(std::chrono::steady_clock::now() >= nextLivenessCheck) {
             nextLivenessCheck = std::chrono::steady_clock::now() + std::chrono::seconds(1);
             for(size_t i = connections.size(); i-- > 0;)
-                if(!isAddressConnected(connections[i].address))
+                if(!bluetoothAddressConnected(connections[i].address))
                     dropConnection(i);
         }
         // Periodically pick up newly connected devices.

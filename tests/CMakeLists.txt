@@ -75,6 +75,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/AudioCapture.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/DevNodeHelpers.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/FastPairBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/HidCollections.cpp
@@ -93,6 +94,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
         Controllers/BatteryStatusControllerTest.cpp
+        Controllers/DevNodeHelpersTest.cpp
         Controllers/HidCollectionsTest.cpp
         Controllers/MonitorMapperTest.cpp
         Controllers/PeripheralAlertsTest.cpp
