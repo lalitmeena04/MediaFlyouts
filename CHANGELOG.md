@@ -5,6 +5,12 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- Media widget "Pause all" button that pauses every playing media source at
+  once. An optional follow-up turns the same button into "Play all" whenever
+  every source is paused, and resumes them.
+
 ### Fixed
 
 - Logitech devices on Bolt and Unifying receivers are now detected. HID++

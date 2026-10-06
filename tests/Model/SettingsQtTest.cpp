@@ -75,6 +75,8 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
     QVERIFY(s.taskbarWidgetShowPauseOverlay());
     QVERIFY(s.taskbarWidgetScrollingEnabled());
+    QVERIFY(!s.taskbarWidgetPauseAllEnabled());
+    QVERIFY(s.taskbarWidgetPlayAllEnabled());
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
     QCOMPARE(s.visualizerStyle(), 0);

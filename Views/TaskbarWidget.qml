@@ -5,11 +5,18 @@ import MediaFlyouts
 // Small always-on-top media widget. Docks near taskbar tray.
 DockableWidget {
     id: root
-    width: 220
+    // Pause-all button adds one slot to the right of the visualizer.
+    readonly property int pauseAllSlot: 24
+    width: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)
     height: 40
     logName: "TaskbarWidget"
     // Keep polling while media plays. Reappear after fullscreen.
     pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
+
+    readonly property bool pauseAllVisible: settings.taskbarWidgetPauseAllEnabled
+    // Button flips to play-all after pause-all, when the follow-up option is on.
+    readonly property bool showPlayAll: settings.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll
+    onWidthChanged: updatePosition()
 
     // Show after onboarding, when enabled, media plays, and not blocked.
     visible: settings.onboardingCompleted && settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
@@ -48,6 +55,10 @@ DockableWidget {
         onTriggered: root.scrollCooldown = false
     }
 
+    WidgetTooltip {
+        id: widgetTip
+    }
+
     Rectangle {
         id: card
         anchors.fill: parent
@@ -59,11 +70,13 @@ DockableWidget {
         }
 
         // Spectrum visualizer behind media info. Style is user-selectable.
+        // It stops before the pause-all slot.
         TaskbarVisualizer {
             id: visualizer
             visible: settings.taskbarVisualizerEnabled
             anchors.fill: parent
             anchors.margins: 3
+            anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)
         }
 
         MouseArea {
@@ -211,41 +224,44 @@ DockableWidget {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 6
 
-                IconLabel {
+                WidgetButton {
                     glyph: Fluent.previous
                     size: 14
-                    color: prevArea.containsMouse ? "white" : "#C8C8C8"
-                    MouseArea {
-                        id: prevArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: nowPlaying.previous()
-                    }
+                    tip: widgetTip
+                    tooltip: "Previous"
+                    onClicked: nowPlaying.previous()
                 }
-                IconLabel {
+                WidgetButton {
                     glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
                     size: 16
-                    color: "white"
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: nowPlaying.playPause()
-                    }
+                    idleColor: "white"
+                    tip: widgetTip
+                    tooltip: nowPlaying.isPlaying ? "Pause" : "Play"
+                    onClicked: nowPlaying.playPause()
                 }
-                IconLabel {
+                WidgetButton {
                     glyph: Fluent.next
                     size: 14
-                    color: nextArea.containsMouse ? "white" : "#C8C8C8"
-                    MouseArea {
-                        id: nextArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: nowPlaying.next()
-                    }
+                    tip: widgetTip
+                    tooltip: "Next"
+                    onClicked: nowPlaying.next()
                 }
             }
+        }
+
+        // Single pause-all / play-all button. Sits right of the visualizer boundary.
+        WidgetButton {
+            id: pauseAllButton
+            visible: root.pauseAllVisible
+            anchors.right: parent.right
+            anchors.rightMargin: 3
+            anchors.verticalCenter: parent.verticalCenter
+            width: root.pauseAllSlot
+            glyph: root.showPlayAll ? Fluent.playCircle : Fluent.pauseCircle
+            size: 16
+            tip: widgetTip
+            tooltip: root.showPlayAll ? "Play all" : "Pause all"
+            onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()
         }
     }
 }

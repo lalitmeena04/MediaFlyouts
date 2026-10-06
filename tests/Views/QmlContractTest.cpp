@@ -385,9 +385,13 @@ TEST(QmlContractTest, QmlReadsMonitorFactsFromTheSharedMap) {
     expectContains(dashboard, QStringLiteral("model: monitors.names"));
     EXPECT_FALSE(dashboard.contains(QStringLiteral("monitorNames()")));
 
-    for(const char* path : {"Views/App.qml", "Views/PeripheralsWidget.qml"}) {
+    // Tooltip clamping moved from PeripheralsWidget into the shared WidgetTooltip.
+    for(const char* path : {"Views/App.qml", "Views/WidgetTooltip.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("monitors.geometry("));
+    }
+    for(const char* path : {"Views/App.qml", "Views/WidgetTooltip.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
         EXPECT_FALSE(source.contains(QStringLiteral("taskbar.monitorGeometry(")))
             << "Old per-controller monitor lookup still present in " << path;
     }
@@ -399,6 +403,64 @@ TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     expectContains(source, QStringLiteral("visualizerLive: root.visible && settings.taskbarVisualizerEnabled"));
     expectContains(source, QStringLiteral("audioCapture.start()"));
     expectContains(source, QStringLiteral("audioCapture.stop()"));
+}
+
+// One button pauses every source. It flips to play-all only when the follow-up option is on.
+TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
+    const QString widget = loadSource("Views/TaskbarWidget.qml");
+    expectContains(widget, QStringLiteral("pauseAllVisible: settings.taskbarWidgetPauseAllEnabled"));
+    expectContains(widget, QStringLiteral("showPlayAll: settings.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll"));
+    expectContains(widget, QStringLiteral("glyph: root.showPlayAll ? Fluent.playCircle : Fluent.pauseCircle"));
+    expectContains(widget, QStringLiteral("onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()"));
+    // Exactly one pause-all button exists in the widget.
+    EXPECT_EQ(widget.count(QStringLiteral("nowPlaying.pauseAll()")), 1);
+    // Button sits at the right edge, past the visualizer boundary. Extra slot widens the widget.
+    expectContains(widget, QStringLiteral("id: pauseAllButton"));
+    expectContains(widget, QStringLiteral("anchors.right: parent.right"));
+    expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(widget, QStringLiteral("width: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(widget, QStringLiteral("onWidthChanged: updatePosition()"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("settings.taskbarWidgetPauseAllEnabled = value"));
+    expectContains(dashboard, QStringLiteral("visible: settings.taskbarWidgetPauseAllEnabled"));
+    expectContains(dashboard, QStringLiteral("settings.taskbarWidgetPlayAllEnabled = value"));
+}
+
+// Every media widget button names itself on hover.
+TEST(QmlContractTest, TaskbarWidgetButtonsHaveTooltips) {
+    const QString button = loadSource("Views/WidgetButton.qml");
+    expectContains(button, QStringLiteral("property string tooltip"));
+    expectContains(button, QStringLiteral("property var tip"));
+    expectContains(button, QStringLiteral("button.tip.showAt("));
+    expectContains(button, QStringLiteral("button.tip.hide()"));
+    // Text can change while hovered.
+    expectContains(button, QStringLiteral("onTooltipChanged: refreshTip()"));
+
+    const QString widget = loadSource("Views/TaskbarWidget.qml");
+    expectContains(widget, QStringLiteral("WidgetTooltip {"));
+    expectContains(widget, QStringLiteral("tooltip: \"Previous\""));
+    expectContains(widget, QStringLiteral("tooltip: \"Next\""));
+    expectContains(widget, QStringLiteral("tooltip: nowPlaying.isPlaying ? \"Pause\" : \"Play\""));
+    expectContains(widget, QStringLiteral("tooltip: root.showPlayAll ? \"Play all\" : \"Pause all\""));
+    // No bare IconLabel buttons remain. All go through WidgetButton.
+    EXPECT_EQ(widget.count(QStringLiteral("WidgetButton {")), 4);
+    EXPECT_FALSE(widget.contains(QStringLiteral("IconLabel {")));
+}
+
+// Both taskbar widgets share one tooltip window implementation.
+TEST(QmlContractTest, TaskbarWidgetsShareTheTooltipWindow) {
+    const QString tooltip = loadSource("Views/WidgetTooltip.qml");
+    expectContains(tooltip, QStringLiteral("function showAt(globalPoint, text)"));
+    expectContains(tooltip, QStringLiteral("function hide()"));
+    expectContains(tooltip, QStringLiteral("monitors.geometry(tip.monitor)"));
+
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("WidgetTooltip {"));
+        EXPECT_FALSE(source.contains(QStringLiteral("id: tipText")))
+            << "Inline tooltip window still present in " << path;
+    }
 }
 
 TEST(QmlContractTest, PeekAreaHoldsTheFlyoutOpenWhileHovered) {

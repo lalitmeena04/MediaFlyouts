@@ -2,6 +2,8 @@
 
 #include <atomic>
 #include <mutex>
+#include <utility>
+#include <vector>
 
 #include <QImage>
 #include <QObject>
@@ -35,6 +37,10 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         int sessionCount() const override;
         int selectedSessionIndex() const override;
         void cycleSession(int delta) override;
+        QStringList pauseAllSessions() override;
+        void playSessions(const QStringList& appIds) override;
+        int playingSessionCount() const override;
+        void resumeAllSessions() override;
 
     signals:
         void trackChanged(const mf::TrackInfo& track);
@@ -52,6 +58,9 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         winrt::fire_and_forget refresh(Session session, int attempt = 0);
         Session currentSession();
         void refreshSessionMeta();
+        // Watch playback state on every session. Keeps playingSessionCount current.
+        void watchAllSessions();
+        void recountPlaying();
 
         SessionManager m_manager{nullptr};
         Session m_session{nullptr};
@@ -63,6 +72,9 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         std::mutex m_mutex;
         std::atomic<int> m_sessionCount{1};
         std::atomic<int> m_selectedIndex{0};
+        std::atomic<int> m_playingCount{0};
+        std::mutex m_watchMutex;
+        std::vector<std::pair<Session, winrt::event_token>> m_watched;
         bool m_manual = false; // True after user picks session.
         std::mutex m_lastMutex;
         mf::TrackInfo m_lastTrack; // last non-empty metadata, to bridge transient empty updates

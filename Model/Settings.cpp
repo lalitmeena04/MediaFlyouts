@@ -99,6 +99,9 @@ void Settings::reload() {
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
+    // Pause-all button is opt-in. Play-all follow-up is on once pause-all is enabled.
+    m_taskbarWidgetPauseAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPauseAllEnabled"), false).toBool();
+    m_taskbarWidgetPlayAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPlayAllEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     // Centered mirrors bars around middle. Other mode grows from bottom.
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
@@ -354,6 +357,12 @@ bool Settings::taskbarWidgetShowPauseOverlay() const {
 }
 bool Settings::taskbarWidgetScrollingEnabled() const {
     return m_taskbarWidgetScrollingEnabled;
+}
+bool Settings::taskbarWidgetPauseAllEnabled() const {
+    return m_taskbarWidgetPauseAllEnabled;
+}
+bool Settings::taskbarWidgetPlayAllEnabled() const {
+    return m_taskbarWidgetPlayAllEnabled;
 }
 bool Settings::taskbarVisualizerEnabled() const {
     return m_taskbarVisualizerEnabled;
@@ -639,6 +648,12 @@ void Settings::setTaskbarWidgetShowPauseOverlay(bool v) {
 }
 void Settings::setTaskbarWidgetScrollingEnabled(bool v) {
     assign("taskbarWidgetScrollingEnabled", m_taskbarWidgetScrollingEnabled, v);
+}
+void Settings::setTaskbarWidgetPauseAllEnabled(bool v) {
+    assign("taskbarWidgetPauseAllEnabled", m_taskbarWidgetPauseAllEnabled, v);
+}
+void Settings::setTaskbarWidgetPlayAllEnabled(bool v) {
+    assign("taskbarWidgetPlayAllEnabled", m_taskbarWidgetPlayAllEnabled, v);
 }
 void Settings::setTaskbarVisualizerEnabled(bool v) {
     assign("taskbarVisualizerEnabled", m_taskbarVisualizerEnabled, v);

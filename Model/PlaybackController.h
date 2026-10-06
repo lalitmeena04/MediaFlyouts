@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QStringList>
+
 #include "TrackInfo.h"
 
 namespace mf {
@@ -34,6 +36,20 @@ class IPlaybackController {
         virtual void cycleSession(int delta) {
             (void)delta;
         }
+        // Pause every playing session. Return source app ids of paused sessions.
+        virtual QStringList pauseAllSessions() {
+            return {};
+        }
+        // Resume sessions with the given source app ids.
+        virtual void playSessions(const QStringList& appIds) {
+            (void)appIds;
+        }
+        // Number of sessions that are playing right now.
+        virtual int playingSessionCount() const {
+            return 0;
+        }
+        // Resume every session that is not playing.
+        virtual void resumeAllSessions() {}
 };
 
 // Pause if playing. Otherwise resume playback.

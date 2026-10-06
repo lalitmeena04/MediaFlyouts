@@ -197,6 +197,8 @@ qt_add_qml_module(MediaFlyouts
         Views/TaskbarWidget.qml
         Views/VolumeFlyout.qml
         Views/VolumeMixerWindow.qml
+        Views/WidgetButton.qml
+        Views/WidgetTooltip.qml
     RESOURCES
         Views/assets/fonts/FluentSystemIcons-Filled.ttf
         Views/assets/fonts/FontAwesome6-Solid.ttf

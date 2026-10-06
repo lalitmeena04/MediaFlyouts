@@ -1286,6 +1286,22 @@ Window {
                         value: settings.taskbarWidgetControlsEnabled
                         onToggled: settings.taskbarWidgetControlsEnabled = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Pause all button"
+                        description: "Show a button that pauses every playing media source at once."
+                        value: settings.taskbarWidgetPauseAllEnabled
+                        onToggled: settings.taskbarWidgetPauseAllEnabled = value
+                    }
+                    SettingRow {
+                        visible: settings.taskbarWidgetPauseAllEnabled
+                        x: 16
+                        width: parent.width - 16
+                        label: "Play all after pausing"
+                        description: "When every source is paused, the same button becomes Play all and resumes them."
+                        value: settings.taskbarWidgetPlayAllEnabled
+                        onToggled: settings.taskbarWidgetPlayAllEnabled = value
+                    }
                     SettingCombo {
                         width: parent.width
                         label: "Widget side"

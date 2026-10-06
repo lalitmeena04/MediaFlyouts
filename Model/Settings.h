@@ -58,6 +58,10 @@ class Settings : public QObject {
                        setTaskbarWidgetShowPauseOverlay NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
                        setTaskbarWidgetScrollingEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetPauseAllEnabled READ taskbarWidgetPauseAllEnabled WRITE
+                       setTaskbarWidgetPauseAllEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetPlayAllEnabled READ taskbarWidgetPlayAllEnabled WRITE
+                       setTaskbarWidgetPlayAllEnabled NOTIFY changed)
         Q_PROPERTY(bool taskbarVisualizerEnabled READ taskbarVisualizerEnabled WRITE setTaskbarVisualizerEnabled NOTIFY
                        changed)
         Q_PROPERTY(bool taskbarVisualizerCentered READ taskbarVisualizerCentered WRITE setTaskbarVisualizerCentered
@@ -160,6 +164,8 @@ class Settings : public QObject {
         int taskbarWidgetMonitor() const;
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
+        bool taskbarWidgetPauseAllEnabled() const;
+        bool taskbarWidgetPlayAllEnabled() const;
         bool taskbarVisualizerEnabled() const;
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
@@ -246,6 +252,8 @@ class Settings : public QObject {
         void setTaskbarWidgetMonitor(int v);
         void setTaskbarWidgetShowPauseOverlay(bool v);
         void setTaskbarWidgetScrollingEnabled(bool v);
+        void setTaskbarWidgetPauseAllEnabled(bool v);
+        void setTaskbarWidgetPlayAllEnabled(bool v);
         void setTaskbarVisualizerEnabled(bool v);
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
@@ -329,6 +337,8 @@ class Settings : public QObject {
         int m_taskbarWidgetMonitor;
         bool m_taskbarWidgetShowPauseOverlay;
         bool m_taskbarWidgetScrollingEnabled;
+        bool m_taskbarWidgetPauseAllEnabled;
+        bool m_taskbarWidgetPlayAllEnabled;
         bool m_taskbarVisualizerEnabled;
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;

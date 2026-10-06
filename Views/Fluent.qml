@@ -13,6 +13,8 @@ QtObject {
     readonly property string next: "\uF574"
     readonly property string play: "\uF610"
     readonly property string pause: "\uF5AC"
+    readonly property string playCircle: "\uF612"
+    readonly property string pauseCircle: "\uE8E1"
     readonly property string speaker2: "\uEB4C"
     readonly property string speaker1: "\uF704"
     readonly property string speakerMute: "\uEB54"
