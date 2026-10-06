@@ -11,8 +11,6 @@ class StartupController : public QObject {
     public:
         explicit StartupController(QObject* parent = nullptr);
 
-        Q_INVOKABLE bool isEnabled() const;
-
     public slots:
         // Make Run entry match enable. Point it at current executable.
         void setEnabled(bool enable);

@@ -42,8 +42,6 @@ class MonitorMapper : public QObject {
         int clampIndex(int index) const;
         // Null only when no screen exists, such as a guiless test host.
         const MonitorEntry* entry(int index) const;
-        const MonitorEntry* entryForScreen(const QScreen* screen) const;
-        const MonitorEntry* entryForNativeHandle(void* handle) const;
 
         Q_INVOKABLE QRect geometry(int index) const;
         Q_INVOKABLE QRect availableGeometry(int index) const;

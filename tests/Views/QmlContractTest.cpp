@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <QDir>
 #include <QFile>
+#include <QRegularExpression>
 #include <QString>
 
 namespace {
@@ -183,6 +185,29 @@ TEST(QmlContractTest, FluentDefinesPeripheralGlyphs) {
     expectContains(source, QStringLiteral("bluetooth: \"\\uE15E\""));
     expectContains(source, QStringLiteral("usbStick: \"\\uF857\""));
     expectContains(source, QStringLiteral("camera: \"\\uF255\""));
+}
+
+// Every glyph in the palette must have a consumer. Unused glyphs rot.
+TEST(QmlContractTest, FluentDefinesNoUnusedGlyphs) {
+    const QString fluent = loadSource("Views/Fluent.qml");
+
+    QString usage;
+    const QDir views(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR) + QStringLiteral("/Views"));
+    for(const QString& file : views.entryList({QStringLiteral("*.qml")}, QDir::Files)) {
+        if(file != QStringLiteral("Fluent.qml"))
+            usage += loadSource(QStringLiteral("Views/%1").arg(file).toLatin1().constData());
+    }
+    EXPECT_FALSE(usage.isEmpty());
+
+    const QRegularExpression glyph(QStringLiteral("readonly property string (\\w+): \"\\\\u"));
+    auto it = glyph.globalMatch(fluent);
+    int glyphs = 0;
+    while(it.hasNext()) {
+        const QString name = it.next().captured(1);
+        ++glyphs;
+        EXPECT_TRUE(usage.contains(QStringLiteral("Fluent.") + name)) << "Unused Fluent glyph: " << name.toStdString();
+    }
+    EXPECT_GT(glyphs, 0);
 }
 
 TEST(QmlContractTest, CamerasUseTheCameraGlyph) {

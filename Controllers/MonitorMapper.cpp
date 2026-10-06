@@ -122,26 +122,6 @@ const MonitorEntry* MonitorMapper::entry(int index) const {
     return &m_entries.at(clampIndex(index));
 }
 
-const MonitorEntry* MonitorMapper::entryForScreen(const QScreen* screen) const {
-    rebuildIfDirty();
-    for(const MonitorEntry& entry : m_entries) {
-        if(entry.screen == screen)
-            return &entry;
-    }
-    return nullptr;
-}
-
-const MonitorEntry* MonitorMapper::entryForNativeHandle(void* handle) const {
-    rebuildIfDirty();
-    if(!handle)
-        return nullptr;
-    for(const MonitorEntry& entry : m_entries) {
-        if(entry.nativeHandle == handle)
-            return &entry;
-    }
-    return nullptr;
-}
-
 QRect MonitorMapper::geometry(int index) const {
     const MonitorEntry* e = entry(index);
     return e ? e->logicalRect : QRect();

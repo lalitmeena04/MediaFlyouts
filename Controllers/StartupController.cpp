@@ -20,16 +20,6 @@ QString StartupController::runKeyPath() {
     return QStringLiteral("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
 }
 
-bool StartupController::isEnabled() const {
-    try {
-        const auto task = StartupTask::GetAsync(kStartupTaskId).get();
-        const auto state = task.State();
-        return state == StartupTaskState::Enabled || state == StartupTaskState::EnabledByPolicy;
-    } catch(const winrt::hresult_error&) {}
-    QSettings run(runKeyPath(), QSettings::NativeFormat);
-    return run.contains(m_appName);
-}
-
 void StartupController::setEnabled(bool enable) {
     try {
         auto task = StartupTask::GetAsync(kStartupTaskId).get();

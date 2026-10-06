@@ -10,8 +10,6 @@ TEST(MonitorMapperTest, EmptyHostYieldsNoMonitors) {
     EXPECT_TRUE(map.names().isEmpty());
     EXPECT_EQ(map.entry(0), nullptr);
     EXPECT_EQ(map.entry(-1), nullptr);
-    EXPECT_EQ(map.entryForScreen(nullptr), nullptr);
-    EXPECT_EQ(map.entryForNativeHandle(nullptr), nullptr);
     EXPECT_TRUE(map.geometry(0).isEmpty());
     EXPECT_TRUE(map.availableGeometry(3).isEmpty());
 }

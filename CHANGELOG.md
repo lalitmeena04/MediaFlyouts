@@ -3,6 +3,14 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Logitech devices on Bolt and Unifying receivers are now detected. HID++
+  requests use the long-report collection, all receiver slots are probed at
+  once, and the device reports its own name, type and charging state.
+
 ## [1.3.0] — 2026-09-10
 
 Adds wired peripheral support and improves peripheral management, charger

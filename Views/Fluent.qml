@@ -15,7 +15,6 @@ QtObject {
     readonly property string pause: "\uF5AC"
     readonly property string speaker2: "\uEB4C"
     readonly property string speaker1: "\uF704"
-    readonly property string speaker0: "\uF702"
     readonly property string speakerMute: "\uEB54"
     readonly property string musicNote: "\uE863"
     readonly property string settings: "\uF6B3"
@@ -37,8 +36,5 @@ QtObject {
     readonly property string repeatOne: "\uEF34"
     readonly property string shuffle: "\uEF37"
     readonly property string info: "\uF4AA"
-    readonly property string link: "\uF4E9"
-    readonly property string chevronLeft: "\uEA4D"
-    readonly property string chevronRight: "\uEA50"
     readonly property string charge: "\uF1CF"
 }

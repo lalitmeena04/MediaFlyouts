@@ -2,6 +2,7 @@
 
 #include "IBatteryProvider.h"
 
+#include <QHash>
 #include <QSet>
 #include <QString>
 
@@ -12,6 +13,9 @@ class LogitechBatteryProvider : public IBatteryProvider {
         QVector<BatteryDeviceInfo> poll() override;
 
     private:
-        // Vendor collections can fail HID++ probe. Avoid repeated timeouts.
-        QSet<QString> m_notHidpp;
+        // Silent collections are skipped for a few polls. Avoid repeated timeouts.
+        // Not permanent: a receiver goes silent while all its devices sleep.
+        QHash<QString, int> m_skipPolls;
+        // Skips reset when collections appear or vanish. A channel switch changes this set.
+        QSet<QString> m_lastPaths;
 };
