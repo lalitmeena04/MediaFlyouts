@@ -76,7 +76,7 @@ class NowPlaying : public QObject {
         Q_INVOKABLE void cycleSession(int delta);
         // Pause every playing session. Remember them for playAll().
         Q_INVOKABLE void pauseAll();
-        // Resume sessions paused by pauseAll(). Else resume every paused session.
+        // Resume every paused session. Works after pauseAll() or a manual pause of everything.
         Q_INVOKABLE void playAll();
 
     public slots:

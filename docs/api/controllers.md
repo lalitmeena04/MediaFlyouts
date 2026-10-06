@@ -8,7 +8,7 @@ controllers build everywhere; the rest are Windows-only.
 ### NowPlaying
 QML-facing now-playing model (`nowPlaying`). Applies `TrackInfo` updates, exposes
 title/artist/art/progress and transport `Q_INVOKABLE`s, and decides whether a
-change should raise the media flyout or the "up next" flyout. Forwards transport
+change should raise the media flyout or the "Now Playing" flyout. Forwards transport
 commands to an `IPlaybackController`. Windows media sessions are matched by app
 ID and refreshed through queued hooks, which keeps source and playback changes
 reliable during rapid switching.

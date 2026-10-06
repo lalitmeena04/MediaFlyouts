@@ -111,7 +111,7 @@ FlyoutBase {
             visible: root.compact
 
             Row {
-                id: upNextLabel
+                id: nowPlayingLabel
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 5
                 IconLabel {
@@ -153,7 +153,7 @@ FlyoutBase {
 
             Column {
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.width - 36 - 10 - upNextLabel.width - 10
+                width: parent.width - 36 - 10 - nowPlayingLabel.width - 10
                 spacing: 1
 
                 Text {

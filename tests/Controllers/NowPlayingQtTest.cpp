@@ -13,7 +13,6 @@ class SpyController : public IPlaybackController {
         int nexts = 0;
         int prevs = 0;
         QStringList playing;
-        QStringList resumed;
         int resumeAllCalls = 0;
         void play() override {
             ++plays;
@@ -31,9 +30,6 @@ class SpyController : public IPlaybackController {
             QStringList out = playing;
             playing.clear();
             return out;
-        }
-        void playSessions(const QStringList& appIds) override {
-            resumed = appIds;
         }
         int playingSessionCount() const override {
             return playing.size();
@@ -160,7 +156,7 @@ void NowPlayingQtTest::pauseAllThenPlayAllRoundTrip() {
     QCOMPARE(resumeAll.count(), 1);
 
     np.playAll();
-    QCOMPARE(controller.resumed, (QStringList{QStringLiteral("Spotify.exe"), QStringLiteral("chrome.exe")}));
+    QCOMPARE(controller.resumeAllCalls, 1);
     QVERIFY(!np.canResumeAll());
     QCOMPARE(resumeAll.count(), 2);
 }
@@ -181,7 +177,6 @@ void NowPlayingQtTest::manualPauseOfEverythingOffersPlayAll() {
 
     np.playAll();
     QCOMPARE(controller.resumeAllCalls, 1);
-    QVERIFY(controller.resumed.isEmpty());
 }
 
 void NowPlayingQtTest::applyArtTogglesHasArt() {

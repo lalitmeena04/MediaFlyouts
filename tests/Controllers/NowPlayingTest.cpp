@@ -22,7 +22,6 @@ class MockController : public IPlaybackController {
         MOCK_METHOD(int, selectedSessionIndex, (), (const, override));
         MOCK_METHOD(void, cycleSession, (int), (override));
         MOCK_METHOD(QStringList, pauseAllSessions, (), (override));
-        MOCK_METHOD(void, playSessions, (const QStringList&), (override));
         MOCK_METHOD(int, playingSessionCount, (), (const, override));
         MOCK_METHOD(void, resumeAllSessions, (), (override));
 };
@@ -170,24 +169,25 @@ TEST(NowPlayingTest, PauseAllWithNothingPlayingLeavesNothingToResume) {
     EXPECT_FALSE(np.canResumeAll());
 }
 
-TEST(NowPlayingTest, PlayAllResumesOnlyRememberedSessionsThenClears) {
+// Play-all must bring back every paused source, not only the ones pause-all touched.
+TEST(NowPlayingTest, PlayAllResumesEveryPausedSessionThenClears) {
     NowPlaying np;
     MockController controller;
     np.setController(&controller);
 
+    // Another source was paused by hand before pause-all. It resumes too.
     const QStringList paused{QStringLiteral("Spotify.exe")};
     EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(paused));
     np.pauseAll();
 
     QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
-    EXPECT_CALL(controller, playSessions(paused)).Times(1);
+    EXPECT_CALL(controller, resumeAllSessions()).Times(1);
     np.playAll();
 
     EXPECT_FALSE(np.canResumeAll());
     EXPECT_EQ(resumeAll.count(), 1);
 
     // Second press has nothing to resume. Controller is not called.
-    EXPECT_CALL(controller, playSessions(::testing::_)).Times(0);
     EXPECT_CALL(controller, resumeAllSessions()).Times(0);
     np.playAll();
 }
@@ -205,7 +205,6 @@ TEST(NowPlayingTest, AllSessionsPausedByHandOffersPlayAll) {
     EXPECT_EQ(resumeAll.count(), 1);
 
     // Nothing was remembered by pauseAll, so every paused session resumes.
-    EXPECT_CALL(controller, playSessions(::testing::_)).Times(0);
     EXPECT_CALL(controller, resumeAllSessions()).Times(1);
     np.playAll();
 }

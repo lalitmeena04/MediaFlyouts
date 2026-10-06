@@ -174,7 +174,8 @@ void WinMediaProvider::resumeAllSessions() {
         for(uint32_t i = 0; i < sessions.Size(); ++i) {
             try {
                 auto s = sessions.GetAt(i);
-                if(s.GetPlaybackInfo().PlaybackStatus() != PlaybackStatus::Playing)
+                // Stopped or closed sessions stay as they are.
+                if(s.GetPlaybackInfo().PlaybackStatus() == PlaybackStatus::Paused)
                     s.TryPlayAsync();
             } catch(...) {
             }
@@ -270,23 +271,6 @@ QStringList WinMediaProvider::pauseAllSessions() {
     } catch(...) {
     }
     return paused;
-}
-
-void WinMediaProvider::playSessions(const QStringList& appIds) {
-    if(!m_manager || appIds.isEmpty())
-        return;
-    try {
-        auto sessions = m_manager.GetSessions();
-        for(uint32_t i = 0; i < sessions.Size(); ++i) {
-            try {
-                auto s = sessions.GetAt(i);
-                if(appIds.contains(QString::fromWCharArray(s.SourceAppUserModelId().c_str())))
-                    s.TryPlayAsync();
-            } catch(...) {
-            }
-        }
-    } catch(...) {
-    }
 }
 
 void WinMediaProvider::hookSession(Session session) {

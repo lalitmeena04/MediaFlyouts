@@ -40,15 +40,11 @@ class IPlaybackController {
         virtual QStringList pauseAllSessions() {
             return {};
         }
-        // Resume sessions with the given source app ids.
-        virtual void playSessions(const QStringList& appIds) {
-            (void)appIds;
-        }
         // Number of sessions that are playing right now.
         virtual int playingSessionCount() const {
             return 0;
         }
-        // Resume every session that is not playing.
+        // Resume every paused session.
         virtual void resumeAllSessions() {}
 };
 

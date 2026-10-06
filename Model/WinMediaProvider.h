@@ -38,7 +38,6 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         int selectedSessionIndex() const override;
         void cycleSession(int delta) override;
         QStringList pauseAllSessions() override;
-        void playSessions(const QStringList& appIds) override;
         int playingSessionCount() const override;
         void resumeAllSessions() override;
 

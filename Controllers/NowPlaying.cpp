@@ -217,13 +217,9 @@ void NowPlaying::pauseAll() {
 }
 
 void NowPlaying::playAll() {
-    if(m_controller) {
-        // Prefer the set pause-all paused. Else resume everything that is paused.
-        if(!m_pausedByAll.isEmpty())
-            m_controller->playSessions(m_pausedByAll);
-        else if(allPaused())
-            m_controller->resumeAllSessions();
-    }
+    // Pause-all set only says there is work. Every paused session resumes.
+    if(m_controller && (!m_pausedByAll.isEmpty() || allPaused()))
+        m_controller->resumeAllSessions();
     m_pausedByAll.clear();
     updateResumeAll();
 }
