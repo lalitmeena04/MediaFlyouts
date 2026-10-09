@@ -76,7 +76,7 @@ jobs:
 
       - name: Configure & build (release)
         run: |
-          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR" -D MEDIAFLYOUTS_ENABLE_LOGGING=OFF
+          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR"
           cmake --build --preset msvc-release
 
       - name: Test

@@ -2,6 +2,8 @@
 
 #include <windows.h>
 
+#include "Logging.h"
+
 namespace {
 
 LockKeysController* g_instance = nullptr;
@@ -35,6 +37,10 @@ LockKeysController::~LockKeysController() {
 void LockKeysController::start() {
     g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, keyboardProc, GetModuleHandleW(nullptr), 0);
     m_available = g_hook != nullptr;
+    if(m_available)
+        TRC_INFO("lock keys: keyboard hook installed");
+    else
+        TRC_WARN("lock keys: keyboard hook failed (error={})", GetLastError());
     emit availabilityChanged();
 }
 

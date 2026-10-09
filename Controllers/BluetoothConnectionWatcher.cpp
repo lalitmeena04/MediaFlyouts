@@ -4,6 +4,8 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Foundation.h>
 
+#include "Logging.h"
+
 using namespace winrt::Windows::Devices::Bluetooth;
 using namespace winrt::Windows::Devices::Enumeration;
 
@@ -42,6 +44,7 @@ void BluetoothConnectionWatcher::start() {
         attach(m_classicWatcher);
     } catch(...) {
         // Watcher creation can fail without Bluetooth radio. Timer polling still works.
+        TRC_WARN("bluetooth watcher: classic watcher unavailable");
     }
 
     try {
@@ -49,5 +52,7 @@ void BluetoothConnectionWatcher::start() {
                                                         extraProperties);
         attach(m_leWatcher);
     } catch(...) {
+        TRC_WARN("bluetooth watcher: LE watcher unavailable");
     }
+    TRC_INFO("bluetooth watcher: classic={} le={}", m_classicWatcher != nullptr, m_leWatcher != nullptr);
 }

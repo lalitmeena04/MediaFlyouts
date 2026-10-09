@@ -156,7 +156,63 @@ TEST(QmlContractTest, AboutPageOffersTheDownloadWhenAnUpdateExists) {
     const QString source = loadSource("Views/Dashboard.qml");
 
     expectContains(source, QStringLiteral("visible: updateChecker.updateAvailable"));
-    expectContains(source, QStringLiteral("updateChecker.openReleasePage()"));
+    expectContains(source, QStringLiteral("updateChecker.notifyUpdate()"));
+    // A manual check must surface a version the user skipped earlier.
+    expectContains(source, QStringLiteral("settings.skippedUpdateVersion = \"\""));
+    EXPECT_FALSE(source.contains(QStringLiteral("openReleasePage")));
+}
+
+// The update prompt is a dialog. It downloads in-app and then installs.
+TEST(QmlContractTest, UpdateDialogSkipsOrDownloadsThenInstalls) {
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("property UpdateDialog updateDialog"));
+    expectContains(app, QStringLiteral("function onUpdateFound(version)"));
+    expectContains(app, QStringLiteral("version !== settings.skippedUpdateVersion"));
+
+    const QString dialog = loadSource("Views/UpdateDialog.qml");
+    expectContains(dialog, QStringLiteral("settings.skippedUpdateVersion = updateChecker.latestVersion"));
+    expectContains(dialog, QStringLiteral("updateChecker.download()"));
+    expectContains(dialog, QStringLiteral("updateChecker.install()"));
+    expectContains(dialog, QStringLiteral("updateChecker.cancelDownload()"));
+    expectContains(dialog, QStringLiteral("updateChecker.downloadProgress"));
+    // Release with no installer still has a way out.
+    expectContains(dialog, QStringLiteral("updateChecker.openReleasePage()"));
+    // Store copies go to the Store. Portable copies go to the release page.
+    expectContains(dialog, QStringLiteral("updateChecker.installKind === \"store\""));
+    expectContains(dialog, QStringLiteral("updateChecker.installKind === \"portable\""));
+    expectContains(dialog, QStringLiteral("updateChecker.openStorePage()"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("updateChecker.installKindLabel"));
+}
+
+// First run offers every major feature, including the newer peripheral ones.
+TEST(QmlContractTest, OnboardingOffersPeripheralChargerAndUpdateOptions) {
+    const QString source = loadSource("Views/OnboardingWindow.qml");
+
+    expectContains(source, QStringLiteral("readonly property int stepCount: 5"));
+    expectContains(source, QStringLiteral("visible: root.step === 4"));
+    expectContains(source, QStringLiteral("settings.peripheralFlyoutEnabled = value"));
+    expectContains(source, QStringLiteral("settings.peripheralsWidgetEnabled = value"));
+    expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
+    // Desktops have no battery, so the charger row must explain itself.
+    expectContains(source, QStringLiteral("available: capabilities.chargerAvailable"));
+    expectContains(source, QStringLiteral("settings.autoCheckUpdates = value"));
+}
+
+// Error reports are created on demand and the user posts them by hand.
+TEST(QmlContractTest, AboutPageOffersErrorReportsAndTrayOpensIt) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("errorReporter.createReport()"));
+    expectContains(dashboard, QStringLiteral("errorReporter.revealReport()"));
+    expectContains(dashboard, QStringLiteral("errorReporter.openIssuePage()"));
+    expectContains(dashboard, QStringLiteral("The issue page opens with a blank template."));
+    expectContains(dashboard, QStringLiteral("Nothing is sent until you post the issue."));
+    expectContains(dashboard, QStringLiteral("function showPage(name)"));
+
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("function onReportBugRequested()"));
+    expectContains(app, QStringLiteral("dashboard.showPage(\"About\")"));
 }
 
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {

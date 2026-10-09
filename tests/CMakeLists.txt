@@ -6,6 +6,8 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/ThemeController.h
     ${CMAKE_SOURCE_DIR}/Controllers/UpdateChecker.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/UpdateChecker.h
+    ${CMAKE_SOURCE_DIR}/Controllers/ErrorReporter.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/ErrorReporter.h
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.h
     ${CMAKE_SOURCE_DIR}/Model/Settings.cpp
@@ -17,6 +19,11 @@ target_link_libraries(mediaflyout_testlib PUBLIC
     Qt6::Network
     Qt6::Quick
 )
+if(WIN32)
+    # UpdateChecker calls ShellExecuteEx. PUBLIC so every executable that
+    # links this static lib gets shell32 without listing it again.
+    target_link_libraries(mediaflyout_testlib PUBLIC shell32)
+endif()
 target_include_directories(mediaflyout_testlib PUBLIC
     ${CMAKE_SOURCE_DIR}/Model
     ${CMAKE_SOURCE_DIR}/Controllers
@@ -36,6 +43,7 @@ FetchContent_MakeAvailable(googletest)
 
 # One GoogleTest executable aggregating every per-class test file.
 add_executable(mediaflyout_gtest
+    Controllers/ErrorReporterTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
@@ -49,6 +57,7 @@ add_executable(mediaflyout_gtest
     Model/FftTest.cpp
     Model/FlyoutPositionerTest.cpp
     Model/HidppProtocolTest.cpp
+    Model/InstallSourceTest.cpp
     Model/PlaybackControllerTest.cpp
     Model/PowerAlertPolicyTest.cpp
     Model/RazerProtocolTest.cpp
@@ -109,7 +118,6 @@ if(WIN32)
     target_link_libraries(mediaflyout_gtest PRIVATE
         WindowsApp.lib
         dwmapi.lib
-        shell32.lib
         gdi32.lib
         user32.lib
         cfgmgr32.lib

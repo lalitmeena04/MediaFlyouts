@@ -18,7 +18,7 @@ Window {
     Component.onCompleted: windowEffects.setDarkFrame(root, theme.dark)
 
     property int step: 0
-    readonly property int stepCount: 4
+    readonly property int stepCount: 5
 
     function finish() {
         settings.onboardingCompleted = true
@@ -140,9 +140,45 @@ Window {
                 }
             }
 
-            // 3: startup
+            // 3: peripherals
             Column {
                 visible: root.step === 3
+                width: parent.width
+                spacing: 6
+                Text {
+                    text: "Peripherals and power"
+                    color: theme.textPrimary
+                    font.pixelSize: 17
+                    font.bold: true
+                }
+                SettingRow {
+                    width: parent.width
+                    label: "Peripheral flyout"
+                    description: "Show a flyout when a wireless device connects, disconnects or runs low on battery."
+                    value: settings.peripheralFlyoutEnabled
+                    onToggled: settings.peripheralFlyoutEnabled = value
+                }
+                SettingRow {
+                    width: parent.width
+                    label: "Peripherals widget"
+                    description: "Dock a battery widget for your wireless devices on the taskbar."
+                    value: settings.peripheralsWidgetEnabled
+                    onToggled: settings.peripheralsWidgetEnabled = value
+                }
+                SettingRow {
+                    width: parent.width
+                    label: "Charger flyout"
+                    description: "Show a flyout when the charger is plugged in or unplugged."
+                    available: capabilities.chargerAvailable
+                    unavailableNote: "Unavailable: this PC has no battery, so it never changes power source."
+                    value: settings.chargerFlyoutEnabled
+                    onToggled: settings.chargerFlyoutEnabled = value
+                }
+            }
+
+            // 4: startup
+            Column {
+                visible: root.step === 4
                 width: parent.width
                 spacing: 6
                 Text {
@@ -164,6 +200,13 @@ Window {
                     description: "Dock a compact now-playing widget on the taskbar."
                     value: settings.taskbarWidgetEnabled
                     onToggled: settings.taskbarWidgetEnabled = value
+                }
+                SettingRow {
+                    width: parent.width
+                    label: "Check for updates on launch"
+                    description: "Look for a newer release shortly after startup. Updates install from inside the app."
+                    value: settings.autoCheckUpdates
+                    onToggled: settings.autoCheckUpdates = value
                 }
             }
         }

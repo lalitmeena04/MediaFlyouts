@@ -12,6 +12,7 @@
 #include <mmreg.h>
 
 #include "Fft.h"
+#include "Logging.h"
 
 namespace {
 constexpr int kFftSize = 1024;
@@ -48,9 +49,11 @@ void AudioCapture::start() {
     if(m_active)
         return;
     if(!openDevice()) {
+        TRC_WARN("audio capture: loopback device open failed");
         releaseDevice();
         return;
     }
+    TRC_INFO("audio capture: started {} Hz, {} ch, float={}", m_sampleRate, m_channels, m_isFloat);
     m_active = true;
     emit activeChanged();
     m_timer.start();
@@ -100,6 +103,7 @@ void AudioCapture::stop() {
     if(!m_active && !m_client) {
         return;
     }
+    TRC_INFO("audio capture: stopped");
     m_timer.stop();
     if(m_client)
         m_client->Stop();

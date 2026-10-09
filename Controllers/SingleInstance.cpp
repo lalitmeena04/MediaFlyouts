@@ -3,11 +3,14 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 
+#include "Logging.h"
+
 SingleInstance::SingleInstance(const QString& key, QObject* parent) : QObject(parent), m_key(key) {
     // Existing server means another instance owns key.
     QLocalSocket socket;
     socket.connectToServer(m_key);
     if(socket.waitForConnected(200)) {
+        TRC_INFO("single instance: another instance is running, handing over");
         socket.write("show");
         socket.waitForBytesWritten(200);
         socket.disconnectFromServer();
@@ -25,8 +28,11 @@ SingleInstance::SingleInstance(const QString& key, QObject* parent) : QObject(pa
                 c->close();
                 c->deleteLater();
             }
+            TRC_INFO("single instance: second launch signalled");
             emit activated();
         });
+    } else {
+        TRC_WARN("single instance: listen failed: {}", m_server->errorString().toStdString());
     }
 }
 

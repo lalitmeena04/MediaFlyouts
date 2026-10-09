@@ -4,6 +4,8 @@
 
 #include <dbt.h>
 
+#include "Logging.h"
+
 namespace {
 
 // GUID_DEVINTERFACE_HID.
@@ -48,8 +50,10 @@ void HidChangeWatcher::start() {
 
     HWND hwnd = CreateWindowExW(0, kWindowClassName, L"", 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr,
                                  GetModuleHandleW(nullptr), nullptr);
-    if(!hwnd)
+    if(!hwnd) {
+        TRC_WARN("hid watcher: message window creation failed (error={})", GetLastError());
         return;
+    }
     m_hwnd = hwnd;
     SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
@@ -59,4 +63,8 @@ void HidChangeWatcher::start() {
     filter.dbcc_classguid = kHidInterfaceGuid;
 
     m_notificationHandle = RegisterDeviceNotificationW(hwnd, &filter, DEVICE_NOTIFY_WINDOW_HANDLE);
+    if(m_notificationHandle)
+        TRC_INFO("hid watcher: device notifications registered");
+    else
+        TRC_WARN("hid watcher: RegisterDeviceNotification failed (error={})", GetLastError());
 }

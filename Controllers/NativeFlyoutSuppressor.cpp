@@ -2,6 +2,8 @@
 
 #include <windows.h>
 
+#include "Logging.h"
+
 namespace {
 
 // Find volume OSD host in shell window tree. Move it off-screen.
@@ -48,8 +50,11 @@ void NativeFlyoutSuppressor::restore() {
 
 bool NativeFlyoutSuppressor::parkOsd() {
     HWND host = findOsdHost();
-    if(!host)
+    if(!host) {
+        // Shell creates the OSD lazily. Later arm() calls retry.
+        TRC_INFO("native osd: host window not found yet");
         return false;
+    }
 
     m_osdHost = host;
     m_originalExStyle = GetWindowLongW(host, GWL_EXSTYLE);
@@ -57,6 +62,7 @@ bool NativeFlyoutSuppressor::parkOsd() {
     SetWindowPos(host, nullptr, -99999, -99999, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(host, SW_MINIMIZE);
     m_parked = true;
+    TRC_INFO("native osd: parked");
     return true;
 }
 
@@ -70,4 +76,5 @@ void NativeFlyoutSuppressor::restoreOsd() {
     ShowWindow(host, SW_RESTORE);
     m_osdHost = nullptr;
     m_parked = false;
+    TRC_INFO("native osd: restored");
 }

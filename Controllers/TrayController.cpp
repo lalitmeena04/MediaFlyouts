@@ -66,9 +66,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     connect(mixerAction, &QAction::triggered, this, &TrayController::openMixerRequested);
     connect(repoAction, &QAction::triggered, this,
             [] { QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts"))); });
-    connect(bugAction, &QAction::triggered, this, [] {
-        QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts/issues/new")));
-    });
+    connect(bugAction, &QAction::triggered, this, &TrayController::reportBugRequested);
     connect(configAction, &QAction::triggered, this, [this] {
         if(m_settings)
             QDesktopServices::openUrl(QUrl::fromLocalFile(m_settings->configDir()));
@@ -78,7 +76,6 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, QChar(0xE863)), this);
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
-    connect(m_tray, &QSystemTrayIcon::messageClicked, this, &TrayController::notificationClicked);
 
     // Hold single click briefly. Double-click can open dashboard.
     m_singleClickTimer = new QTimer(this);

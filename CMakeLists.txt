@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 
 # Single version source for app, packaging, and CI.
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" MEDIAFLYOUTS_VERSION_BASE)
+# First non-blank line only. Stray blank lines must not leak into the define.
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" MEDIAFLYOUTS_VERSION_BASE REGEX "[^ \t\r\n]" LIMIT_COUNT 1)
 string(STRIP "${MEDIAFLYOUTS_VERSION_BASE}" MEDIAFLYOUTS_VERSION_BASE)
 
 # CMake project version needs numeric x.y.z. Strip pre-release suffix.
@@ -82,6 +83,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/FlyoutPositioner.h
     Model/HidppProtocol.cpp
     Model/HidppProtocol.h
+    Model/InstallSource.cpp
+    Model/InstallSource.h
     Model/PlaybackController.cpp
     Model/PlaybackController.h
     Model/PowerAlertPolicy.cpp
@@ -103,14 +106,23 @@ target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
     spdlog::spdlog
 )
-# Logging on compiles TRC_DEBUG. Logging off removes TRC calls.
-# Logging setup omits log file if logging is off.
+# Logging on compiles TRC calls at or above MEDIAFLYOUTS_LOG_LEVEL. Logging off removes them all.
+# Default level: DEBUG for Debug builds, INFO otherwise. INFO keeps release logs small.
 option(MEDIAFLYOUTS_ENABLE_LOGGING "Enable spdlog file logging" ON)
-if(MEDIAFLYOUTS_ENABLE_LOGGING)
+set(MEDIAFLYOUTS_LOG_LEVEL "" CACHE STRING "Compile-time log level: DEBUG, INFO or empty for auto")
+set_property(CACHE MEDIAFLYOUTS_LOG_LEVEL PROPERTY STRINGS "" DEBUG INFO)
+if(NOT MEDIAFLYOUTS_ENABLE_LOGGING)
+    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_OFF)
+elseif(MEDIAFLYOUTS_LOG_LEVEL STREQUAL "DEBUG")
+    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_DEBUG)
+elseif(MEDIAFLYOUTS_LOG_LEVEL STREQUAL "INFO")
+    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_INFO)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_DEBUG)
 else()
-    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_OFF)
+    set(MEDIAFLYOUTS_SPDLOG_LEVEL SPDLOG_LEVEL_INFO)
 endif()
+message(STATUS "MediaFlyouts log level: ${MEDIAFLYOUTS_SPDLOG_LEVEL}")
 target_compile_definitions(mediaflyout_core PUBLIC SPDLOG_ACTIVE_LEVEL=${MEDIAFLYOUTS_SPDLOG_LEVEL})
 target_include_directories(mediaflyout_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -135,6 +147,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/TrayController.h
     Controllers/UpdateChecker.cpp
     Controllers/UpdateChecker.h
+    Controllers/ErrorReporter.cpp
+    Controllers/ErrorReporter.h
     main.cpp
     MainControllerClass.cpp
     MainControllerClass.h
@@ -196,6 +210,7 @@ qt_add_qml_module(MediaFlyouts
         Views/SlideFade.qml
         Views/TaskbarVisualizer.qml
         Views/TaskbarWidget.qml
+        Views/UpdateDialog.qml
         Views/VolumeFlyout.qml
         Views/VolumeMixerWindow.qml
         Views/WidgetButton.qml
