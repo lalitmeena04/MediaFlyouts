@@ -3,8 +3,11 @@
   MSIX package manifest for MediaFlyouts.
 
   Before packaging:
-    * The Publisher below MUST match the subject of the code-signing certificate
-      used to sign the .msix, e.g. "CN=MediaFlyouts".
+    * The MSIX ships only through the Microsoft Store, which signs it. The
+      Identity Name and Publisher here are placeholders; tools/stage-msix.ps1
+      swaps in the values Partner Center reserved (Product identity page).
+    * PublisherDisplayName must equal the Partner Center publisher display name.
+    * Every DisplayName must be a name reserved in Partner Center ("Media Flyouts").
     * Add the logo PNGs referenced under Images/ (see packaging/README.md).
     * The Version must be 4 parts (a.b.c.d); the release workflow injects it.
 -->
@@ -17,14 +20,14 @@
   <Identity
       Name="MediaFlyouts"
       Publisher="CN=MediaFlyouts"
-      Version="1.4.0.0"
+      Version="1.4.1.0"
       ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>MediaFlyouts</DisplayName>
-    <PublisherDisplayName>MediaFlyouts</PublisherDisplayName>
+    <DisplayName>Media Flyouts</DisplayName>
+    <PublisherDisplayName>ScleaverZer0ne</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
-    <Description>Modern media, volume and lock-key flyouts for Windows.</Description>
+    <Description>Fluent-styled media, volume, lock-key and peripheral battery flyouts for Windows, with a taskbar now-playing widget and audio visualizer.</Description>
   </Properties>
 
   <Dependencies>
@@ -38,8 +41,8 @@
   <Applications>
     <Application Id="MediaFlyouts" Executable="MediaFlyouts.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
-          DisplayName="MediaFlyouts"
-          Description="Modern media, volume and lock-key flyouts for Windows."
+          DisplayName="Media Flyouts"
+          Description="Fluent-styled media, volume, lock-key and peripheral battery flyouts for Windows, with a taskbar now-playing widget and audio visualizer."
           BackgroundColor="transparent"
           Square150x150Logo="Images\Square150x150Logo.png"
           Square44x44Logo="Images\Square44x44Logo.png">
@@ -47,7 +50,7 @@
       </uap:VisualElements>
       <Extensions>
         <uap5:Extension Category="windows.startupTask">
-          <uap5:StartupTask TaskId="MediaFlyoutsStartupTask" Enabled="true" DisplayName="MediaFlyouts" />
+          <uap5:StartupTask TaskId="MediaFlyoutsStartupTask" Enabled="true" DisplayName="Media Flyouts" />
         </uap5:Extension>
       </Extensions>
     </Application>

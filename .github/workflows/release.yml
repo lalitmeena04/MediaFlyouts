@@ -103,55 +103,20 @@ jobs:
           choco install innosetup -y --no-progress
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DMyAppVersion=${{ steps.ver.outputs.version }}" packaging\MediaFlyouts.iss
 
-      - name: MSIX package
-        # only runs once the logo PNGs exist under packaging/msix/Images/
-        if: ${{ hashFiles('packaging/msix/Images/**') != '' }}
+      # The Store signs the package with Microsoft's certificate, so the MSIX is
+      # built unsigned with the identity Partner Center reserved. It ships on
+      # the GitHub release as the exact file that is uploaded to Partner Center;
+      # it cannot be installed directly, users get the signed copy from the Store.
+      - name: Store MSIX (unsigned)
+        if: ${{ hashFiles('packaging/msix/Images/**') != '' && vars.STORE_IDENTITY_NAME != '' && vars.STORE_IDENTITY_PUBLISHER != '' }}
         shell: pwsh
         run: |
-          $layout = "msix-layout"
-          New-Item -ItemType Directory -Force $layout | Out-Null
-          Copy-Item bin\* $layout -Recurse -Force
-          Copy-Item packaging\msix\Images $layout\Images -Recurse -Force
-          # inject the 4-part version into the manifest
-          (Get-Content packaging\msix\AppxManifest.xml) `
-            -replace 'Version="\d+\.\d+\.\d+\.\d+"', 'Version="${{ steps.ver.outputs.msixver }}"' `
-            | Set-Content "$layout\AppxManifest.xml"
-
-          $sdk = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Directory |
-                 Where-Object { $_.Name -match '^10\.' } | Sort-Object Name -Descending | Select-Object -First 1
-          $tools = Join-Path $sdk.FullName "x64"
-          $msix = "dist/MediaFlyouts-${{ steps.ver.outputs.version }}.msix"
-          & "$tools\makeappx.exe" pack /o /d $layout /p $msix
-
-          # Prefer a stored certificate so every release is signed with the same
-          # one (users trust MediaFlyouts.cer once). Fall back to a self-signed
-          # certificate generated on the runner when no secret is configured.
-          if ("${{ secrets.MSIX_CERT_BASE64 }}" -ne "") {
-            $pfx = Join-Path $env:RUNNER_TEMP 'MediaFlyouts.pfx'
-            [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String("${{ secrets.MSIX_CERT_BASE64 }}"))
-            $password = ConvertTo-SecureString "${{ secrets.MSIX_CERT_PASSWORD }}" -AsPlainText -Force
-            $certificate = (Get-PfxData -FilePath $pfx -Password $password).EndEntityCertificates | Select-Object -First 1
-            if (-not $certificate -or $certificate.Subject -ne 'CN=MediaFlyouts') {
-              throw "MSIX signing certificate subject must be CN=MediaFlyouts, got '$($certificate.Subject)'."
-            }
-            Export-Certificate -Cert $certificate -FilePath dist\MediaFlyouts.cer | Out-Null
-            & "$tools\signtool.exe" sign /fd SHA256 /a /f $pfx /p "${{ secrets.MSIX_CERT_PASSWORD }}" $msix
-            if ($LASTEXITCODE -ne 0) { throw "signtool failed to sign the MSIX." }
-            Remove-Item $pfx -Force
-          } else {
-            Write-Warning "No MSIX_CERT_BASE64 secret set; generating a throwaway self-signed certificate. Store a certificate as a secret to reuse the same one across releases."
-            & tools\new-signing-cert.ps1 -Msix $msix
-            if ($LASTEXITCODE -ne 0) { throw "signtool failed to sign the MSIX." }
-            Copy-Item signing\MediaFlyouts.cer dist\MediaFlyouts.cer -Force
-          }
-
-          & "$tools\signtool.exe" verify /pa /all $msix
-          if ($LASTEXITCODE -ne 0) {
-            Write-Warning "MSIX signature is valid but is not trusted by the GitHub runner; users must trust MediaFlyouts.cer for a self-signed certificate."
-            # SignTool returns 1 when a self-signed root is not trusted. The
-            # sign command above already validated that the package was signed.
-            $global:LASTEXITCODE = 0
-          }
+          & tools\stage-msix.ps1 `
+            -Version "${{ steps.ver.outputs.msixver }}" `
+            -Output "dist\MediaFlyouts-${{ steps.ver.outputs.version }}.msix" `
+            -IdentityName "${{ vars.STORE_IDENTITY_NAME }}" `
+            -IdentityPublisher "${{ vars.STORE_IDENTITY_PUBLISHER }}" `
+            -Layout msix-layout
 
       - name: Extract release notes
         id: notes

@@ -1,11 +1,15 @@
 <#
 .SYNOPSIS
   Builds MediaFlyouts and produces the release artifacts into a clean folder:
-  installer (.exe), MSIX, portable ZIP and source ZIP.
+  installer (.exe), portable ZIP, source ZIP and an unsigned Store MSIX.
 
 .DESCRIPTION
   Version is read from VERSION.txt. Missing optional tools (Inno Setup, Windows
   SDK makeappx) are reported and skipped rather than failing the whole run.
+
+  The MSIX is unsigned and meant for Microsoft Store submission. The Store
+  signs it; the file is not installable as-is. It ships on the GitHub release
+  so the Store upload and the release carry the same bytes.
 
 .PARAMETER OutDir
   Output folder (default 'release'), wiped and recreated each run.
@@ -13,8 +17,12 @@
 .PARAMETER SkipBuild
   Reuse the current bin\ instead of doing a clean release build.
 
-.PARAMETER NoSign
-  Do not sign the MSIX (otherwise it is signed with the self-signed dev cert).
+.PARAMETER StoreIdentityName
+  Store Identity Name from Partner Center. Without it the MSIX keeps the repo
+  manifest identity, which the Store rejects.
+
+.PARAMETER StoreIdentityPublisher
+  Store Identity Publisher from Partner Center, e.g. "CN=<GUID>".
 
 .PARAMETER DevBuild
   Produce a dev (pre-release) versioned build: the version becomes
@@ -23,7 +31,7 @@
 
 .EXAMPLE
   .\tools\release.ps1
-  .\tools\release.ps1 -NoSign
+  .\tools\release.ps1 -StoreIdentityName 12345Publisher.MediaFlyouts -StoreIdentityPublisher 'CN=<GUID>'
   .\tools\release.ps1 -DevBuild
   .\tools\release.ps1 -SkipBuild -OutDir dist
 #>
@@ -31,7 +39,8 @@
 param(
     [string]$OutDir = 'release',
     [switch]$SkipBuild,
-    [switch]$NoSign,
+    [string]$StoreIdentityName,
+    [string]$StoreIdentityPublisher,
     [switch]$DevBuild
 )
 $ErrorActionPreference = 'Stop'
@@ -108,33 +117,21 @@ if ($iscc) {
     $results['Installer'] = 'SKIPPED (install Inno Setup 6)'
 }
 
-# 5. MSIX. Optional signing.
+# 5. Unsigned Store MSIX.
 $makeappx = Find-SdkTool 'makeappx.exe'
 if ($makeappx) {
-    Step 'MSIX package'
-    $layout = Join-Path $root 'build\msix-layout'
-    if (Test-Path $layout) { Remove-Item $layout -Recurse -Force }
-    New-Item -ItemType Directory -Force $layout | Out-Null
-    Copy-Item (Join-Path $root 'bin\*') $layout -Recurse -Force
-    Copy-Item (Join-Path $root 'packaging\msix\Images') (Join-Path $layout 'Images') -Recurse -Force
-    (Get-Content (Join-Path $root 'packaging\msix\AppxManifest.xml')) `
-        -replace 'Version="\d+\.\d+\.\d+\.\d+"', "Version=`"$verBase.$msixRevision`"" |
-        Set-Content (Join-Path $layout 'AppxManifest.xml')
-    $msix = Join-Path $out "MediaFlyouts-$ver.msix"
-    & $makeappx pack /o /d $layout /p $msix | Out-Host
-    $results['MSIX'] = "MediaFlyouts-$ver.msix"
-
-    if (-not $NoSign) {
-        Step 'Sign MSIX (self-signed dev cert)'
-        & (Join-Path $root 'tools\new-signing-cert.ps1') -Msix $msix | Out-Host
-        Copy-Item (Join-Path $root 'signing\MediaFlyouts.cer') (Join-Path $out 'MediaFlyouts.cer') -Force
-        $results['Certificate'] = 'MediaFlyouts.cer (trust as LocalMachine\Root to install)'
-    } else {
-        Write-Warning 'MSIX is unsigned (-NoSign); it must be signed before it can be installed.'
+    Step 'Store MSIX (unsigned)'
+    $stageArgs = @{
+        Version = "$verBase.$msixRevision"
+        Output  = Join-Path $out "MediaFlyouts-$ver.msix"
     }
+    if ($StoreIdentityName)      { $stageArgs['IdentityName']      = $StoreIdentityName }
+    if ($StoreIdentityPublisher) { $stageArgs['IdentityPublisher'] = $StoreIdentityPublisher }
+    & (Join-Path $root 'tools\stage-msix.ps1') @stageArgs | Out-Host
+    $results['Store MSIX'] = "MediaFlyouts-$ver.msix (unsigned, for Partner Center)"
 } else {
     Write-Warning 'Windows SDK makeappx.exe not found - skipping the MSIX.'
-    $results['MSIX'] = 'SKIPPED (install the Windows SDK)'
+    $results['Store MSIX'] = 'SKIPPED (install the Windows SDK)'
 }
 
 # Summary.

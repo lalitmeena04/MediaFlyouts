@@ -42,7 +42,7 @@ TEST(UpdateCheckerTest, ReleaseUrlFallsBackToTheReleasesPage) {
 
 TEST(UpdateCheckerTest, TrustsOnlyHttpsGitHubLinks) {
     EXPECT_TRUE(UpdateChecker::isTrustedReleaseUrl(
-        QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.4.0")));
+        QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.4.1")));
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("http://github.com/owner/repo")));
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("https://github.com.evil.test/owner/repo")));
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("file:///C:/Windows/System32/cmd.exe")));

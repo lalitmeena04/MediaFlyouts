@@ -49,8 +49,11 @@
 .PARAMETER OutDir
     (package) Output folder for the artifacts.  Default: release.
 
-.PARAMETER NoSign
-    (package) Leave the MSIX unsigned instead of using the self-signed dev cert.
+.PARAMETER StoreIdentityName
+    (package) Microsoft Store Identity Name from Partner Center for the MSIX.
+
+.PARAMETER StoreIdentityPublisher
+    (package) Microsoft Store Identity Publisher (CN=<GUID>) for the MSIX.
 
 .PARAMETER AppDir
     (run) Directory holding an installed MediaFlyouts.exe.
@@ -110,7 +113,8 @@ param(
     # -- package --------------------------------------------------------------
     [switch]$SkipBuild,
     [string]$OutDir       = "release",
-    [switch]$NoSign,
+    [string]$StoreIdentityName = "",
+    [string]$StoreIdentityPublisher = "",
 
     # -- run ------------------------------------------------------------------
     [string]$AppDir       = "",
@@ -273,7 +277,8 @@ function Invoke-ShowHelp {
     Write-Host "  package options:" -ForegroundColor Cyan
     Write-Host "    -SkipBuild                Reuse the existing bin\"
     Write-Host "    -OutDir <dir>             Output folder (default: release)"
-    Write-Host "    -NoSign                   Leave the MSIX unsigned"
+    Write-Host "    -StoreIdentityName <n>    Store Identity Name for the MSIX"
+    Write-Host "    -StoreIdentityPublisher <p> Store Identity Publisher (CN=<GUID>)"
     Write-Host ""
     Write-Host "  Examples:" -ForegroundColor Cyan
     Write-Host "    .\mediaflyouts.ps1 build"
@@ -455,7 +460,8 @@ function Invoke-Package {
 
     $releaseArgs = @{ OutDir = $OutDir }
     if ($SkipBuild) { $releaseArgs["SkipBuild"] = $true }
-    if ($NoSign)    { $releaseArgs["NoSign"]    = $true }
+    if ($StoreIdentityName)      { $releaseArgs["StoreIdentityName"]      = $StoreIdentityName }
+    if ($StoreIdentityPublisher) { $releaseArgs["StoreIdentityPublisher"] = $StoreIdentityPublisher }
 
     & $script @releaseArgs
 }
