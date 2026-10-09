@@ -36,7 +36,7 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full list, and
 
 Full documentation lives in [docs/](docs/README.md):
 
-- **Users** — [Installation](docs/user/installation.md) · [User Guide](docs/user/user-guide.md) · [FAQ](docs/user/faq.md)
+- **Users** — [Installation](docs/user/installation.md) · [User Guide](docs/user/user-guide.md) · [FAQ](docs/user/faq.md) · [Privacy Policy](docs/PRIVACY.md)
 - **Developers** — [Architecture](docs/developer/architecture.md) · [Development Setup](docs/developer/development-setup.md) · [Build Guide](docs/developer/build-guide.md) · [Testing](docs/developer/testing.md) · [Contributing](docs/developer/contributing.md)
 - **Reference** — [Features](docs/FEATURES.md) · [Controllers](docs/api/controllers.md) · [Model](docs/api/models.md) · [QML UI](docs/api/qml-ui.md)
 - **Releases** — [Release Notes](docs/RELEASE_NOTES.md)

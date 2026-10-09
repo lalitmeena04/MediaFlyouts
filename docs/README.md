@@ -10,6 +10,7 @@ taskbar widgets for Windows, built with Qt 6 / C++ / QML.
 - **[Installation Guide](user/installation.md)** — install the app (installer, Microsoft Store, portable)
 - **[User Guide](user/user-guide.md)** — using the flyouts, dashboard, taskbar widget and visualizer
 - **[FAQ](user/faq.md)** — troubleshooting and common questions
+- **[Privacy Policy](PRIVACY.md)** — what the app reads, stores and sends (nothing leaves your PC)
 
 ### For developers
 - **[Architecture Overview](developer/architecture.md)** — how the app is put together
