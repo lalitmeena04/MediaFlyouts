@@ -28,6 +28,18 @@ Window {
     property int currentIndex: 0
     // Reset scroll position. Keep new page starting at top.
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
+    // Open the window on a page by name. Used by tray entries.
+    function showPage(name) {
+        for(var i = 0; i < pages.length; i++) {
+            if(pages[i].name === name) {
+                currentIndex = i
+                break
+            }
+        }
+        show()
+        raise()
+        requestActivate()
+    }
     // Wired devices carry no battery, so they stay out of the battery lists.
     readonly property var wirelessDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind !== "usb"
@@ -65,7 +77,7 @@ Window {
         { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
         { "icon": Fluent.filter,    "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
         { "icon": Fluent.settings,  "name": "Additional Settings", "desc": "Theme, accent, startup, tray and settings backup." },
-        { "icon": Fluent.info,      "name": "About",        "desc": "App info and updates." }
+        { "icon": Fluent.info,      "name": "About",        "desc": "App info, updates and error reports." }
     ]
 
     // Searchable settings index. Values map to host pages.
@@ -99,7 +111,8 @@ Window {
         { "label": "Theme", "page": 9 }, { "label": "Accent color", "page": 9 },
         { "label": "Launch on startup", "page": 9 }, { "label": "Hide tray icon", "page": 9 },
         { "label": "Export settings", "page": 9 }, { "label": "Import settings", "page": 9 },
-        { "label": "Check for updates", "page": 10 }, { "label": "Version", "page": 10 }
+        { "label": "Check for updates", "page": 10 }, { "label": "Version", "page": 10 },
+        { "label": "Report a problem", "page": 10 }, { "label": "Error report", "page": 10 }
     ]
 
     readonly property var searchResults: {
@@ -1865,7 +1878,7 @@ Window {
                                 font.bold: true
                             }
                             Text {
-                                text: "Version " + updateChecker.currentVersion
+                                text: "Version " + updateChecker.currentVersion + " · " + updateChecker.installKindLabel
                                 color: theme.textMuted
                                 font.pixelSize: 12
                             }
@@ -1887,12 +1900,16 @@ Window {
                         Button {
                             text: "Check for updates"
                             enabled: !updateChecker.checking
-                            onClicked: updateChecker.check()
+                            // A manual check clears the skipped version.
+                            onClicked: {
+                                settings.skippedUpdateVersion = ""
+                                updateChecker.check()
+                            }
                         }
                         Button {
                             visible: updateChecker.updateAvailable
-                            text: "Download " + updateChecker.latestVersion
-                            onClicked: updateChecker.openReleasePage()
+                            text: "Get " + updateChecker.latestVersion
+                            onClicked: updateChecker.notifyUpdate()
                         }
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
@@ -1906,7 +1923,11 @@ Window {
                         visible: updateChecker.updateAvailable
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "The release page opens in your browser. Download the installer there, then run it to update. Your settings are kept."
+                        text: updateChecker.installKind === "store"
+                              ? "This copy updates through the Microsoft Store."
+                              : updateChecker.installKind === "portable"
+                              ? "Portable version: download the new ZIP from the release page and replace the app folder."
+                              : "The installer downloads inside the app. Click Install when it is ready. Your settings are kept."
                         color: theme.textTertiary
                         font.pixelSize: 12
                     }
@@ -1917,6 +1938,47 @@ Window {
                         description: "Automatically look for a newer release shortly after startup."
                         value: settings.autoCheckUpdates
                         onToggled: settings.autoCheckUpdates = value
+                    }
+
+                    Text {
+                        text: "Report a problem"
+                        color: theme.textPrimary
+                        font.pixelSize: 15
+                        font.bold: true
+                        topPadding: 12
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Create a report with the app log, your settings and system details, then attach it to a new GitHub issue. Nothing is sent until you post the issue. You can open the report and check its contents first."
+                        color: theme.textSecondary
+                        font.pixelSize: 13
+                    }
+                    Row {
+                        spacing: 12
+                        Button {
+                            text: "Create error report"
+                            onClicked: errorReporter.createReport()
+                        }
+                        Button {
+                            visible: errorReporter.lastReportPath !== ""
+                            text: "Show report"
+                            onClicked: errorReporter.revealReport()
+                        }
+                        Button {
+                            visible: errorReporter.lastReportPath !== ""
+                            text: "Open new issue"
+                            onClicked: errorReporter.openIssuePage()
+                        }
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: errorReporter.lastReportPath !== ""
+                              ? errorReporter.status + " " + errorReporter.lastReportPath
+                              : errorReporter.status
+                        color: theme.textTertiary
+                        font.pixelSize: 12
                     }
 
                     // Icon-only link to project page.

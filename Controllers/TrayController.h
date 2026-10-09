@@ -27,8 +27,8 @@ class TrayController : public QObject {
         void openDashboardRequested();
         void showFlyoutRequested();
         void openMixerRequested();
-        // Raised when the user clicks a balloon notification.
-        void notificationClicked();
+        // Raised by the tray "Report a Bug" entry. Opens the report page.
+        void reportBugRequested();
 
     private:
         void applyVisibility();

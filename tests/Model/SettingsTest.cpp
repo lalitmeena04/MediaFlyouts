@@ -85,6 +85,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.filterMode(), 0);
     EXPECT_TRUE(s.filterList().isEmpty());
     EXPECT_FALSE(s.autoCheckUpdates());
+    EXPECT_TRUE(s.skippedUpdateVersion().isEmpty());
     // Peripheral flyout starts off. Default position is bottom center.
     EXPECT_FALSE(s.peripheralFlyoutEnabled());
     EXPECT_EQ(s.peripheralFlyoutDuration(), 3000);
@@ -105,6 +106,20 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.chargerFlyoutDuration(), 3000);
     EXPECT_EQ(s.chargerFlyoutPosition(), 4);
     EXPECT_EQ(s.chargerFlyoutMonitor(), 0);
+}
+
+// Skipping a release must survive a restart. Same value writes nothing.
+TEST_F(SettingsTest, SkippedUpdateVersionIsStoredAndRestorable) {
+    {
+        Settings s;
+        QSignalSpy spy(&s, &Settings::changed);
+        s.setSkippedUpdateVersion(QStringLiteral("v1.5.0"));
+        s.setSkippedUpdateVersion(QStringLiteral("v1.5.0"));
+        EXPECT_EQ(spy.count(), 1);
+        EXPECT_EQ(s.skippedUpdateVersion(), QStringLiteral("v1.5.0"));
+    }
+    Settings reloaded;
+    EXPECT_EQ(reloaded.skippedUpdateVersion(), QStringLiteral("v1.5.0"));
 }
 
 // A dongle often reports something unhelpful, so the user can rename it.

@@ -1,6 +1,6 @@
 #pragma once
 
-// Build sets SPDLOG_ACTIVE_LEVEL to DEBUG. TRC_DEBUG is compiled in.
+// Build sets SPDLOG_ACTIVE_LEVEL. Debug builds compile TRC_DEBUG in. Release builds start at INFO.
 #include <spdlog/spdlog.h>
 
 #include <QString>
@@ -14,6 +14,14 @@
 
 namespace mf {
 // Install rotating-file and debugger logger. Call once at startup.
+// Also routes Qt and QML messages into the same log.
 // Returns the absolute path of the active log file.
 QString initLogging();
+// Folder that holds the rotating log files. Empty when logging is off.
+QString logDir();
+// Write buffered lines to disk now.
+void flushLogging();
+// Size cap per log file and number of rotated files kept.
+constexpr qint64 kLogFileMaxBytes = 2 * 1024 * 1024;
+constexpr int kLogFilesKept = 3;
 }

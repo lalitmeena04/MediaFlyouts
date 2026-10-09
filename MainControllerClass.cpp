@@ -4,9 +4,11 @@
 #include <QFontDatabase>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QSysInfo>
 
 #include "AlbumArtProvider.h"
 #include "Capabilities.h"
+#include "ErrorReporter.h"
 #include "FlyoutPlacement.h"
 #include "Logging.h"
 #include "MonitorMapper.h"
@@ -46,6 +48,8 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     const QString logFile = mf::initLogging();
     TRC_INFO("==== MediaFlyouts {} starting ====", MEDIAFLYOUTS_VERSION);
     TRC_INFO("log file: {}", logFile.toStdString());
+    TRC_INFO("os: {} ({}), qt {}", QSysInfo::prettyProductName().toStdString(), QSysInfo::kernelVersion().toStdString(),
+             qVersion());
 
     // Second launch signals running instance and exits.
     m_instance = std::make_unique<SingleInstance>(QStringLiteral("MediaFlyouts.singleInstance"));
@@ -71,7 +75,10 @@ int MainControllerClass::run() {
         return -1;
 
     m_tray->show();
-    return m_app.exec();
+    const int code = m_app.exec();
+    TRC_INFO("==== MediaFlyouts exiting (code {}) ====", code);
+    mf::flushLogging();
+    return code;
 }
 
 void MainControllerClass::loadIconFont() {
@@ -93,6 +100,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_updateChecker = std::make_unique<UpdateChecker>();
     // Track platform subsystem availability. UI hides unavailable features.
     m_capabilities = std::make_unique<Capabilities>();
+    m_errorReporter = std::make_unique<ErrorReporter>(m_settings.get(), m_capabilities.get());
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_qmlLog = std::make_unique<QmlLogger>();
@@ -104,17 +112,8 @@ void MainControllerClass::buildCoreSubsystems() {
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
     m_tray->trackCapabilities(m_capabilities.get());
-    // Notify from tray when newer release exists.
-    QObject::connect(m_updateChecker.get(), &UpdateChecker::changed, m_tray.get(), [this] {
-        if(m_updateChecker->updateAvailable())
-            m_tray->notify(QStringLiteral("MediaFlyouts update available"),
-                           QStringLiteral("%1 Click to open the download page.").arg(m_updateChecker->status()));
-    });
-    // Clicking that notification takes the user to the download.
-    QObject::connect(m_tray.get(), &TrayController::notificationClicked, m_updateChecker.get(), [this] {
-        if(m_updateChecker->updateAvailable())
-            m_updateChecker->openReleasePage();
-    });
+    // Installer runs on its own. Quit so it can replace files. QML shows the update prompt.
+    QObject::connect(m_updateChecker.get(), &UpdateChecker::installStarted, &m_app, &QApplication::quit);
 }
 
 #ifdef Q_OS_WIN
@@ -238,6 +237,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("capabilities", m_capabilities.get());
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
+    ctx->setContextProperty("errorReporter", m_errorReporter.get());
     ctx->setContextProperty("placement", m_placement.get());
     ctx->setContextProperty("monitors", m_monitors.get());
     ctx->setContextProperty("instance", m_instance.get());

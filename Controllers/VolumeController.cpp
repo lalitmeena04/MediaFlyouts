@@ -9,6 +9,8 @@
 #include <endpointvolume.h>
 #include <mmdeviceapi.h>
 
+#include "Logging.h"
+
 namespace {
 
 // Write context for own changes. Reserved for future filtering.
@@ -133,14 +135,18 @@ bool VolumeController::acquireEndpoint() {
         return false;
 
     IMMDevice* device = nullptr;
-    if(FAILED(m_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device)) || !device)
+    HRESULT hr = m_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device);
+    if(FAILED(hr) || !device) {
+        TRC_WARN("volume: no default render endpoint (hr={:#x})", static_cast<unsigned long>(hr));
         return false;
+    }
 
-    HRESULT hr =
-        device->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_endpoint));
+    hr = device->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_endpoint));
     device->Release();
-    if(FAILED(hr) || !m_endpoint)
+    if(FAILED(hr) || !m_endpoint) {
+        TRC_WARN("volume: IAudioEndpointVolume activation failed (hr={:#x})", static_cast<unsigned long>(hr));
         return false;
+    }
 
     m_callback = new VolumeCallback(this);
     m_endpoint->RegisterControlChangeNotify(m_callback);
@@ -150,11 +156,13 @@ bool VolumeController::acquireEndpoint() {
     m_endpoint->GetMasterVolumeLevelScalar(&level);
     m_endpoint->GetMute(&muted);
     applyState(static_cast<int>(std::lround(level * 100.0f)), muted != FALSE, false);
+    TRC_INFO("volume: endpoint acquired, {}% muted={}", m_volume, m_muted);
     emit availabilityChanged();
     return true;
 }
 
 void VolumeController::rebindDefaultDevice() {
+    TRC_INFO("volume: default render device changed, rebinding");
     releaseEndpoint();
     acquireEndpoint();
 }
@@ -162,8 +170,10 @@ void VolumeController::rebindDefaultDevice() {
 void VolumeController::start() {
     HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
                                   reinterpret_cast<void**>(&m_enumerator));
-    if(FAILED(hr) || !m_enumerator)
+    if(FAILED(hr) || !m_enumerator) {
+        TRC_WARN("volume: MMDeviceEnumerator creation failed (hr={:#x})", static_cast<unsigned long>(hr));
         return;
+    }
 
     // Follow default output device. Flyout reflects current endpoint.
     m_deviceNotifier = new DeviceNotificationClient(this);

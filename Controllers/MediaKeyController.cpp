@@ -2,6 +2,8 @@
 
 #include <windows.h>
 
+#include "Logging.h"
+
 namespace {
 
 MediaKeyController* g_instance = nullptr;
@@ -36,6 +38,10 @@ MediaKeyController::~MediaKeyController() {
 void MediaKeyController::start() {
     g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, keyboardProc, GetModuleHandleW(nullptr), 0);
     m_available = g_hook != nullptr;
+    if(m_available)
+        TRC_INFO("media keys: keyboard hook installed");
+    else
+        TRC_WARN("media keys: keyboard hook failed (error={})", GetLastError());
     emit availabilityChanged();
 }
 

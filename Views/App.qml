@@ -30,6 +30,7 @@ QtObject {
     property Dashboard dashboard: Dashboard {}
     property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
     property OnboardingWindow onboarding: OnboardingWindow {}
+    property UpdateDialog updateDialog: UpdateDialog {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         stack: widgetStack
         onActivated: flyout.showFlyout()
@@ -51,6 +52,15 @@ QtObject {
         interval: 4000
         running: settings.autoCheckUpdates
         onTriggered: updateChecker.check()
+    }
+
+    // Newer release found. A skipped version stays quiet.
+    property Connections _updateConn: Connections {
+        target: updateChecker
+        function onUpdateFound(version) {
+            if(version !== settings.skippedUpdateVersion)
+                updateDialog.open()
+        }
     }
 
     // Stacking order. Bottom-most first.
@@ -136,6 +146,11 @@ QtObject {
 
         function onOpenMixerRequested() {
             volumeMixerWindow.open()
+        }
+
+        // Error reports live on the About page.
+        function onReportBugRequested() {
+            dashboard.showPage("About")
         }
     }
 

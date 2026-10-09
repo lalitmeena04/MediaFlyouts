@@ -4,6 +4,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "Logging.h"
+
 namespace {
 
 // Device names carry spaces, slashes and brackets, so an ini key per device
@@ -147,18 +149,26 @@ void Settings::reload() {
     m_filterMode = m_store.value(QStringLiteral("filterMode"), 0).toInt();
     m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
     m_autoCheckUpdates = m_store.value(QStringLiteral("autoCheckUpdates"), false).toBool();
+    m_skippedUpdateVersion = m_store.value(QStringLiteral("skippedUpdateVersion")).toString();
 }
 
 bool Settings::exportTo(const QUrl& file) const {
     const QString path = file.isLocalFile() ? file.toLocalFile() : file.toString();
     QSettings out(path, QSettings::IniFormat);
-    if(out.status() != QSettings::NoError)
+    if(out.status() != QSettings::NoError) {
+        TRC_WARN("settings: export target not writable: {}", path.toStdString());
         return false;
+    }
     const QStringList keys = m_store.allKeys();
     for(const QString& key : keys)
         out.setValue(key, m_store.value(key));
     out.sync();
-    return out.status() == QSettings::NoError;
+    const bool ok = out.status() == QSettings::NoError;
+    if(ok)
+        TRC_INFO("settings: exported {} keys to {}", keys.size(), path.toStdString());
+    else
+        TRC_WARN("settings: export sync failed (status={})", static_cast<int>(out.status()));
+    return ok;
 }
 
 QString Settings::configDir() const {
@@ -168,13 +178,16 @@ QString Settings::configDir() const {
 bool Settings::importFrom(const QUrl& file) {
     const QString path = file.isLocalFile() ? file.toLocalFile() : file.toString();
     QSettings in(path, QSettings::IniFormat);
-    if(in.status() != QSettings::NoError)
+    if(in.status() != QSettings::NoError) {
+        TRC_WARN("settings: import source unreadable: {}", path.toStdString());
         return false;
+    }
     const QStringList keys = in.allKeys();
     for(const QString& key : keys)
         m_store.setValue(key, in.value(key));
     m_store.sync();
     reload();
+    TRC_INFO("settings: imported {} keys from {}", keys.size(), path.toStdString());
     emit changed();
     return true;
 }
@@ -333,6 +346,9 @@ QStringList Settings::filterList() const {
 }
 bool Settings::autoCheckUpdates() const {
     return m_autoCheckUpdates;
+}
+QString Settings::skippedUpdateVersion() const {
+    return m_skippedUpdateVersion;
 }
 bool Settings::playerAllowed(const QString& player) const {
     if(m_filterMode == 0)
@@ -618,6 +634,13 @@ void Settings::setFilterMode(int v) {
 }
 void Settings::setAutoCheckUpdates(bool v) {
     assign("autoCheckUpdates", m_autoCheckUpdates, v);
+}
+void Settings::setSkippedUpdateVersion(const QString& v) {
+    if(m_skippedUpdateVersion == v)
+        return;
+    m_skippedUpdateVersion = v;
+    m_store.setValue(QStringLiteral("skippedUpdateVersion"), v);
+    emit changed();
 }
 void Settings::addFilterEntry(const QString& name) {
     const QString trimmed = name.trimmed();

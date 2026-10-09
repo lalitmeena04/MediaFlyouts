@@ -8,6 +8,7 @@
 #include <QString>
 #include <QStringList>
 
+#include "Logging.h"
 #include "SessionSelection.h"
 
 #include <winrt/Windows.Foundation.Collections.h>
@@ -63,10 +64,16 @@ bool WinMediaProvider::available() const {
 winrt::fire_and_forget WinMediaProvider::initAsync() {
     try {
         m_manager = co_await SessionManager::RequestAsync();
+    } catch(const winrt::hresult_error& e) {
+        TRC_WARN("media: SMTC session manager unavailable (hr={:#x})", static_cast<unsigned long>(e.code()));
+        QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
+        co_return;
     } catch(...) {
+        TRC_WARN("media: SMTC session manager request threw");
         QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
         co_return;
     }
+    TRC_INFO("media: SMTC session manager ready");
     QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
 
     m_currentChangedToken = m_manager.CurrentSessionChanged([this](auto&&, auto&&) {

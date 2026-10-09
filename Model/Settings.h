@@ -111,6 +111,7 @@ class Settings : public QObject {
         Q_PROPERTY(int filterMode READ filterMode WRITE setFilterMode NOTIFY changed)
         Q_PROPERTY(QStringList filterList READ filterList NOTIFY changed)
         Q_PROPERTY(bool autoCheckUpdates READ autoCheckUpdates WRITE setAutoCheckUpdates NOTIFY changed)
+        Q_PROPERTY(QString skippedUpdateVersion READ skippedUpdateVersion WRITE setSkippedUpdateVersion NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -212,6 +213,8 @@ class Settings : public QObject {
         int filterMode() const;
         QStringList filterList() const;
         bool autoCheckUpdates() const;
+        // Release tag the user chose to skip. Empty when none.
+        QString skippedUpdateVersion() const;
         // True when current filter allows player flyout.
         Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
@@ -289,6 +292,7 @@ class Settings : public QObject {
         void setAppTheme(int v);
         void setFilterMode(int v);
         void setAutoCheckUpdates(bool v);
+        void setSkippedUpdateVersion(const QString& v);
         Q_INVOKABLE void addFilterEntry(const QString& name);
         Q_INVOKABLE void removeFilterEntry(const QString& name);
 
@@ -378,4 +382,5 @@ class Settings : public QObject {
         int m_filterMode;
         QStringList m_filterList;
         bool m_autoCheckUpdates;
+        QString m_skippedUpdateVersion;
 };
