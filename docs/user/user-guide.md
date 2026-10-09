@@ -37,7 +37,7 @@ page in Settings.
 Toggling Caps / Num / Scroll / Insert shows a brief indicator. Enable or disable
 each key, the duration, and the bold style in Settings.
 
-### Up next
+### Now Playing
 When a track auto-advances, a compact flyout shows what started playing. Choose
 the **card** or **compact pill** style in Settings.
 

@@ -18,6 +18,7 @@ QtObject {
     property NowPlayingFlyout nextUpFlyout: NowPlayingFlyout {
         onVisibleChanged: app.restack()
         onHeightChanged: app.restack()
+        onWidthChanged: app.restack()
     }
     property PeripheralFlyout peripheralFlyout: PeripheralFlyout {
         onVisibleChanged: app.restack()
@@ -30,10 +31,16 @@ QtObject {
     property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
     property OnboardingWindow onboarding: OnboardingWindow {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
+        stack: widgetStack
         onActivated: flyout.showFlyout()
     }
     property PeripheralsWidget peripheralsWidget: PeripheralsWidget {
         mediaWidget: taskbarWidget
+        stack: widgetStack
+    }
+    property WidgetStack widgetStack: WidgetStack {
+        mediaWidget: app.taskbarWidget
+        peripheralsWidget: app.peripheralsWidget
     }
 
     // Show first-run wizard once.

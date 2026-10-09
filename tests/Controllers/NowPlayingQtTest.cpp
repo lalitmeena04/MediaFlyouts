@@ -12,6 +12,8 @@ class SpyController : public IPlaybackController {
         int pauses = 0;
         int nexts = 0;
         int prevs = 0;
+        QStringList playing;
+        int resumeAllCalls = 0;
         void play() override {
             ++plays;
         }
@@ -23,6 +25,17 @@ class SpyController : public IPlaybackController {
         }
         void previous() override {
             ++prevs;
+        }
+        QStringList pauseAllSessions() override {
+            QStringList out = playing;
+            playing.clear();
+            return out;
+        }
+        int playingSessionCount() const override {
+            return playing.size();
+        }
+        void resumeAllSessions() override {
+            ++resumeAllCalls;
         }
 };
 
@@ -47,6 +60,8 @@ class NowPlayingQtTest : public QObject {
         void stoppingRaisesTrackUpdated();
         void transportForwardsToController();
         void transportSafeWithoutController();
+        void pauseAllThenPlayAllRoundTrip();
+        void manualPauseOfEverythingOffersPlayAll();
         void applyArtTogglesHasArt();
 };
 
@@ -124,7 +139,44 @@ void NowPlayingQtTest::transportSafeWithoutController() {
     np.playPause();
     np.next();
     np.previous();
-    QVERIFY(true);
+    np.pauseAll();
+    np.playAll();
+    QVERIFY(!np.canResumeAll());
+}
+
+void NowPlayingQtTest::pauseAllThenPlayAllRoundTrip() {
+    NowPlaying np;
+    SpyController controller;
+    controller.playing = {QStringLiteral("Spotify.exe"), QStringLiteral("chrome.exe")};
+    np.setController(&controller);
+    QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
+
+    np.pauseAll();
+    QVERIFY(np.canResumeAll());
+    QCOMPARE(resumeAll.count(), 1);
+
+    np.playAll();
+    QCOMPARE(controller.resumeAllCalls, 1);
+    QVERIFY(!np.canResumeAll());
+    QCOMPARE(resumeAll.count(), 2);
+}
+
+void NowPlayingQtTest::manualPauseOfEverythingOffersPlayAll() {
+    NowPlaying np;
+    SpyController controller;
+    np.setController(&controller);
+
+    controller.playing = {QStringLiteral("Spotify.exe")};
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
+    QVERIFY(!np.canResumeAll());
+
+    // User pauses from the player. No pauseAll() involved.
+    controller.playing.clear();
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
+    QVERIFY(np.canResumeAll());
+
+    np.playAll();
+    QCOMPARE(controller.resumeAllCalls, 1);
 }
 
 void NowPlayingQtTest::applyArtTogglesHasArt() {

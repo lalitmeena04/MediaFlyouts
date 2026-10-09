@@ -66,8 +66,13 @@ TEST_F(SettingsTest, Defaults) {
     // Seeded from system taskbar alignment. Only range is fixed.
     EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
+    // Widgets sit side by side until the user picks the stack.
+    EXPECT_EQ(s.taskbarWidgetLayout(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
+    // Pause-all is opt-in. Play-all follow-up is ready once pause-all is on.
+    EXPECT_FALSE(s.taskbarWidgetPauseAllEnabled());
+    EXPECT_TRUE(s.taskbarWidgetPlayAllEnabled());
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
     EXPECT_TRUE(s.taskbarVisualizerCentered());
     EXPECT_EQ(s.visualizerStyle(), 0);

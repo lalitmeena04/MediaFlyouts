@@ -21,6 +21,9 @@ class MockController : public IPlaybackController {
         MOCK_METHOD(int, sessionCount, (), (const, override));
         MOCK_METHOD(int, selectedSessionIndex, (), (const, override));
         MOCK_METHOD(void, cycleSession, (int), (override));
+        MOCK_METHOD(QStringList, pauseAllSessions, (), (override));
+        MOCK_METHOD(int, playingSessionCount, (), (const, override));
+        MOCK_METHOD(void, resumeAllSessions, (), (override));
 };
 
 TrackInfo makeTrack(const QString& title, const QString& artist, PlaybackState state = PlaybackState::Playing) {
@@ -135,7 +138,135 @@ TEST(NowPlayingTest, TransportCommandsAreSafeWithoutController) {
     np.playPause();
     np.next();
     np.previous();
+    np.pauseAll();
+    np.playAll();
+    EXPECT_FALSE(np.canResumeAll());
     SUCCEED();
+}
+
+TEST(NowPlayingTest, PauseAllRemembersPausedSessions) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
+
+    const QStringList paused{QStringLiteral("Spotify.exe"), QStringLiteral("chrome.exe")};
+    EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(paused));
+    np.pauseAll();
+
+    EXPECT_TRUE(np.canResumeAll());
+    EXPECT_EQ(resumeAll.count(), 1);
+}
+
+TEST(NowPlayingTest, PauseAllWithNothingPlayingLeavesNothingToResume) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+
+    EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(QStringList()));
+    np.pauseAll();
+
+    EXPECT_FALSE(np.canResumeAll());
+}
+
+// Play-all must bring back every paused source, not only the ones pause-all touched.
+TEST(NowPlayingTest, PlayAllResumesEveryPausedSessionThenClears) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+
+    // Another source was paused by hand before pause-all. It resumes too.
+    const QStringList paused{QStringLiteral("Spotify.exe")};
+    EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(paused));
+    np.pauseAll();
+
+    QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
+    EXPECT_CALL(controller, resumeAllSessions()).Times(1);
+    np.playAll();
+
+    EXPECT_FALSE(np.canResumeAll());
+    EXPECT_EQ(resumeAll.count(), 1);
+
+    // Second press has nothing to resume. Controller is not called.
+    EXPECT_CALL(controller, resumeAllSessions()).Times(0);
+    np.playAll();
+}
+
+TEST(NowPlayingTest, AllSessionsPausedByHandOffersPlayAll) {
+    NowPlaying np;
+    ::testing::NiceMock<MockController> controller;
+    np.setController(&controller);
+    ON_CALL(controller, playingSessionCount()).WillByDefault(::testing::Return(0));
+    QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
+
+    // User paused the only player from the app itself.
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
+    EXPECT_TRUE(np.canResumeAll());
+    EXPECT_EQ(resumeAll.count(), 1);
+
+    // Nothing was remembered by pauseAll, so every paused session resumes.
+    EXPECT_CALL(controller, resumeAllSessions()).Times(1);
+    np.playAll();
+}
+
+TEST(NowPlayingTest, PlayAllHiddenWhileAnotherSessionStillPlays) {
+    NowPlaying np;
+    ::testing::NiceMock<MockController> controller;
+    np.setController(&controller);
+    int playing = 1;
+    ON_CALL(controller, playingSessionCount()).WillByDefault(::testing::Invoke([&playing] { return playing; }));
+
+    // Displayed session is paused but a second app still plays.
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
+    EXPECT_FALSE(np.canResumeAll());
+
+    // Second app pauses too. Provider reports the session set change.
+    QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
+    playing = 0;
+    np.noteSessionsChanged();
+    EXPECT_TRUE(np.canResumeAll());
+    EXPECT_EQ(resumeAll.count(), 1);
+}
+
+TEST(NowPlayingTest, PlayAllNotOfferedWithoutMedia) {
+    NowPlaying np;
+    ::testing::NiceMock<MockController> controller;
+    np.setController(&controller);
+    ON_CALL(controller, playingSessionCount()).WillByDefault(::testing::Return(0));
+
+    np.applyTrack(makeTrack(QString(), QString(), PlaybackState::Stopped));
+    EXPECT_FALSE(np.canResumeAll());
+}
+
+TEST(NowPlayingTest, ManualResumeForgetsPauseAllSet) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
+
+    EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(QStringList{QStringLiteral("Spotify.exe")}));
+    np.pauseAll();
+    // Pause takes effect. Set stays.
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
+    EXPECT_TRUE(np.canResumeAll());
+
+    // User resumes from the player itself. Set is dropped.
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
+    EXPECT_FALSE(np.canResumeAll());
+}
+
+TEST(NowPlayingTest, StalePlayingUpdateAfterPauseAllKeepsSet) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
+
+    EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(QStringList{QStringLiteral("Spotify.exe")}));
+    np.pauseAll();
+
+    // Timeline refresh still reports Playing. No state transition, so set stays.
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
+    EXPECT_TRUE(np.canResumeAll());
 }
 
 TEST(NowPlayingTest, ApplyArtTogglesHasArtAndArtSource) {

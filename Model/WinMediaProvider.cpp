@@ -42,6 +42,14 @@ WinMediaProvider::~WinMediaProvider() {
         } catch(...) {
         }
     }
+
+    std::lock_guard<std::mutex> watchLock(m_watchMutex);
+    for(auto& [session, token] : m_watched) {
+        try {
+            session.PlaybackInfoChanged(token);
+        } catch(...) {
+        }
+    }
 }
 
 void WinMediaProvider::start() {
@@ -98,13 +106,82 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
                 hookSession(m_manager.GetCurrentSession());
             }
         }
+        watchAllSessions();
         refreshSessionMeta();
         QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
     });
 
     hookSession(m_manager.GetCurrentSession());
+    watchAllSessions();
     refreshSessionMeta();
     QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
+}
+
+void WinMediaProvider::watchAllSessions() {
+    if(!m_manager)
+        return;
+    std::lock_guard<std::mutex> lock(m_watchMutex);
+    for(auto& [session, token] : m_watched) {
+        try {
+            session.PlaybackInfoChanged(token);
+        } catch(...) {
+        }
+    }
+    m_watched.clear();
+    try {
+        auto sessions = m_manager.GetSessions();
+        for(uint32_t i = 0; i < sessions.Size(); ++i) {
+            try {
+                Session s = sessions.GetAt(i);
+                auto token = s.PlaybackInfoChanged([this](auto&&, auto&&) { recountPlaying(); });
+                m_watched.emplace_back(std::move(s), token);
+            } catch(...) {
+            }
+        }
+    } catch(...) {
+    }
+    recountPlaying();
+}
+
+void WinMediaProvider::recountPlaying() {
+    if(!m_manager)
+        return;
+    int playing = 0;
+    try {
+        auto sessions = m_manager.GetSessions();
+        for(uint32_t i = 0; i < sessions.Size(); ++i) {
+            try {
+                if(sessions.GetAt(i).GetPlaybackInfo().PlaybackStatus() == PlaybackStatus::Playing)
+                    ++playing;
+            } catch(...) {
+            }
+        }
+    } catch(...) {
+    }
+    if(m_playingCount.exchange(playing) != playing)
+        QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
+}
+
+int WinMediaProvider::playingSessionCount() const {
+    return m_playingCount.load();
+}
+
+void WinMediaProvider::resumeAllSessions() {
+    if(!m_manager)
+        return;
+    try {
+        auto sessions = m_manager.GetSessions();
+        for(uint32_t i = 0; i < sessions.Size(); ++i) {
+            try {
+                auto s = sessions.GetAt(i);
+                // Stopped or closed sessions stay as they are.
+                if(s.GetPlaybackInfo().PlaybackStatus() == PlaybackStatus::Paused)
+                    s.TryPlayAsync();
+            } catch(...) {
+            }
+        }
+    } catch(...) {
+    }
 }
 
 void WinMediaProvider::refreshSessionMeta() {
@@ -173,6 +250,27 @@ void WinMediaProvider::cycleSession(int delta) {
     hookSession(sessions.GetAt(static_cast<uint32_t>(next)));
     refreshSessionMeta();
     QMetaObject::invokeMethod(this, [this] { emit sessionsChanged(); }, Qt::QueuedConnection);
+}
+
+QStringList WinMediaProvider::pauseAllSessions() {
+    QStringList paused;
+    if(!m_manager)
+        return paused;
+    try {
+        auto sessions = m_manager.GetSessions();
+        for(uint32_t i = 0; i < sessions.Size(); ++i) {
+            try {
+                auto s = sessions.GetAt(i);
+                if(s.GetPlaybackInfo().PlaybackStatus() != PlaybackStatus::Playing)
+                    continue;
+                paused.append(QString::fromWCharArray(s.SourceAppUserModelId().c_str()));
+                s.TryPauseAsync();
+            } catch(...) {
+            }
+        }
+    } catch(...) {
+    }
+    return paused;
 }
 
 void WinMediaProvider::hookSession(Session session) {

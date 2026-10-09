@@ -36,10 +36,10 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 - Indicators for Caps Lock, Num Lock, Scroll Lock and Insert.
 - Per-key enable toggles, a configurable stay duration and a bold-UI option.
 
-## Now Playing / Up next flyout
+## Now Playing / Now Playing flyout
 
 - Pops when the track changes so it reflects the newly started track.
-- Two user-selectable styles: a "now playing" card or a compact "Up next:" pill.
+- Two user-selectable styles: a "now playing" card or a compact "Now Playing:" pill.
 - Sizes itself to the track text; configurable stay duration.
 
 ## Taskbar widget
@@ -52,9 +52,12 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
   afterwards.
 - Center alignment, a pause overlay, and marquee scrolling for long titles.
 - Scroll wheel / swipe to switch between multiple simultaneous media sources,
-  with source indicator dots.
+  with source indicator dots and a slide transition.
 - Hidden automatically over fullscreen apps.
 - Optional integrated playback controls.
+- Optional "Pause all" button that pauses every playing source at once. With
+  the follow-up option on, the same button becomes "Play all" whenever every
+  source is paused, and resumes them.
 
 ## Peripheral battery
 
@@ -81,6 +84,11 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 - Pick which devices appear; hover for the exact level, charging state and the
   per-component breakdown.
 - Follows the now-playing widget's monitor, side and offset so the two line up.
+- Widget layout: side by side, or a scrollable stack that shares one taskbar
+  slot. In stack mode the scroll wheel pages between the media widget and
+  separate 2.4 GHz, Bluetooth and wired peripheral pages. All pages share one
+  frame sized to the largest widget, with content centered and slide-and-fade
+  transitions between pages.
 - Optional accent-coloured rings instead of green / amber / red.
 
 ## Peripheral flyout

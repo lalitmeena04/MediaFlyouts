@@ -97,8 +97,13 @@ void Settings::reload() {
         m_store.setValue(QStringLiteral("taskbarWidgetSide"), systemTaskbarSide());
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
     m_taskbarWidgetMonitor = m_store.value(QStringLiteral("taskbarWidgetMonitor"), 0).toInt();
+    // Widget layout. 0 = side by side. 1 = scrollable stack.
+    m_taskbarWidgetLayout = m_store.value(QStringLiteral("taskbarWidgetLayout"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
+    // Pause-all button is opt-in. Play-all follow-up is on once pause-all is enabled.
+    m_taskbarWidgetPauseAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPauseAllEnabled"), false).toBool();
+    m_taskbarWidgetPlayAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPlayAllEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
     // Centered mirrors bars around middle. Other mode grows from bottom.
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
@@ -349,11 +354,20 @@ int Settings::taskbarWidgetSide() const {
 int Settings::taskbarWidgetMonitor() const {
     return m_taskbarWidgetMonitor;
 }
+int Settings::taskbarWidgetLayout() const {
+    return m_taskbarWidgetLayout;
+}
 bool Settings::taskbarWidgetShowPauseOverlay() const {
     return m_taskbarWidgetShowPauseOverlay;
 }
 bool Settings::taskbarWidgetScrollingEnabled() const {
     return m_taskbarWidgetScrollingEnabled;
+}
+bool Settings::taskbarWidgetPauseAllEnabled() const {
+    return m_taskbarWidgetPauseAllEnabled;
+}
+bool Settings::taskbarWidgetPlayAllEnabled() const {
+    return m_taskbarWidgetPlayAllEnabled;
 }
 bool Settings::taskbarVisualizerEnabled() const {
     return m_taskbarVisualizerEnabled;
@@ -634,11 +648,20 @@ void Settings::setTaskbarWidgetSide(int v) {
 void Settings::setTaskbarWidgetMonitor(int v) {
     assignInt("taskbarWidgetMonitor", m_taskbarWidgetMonitor, v);
 }
+void Settings::setTaskbarWidgetLayout(int v) {
+    assignInt("taskbarWidgetLayout", m_taskbarWidgetLayout, v);
+}
 void Settings::setTaskbarWidgetShowPauseOverlay(bool v) {
     assign("taskbarWidgetShowPauseOverlay", m_taskbarWidgetShowPauseOverlay, v);
 }
 void Settings::setTaskbarWidgetScrollingEnabled(bool v) {
     assign("taskbarWidgetScrollingEnabled", m_taskbarWidgetScrollingEnabled, v);
+}
+void Settings::setTaskbarWidgetPauseAllEnabled(bool v) {
+    assign("taskbarWidgetPauseAllEnabled", m_taskbarWidgetPauseAllEnabled, v);
+}
+void Settings::setTaskbarWidgetPlayAllEnabled(bool v) {
+    assign("taskbarWidgetPlayAllEnabled", m_taskbarWidgetPlayAllEnabled, v);
 }
 void Settings::setTaskbarVisualizerEnabled(bool v) {
     assign("taskbarVisualizerEnabled", m_taskbarVisualizerEnabled, v);

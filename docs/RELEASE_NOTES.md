@@ -139,9 +139,9 @@ lock-key overlay for Windows, written from scratch in Qt 6 / C++ / QML.
 - Caps / Num / Scroll / Insert indicators with per-key toggles, a configurable
   duration and a bold-UI option.
 
-### ⏭️ Now Playing / Up next
+### ⏭️ Now Playing / Now Playing
 
-- Fires on track change; selectable "now playing card" or compact "Up next" pill
+- Fires on track change; selectable "now playing card" or compact "Now Playing" pill
   style; sizes to its track text.
 
 ### 📊 Taskbar widget & visualizer

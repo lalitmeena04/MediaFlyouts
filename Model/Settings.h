@@ -54,10 +54,15 @@ class Settings : public QObject {
         Q_PROPERTY(int taskbarWidgetOffset READ taskbarWidgetOffset WRITE setTaskbarWidgetOffset NOTIFY changed)
         Q_PROPERTY(int taskbarWidgetSide READ taskbarWidgetSide WRITE setTaskbarWidgetSide NOTIFY changed)
         Q_PROPERTY(int taskbarWidgetMonitor READ taskbarWidgetMonitor WRITE setTaskbarWidgetMonitor NOTIFY changed)
+        Q_PROPERTY(int taskbarWidgetLayout READ taskbarWidgetLayout WRITE setTaskbarWidgetLayout NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetShowPauseOverlay READ taskbarWidgetShowPauseOverlay WRITE
                        setTaskbarWidgetShowPauseOverlay NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
                        setTaskbarWidgetScrollingEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetPauseAllEnabled READ taskbarWidgetPauseAllEnabled WRITE
+                       setTaskbarWidgetPauseAllEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetPlayAllEnabled READ taskbarWidgetPlayAllEnabled WRITE
+                       setTaskbarWidgetPlayAllEnabled NOTIFY changed)
         Q_PROPERTY(bool taskbarVisualizerEnabled READ taskbarVisualizerEnabled WRITE setTaskbarVisualizerEnabled NOTIFY
                        changed)
         Q_PROPERTY(bool taskbarVisualizerCentered READ taskbarVisualizerCentered WRITE setTaskbarVisualizerCentered
@@ -158,8 +163,13 @@ class Settings : public QObject {
         int taskbarWidgetOffset() const;
         int taskbarWidgetSide() const;
         int taskbarWidgetMonitor() const;
+        // How media and peripheral widgets share the taskbar.
+        // 0 = side by side. 1 = one slot, scroll wheel pages through them.
+        int taskbarWidgetLayout() const;
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
+        bool taskbarWidgetPauseAllEnabled() const;
+        bool taskbarWidgetPlayAllEnabled() const;
         bool taskbarVisualizerEnabled() const;
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
@@ -244,8 +254,11 @@ class Settings : public QObject {
         void setTaskbarWidgetOffset(int v);
         void setTaskbarWidgetSide(int v);
         void setTaskbarWidgetMonitor(int v);
+        void setTaskbarWidgetLayout(int v);
         void setTaskbarWidgetShowPauseOverlay(bool v);
         void setTaskbarWidgetScrollingEnabled(bool v);
+        void setTaskbarWidgetPauseAllEnabled(bool v);
+        void setTaskbarWidgetPlayAllEnabled(bool v);
         void setTaskbarVisualizerEnabled(bool v);
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
@@ -327,8 +340,11 @@ class Settings : public QObject {
         int m_taskbarWidgetOffset;
         int m_taskbarWidgetSide;
         int m_taskbarWidgetMonitor;
+        int m_taskbarWidgetLayout;
         bool m_taskbarWidgetShowPauseOverlay;
         bool m_taskbarWidgetScrollingEnabled;
+        bool m_taskbarWidgetPauseAllEnabled;
+        bool m_taskbarWidgetPlayAllEnabled;
         bool m_taskbarVisualizerEnabled;
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;

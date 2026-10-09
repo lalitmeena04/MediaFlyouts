@@ -5,8 +5,25 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- Widget layout option. Media and peripheral widgets can sit side by side or
+  share one taskbar slot as a scrollable stack. In stack mode the scroll wheel
+  pages between the media widget and separate 2.4 GHz, Bluetooth and wired
+  peripheral pages. Every page uses one frame sized to the largest widget,
+  with the content centered.
+- Slide-and-fade transitions when switching media sources on the media widget
+  and when paging through the widget stack.
+- Media widget "Pause all" button that pauses every playing media source at
+  once. An optional follow-up turns the same button into "Play all" whenever
+  every source is paused, and resumes them. With the follow-up off, the button
+  hides while everything is paused but keeps its slot.
+
 ### Fixed
 
+- "Play all" now resumes every paused media source. It used to resume only
+  the sources that "Pause all" had paused, so a source paused by hand before
+  stayed silent.
 - Logitech devices on Bolt and Unifying receivers are now detected. HID++
   requests use the long-report collection, all receiver slots are probed at
   once, and the device reports its own name, type and charging state.
@@ -129,9 +146,9 @@ written from scratch in Qt 6 / C++ / QML.
 - Caps / Num / Scroll / Insert indicators with per-key toggles, a configurable
   duration and a bold-UI option.
 
-### Now Playing / Up next
+### Now Playing / Now Playing
 
-- Fires on track change; selectable "now playing card" or compact "Up next"
+- Fires on track change; selectable "now playing card" or compact "Now Playing"
   pill style; sizes to its track text; configurable duration.
 
 ### Taskbar widget & visualizer

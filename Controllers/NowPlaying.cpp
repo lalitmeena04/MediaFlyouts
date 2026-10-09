@@ -188,6 +188,40 @@ void NowPlaying::cycleSession(int delta) {
 
 void NowPlaying::noteSessionsChanged() {
     emit sessionsChanged();
+    updateResumeAll();
+}
+
+bool NowPlaying::allPaused() const {
+    if(!hasMedia() || isPlaying())
+        return false;
+    return !m_controller || m_controller->playingSessionCount() == 0;
+}
+
+bool NowPlaying::canResumeAll() const {
+    return m_canResumeAll;
+}
+
+void NowPlaying::updateResumeAll() {
+    const bool now = !m_pausedByAll.isEmpty() || allPaused();
+    if(now == m_canResumeAll)
+        return;
+    m_canResumeAll = now;
+    emit resumeAllChanged();
+}
+
+void NowPlaying::pauseAll() {
+    if(!m_controller)
+        return;
+    m_pausedByAll = m_controller->pauseAllSessions();
+    updateResumeAll();
+}
+
+void NowPlaying::playAll() {
+    // Pause-all set only says there is work. Every paused session resumes.
+    if(m_controller && (!m_pausedByAll.isEmpty() || allPaused()))
+        m_controller->resumeAllSessions();
+    m_pausedByAll.clear();
+    updateResumeAll();
 }
 
 void NowPlaying::applyTrack(const mf::TrackInfo& track) {
@@ -200,6 +234,11 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     m_track = track;
     m_sinceUpdate.restart();
     emit changed();
+
+    // User resumed playback by other means. Forget the pause-all set.
+    if(stateChanged && track.state == mf::PlaybackState::Playing)
+        m_pausedByAll.clear();
+    updateResumeAll();
 
     // Do not show flyout for initial media state sync at launch.
     if(!m_seenFirstUpdate) {

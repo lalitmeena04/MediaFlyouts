@@ -385,9 +385,13 @@ TEST(QmlContractTest, QmlReadsMonitorFactsFromTheSharedMap) {
     expectContains(dashboard, QStringLiteral("model: monitors.names"));
     EXPECT_FALSE(dashboard.contains(QStringLiteral("monitorNames()")));
 
-    for(const char* path : {"Views/App.qml", "Views/PeripheralsWidget.qml"}) {
+    // Tooltip clamping moved from PeripheralsWidget into the shared WidgetTooltip.
+    for(const char* path : {"Views/App.qml", "Views/WidgetTooltip.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("monitors.geometry("));
+    }
+    for(const char* path : {"Views/App.qml", "Views/WidgetTooltip.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
         EXPECT_FALSE(source.contains(QStringLiteral("taskbar.monitorGeometry(")))
             << "Old per-controller monitor lookup still present in " << path;
     }
@@ -399,6 +403,161 @@ TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     expectContains(source, QStringLiteral("visualizerLive: root.visible && settings.taskbarVisualizerEnabled"));
     expectContains(source, QStringLiteral("audioCapture.start()"));
     expectContains(source, QStringLiteral("audioCapture.stop()"));
+}
+
+// One button pauses every source. It flips to play-all only when the follow-up option is on.
+TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
+    const QString widget = loadSource("Views/TaskbarWidget.qml");
+    expectContains(widget, QStringLiteral("pauseAllVisible: settings.taskbarWidgetPauseAllEnabled"));
+    expectContains(widget, QStringLiteral("showPlayAll: settings.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll"));
+    expectContains(widget, QStringLiteral("glyph: root.showPlayAll ? Fluent.playCircle : Fluent.pauseCircle"));
+    expectContains(widget, QStringLiteral("onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()"));
+    // Exactly one pause-all button exists in the widget.
+    EXPECT_EQ(widget.count(QStringLiteral("nowPlaying.pauseAll()")), 1);
+    // Button sits at the right edge, past the visualizer boundary. Extra slot widens the widget.
+    expectContains(widget, QStringLiteral("id: pauseAllButton"));
+    expectContains(widget, QStringLiteral("anchors.right: parent.right"));
+    expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(widget, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(widget, QStringLiteral("onWidthChanged: updatePosition()"));
+    // Without play-all the button hides once everything is paused. Slot and width stay.
+    expectContains(widget, QStringLiteral("pauseAllButtonShown: root.pauseAllVisible"));
+    expectContains(widget, QStringLiteral("&& (settings.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
+    expectContains(widget, QStringLiteral("opacity: root.pauseAllButtonShown ? 1 : 0"));
+    expectContains(widget, QStringLiteral("enabled: root.pauseAllButtonShown"));
+    EXPECT_FALSE(widget.contains(QStringLiteral("root.pauseAllButtonShown ? root.pauseAllSlot")))
+        << "Slot must not collapse when the button hides.";
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("settings.taskbarWidgetPauseAllEnabled = value"));
+    expectContains(dashboard, QStringLiteral("visible: settings.taskbarWidgetPauseAllEnabled"));
+    expectContains(dashboard, QStringLiteral("settings.taskbarWidgetPlayAllEnabled = value"));
+}
+
+// Stack layout pages media and peripheral widgets through one taskbar slot.
+// Peripheral pages are split per section: 2.4 GHz, Bluetooth, Wired.
+TEST(QmlContractTest, WidgetStackPagesMediaAndPeripheralSections) {
+    const QString stack = loadSource("Views/WidgetStack.qml");
+    expectContains(stack, QStringLiteral("enabled: settings.taskbarWidgetLayout === 1"));
+    expectContains(stack, QStringLiteral("list.push(stack.mediaPage)"));
+    expectContains(stack, QStringLiteral("list.push(sections[i].label)"));
+    expectContains(stack, QStringLiteral("function cycle(step)"));
+    // Media page comes first, then one page per peripheral section.
+    EXPECT_LT(stack.indexOf(QStringLiteral("list.push(stack.mediaPage)")),
+              stack.indexOf(QStringLiteral("list.push(sections[i].label)")));
+
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("property WidgetStack widgetStack"));
+    EXPECT_EQ(app.count(QStringLiteral("stack: widgetStack")), 2);
+
+    const QString media = loadSource("Views/TaskbarWidget.qml");
+    expectContains(media, QStringLiteral("visible: root.eligible && root.pageShown"));
+    expectContains(media, QStringLiteral("root.stack.cycle(wheel.angleDelta.y > 0 ? -1 : 1)"));
+
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("visible: root.eligible && root.pageShown"));
+    expectContains(peripherals, QStringLiteral("pageActive: !root.stacked || root.activeSection !== \"\""));
+    expectContains(peripherals, QStringLiteral("return deviceSections.filter(function(section) { return section.label === root.displayedSection })"));
+    expectContains(peripherals, QStringLiteral("model: root.shownSections"));
+    expectContains(peripherals, QStringLiteral("root.stack.cycle(event.angleDelta.y > 0 ? -1 : 1)"));
+    // Stack layout shares the slot. No offset past the media widget.
+    expectContains(peripherals, QStringLiteral("if(!root.stacked && root.mediaWidget && root.mediaWidget.visible)"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("model: [\"Side by side\", \"Stack\"]"));
+    expectContains(dashboard, QStringLiteral("onActivated: settings.taskbarWidgetLayout = index"));
+}
+
+// Stack pages share one frame sized to the largest widget. Content centers in it.
+TEST(QmlContractTest, WidgetStackUsesOneFrameSizedToTheLargestWidget) {
+    const QString stack = loadSource("Views/WidgetStack.qml");
+    expectContains(stack, QStringLiteral("frameWidth: Math.max(mediaWidget ? mediaWidget.naturalWidth : 0,"));
+    expectContains(stack, QStringLiteral("peripheralsWidget ? peripheralsWidget.widestSectionWidth : 0)"));
+    expectContains(stack, QStringLiteral("frameHeight: Math.max(mediaWidget ? mediaWidget.naturalHeight : 0,"));
+
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("width: root.stacked ? root.stack.frameWidth : root.naturalWidth"));
+        expectContains(source, QStringLiteral("height: root.stacked ? root.stack.frameHeight : root.naturalHeight"));
+        expectContains(source, QStringLiteral("id: content"));
+        expectContains(source, QStringLiteral("anchors.centerIn: parent"));
+    }
+
+    const QString media = loadSource("Views/TaskbarWidget.qml");
+    expectContains(media, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("function sectionWidth(section)"));
+    expectContains(peripherals, QStringLiteral("widest = Math.max(widest, sectionWidth(deviceSections[i]))"));
+}
+
+// Page changes and media source changes slide and fade. Pages stay visible until they slid out.
+TEST(QmlContractTest, WidgetTransitionsSlideAndFade) {
+    const QString fx = loadSource("Views/SlideFade.qml");
+    expectContains(fx, QStringLiteral("function enter()"));
+    expectContains(fx, QStringLiteral("function leave()"));
+    expectContains(fx, QStringLiteral("function replace(swap)"));
+    expectContains(fx, QStringLiteral("signal finishedLeave()"));
+    expectContains(fx, QStringLiteral("to: -fx.direction * fx.distance"));
+
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("id: pageFx"));
+        expectContains(source, QStringLiteral("direction: root.stack ? root.stack.lastStep : 1"));
+        expectContains(source, QStringLiteral("onFinishedLeave: root.pageShown = false"));
+        expectContains(source, QStringLiteral("transform: Translate { y: pageFx.offset }"));
+        expectContains(source, QStringLiteral("pageFx.enter()"));
+        expectContains(source, QStringLiteral("pageFx.leave()"));
+    }
+
+    const QString media = loadSource("Views/TaskbarWidget.qml");
+    expectContains(media, QStringLiteral("id: sessionFx"));
+    expectContains(media, QStringLiteral("onSessionIndexChanged: if(root.visible) sessionFx.enter()"));
+    expectContains(media, QStringLiteral("transform: Translate { x: sessionFx.offset }"));
+    // Every source switch records its direction first.
+    EXPECT_EQ(media.count(QStringLiteral("nowPlaying.cycleSession(")), 1);
+    EXPECT_EQ(media.count(QStringLiteral("root.switchSession(")), 2);
+
+    // Section-to-section pages swap content between leave and enter.
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("pageFx.replace(function() { root.displayedSection = root.activeSection })"));
+
+    expectContains(loadSource("Views/WidgetStack.qml"), QStringLiteral("lastStep = step > 0 ? 1 : -1"));
+}
+
+// Every media widget button names itself on hover.
+TEST(QmlContractTest, TaskbarWidgetButtonsHaveTooltips) {
+    const QString button = loadSource("Views/WidgetButton.qml");
+    expectContains(button, QStringLiteral("property string tooltip"));
+    expectContains(button, QStringLiteral("property var tip"));
+    expectContains(button, QStringLiteral("button.tip.showAt("));
+    expectContains(button, QStringLiteral("button.tip.hide()"));
+    // Text can change while hovered.
+    expectContains(button, QStringLiteral("onTooltipChanged: refreshTip()"));
+
+    const QString widget = loadSource("Views/TaskbarWidget.qml");
+    expectContains(widget, QStringLiteral("WidgetTooltip {"));
+    expectContains(widget, QStringLiteral("tooltip: \"Previous\""));
+    expectContains(widget, QStringLiteral("tooltip: \"Next\""));
+    expectContains(widget, QStringLiteral("tooltip: nowPlaying.isPlaying ? \"Pause\" : \"Play\""));
+    expectContains(widget, QStringLiteral("tooltip: root.showPlayAll ? \"Play all\" : \"Pause all\""));
+    // No bare IconLabel buttons remain. All go through WidgetButton.
+    EXPECT_EQ(widget.count(QStringLiteral("WidgetButton {")), 4);
+    EXPECT_FALSE(widget.contains(QStringLiteral("IconLabel {")));
+}
+
+// Both taskbar widgets share one tooltip window implementation.
+TEST(QmlContractTest, TaskbarWidgetsShareTheTooltipWindow) {
+    const QString tooltip = loadSource("Views/WidgetTooltip.qml");
+    expectContains(tooltip, QStringLiteral("function showAt(globalPoint, text)"));
+    expectContains(tooltip, QStringLiteral("function hide()"));
+    expectContains(tooltip, QStringLiteral("monitors.geometry(tip.monitor)"));
+
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("WidgetTooltip {"));
+        EXPECT_FALSE(source.contains(QStringLiteral("id: tipText")))
+            << "Inline tooltip window still present in " << path;
+    }
 }
 
 TEST(QmlContractTest, PeekAreaHoldsTheFlyoutOpenWhileHovered) {
@@ -420,6 +579,18 @@ TEST(QmlContractTest, FlyoutsUsePeekAreaInsteadOfInlineHoverHandling) {
     // Pinned flyouts stay open after the pointer leaves.
     expectContains(loadSource("Views/MediaFlyout.qml"), QStringLiteral("pinned: settings.mediaFlyoutAlwaysDisplay"));
     expectContains(loadSource("Views/VolumeFlyout.qml"), QStringLiteral("pinned: root.expanded"));
+}
+
+// Flyouts whose width follows their content must re-center when it changes.
+TEST(QmlContractTest, ContentSizedFlyoutsRestackOnWidthChange) {
+    const QString app = loadSource("Views/App.qml");
+    for(const char* name : {"NowPlayingFlyout nextUpFlyout", "PeripheralFlyout peripheralFlyout"}) {
+        const int start = app.indexOf(QString::fromLatin1(name));
+        ASSERT_GT(start, 0) << name;
+        const int end = app.indexOf(QStringLiteral("\n    }"), start);
+        const QString block = app.mid(start, end - start);
+        EXPECT_TRUE(block.contains(QStringLiteral("onWidthChanged: app.restack()"))) << name;
+    }
 }
 
 TEST(QmlContractTest, ScrubAreaReportsTrackPositionAsFraction) {

@@ -74,7 +74,7 @@ Window {
         { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
         { "label": "Always display", "page": 1 }, { "label": "Show player name", "page": 1 },
         { "label": "Accent from album art", "page": 1 }, { "label": "Apply accent app-wide", "page": 1 }, { "label": "Repeat button", "page": 1 },
-        { "label": "Shuffle button", "page": 1 }, { "label": "Up next flyout", "page": 1 },
+        { "label": "Shuffle button", "page": 1 }, { "label": "Now Playing flyout", "page": 1 },
         { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
         { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
         { "label": "Animation speed", "page": 1 }, { "label": "Animation easing", "page": 1 },
@@ -85,6 +85,7 @@ Window {
         { "label": "Bold indicator text", "page": 7 }, { "label": "Lock keys duration", "page": 7 },
         { "label": "Media widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
         { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
+        { "label": "Widget layout", "page": 4 }, { "label": "Stack", "page": 4 },
         { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
         { "label": "Audio visualizer", "page": 4 },
         { "label": "Peripheral flyout", "page": 2 }, { "label": "Low battery warning", "page": 2 },
@@ -782,7 +783,7 @@ Window {
                                     { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 6 },
                                     { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 7 },
                                     { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
-                                    { "name": "Up next", "icon": Fluent.next, "key": "nextup", "page": 1 },
+                                    { "name": "Now Playing", "icon": Fluent.next, "key": "nextup", "page": 1 },
                                     { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 6 },
                                     { "name": "Charger flyout", "icon": Fluent.charge, "key": "charger", "page": 3 }
                                 ]
@@ -1070,7 +1071,7 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Up next flyout"
+                        label: "Now Playing flyout"
                         description: "Show a compact card with the next track when one auto-advances."
                         available: capabilities.mediaSessionAvailable
                         unavailableNote: "Unavailable: no system media session was detected on this PC."
@@ -1130,8 +1131,8 @@ Window {
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Up next duration"
-                        description: "How long the up-next flyout stays on screen."
+                        label: "Now Playing duration"
+                        description: "How long the now playing flyout stays on screen."
                         from: 1000
                         to: 10000
                         stepSize: 500
@@ -1141,8 +1142,8 @@ Window {
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Up next style"
-                        description: "How the up-next flyout is laid out."
+                        label: "Now Playing style"
+                        description: "How the now playing flyout is laid out."
                         model: ["Now playing card", "Compact pill"]
                         currentIndex: settings.nextUpStyle
                         onActivated: settings.nextUpStyle = index
@@ -1286,6 +1287,22 @@ Window {
                         value: settings.taskbarWidgetControlsEnabled
                         onToggled: settings.taskbarWidgetControlsEnabled = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Pause all button"
+                        description: "Show a button that pauses every playing media source at once."
+                        value: settings.taskbarWidgetPauseAllEnabled
+                        onToggled: settings.taskbarWidgetPauseAllEnabled = value
+                    }
+                    SettingRow {
+                        visible: settings.taskbarWidgetPauseAllEnabled
+                        x: 16
+                        width: parent.width - 16
+                        label: "Play all after pausing"
+                        description: "When every source is paused, the same button becomes Play all and resumes them. When off, the button hides until something plays again."
+                        value: settings.taskbarWidgetPlayAllEnabled
+                        onToggled: settings.taskbarWidgetPlayAllEnabled = value
+                    }
                     SettingCombo {
                         width: parent.width
                         label: "Widget side"
@@ -1293,6 +1310,16 @@ Window {
                         model: ["Left", "Center", "Right"]
                         currentIndex: settings.taskbarWidgetSide
                         onActivated: settings.taskbarWidgetSide = index
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: "Widget layout"
+                        description: settings.taskbarWidgetLayout === 1
+                            ? "Media and peripheral widgets share one slot. Scroll over the widget to page between media, 2.4 GHz, Bluetooth and wired devices."
+                            : "Media and peripheral widgets sit next to each other on the taskbar."
+                        model: ["Side by side", "Stack"]
+                        currentIndex: settings.taskbarWidgetLayout
+                        onActivated: settings.taskbarWidgetLayout = index
                     }
                     SettingRow {
                         width: parent.width
@@ -1468,7 +1495,7 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Connect and low-battery announcements are configured on the Peripheral Flyout page."
+                        text: "Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page."
                         color: theme.textMuted
                         font.pixelSize: 12
                         topPadding: 8

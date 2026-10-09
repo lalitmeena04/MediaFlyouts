@@ -11,6 +11,9 @@ DockableWidget {
     // Now-playing taskbar widget from App.qml.
     // Used to dock next to it without overlap.
     property var mediaWidget: null
+    // WidgetStack from App.qml. Null means side-by-side layout.
+    property var stack: null
+    readonly property bool stacked: root.stack !== null && root.stack.enabled
 
     readonly property var devices: {
         var picked = []
@@ -40,6 +43,36 @@ DockableWidget {
         { "label": "Bluetooth", "devices": bluetoothDevices },
         { "label": "Wired", "devices": wiredDevices }
     ].filter(function(section) { return section.devices.length > 0 })
+    // Stack page to show. Empty means all sections.
+    readonly property string activeSection: root.stacked ? root.stack.activeSection : ""
+    // Section drawn now. Lags activeSection while the old one slides out.
+    property string displayedSection: ""
+    // Stack layout shows one section per page. Side-by-side shows all.
+    readonly property var shownSections: {
+        if(root.displayedSection === "")
+            return deviceSections
+        return deviceSections.filter(function(section) { return section.label === root.displayedSection })
+    }
+
+    // Side by side shows every section again.
+    onStackedChanged: {
+        if(!root.stacked) {
+            root.displayedSection = ""
+            pageFx.reset()
+        }
+    }
+    onActiveSectionChanged: {
+        // Empty section means the page leaves. pageActive handles that.
+        if(root.activeSection === "")
+            return
+        // Hidden or unset page. pageActive enter shows it.
+        if(!root.pageShown || root.displayedSection === "") {
+            root.displayedSection = root.activeSection
+            return
+        }
+        if(root.displayedSection !== root.activeSection)
+            pageFx.replace(function() { root.displayedSection = root.activeSection })
+    }
 
     function sectionGlyph(label) {
         if(label === "Bluetooth")
@@ -50,16 +83,55 @@ DockableWidget {
     }
 
     // One ring per device, one icon per section, one separator between sections.
-    width: {
-        var total = 0
-        for(var i = 0; i < deviceSections.length; i++)
-            total += deviceSections[i].devices.length * 32 + 22
-        return Math.max(32, total + Math.max(0, deviceSections.length - 1) * 14)
+    function sectionWidth(section) {
+        return section.devices.length * 32 + 22
     }
-    height: 32
+    readonly property int naturalWidth: {
+        var total = 0
+        for(var i = 0; i < shownSections.length; i++)
+            total += sectionWidth(shownSections[i])
+        return Math.max(32, total + Math.max(0, shownSections.length - 1) * 14)
+    }
+    readonly property int naturalHeight: 32
+    // Widest single page. Stack frame fits it.
+    readonly property int widestSectionWidth: {
+        var widest = 32
+        for(var i = 0; i < deviceSections.length; i++)
+            widest = Math.max(widest, sectionWidth(deviceSections[i]))
+        return widest
+    }
+    width: root.stacked ? root.stack.frameWidth : root.naturalWidth
+    height: root.stacked ? root.stack.frameHeight : root.naturalHeight
 
-    // Show after onboarding, when enabled, devices exist, and not blocked.
-    visible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
+    // True when the widget has something to show. Stack layout can still hide it.
+    readonly property bool eligible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
+    // True on a peripheral stack page. Always true side by side.
+    readonly property bool pageActive: !root.stacked || root.activeSection !== ""
+    // Lags pageActive while the page slides out.
+    property bool pageShown: root.pageActive
+    // Show after onboarding, when enabled, devices exist, not blocked, and on a peripheral stack page.
+    visible: root.eligible && root.pageShown
+
+    onPageActiveChanged: {
+        if(root.pageActive) {
+            root.pageShown = true
+            root.displayedSection = root.activeSection
+            if(root.stacked)
+                pageFx.enter()
+            else
+                pageFx.reset()
+        } else {
+            pageFx.leave()
+        }
+    }
+
+    // Stack page slides along the scroll direction.
+    SlideFade {
+        id: pageFx
+        target: content
+        direction: root.stack ? root.stack.lastStep : 1
+        onFinishedLeave: root.pageShown = false
+    }
 
     // True after first placement. Later moves animate.
     property bool positioned: false
@@ -70,9 +142,10 @@ DockableWidget {
 
     function updatePosition() {
         // Share media widget monitor and taskbar edge.
-        // Reserve space only while media widget is visible.
+        // Side by side: reserve space while media widget is visible.
+        // Stack: both widgets use the same slot.
         var extraOffset = 0
-        if(root.mediaWidget && root.mediaWidget.visible)
+        if(!root.stacked && root.mediaWidget && root.mediaWidget.visible)
             extraOffset = root.mediaWidget.width + 8
         var p = taskbar.widgetPosition(settings.taskbarWidgetMonitor, settings.taskbarWidgetSide,
                                        settings.taskbarWidgetOffset + extraOffset, width, height)
@@ -106,41 +179,15 @@ DockableWidget {
     }
 
     // Popup or ToolTip would clip to this window bounds.
-    // Use small top-level window for hover tooltip.
-    Window {
+    WidgetTooltip {
         id: tip
-        flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
-        color: "transparent"
-        width: tipText.implicitWidth + 16
-        height: tipText.implicitHeight + 10
-
-        Rectangle {
-            anchors.fill: parent
-            radius: 4
-            color: "#333333"
-            border.color: "#4A4A4A"
-
-            Text {
-                id: tipText
-                anchors.centerIn: parent
-                color: "#EEEEEE"
-                font.pixelSize: 11
-            }
-        }
     }
 
     function showTip(globalPoint, text) {
-        tipText.text = text
-        var mon = monitors.geometry(settings.taskbarWidgetMonitor)
-        var x = globalPoint.x - tip.width / 2
-        if(mon.width > 0)
-            x = Math.max(mon.x + 4, Math.min(x, mon.x + mon.width - tip.width - 4))
-        tip.x = x
-        tip.y = globalPoint.y - tip.height - 6
-        tip.visible = true
+        tip.showAt(globalPoint, text)
     }
     function hideTip() {
-        tip.visible = false
+        tip.hide()
     }
 
     Rectangle {
@@ -152,12 +199,20 @@ DockableWidget {
             id: cardHover
         }
 
+        // Stack layout: wheel pages between widgets.
+        WheelHandler {
+            enabled: root.stacked
+            onWheel: (event) => root.stack.cycle(event.angleDelta.y > 0 ? -1 : 1)
+        }
+
         Row {
+            id: content
             anchors.centerIn: parent
             spacing: 7
+            transform: Translate { y: pageFx.offset }
 
             Repeater {
-                model: root.deviceSections
+                model: root.shownSections
                 delegate: Row {
                     required property int index
                     required property var modelData

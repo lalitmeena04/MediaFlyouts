@@ -73,8 +73,11 @@ void SettingsQtTest::defaults() {
     // Seeded from system taskbar alignment. Only range is fixed.
     QVERIFY(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
+    QCOMPARE(s.taskbarWidgetLayout(), 0);
     QVERIFY(s.taskbarWidgetShowPauseOverlay());
     QVERIFY(s.taskbarWidgetScrollingEnabled());
+    QVERIFY(!s.taskbarWidgetPauseAllEnabled());
+    QVERIFY(s.taskbarWidgetPlayAllEnabled());
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
     QCOMPARE(s.visualizerStyle(), 0);
