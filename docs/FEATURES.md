@@ -46,7 +46,8 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 
 - A compact now-playing widget docked next to the system tray.
 - Dock to the left or right side, move between monitors, and nudge with an
-  offset that can shift either direction.
+  offset that can shift either direction. Each monitor's own taskbar is
+  measured, so the widget sits flush with the tray on secondary displays too.
 - On first run it picks the taskbar edge the shell leaves free — left for a
   center-aligned taskbar, right for a left-aligned one. Your own choice is kept
   afterwards.
@@ -137,6 +138,9 @@ Qt 6 / C++ / QML. This document describes the features that ship in the app.
 
 - Sidebar navigation with scrollable pages and a settings search box.
 - Backup and restore of all settings via export / import.
+- A status banner names any Windows subsystem (audio, media sessions, lock
+  keys, media keys) that did not answer, and the related settings are
+  disabled. The tray icon tooltip shows the same summary.
 
 ## System tray & single instance
 

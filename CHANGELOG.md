@@ -3,7 +3,11 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.4.0] — 2026-10-09
+
+Adds a stacked widget layout and a "Pause all" media control, fixes taskbar
+widget placement on secondary monitors and Logitech receiver detection, and
+surfaces unavailable Windows subsystems in the dashboard.
 
 ### Added
 
@@ -18,9 +22,29 @@ All notable changes to MediaFlyouts are documented here. This project follows
   once. An optional follow-up turns the same button into "Play all" whenever
   every source is paused, and resumes them. With the follow-up off, the button
   hides while everything is paused but keeps its slot.
+- Dashboard status banner and tray tooltip that name any Windows subsystem
+  (audio, media sessions, lock keys, media keys) that did not answer, so a
+  disabled setting is explained instead of failing silently.
+
+### Changed
+
+- Flyout hover and seekbar drag handling moved to shared `PeekArea` and
+  `ScrubArea` components, and animation durations are centralized in
+  `Anim.qml`.
+- One app-wide monitor map (`MonitorMapper`) now backs taskbar, flyout
+  placement and fullscreen detection instead of each resolving monitors on
+  its own. Placement math lives in the unit-tested `TaskbarLayout` model.
+- Battery providers share one set of device-node helpers for PnP properties
+  and Bluetooth address lookups.
+- The build script's `-ShowOutput` switch was replaced by `-Quiet`.
+- Removed the obsolete `run_app.ps1` and `setup_env.ps1` scripts; use
+  `mediaflyouts.ps1` instead.
 
 ### Fixed
 
+- Taskbar widgets on a secondary monitor no longer leave the primary tray's
+  gap. Each monitor's own taskbar is measured, and on Windows 11 the tray and
+  clock are read through UI Automation when the Win32 child window is missing.
 - "Play all" now resumes every paused media source. It used to resume only
   the sources that "Pause all" had paused, so a source paused by hand before
   stayed silent.
@@ -194,3 +218,4 @@ written from scratch in Qt 6 / C++ / QML.
 [1.0.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.0.0
 [1.2.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.2.0
 [1.3.0]: https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.3.0
+[1.4.0]: https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.4.0

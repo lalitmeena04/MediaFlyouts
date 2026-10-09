@@ -41,6 +41,15 @@ helper.
 Pure geometry that computes a flyout's on-screen rectangle from a position enum,
 screen bounds and size — the testable core behind `FlyoutPlacement`.
 
+## TaskbarLayout (`namespace mf`)
+
+`TaskbarReserve` holds the leading (Start / task buttons) and trailing (tray,
+clock, show-desktop) taskbar rects a widget must not cover.
+`taskbarWidgetX(screen, reserve, side, offset, width, margin)` returns the
+widget's left edge; a reserve counts only when it sits within `kEdgeTolerance`
+of its screen edge, and `kUnmeasuredTrayWidth` is held back when the tray could
+not be measured. The testable core behind `TaskbarInfo`.
+
 ## AlbumArtProvider
 
 A `QQuickImageProvider` that serves the current album art to QML (`image://…`).
@@ -78,7 +87,9 @@ policy rules can be exercised without real hardware:
 - **RazerProtocol** — builds the 90-byte feature reports and reads the battery
   level (reported on a 0-255 scale) and charging state.
 - **HidppProtocol** — Logitech HID++ 2.0 requests and replies, covering both the
-  modern `0x1004` UnifiedBattery and the legacy `0x1000` feature.
+  modern `0x1004` UnifiedBattery and the legacy `0x1000` feature, plus the
+  `0x0005` DeviceName feature (name, type), charging state, long-report
+  rewriting and request / reply matching.
 - **BatteryAlertPolicy** — decides which changes deserve an alert: battery
   buckets, downward threshold crossings with hysteresis, connect/disconnect
   debouncing, and baseline seeding so launching the app is silent.
