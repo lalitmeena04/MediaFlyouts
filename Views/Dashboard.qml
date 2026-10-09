@@ -422,7 +422,7 @@ Window {
             TextField {
                 id: popupSearchField
                 width: parent.width
-                placeholderText: "Search settings..."
+                placeholderText: "Search settings…"
                 color: theme.textPrimary
                 placeholderTextColor: theme.textMuted
                 background: Rectangle {
@@ -1950,7 +1950,7 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Create a report with the app log, your settings and system details, then attach it to a new GitHub issue. Nothing is sent until you post the issue. You can open the report and check its contents first."
+                        text: "Create a report with the app log, your settings and system details, then attach it to a new GitHub issue. The issue page opens with a blank template. Nothing is sent until you post the issue. You can open the report and check its contents first."
                         color: theme.textSecondary
                         font.pixelSize: 13
                     }

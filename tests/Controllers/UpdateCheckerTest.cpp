@@ -1,9 +1,12 @@
 #include <gtest/gtest.h>
 
+#include <QCryptographicHash>
+#include <QFile>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QSignalSpy>
 #include <QString>
+#include <QTemporaryDir>
 
 #include "UpdateChecker.h"
 
@@ -119,13 +122,23 @@ TEST(UpdateCheckerTest, IgnoresSetupAssetsFromUntrustedHosts) {
     EXPECT_FALSE(UpdateChecker::pickInstallerAsset(QJsonArray()).valid());
 }
 
-TEST(UpdateCheckerTest, DigestWinsOverSizeWhenVerifying) {
+// A full response with a short write on disk must not pass as verified.
+TEST(UpdateCheckerTest, VerifiesDigestAndSizeTogether) {
     UpdateChecker::InstallerAsset withDigest;
     withDigest.url = kSetupUrl;
     withDigest.size = 10;
     withDigest.sha256 = kSha;
-    EXPECT_TRUE(UpdateChecker::matchesAsset(withDigest, 999, kSha.toUpper()));
+    EXPECT_TRUE(UpdateChecker::matchesAsset(withDigest, 10, kSha.toUpper()));
     EXPECT_FALSE(UpdateChecker::matchesAsset(withDigest, 10, QStringLiteral("deadbeef")));
+    // Right digest but wrong size: the file on disk is not the response.
+    EXPECT_FALSE(UpdateChecker::matchesAsset(withDigest, 9, kSha));
+    EXPECT_FALSE(UpdateChecker::matchesAsset(withDigest, 0, kSha));
+
+    UpdateChecker::InstallerAsset digestOnly;
+    digestOnly.url = kSetupUrl;
+    digestOnly.sha256 = kSha;
+    EXPECT_TRUE(UpdateChecker::matchesAsset(digestOnly, 999, kSha));
+    EXPECT_FALSE(UpdateChecker::matchesAsset(digestOnly, 0, kSha));
 
     UpdateChecker::InstallerAsset sizeOnly;
     sizeOnly.url = kSetupUrl;
@@ -137,6 +150,80 @@ TEST(UpdateCheckerTest, DigestWinsOverSizeWhenVerifying) {
     unknown.url = kSetupUrl;
     EXPECT_TRUE(UpdateChecker::matchesAsset(unknown, 1, QString()));
     EXPECT_FALSE(UpdateChecker::matchesAsset(unknown, 0, QString()));
+}
+
+// A missing file fails before any UAC prompt. No window must open.
+TEST(UpdateCheckerTest, LaunchElevatedFailsForAMissingFile) {
+    EXPECT_FALSE(UpdateChecker::launchElevated(QStringLiteral("C:/nonexistent-mediaflyouts/missing-setup.exe")));
+    EXPECT_FALSE(UpdateChecker::launchElevated(QString()));
+}
+
+// Only an absolute path to a regular file reaches the shell.
+TEST(UpdateCheckerTest, LaunchElevatedRejectsFoldersAndRelativePaths) {
+    QTemporaryDir temp;
+    ASSERT_TRUE(temp.isValid());
+    EXPECT_FALSE(UpdateChecker::launchElevated(temp.path()));
+    EXPECT_FALSE(UpdateChecker::launchElevated(QStringLiteral("relative-setup.exe")));
+}
+
+TEST(UpdateCheckerTest, FileSha256MatchesTheContent) {
+    QTemporaryDir temp;
+    ASSERT_TRUE(temp.isValid());
+    const QString path = temp.filePath(QStringLiteral("blob"));
+    {
+        QFile f(path);
+        ASSERT_TRUE(f.open(QIODevice::WriteOnly));
+        f.write("setup");
+    }
+    const QString expected = QString::fromLatin1(QCryptographicHash::hash("setup", QCryptographicHash::Sha256).toHex());
+    EXPECT_EQ(UpdateChecker::fileSha256(path), expected);
+    EXPECT_TRUE(UpdateChecker::fileSha256(temp.filePath(QStringLiteral("missing"))).isEmpty());
+}
+
+// Only the setup we wrote into our folder may be started. Nothing else.
+TEST(UpdateCheckerTest, InstallerPathMustBeOurFileInOurFolder) {
+    QTemporaryDir temp;
+    ASSERT_TRUE(temp.isValid());
+    UpdateChecker::InstallerAsset asset;
+    asset.url = kSetupUrl;
+    asset.name = QStringLiteral("MediaFlyouts-1.5.0-setup.exe");
+    asset.size = 5;
+
+    const QString good = temp.filePath(asset.name);
+    {
+        QFile f(good);
+        ASSERT_TRUE(f.open(QIODevice::WriteOnly));
+        f.write("setup");
+    }
+    EXPECT_TRUE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
+
+    // Same file, wrong folder.
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.filePath(QStringLiteral("other"))));
+    // An unknown download folder never matches.
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, QString()));
+    // Right folder, different name.
+    const QString other = temp.filePath(QStringLiteral("Other-1.0.0-setup.exe"));
+    ASSERT_TRUE(QFile::copy(good, other));
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(other, asset, temp.path()));
+    // Size drift after verification.
+    asset.size = 4;
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
+    asset.size = -1;
+    EXPECT_TRUE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
+    // Same size, different bytes. The digest catches a swapped file.
+    asset.sha256 = QString::fromLatin1(QCryptographicHash::hash("setup", QCryptographicHash::Sha256).toHex());
+    EXPECT_TRUE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
+    {
+        QFile f(good);
+        ASSERT_TRUE(f.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        f.write("setuq");
+    }
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
+    asset.sha256.clear();
+    // Gone from disk.
+    ASSERT_TRUE(QFile::remove(good));
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
+    EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(QString(), asset, temp.path()));
 }
 
 // Store copies update through the Store. ZIP copies have nothing to run the setup over.

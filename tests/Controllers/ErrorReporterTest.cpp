@@ -128,17 +128,21 @@ TEST_F(ErrorReporterTest, ReportNameIsSortableByTime) {
     EXPECT_LT(a, b);
 }
 
-TEST_F(ErrorReporterTest, IssueUrlCarriesTheSummaryAndReportFileName) {
-    const QString url = ErrorReporter::issueUrlFor(QStringLiteral("C:/x/MediaFlyouts-report-1.zip"),
-                                                   QStringLiteral("OS: Windows 11\n"));
+// The URL goes to GitHub when the page opens. Only the report file name may ride along.
+TEST_F(ErrorReporterTest, IssueUrlCarriesOnlyTheReportFileName) {
+    const QString url = ErrorReporter::issueUrlFor(QStringLiteral("C:/Users/someone/x/MediaFlyouts-report-1.zip"));
     EXPECT_TRUE(url.startsWith(ErrorReporter::issueUrl()));
 
     const QUrlQuery query(QUrl(url).query(QUrl::FullyEncoded));
     const QString body = query.queryItemValue(QStringLiteral("body"), QUrl::FullyDecoded);
-    EXPECT_TRUE(body.contains(QStringLiteral("OS: Windows 11")));
     EXPECT_TRUE(body.contains(QStringLiteral("MediaFlyouts-report-1.zip")));
     // Only the file name goes in. The local folder path stays private.
-    EXPECT_FALSE(body.contains(QStringLiteral("C:/x/")));
+    EXPECT_FALSE(body.contains(QStringLiteral("someone")));
+    // System details stay in the report. They must never be in the URL.
+    EXPECT_FALSE(body.contains(QStringLiteral("App version:")));
+    EXPECT_FALSE(body.contains(QStringLiteral("OS:")));
+    EXPECT_FALSE(body.contains(QStringLiteral("Settings file:")));
+    EXPECT_FALSE(url.contains(QStringLiteral(MEDIAFLYOUTS_VERSION)));
 }
 
 TEST_F(ErrorReporterTest, CompressFolderProducesAZipWhenAnArchiverExists) {

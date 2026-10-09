@@ -84,8 +84,18 @@ class UpdateChecker : public QObject {
         static bool isInstallerName(const QString& name);
         // Hex from a "sha256:<hex>" digest. Empty for any other form.
         static QString sha256FromDigest(const QString& digest);
-        // Downloaded bytes must match the digest. Size is the fallback check.
+        // File must match the size and the digest when the API gave them.
         static bool matchesAsset(const InstallerAsset& asset, qint64 size, const QString& sha256);
+        // Folder that holds the downloaded setup.
+        static QString downloadDir();
+        // Lower-case hex digest of a file. Empty when it cannot be read.
+        static QString fileSha256(const QString& path);
+        // True when path is the setup file written into dir for this asset, it still
+        // exists, and its size and digest still match.
+        static bool isDownloadedInstaller(const QString& path, const InstallerAsset& asset, const QString& dir);
+        // Start an executable with a UAC prompt. False when it did not start.
+        // Always false outside Windows, where no elevation exists.
+        static bool launchElevated(const QString& path);
 
     public slots:
         void check();
@@ -114,6 +124,8 @@ class UpdateChecker : public QObject {
         void finishDownload();
         void failDownload(const QString& message);
         void resetDownload();
+        // Hash and write one chunk. False on a short write.
+        bool storeChunk(const QByteArray& chunk);
 
         QNetworkAccessManager* m_net = nullptr;
         QNetworkReply* m_reply = nullptr;
@@ -129,6 +141,7 @@ class UpdateChecker : public QObject {
         bool m_checking = false;
         bool m_downloading = false;
         bool m_downloaded = false;
+        bool m_writeFailed = false;
         qreal m_progress = 0;
         QString m_downloadError;
         QString m_downloadedFile;

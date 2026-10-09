@@ -206,6 +206,7 @@ TEST(QmlContractTest, AboutPageOffersErrorReportsAndTrayOpensIt) {
     expectContains(dashboard, QStringLiteral("errorReporter.createReport()"));
     expectContains(dashboard, QStringLiteral("errorReporter.revealReport()"));
     expectContains(dashboard, QStringLiteral("errorReporter.openIssuePage()"));
+    expectContains(dashboard, QStringLiteral("The issue page opens with a blank template."));
     expectContains(dashboard, QStringLiteral("Nothing is sent until you post the issue."));
     expectContains(dashboard, QStringLiteral("function showPage(name)"));
 

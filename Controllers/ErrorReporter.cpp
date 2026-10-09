@@ -41,12 +41,12 @@ QString ErrorReporter::issueUrl() {
     return QString::fromLatin1(kIssueUrl);
 }
 
-QString ErrorReporter::issueUrlFor(const QString& reportPath, const QString& summary) {
+QString ErrorReporter::issueUrlFor(const QString& reportPath) {
     const QString body = QStringLiteral("**What happened?**\n\n\n"
                                         "**Steps to reproduce**\n\n1. \n2. \n\n"
-                                        "**Environment**\n```\n%1```\n\n"
-                                        "_Drag the report file into this issue: `%2`_\n")
-                             .arg(summary, QFileInfo(reportPath).fileName());
+                                        "_Drag the report file into this issue: `%1`. "
+                                        "It has the app version, OS and system details._\n")
+                             .arg(QFileInfo(reportPath).fileName());
     QUrlQuery query;
     query.addQueryItem(QStringLiteral("title"), QStringLiteral("[Bug] "));
     query.addQueryItem(QStringLiteral("body"), body);
@@ -211,8 +211,6 @@ void ErrorReporter::revealReport() {
 }
 
 void ErrorReporter::openIssuePage() {
-    const QString url = m_lastReportPath.isEmpty()
-                            ? issueUrl()
-                            : issueUrlFor(m_lastReportPath, systemSummary(m_settings, m_capabilities));
+    const QString url = m_lastReportPath.isEmpty() ? issueUrl() : issueUrlFor(m_lastReportPath);
     QDesktopServices::openUrl(QUrl(url));
 }

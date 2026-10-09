@@ -26,7 +26,8 @@ class ErrorReporter : public QObject {
         // New-issue page on GitHub.
         static QString issueUrl();
         // New-issue page with a prefilled body that names the report file.
-        static QString issueUrlFor(const QString& reportPath, const QString& summary);
+        // System details stay in the report. The URL is sent to GitHub on open.
+        static QString issueUrlFor(const QString& reportPath);
         // Root folder that holds generated reports.
         static QString reportsDir();
         // Reports kept on disk. Older ones are removed after each new report.

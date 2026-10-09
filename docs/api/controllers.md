@@ -59,7 +59,8 @@ Builds a local diagnostics bundle for bug reports. `createReport()` writes
 `reportsDir()`, zips the folder with the OS `tar` when available, and prunes to
 `kReportsKept` reports. `revealReport()` selects the file in Explorer;
 `openIssuePage()` opens GitHub's new-issue page with a prefilled template
-(`issueUrlFor()`). Nothing is uploaded by the app.
+(`issueUrlFor()`). The template names only the report file. System details
+stay in the report. Nothing is uploaded by the app.
 
 ## Windows-only
 
