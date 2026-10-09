@@ -90,4 +90,4 @@ changelog. The effective date at the top is updated with each change.
 ## 8. Contact
 
 Questions about this policy: open an issue at
-<https://github.com/scleaverzer0ne/MediaFlyouts/issues>.
+<https://github.com/scleaverzer0ne/MediaFlyouts-Releases/issues>.
