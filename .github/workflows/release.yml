@@ -149,9 +149,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Failed to clone $repo." }
           Push-Location $work
 
-          # Wipe the old tree but keep git metadata. Each release is a clean
-          # snapshot of the shipped app files plus the docs.
-          Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
+          # Wipe the old tree but keep git metadata and the release repo's own
+          # workflows/scripts. Each release is a clean snapshot of the shipped
+          # app files plus the docs.
+          Get-ChildItem -Force | Where-Object { $_.Name -notin @('.git', '.github') } | Remove-Item -Recurse -Force
           Copy-Item "${{ github.workspace }}\bin\*" . -Recurse -Force
           Copy-Item "${{ github.workspace }}\README.md" README.md -Force
           # docs/ powers the README navigation links, so ship the whole tree.
