@@ -3,6 +3,7 @@
 
 #include <QSignalSpy>
 
+#include "AlbumArtProvider.h"
 #include "NowPlaying.h"
 #include "PlaybackController.h"
 
@@ -283,6 +284,29 @@ TEST(NowPlayingTest, ApplyArtTogglesHasArtAndArtSource) {
 
     np.applyArt(QImage());
     EXPECT_FALSE(np.hasArt());
+}
+
+TEST(NowPlayingTest, EmptyTrackWithNullArtClearsEveryArtFacet) {
+    NowPlaying np;
+    AlbumArtProvider provider;
+    np.setArtProvider(&provider);
+
+    QImage red(8, 8, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band")));
+    np.applyArt(red);
+    ASSERT_TRUE(np.hasMedia());
+    ASSERT_TRUE(np.hasArt());
+
+    QSize size;
+    np.applyTrack(TrackInfo());
+    np.applyArt(QImage());
+
+    EXPECT_FALSE(np.hasMedia());
+    EXPECT_FALSE(np.hasArt());
+    EXPECT_TRUE(np.artSource().isEmpty());
+    EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
+    EXPECT_TRUE(provider.requestImage(QStringLiteral("cover"), &size, QSize()).isNull());
 }
 
 TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {

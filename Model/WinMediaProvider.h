@@ -53,11 +53,11 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
 
         winrt::fire_and_forget initAsync();
         void hookSession(Session session);
+        void publishNoSession();
         void queueRefresh(Session session);
         winrt::fire_and_forget refresh(Session session, int attempt = 0);
         Session currentSession();
         void refreshSessionMeta();
-        // Watch playback state on every session. Keeps playingSessionCount current.
         void watchAllSessions();
         void recountPlaying();
 
@@ -74,8 +74,8 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         std::atomic<int> m_playingCount{0};
         std::mutex m_watchMutex;
         std::vector<std::pair<Session, winrt::event_token>> m_watched;
-        bool m_manual = false; // True after user picks session.
+        bool m_manual = false;
         std::mutex m_lastMutex;
-        mf::TrackInfo m_lastTrack; // last non-empty metadata, to bridge transient empty updates
+        mf::TrackInfo m_lastTrack;
         QImage m_lastArt;
 };
