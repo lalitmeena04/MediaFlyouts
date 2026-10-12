@@ -77,7 +77,9 @@ install the signed copy from the Store listing.
 Push a `v*.*.*` tag to run
 [`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
 builds, tests, packages the four artifacts and publishes a GitHub Release in
-the `MediaFlyouts-Releases` repo. The MSIX is then uploaded to Partner Center
+the `MediaFlyouts-Releases` repo. Once that Release exists, the same tag,
+artifacts and notes are mirrored as a GitHub Release in this repo, so both
+repos carry identical files. The MSIX is then uploaded to Partner Center
 by hand. The MSIX step is skipped until the `STORE_IDENTITY_*` variables
 described in
 [`packaging/README.md`](../../packaging/README.md#microsoft-store-submission) exist.

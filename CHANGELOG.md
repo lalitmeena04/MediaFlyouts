@@ -5,6 +5,12 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Changed
+
+- The release workflow mirrors the published GitHub Release (tag, artifacts,
+  notes) from `MediaFlyouts-Releases` back into the main repository, so both
+  repos carry the same release files.
+
 ### Fixed
 
 - **Stale album art.** Closing every media player left the last cover in the

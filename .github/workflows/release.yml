@@ -9,11 +9,13 @@ on:
         description: "Version to release, e.g. v1.2.0"
         required: true
 
+# contents: write lets GITHUB_TOKEN publish the mirror Release in this repo.
 permissions:
-  contents: read
+  contents: write
 
 # Releases ship to a separate repo. RELEASE_REPO holds the shipped app files
 # and the published GitHub Release. RELEASE_BRANCH is that repo default branch.
+# The same Release is mirrored to this repo so both carry the same artifacts.
 env:
   RELEASE_REPO: ${{ github.repository_owner }}/MediaFlyouts-Releases
   RELEASE_BRANCH: main
@@ -202,4 +204,31 @@ jobs:
               --title "MediaFlyouts $tag" `
               --notes-file release-notes.md `
               --verify-tag
+          }
+
+      # Mirror the same Release into this repo once the release repo has it.
+      # Same tag, same assets, same notes. A re-run replaces the assets.
+      - name: Sync GitHub Release to main repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.ver.outputs.tag }}"
+          $repo = "${{ github.repository }}"
+          $assets = Get-ChildItem dist | ForEach-Object FullName
+          Write-Host "Syncing release $tag to $repo ($($assets.Count) assets)"
+
+          gh release view $tag --repo $repo *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $assets --repo $repo --clobber
+            if ($LASTEXITCODE -ne 0) { throw "Failed to upload assets to $repo." }
+            gh release edit $tag --repo $repo --notes-file release-notes.md
+            if ($LASTEXITCODE -ne 0) { throw "Failed to update release notes in $repo." }
+          } else {
+            gh release create $tag $assets `
+              --repo $repo `
+              --title "MediaFlyouts $tag" `
+              --notes-file release-notes.md `
+              --verify-tag
+            if ($LASTEXITCODE -ne 0) { throw "Failed to create release $tag in $repo." }
           }
