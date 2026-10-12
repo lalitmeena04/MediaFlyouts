@@ -13,6 +13,7 @@ class NowPlaying;
 class Settings;
 class MonitorMapper;
 class FlyoutPlacement;
+class WindowScaleRefresher;
 class ThemeController;
 class UpdateChecker;
 class ErrorReporter;
@@ -68,6 +69,8 @@ class MainControllerClass {
         // Shared monitor facts. Built before any controller that places a window.
         std::unique_ptr<MonitorMapper> m_monitors;
         std::unique_ptr<FlyoutPlacement> m_placement;
+        // Restores window sizes that Qt leaves small after a scale change.
+        std::unique_ptr<WindowScaleRefresher> m_scaleRefresher;
         std::unique_ptr<ThemeController> m_theme;
         std::unique_ptr<UpdateChecker> m_updateChecker;
         std::unique_ptr<Capabilities> m_capabilities;

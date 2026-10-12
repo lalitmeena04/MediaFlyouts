@@ -5,15 +5,22 @@ import MediaFlyouts
 QtObject {
     id: app
 
+    // Every flyout re-stacks on show and on size change. A size can change
+    // late, after a display scale change restores it.
     property MediaFlyout flyout: MediaFlyout {
         onVisibleChanged: app.restack()
+        onHeightChanged: app.restack()
+        onWidthChanged: app.restack()
     }
     property VolumeFlyout volumeFlyout: VolumeFlyout {
         onVisibleChanged: app.restack()
         onHeightChanged: app.restack()
+        onWidthChanged: app.restack()
     }
     property LockKeysFlyout lockKeysFlyout: LockKeysFlyout {
         onVisibleChanged: app.restack()
+        onHeightChanged: app.restack()
+        onWidthChanged: app.restack()
     }
     property NowPlayingFlyout nextUpFlyout: NowPlayingFlyout {
         onVisibleChanged: app.restack()
@@ -22,10 +29,13 @@ QtObject {
     }
     property PeripheralFlyout peripheralFlyout: PeripheralFlyout {
         onVisibleChanged: app.restack()
+        onHeightChanged: app.restack()
         onWidthChanged: app.restack()
     }
     property ChargerFlyout chargerFlyout: ChargerFlyout {
         onVisibleChanged: app.restack()
+        onHeightChanged: app.restack()
+        onWidthChanged: app.restack()
     }
     property Dashboard dashboard: Dashboard {}
     property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
@@ -129,6 +139,15 @@ QtObject {
     property Connections settingsConnection: Connections {
         target: settings
         function onChanged() { app.restack() }
+    }
+
+    // Resolution or scale change moves work areas. Place visible flyouts again.
+    property Connections monitorConnection: Connections {
+        target: monitors
+        function onChanged() {
+            log.debug("App: monitor layout changed, restacking " + flyoutStack.length + " flyouts")
+            app.restack()
+        }
     }
 
     property Connections trayConnection: Connections {

@@ -13,23 +13,33 @@
 #include <QUrl>
 
 #include "Capabilities.h"
+#include "Logging.h"
 #include "Settings.h"
 
 namespace {
 
-// Render Fluent glyph to tray-sized icon. No PNG asset needed.
+// Shell small-icon size runs 16 px at 100 % up to 64 px at 400 %.
+constexpr int kIconSizes[] = {16, 20, 24, 32, 48, 64};
+constexpr QChar kTrayGlyph(0xE863);
+
+// Render Fluent glyph once per size. Shell picks the match for the current DPI.
 QIcon renderGlyphIcon(const QString& family, QChar glyph) {
-    QPixmap pm(32, 32);
-    pm.fill(Qt::transparent);
-    if(!family.isEmpty()) {
-        QPainter p(&pm);
-        QFont f(family);
-        f.setPixelSize(26);
-        p.setFont(f);
-        p.setPen(Qt::white);
-        p.drawText(pm.rect(), Qt::AlignCenter, QString(glyph));
+    QIcon icon;
+    for(int size : kIconSizes) {
+        QPixmap pm(size, size);
+        pm.fill(Qt::transparent);
+        if(!family.isEmpty()) {
+            QPainter p(&pm);
+            QFont f(family);
+            // Glyph fills about 80 % of the cell. Same ratio as the old 26/32.
+            f.setPixelSize(qMax(1, size * 26 / 32));
+            p.setFont(f);
+            p.setPen(Qt::white);
+            p.drawText(pm.rect(), Qt::AlignCenter, QString(glyph));
+        }
+        icon.addPixmap(pm);
     }
-    return QIcon(pm);
+    return icon;
 }
 
 } // namespace
@@ -73,7 +83,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     });
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
-    m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, QChar(0xE863)), this);
+    m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, kTrayGlyph), this);
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
 
@@ -129,6 +139,13 @@ TrayController::~TrayController() {
 
 void TrayController::show() {
     applyVisibility();
+}
+
+void TrayController::refreshIcon() {
+    if(!m_tray)
+        return;
+    TRC_DEBUG("tray: re-applying icon after display change");
+    m_tray->setIcon(renderGlyphIcon(m_iconFamily, kTrayGlyph));
 }
 
 void TrayController::notify(const QString& title, const QString& message) {

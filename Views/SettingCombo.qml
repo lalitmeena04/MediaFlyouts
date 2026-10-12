@@ -40,6 +40,9 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         width: 200
         currentIndex: root.currentIndex
+        // ComboBox resets currentIndex to 0 when the model is replaced,
+        // e.g. the monitor list after a display change. Re-bind the selection.
+        onModelChanged: currentIndex = Qt.binding(function() { return root.currentIndex })
         onActivated: root.activated(currentIndex)
     }
 }

@@ -23,6 +23,10 @@ class TrayController : public QObject {
         // Report unavailable subsystems in the tray tooltip.
         void trackCapabilities(Capabilities* capabilities);
 
+    public slots:
+        // Re-apply the icon so the shell picks the size for the current DPI.
+        void refreshIcon();
+
     signals:
         void openDashboardRequested();
         void showFlyoutRequested();

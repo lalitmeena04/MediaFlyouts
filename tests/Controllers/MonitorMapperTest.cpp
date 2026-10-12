@@ -1,6 +1,36 @@
 #include <gtest/gtest.h>
 
+#include <QSignalSpy>
+
 #include "MonitorMapper.h"
+
+// Display changes arrive as several screen signals within a few ms.
+// Listeners must hear one changed() per burst, not one per signal.
+TEST(MonitorMapperTest, CoalescesBurstOfRefreshesIntoOneChange) {
+    MonitorMapper map(nullptr, 20);
+    QSignalSpy changed(&map, &MonitorMapper::changed);
+
+    map.refresh();
+    map.refresh();
+    map.refresh();
+    EXPECT_EQ(changed.count(), 0) << "changed() must wait for the coalesce window";
+
+    ASSERT_TRUE(changed.wait(500));
+    EXPECT_EQ(changed.count(), 1);
+}
+
+// A second burst after the window closes must notify again.
+TEST(MonitorMapperTest, NotifiesAgainForALaterBurst) {
+    MonitorMapper map(nullptr, 10);
+    QSignalSpy changed(&map, &MonitorMapper::changed);
+
+    map.refresh();
+    ASSERT_TRUE(changed.wait(500));
+    map.refresh();
+    ASSERT_TRUE(changed.wait(500));
+
+    EXPECT_EQ(changed.count(), 2);
+}
 
 // The test host is a QCoreApplication. It has no screens.
 // Every lookup must degrade to "nothing" instead of crashing.

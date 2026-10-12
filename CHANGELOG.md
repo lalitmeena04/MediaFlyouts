@@ -11,6 +11,16 @@ All notable changes to MediaFlyouts are documented here. This project follows
   flyouts, taskbar widget and dashboard. The media provider now clears its
   cached metadata and publishes a null image when the system reports no
   session.
+- **Display changes.** Flyouts and taskbar widgets now re-place themselves
+  when a monitor's resolution, scale or work area changes, instead of only
+  when a setting changes. Screen events are coalesced so a change triggers
+  one relayout. Measured taskbar tray rects are tied to the monitor layout
+  they came from and drop on change. A visible widget or pinned flyout no
+  longer shrinks after a Windows scale change: the app restores its size
+  when Qt misses the native resize. The tray icon is rendered at every shell
+  icon size and re-applied after a change, so it stays sharp at any DPI.
+  The monitor lists in Settings refresh when displays are added, removed or
+  change mode, keep their selection, and show the native resolution.
 
 ## [1.4.2] — 2026-10-09
 

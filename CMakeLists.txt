@@ -101,6 +101,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/TrackInfo.h
     Model/WiredPeripheralRules.cpp
     Model/WiredPeripheralRules.h
+    Model/WindowScalePolicy.cpp
+    Model/WindowScalePolicy.h
 )
 target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
@@ -143,6 +145,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/SingleInstance.h
     Controllers/ThemeController.cpp
     Controllers/ThemeController.h
+    Controllers/WindowScaleRefresher.cpp
+    Controllers/WindowScaleRefresher.h
     Controllers/TrayController.cpp
     Controllers/TrayController.h
     Controllers/UpdateChecker.cpp

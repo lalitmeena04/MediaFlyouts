@@ -67,6 +67,7 @@ add_executable(mediaflyout_gtest
     Model/TaskbarLayoutTest.cpp
     Model/TrackInfoTest.cpp
     Model/WiredPeripheralRulesTest.cpp
+    Model/WindowScalePolicyTest.cpp
     Views/QmlContractTest.cpp
 )
 target_link_libraries(mediaflyout_gtest PRIVATE

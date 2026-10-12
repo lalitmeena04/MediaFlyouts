@@ -42,10 +42,16 @@ class TaskbarInfo : public QObject {
         mf::TaskbarReserve reserveFor(const MonitorEntry& monitor) const;
 
         // The automation walk is slow. Widgets poll every 500 ms. Cache briefly.
+        // The entry also remembers the monitor layout it was measured in.
+        // A resolution or scale change makes it stale at once, whatever the
+        // order in which monitor-change listeners run.
         struct CachedReserve {
                 mf::TaskbarReserve reserve;
                 QElapsedTimer age;
+                QRect availableRect;
+                qreal devicePixelRatio = 1.0;
         };
+        bool cacheIsFresh(const CachedReserve& entry, const MonitorEntry& monitor) const;
         mutable QHash<void*, CachedReserve> m_reserveCache;
 
         const MonitorMapper* m_monitors = nullptr;

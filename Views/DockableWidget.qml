@@ -19,6 +19,10 @@ Window {
     // Widget name in debug log.
     property string logName: "DockableWidget"
 
+    // Size changes move the dock point. Height matters for vertical centering.
+    onWidthChanged: base.updatePosition()
+    onHeightChanged: base.updatePosition()
+
     // Dock at configured taskbar edge. Keep widget above taskbar.
     // Widgets can override for custom placement.
     function updatePosition() {
@@ -37,6 +41,16 @@ Window {
     Connections {
         target: settings
         function onChanged() { base.updatePosition() }
+    }
+
+    // Resolution or scale change moves the taskbar. Dock again.
+    Connections {
+        target: monitors
+        function onChanged() {
+            log.debug(base.logName + ": monitor layout changed, size=" + base.width + "x" + base.height
+                + " dpr=" + Screen.devicePixelRatio)
+            base.updatePosition()
+        }
     }
 
     // Poll fullscreen/lock state. Reassert placement and z-order while active.
