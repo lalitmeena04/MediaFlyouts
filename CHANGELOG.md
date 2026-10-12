@@ -3,6 +3,15 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Stale album art.** Closing every media player left the last cover in the
+  flyouts, taskbar widget and dashboard. The media provider now clears its
+  cached metadata and publishes a null image when the system reports no
+  session.
+
 ## [1.4.2] — 2026-10-09
 
 In-app updates for installer builds, local error reports, a longer onboarding

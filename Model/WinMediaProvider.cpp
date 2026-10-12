@@ -301,8 +301,7 @@ void WinMediaProvider::hookSession(Session session) {
     }
 
     if(!session) {
-        const mf::TrackInfo empty;
-        QMetaObject::invokeMethod(this, [this, empty] { emit trackChanged(empty); }, Qt::QueuedConnection);
+        publishNoSession();
         return;
     }
 
@@ -311,6 +310,21 @@ void WinMediaProvider::hookSession(Session session) {
     m_timelineToken = session.TimelinePropertiesChanged([this](Session s, auto&&) { queueRefresh(s); });
 
     refresh(session);
+}
+
+void WinMediaProvider::publishNoSession() {
+    {
+        std::lock_guard<std::mutex> lock(m_lastMutex);
+        m_lastTrack = mf::TrackInfo();
+        m_lastArt = QImage();
+    }
+    QMetaObject::invokeMethod(
+        this,
+        [this] {
+            emit trackChanged(mf::TrackInfo());
+            emit artChanged(QImage());
+        },
+        Qt::QueuedConnection);
 }
 
 void WinMediaProvider::queueRefresh(Session session) {
