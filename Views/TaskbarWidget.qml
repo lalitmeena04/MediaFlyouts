@@ -22,7 +22,6 @@ DockableWidget {
     // Without play-all the button has no job once everything is paused. Slot stays reserved.
     readonly property bool pauseAllButtonShown: root.pauseAllVisible
                 && (settings.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)
-    onWidthChanged: updatePosition()
 
     // WidgetStack from App.qml. Null means side-by-side layout.
     property var stack: null

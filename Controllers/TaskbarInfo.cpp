@@ -165,6 +165,16 @@ TaskbarInfo::~TaskbarInfo() {
     g_taskbarInfo = nullptr;
 }
 
+bool TaskbarInfo::cacheIsFresh(const CachedReserve& entry, const MonitorEntry& monitor) const {
+    constexpr qint64 kCacheMs = 2000;
+    if(!entry.age.isValid() || entry.age.elapsed() >= kCacheMs)
+        return false;
+    if(entry.availableRect != monitor.availableRect || !qFuzzyCompare(entry.devicePixelRatio, monitor.devicePixelRatio)) {
+        TRC_DEBUG("taskbar reserve: monitor {} layout changed, cache dropped", monitor.index);
+        return false;
+    }
+    return true;
+}
 
 mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
     mf::TaskbarReserve reserve;
@@ -172,9 +182,8 @@ mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
     if(!taskbar)
         return reserve;
 
-    constexpr qint64 kCacheMs = 2000;
     auto cached = m_reserveCache.find(taskbar);
-    if(cached != m_reserveCache.end() && cached->age.isValid() && cached->age.elapsed() < kCacheMs)
+    if(cached != m_reserveCache.end() && cacheIsFresh(*cached, monitor))
         return cached->reserve;
 
     reserve.trailing = MonitorMapper::toLogical(monitor, trayRectOf(taskbar));
@@ -186,6 +195,8 @@ mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
 
     CachedReserve& slot = m_reserveCache[taskbar];
     slot.reserve = reserve;
+    slot.availableRect = monitor.availableRect;
+    slot.devicePixelRatio = monitor.devicePixelRatio;
     slot.age.start();
     return reserve;
 }

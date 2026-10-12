@@ -20,6 +20,7 @@
 #include "TrayController.h"
 #include "UpdateChecker.h"
 #include "Version.h"
+#include "WindowScaleRefresher.h"
 
 #ifdef Q_OS_WIN
 #include "AccentWatcher.h"
@@ -96,6 +97,8 @@ void MainControllerClass::buildCoreSubsystems() {
     // Log the layout once at startup. Later changes log on rebuild.
     m_monitors->count();
     m_placement = std::make_unique<FlyoutPlacement>(m_settings.get(), m_monitors.get());
+    // First listener on monitors.changed. Sizes are right before QML re-places windows.
+    m_scaleRefresher = std::make_unique<WindowScaleRefresher>(m_monitors.get());
     m_theme = std::make_unique<ThemeController>(m_settings.get(), m_nowPlaying.get());
     m_updateChecker = std::make_unique<UpdateChecker>();
     // Track platform subsystem availability. UI hides unavailable features.
@@ -112,6 +115,8 @@ void MainControllerClass::buildCoreSubsystems() {
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
     m_tray->trackCapabilities(m_capabilities.get());
+    // The shell does not always re-query the icon after a DPI change.
+    QObject::connect(m_monitors.get(), &MonitorMapper::changed, m_tray.get(), &TrayController::refreshIcon);
     // Installer runs on its own. Quit so it can replace files. QML shows the update prompt.
     QObject::connect(m_updateChecker.get(), &UpdateChecker::installStarted, &m_app, &QApplication::quit);
 }

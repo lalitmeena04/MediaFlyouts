@@ -36,29 +36,38 @@ void fillNative(MonitorEntry& entry) {
 
 } // namespace
 
-MonitorMapper::MonitorMapper(QObject* parent) : QObject(parent) {
+MonitorMapper::MonitorMapper(QObject* parent, int coalesceMs) : QObject(parent) {
+    m_coalesce.setSingleShot(true);
+    m_coalesce.setInterval(coalesceMs);
+    connect(&m_coalesce, &QTimer::timeout, this, [this] {
+        TRC_DEBUG("monitor layout changed; notifying listeners ({} monitors)", count());
+        emit changed();
+    });
+
     // qGuiApp is null in a QCoreApplication test host. The map stays empty there.
     if(QGuiApplication* app = qGuiApp) {
         connect(app, &QGuiApplication::screenAdded, this, [this](QScreen* screen) {
             watchScreen(screen);
-            invalidate();
+            refresh();
         });
-        connect(app, &QGuiApplication::screenRemoved, this, &MonitorMapper::invalidate);
-        connect(app, &QGuiApplication::primaryScreenChanged, this, &MonitorMapper::invalidate);
+        connect(app, &QGuiApplication::screenRemoved, this, &MonitorMapper::refresh);
+        connect(app, &QGuiApplication::primaryScreenChanged, this, &MonitorMapper::refresh);
         for(QScreen* screen : QGuiApplication::screens())
             watchScreen(screen);
     }
 }
 
 void MonitorMapper::watchScreen(QScreen* screen) {
-    connect(screen, &QScreen::geometryChanged, this, &MonitorMapper::invalidate);
-    connect(screen, &QScreen::availableGeometryChanged, this, &MonitorMapper::invalidate);
-    connect(screen, &QScreen::logicalDotsPerInchChanged, this, &MonitorMapper::invalidate);
+    connect(screen, &QScreen::geometryChanged, this, &MonitorMapper::refresh);
+    connect(screen, &QScreen::availableGeometryChanged, this, &MonitorMapper::refresh);
+    connect(screen, &QScreen::logicalDotsPerInchChanged, this, &MonitorMapper::refresh);
+    connect(screen, &QScreen::physicalDotsPerInchChanged, this, &MonitorMapper::refresh);
 }
 
-void MonitorMapper::invalidate() {
+void MonitorMapper::refresh() {
+    // Lookups see fresh data at once. Listeners hear about it once per burst.
     m_dirty = true;
-    emit changed();
+    m_coalesce.start();
 }
 
 void MonitorMapper::rebuildIfDirty() const {
@@ -99,11 +108,12 @@ QStringList MonitorMapper::names() const {
     rebuildIfDirty();
     QStringList names;
     for(const MonitorEntry& entry : m_entries) {
+        // Native resolution. Same as Windows display settings. Stable across scale changes.
         names << QStringLiteral("%1. %2 (%3x%4)")
                      .arg(entry.index + 1)
                      .arg(entry.screen->name())
-                     .arg(entry.logicalRect.width())
-                     .arg(entry.logicalRect.height());
+                     .arg(entry.nativeRect.width())
+                     .arg(entry.nativeRect.height());
     }
     return names;
 }

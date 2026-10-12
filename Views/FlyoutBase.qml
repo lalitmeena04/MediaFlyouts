@@ -25,6 +25,8 @@ Window {
     function present() {
         hideTimer.restart()
         base.visible = true
+        log.debug("FlyoutBase.present size=" + base.width + "x" + base.height + " at=" + base.x + "," + base.y
+            + " dpr=" + Screen.devicePixelRatio)
         windowEffects.pinTopmost(base)
         taskbar.pinTopmost(base)
         fadeIn.restart()

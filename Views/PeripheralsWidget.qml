@@ -166,7 +166,6 @@ DockableWidget {
         if(visible)
             updatePosition()
     }
-    onWidthChanged: updatePosition()
 
     Connections {
         target: batteryStatus

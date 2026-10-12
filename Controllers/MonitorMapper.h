@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QRect>
 #include <QStringList>
+#include <QTimer>
 
 class QScreen;
 
@@ -33,10 +34,15 @@ class MonitorMapper : public QObject {
         Q_PROPERTY(QStringList names READ names NOTIFY changed)
 
     public:
-        explicit MonitorMapper(QObject* parent = nullptr);
+        // Display changes arrive in bursts. One changed() per burst.
+        static constexpr int kDefaultCoalesceMs = 50;
+
+        explicit MonitorMapper(QObject* parent = nullptr, int coalesceMs = kDefaultCoalesceMs);
 
         int count() const;
-        // "1. Name (WxH)" per monitor. Feeds the settings combo boxes.
+        // "1. Name (WxH)" per monitor, W and H in native pixels. Feeds the
+        // settings combo boxes. Refreshes with changed() when monitors come,
+        // go, or change mode.
         QStringList names() const;
         // A saved index can outlive its monitor. Out of range falls back to 0.
         int clampIndex(int index) const;
@@ -45,6 +51,10 @@ class MonitorMapper : public QObject {
 
         Q_INVOKABLE QRect geometry(int index) const;
         Q_INVOKABLE QRect availableGeometry(int index) const;
+
+        // Drop the cache and emit changed() after the coalesce window.
+        // Screen signals call this. Tests and callers may call it too.
+        Q_INVOKABLE void refresh();
 
         // Convert a native rect that lies on this monitor to logical pixels.
         // Uses that monitor's own scale. The primary scale is wrong when
@@ -56,9 +66,9 @@ class MonitorMapper : public QObject {
 
     private:
         void watchScreen(QScreen* screen);
-        void invalidate();
         void rebuildIfDirty() const;
 
         mutable QList<MonitorEntry> m_entries;
         mutable bool m_dirty = true;
+        QTimer m_coalesce;
 };

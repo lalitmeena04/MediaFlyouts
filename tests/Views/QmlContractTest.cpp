@@ -421,6 +421,22 @@ TEST(QmlContractTest, DockableWidgetOwnsSharedDockingAndBlocking) {
     expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
 }
 
+// A resolution or scale change must re-place every window, not only a
+// settings change. MonitorMapper raises changed(); the views subscribe.
+TEST(QmlContractTest, WindowsRelayoutWhenTheMonitorLayoutChanges) {
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("target: monitors"));
+    expectContains(app, QStringLiteral("monitorConnection"));
+    EXPECT_TRUE(app.indexOf(QStringLiteral("app.restack()"), app.indexOf(QStringLiteral("target: monitors"))) > 0)
+        << "App.qml must restack flyouts on monitors.changed";
+
+    const QString widget = loadSource("Views/DockableWidget.qml");
+    expectContains(widget, QStringLiteral("target: monitors"));
+    EXPECT_TRUE(widget.indexOf(QStringLiteral("base.updatePosition()"),
+                               widget.indexOf(QStringLiteral("target: monitors"))) > 0)
+        << "DockableWidget.qml must re-dock on monitors.changed";
+}
+
 TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingChrome) {
     for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
         const QString source = loadSource(path);
@@ -475,7 +491,6 @@ TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     expectContains(widget, QStringLiteral("anchors.right: parent.right"));
     expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     expectContains(widget, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
-    expectContains(widget, QStringLiteral("onWidthChanged: updatePosition()"));
     // Without play-all the button hides once everything is paused. Slot and width stay.
     expectContains(widget, QStringLiteral("pauseAllButtonShown: root.pauseAllVisible"));
     expectContains(widget, QStringLiteral("&& (settings.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
@@ -637,15 +652,41 @@ TEST(QmlContractTest, FlyoutsUsePeekAreaInsteadOfInlineHoverHandling) {
     expectContains(loadSource("Views/VolumeFlyout.qml"), QStringLiteral("pinned: root.expanded"));
 }
 
-// Flyouts whose width follows their content must re-center when it changes.
-TEST(QmlContractTest, ContentSizedFlyoutsRestackOnWidthChange) {
+// Every flyout must re-stack when its size changes. Content-sized flyouts
+// change often. All of them change after a display scale fix.
+TEST(QmlContractTest, AllFlyoutsRestackOnSizeChange) {
     const QString app = loadSource("Views/App.qml");
-    for(const char* name : {"NowPlayingFlyout nextUpFlyout", "PeripheralFlyout peripheralFlyout"}) {
+    for(const char* name : {"MediaFlyout flyout", "VolumeFlyout volumeFlyout", "LockKeysFlyout lockKeysFlyout",
+                            "NowPlayingFlyout nextUpFlyout", "PeripheralFlyout peripheralFlyout",
+                            "ChargerFlyout chargerFlyout"}) {
         const int start = app.indexOf(QString::fromLatin1(name));
         ASSERT_GT(start, 0) << name;
         const int end = app.indexOf(QStringLiteral("\n    }"), start);
         const QString block = app.mid(start, end - start);
         EXPECT_TRUE(block.contains(QStringLiteral("onWidthChanged: app.restack()"))) << name;
+        EXPECT_TRUE(block.contains(QStringLiteral("onHeightChanged: app.restack()"))) << name;
+    }
+}
+
+// The monitor combos take their model from monitors.names, which changes
+// on plug, unplug and mode change. ComboBox drops its currentIndex binding
+// when the model is replaced, so the row must re-bind the selection.
+TEST(QmlContractTest, SettingComboKeepsSelectionWhenTheModelIsReplaced) {
+    const QString combo = loadSource("Views/SettingCombo.qml");
+    expectContains(combo, QStringLiteral("onModelChanged: currentIndex = Qt.binding(function() { return root.currentIndex })"));
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    EXPECT_GE(dashboard.count(QStringLiteral("model: monitors.names")), 5);
+}
+
+// Redock on size change belongs to the shared base, not each widget.
+TEST(QmlContractTest, DockableWidgetRedocksOnSizeChange) {
+    const QString base = loadSource("Views/DockableWidget.qml");
+    expectContains(base, QStringLiteral("onWidthChanged: base.updatePosition()"));
+    expectContains(base, QStringLiteral("onHeightChanged: base.updatePosition()"));
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString widget = loadSource(path);
+        EXPECT_FALSE(widget.contains(QStringLiteral("onWidthChanged: updatePosition()")))
+            << "Duplicated redock handler in " << path;
     }
 }
 
