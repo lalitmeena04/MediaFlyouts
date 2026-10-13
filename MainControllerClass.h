@@ -41,14 +41,11 @@ class PeripheralAlerts;
 class PowerStatusController;
 #endif
 
-// Composition root. Owns subsystems and exposes them to QML.
-// Keeps main() small.
 class MainControllerClass {
     public:
         explicit MainControllerClass(QApplication& app);
         ~MainControllerClass();
 
-        // Load UI on primary instance. Run event loop. Return exit code.
         int run();
 
     private:
@@ -67,10 +64,8 @@ class MainControllerClass {
         std::unique_ptr<SingleInstance> m_instance;
         std::unique_ptr<NowPlaying> m_nowPlaying;
         std::unique_ptr<Settings> m_settings;
-        // Shared monitor facts. Built before any controller that places a window.
         std::unique_ptr<MonitorMapper> m_monitors;
         std::unique_ptr<FlyoutPlacement> m_placement;
-        // Restores window sizes that Qt leaves small after a scale change.
         std::unique_ptr<WindowScaleRefresher> m_scaleRefresher;
         std::unique_ptr<SwipeDetector> m_swipe;
         std::unique_ptr<ThemeController> m_theme;

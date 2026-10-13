@@ -52,7 +52,6 @@ TEST(HidppProtocolTest, ReadsDeviceIndexFromAnyFrame) {
 
 TEST(HidppProtocolTest, MatchesReplyToItsRequest) {
     const auto request = buildGetFeatureIndex(0x02, kFeatureUnifiedBattery);
-    // Reply echoes feature index 0 and function byte. Long id is fine.
     EXPECT_TRUE(isReplyTo({kLongReportId, 0x02, 0x00, kSoftwareId, 0x09, 0x00, 0x05}, request));
 
     const auto call = buildFunctionCall(0x02, 0x09, 0x01);
@@ -63,9 +62,7 @@ TEST(HidppProtocolTest, RejectsNotificationsOtherDevicesAndOtherRequests) {
     const auto request = buildGetFeatureIndex(0x02, kFeatureUnifiedBattery);
     // Battery notification carries software id 0.
     EXPECT_FALSE(isReplyTo({kLongReportId, 0x02, 0x0D, 0x20, 0x00, 0x50, 0x01}, request));
-    // Same shape but other device index.
     EXPECT_FALSE(isReplyTo({kLongReportId, 0x01, 0x00, kSoftwareId, 0x09, 0x00, 0x05}, request));
-    // Reply to a different feature or function.
     EXPECT_FALSE(isReplyTo({kLongReportId, 0x02, 0x09, 0x1D, 0x5F, 0x08, 0x00}, request));
     EXPECT_FALSE(isReplyTo({kLongReportId, 0x02, 0x00, 0x1D, 0x09, 0x00, 0x05}, request));
 }
@@ -95,7 +92,6 @@ TEST(HidppProtocolTest, ReadsTheFeatureIndex) {
     std::vector<std::uint8_t> reply{kShortReportId, 0xFF, 0x00, kSoftwareId, 0x06, 0x00, 0x00};
     EXPECT_EQ(featureIndexOf(reply), 0x06);
 
-    // Index 0 means device lacks feature.
     std::vector<std::uint8_t> unsupported{kShortReportId, 0xFF, 0x00, kSoftwareId, 0x00, 0x00, 0x00};
     EXPECT_EQ(featureIndexOf(unsupported), 0);
 }
@@ -144,7 +140,6 @@ TEST(HidppProtocolTest, DecodesDeviceName) {
                                           't', 'e', 'r', ' ', '4', ' ', 'f', 'o', 'r', ' '};
     EXPECT_EQ(deviceNameChunk(first), "MX Master 4 for ");
 
-    // Short tail pads with NUL.
     const std::vector<std::uint8_t> second{kLongReportId, 0x02, 0x03, 0x1D, 'B', 'u', 's', 'i', 'n', 'e',
                                            's', 's', 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     EXPECT_EQ(deviceNameChunk(second), "Business");

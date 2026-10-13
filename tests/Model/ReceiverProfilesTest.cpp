@@ -69,7 +69,6 @@ TEST(ReceiverProfilesTest, SkipsMalformedEntriesAndExplainsWhy) {
     EXPECT_EQ(errors.size(), 5);
 }
 
-// A twin with only one id would match every device sitting at id zero.
 TEST(ReceiverProfilesTest, RejectsAHalfDeclaredWiredTwin) {
     const QByteArray json = R"([{"vid":"1B2C","pid":"00FF","name":"Half","wiredVid":"258A"}])";
 

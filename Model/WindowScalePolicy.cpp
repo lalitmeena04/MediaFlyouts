@@ -33,10 +33,8 @@ QSize sizeToRestore(const WindowScaleSnapshot& snapshot, const QSize& currentNat
     const qreal newDpr = safeDpr(currentDpr);
     if(qFuzzyCompare(oldDpr, newDpr))
         return QSize();
-    // Native followed the scale. Window is fine.
     if(nearlyEqual(currentNativeSize, nativeSizeOf(snapshot.logicalSize, newDpr)))
         return QSize();
-    // Native stayed at the old scale. Re-apply the logical size.
     if(nearlyEqual(currentNativeSize, nativeSizeOf(snapshot.logicalSize, oldDpr)))
         return snapshot.logicalSize;
     return QSize();

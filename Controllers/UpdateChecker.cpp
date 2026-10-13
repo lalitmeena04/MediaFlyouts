@@ -24,7 +24,6 @@
 #endif
 
 namespace {
-// GitHub releases endpoint for project. 404 means check failed.
 constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
 constexpr char kReleasesPage[] = "https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
 constexpr char kUserAgent[] = "MediaFlyouts";
@@ -123,7 +122,6 @@ bool UpdateChecker::isTrustedReleaseUrl(const QString& url) {
 }
 
 bool UpdateChecker::isInstallerName(const QString& name) {
-    // Letters, digits, dot, dash, underscore only. Must end in -setup.exe.
     static const QRegularExpression pattern(QStringLiteral(R"(^[A-Za-z0-9._-]+-setup\.exe$)"),
                                             QRegularExpression::CaseInsensitiveOption);
     return pattern.match(name).hasMatch();
@@ -196,7 +194,6 @@ bool UpdateChecker::isDownloadedInstaller(const QString& path, const InstallerAs
 }
 
 bool UpdateChecker::launchElevated(const QString& path) {
-    // Shell behavior on odd paths varies. Only a real file gets this far.
     const QFileInfo target(path);
     if(path.isEmpty() || !target.isAbsolute() || !target.isFile() || target.isSymLink())
         return false;
@@ -214,7 +211,6 @@ bool UpdateChecker::launchElevated(const QString& path) {
     TRC_WARN("update: ShellExecuteEx failed: {}", GetLastError());
     return false;
 #else
-    // No UAC outside Windows. Refuse rather than run unelevated.
     return false;
 #endif
 }
@@ -281,7 +277,6 @@ void UpdateChecker::download() {
             m_reply->abort();
     });
     connect(m_reply, &QNetworkReply::downloadProgress, this, [this](qint64 received, qint64 total) {
-        // Server may omit the length. Asset size from the API is the fallback.
         const qint64 size = total > 0 ? total : m_asset.size;
         m_progress = size > 0 ? qBound<qreal>(0, qreal(received) / qreal(size), 1) : 0;
         emit downloadChanged();
@@ -399,7 +394,6 @@ void UpdateChecker::check() {
         m_available = isNewerVersion(m_current, tag);
         m_status = m_available ? QStringLiteral("Update available: %1").arg(tag)
                                : QStringLiteral("You're on the latest version.");
-        // A new release makes an old download stale.
         if(!m_downloading) {
             m_asset = pickInstallerAsset(obj.value(QStringLiteral("assets")).toArray());
             resetDownload();

@@ -4,7 +4,6 @@
 
 #include "WiredPeripheralRules.h"
 
-// Storage must never reach a flyout or the widget.
 TEST(WiredPeripheralRulesTest, RejectsDataStorageClasses) {
     for(const char* storage : {"USBSTOR", "DiskDrive", "Volume", "VolumeSnapshot", "CDROM", "FloppyDisk",
                                "SCSIAdapter", "TapeDrive", "MTD", "WPD"}) {
@@ -28,7 +27,6 @@ TEST(WiredPeripheralRulesTest, RejectsHubsAndOtherPlumbing) {
     }
 }
 
-// The host radio is not a peripheral. Its paired devices arrive over Bluetooth.
 TEST(WiredPeripheralRulesTest, RejectsTheHostBluetoothRadio) {
     EXPECT_FALSE(mf::isAnnounceableWiredDevice(QStringLiteral("Bluetooth"),
                                                QStringLiteral("Intel(R) Wireless Bluetooth(R)")));
@@ -43,7 +41,6 @@ TEST(WiredPeripheralRulesTest, AcceptsRealPeripherals) {
     EXPECT_TRUE(mf::isAnnounceableWiredDevice(QStringLiteral("Camera"), QStringLiteral("Logitech C920")));
 }
 
-// Windows falls back to placeholder text when a device reports no product string.
 TEST(WiredPeripheralRulesTest, RejectsPlaceholderNames) {
     for(const char* generic : {"USB Input Device", "USB Composite Device", "USB Audio Device", "Generic USB Hub",
                                "USB Root Hub", "Unknown Device", "HID-compliant device",
@@ -71,7 +68,6 @@ TEST(WiredPeripheralRulesTest, MapsSetupClassToCategory) {
     EXPECT_EQ(mf::categoryFromDeviceClass(QStringLiteral("Image")), QStringLiteral("camera"));
 }
 
-// A webcam also exposes a microphone. Enumeration order must not pick the icon.
 TEST(WiredPeripheralRulesTest, CameraOutranksHeadsetWhenNodesMerge) {
     const QStringList webcam{QStringLiteral("headset"), QStringLiteral("camera")};
     EXPECT_EQ(mf::mergedCategory(webcam), QStringLiteral("camera"));
@@ -88,7 +84,6 @@ TEST(WiredPeripheralRulesTest, MergedCategoryIgnoresEmptyEntries) {
     EXPECT_TRUE(mf::mergedCategory({}).isEmpty());
 }
 
-// An unmapped class still names the device, so keep whatever the caller found.
 TEST(WiredPeripheralRulesTest, MergedCategoryKeepsUnrankedValues) {
     EXPECT_EQ(mf::mergedCategory({QStringLiteral("printer")}), QStringLiteral("printer"));
 }
@@ -98,7 +93,6 @@ TEST(WiredPeripheralRulesTest, UnknownClassHasNoCategory) {
     EXPECT_TRUE(mf::categoryFromDeviceClass(QString()).isEmpty());
 }
 
-// The dongle is not the peripheral. Only the device it pairs with is listed.
 TEST(WiredPeripheralRulesTest, RejectsWirelessReceivers) {
     for(const char* receiver : {"2.4G Wireless Receiver", "USB Receiver", "Logitech Unifying Receiver",
                                 "Wireless Dongle", "2.4 GHz Receiver"}) {
@@ -118,7 +112,6 @@ TEST(WiredPeripheralRulesTest, ReadsVendorAndProductFromInstanceId) {
     EXPECT_EQ(vendorId, 0x046D);
     EXPECT_EQ(productId, 0x0ADF);
 
-    // Windows is not consistent about case in instance ids.
     ASSERT_TRUE(mf::parseUsbVendorProduct(QStringLiteral("usb\\vid_3554&pid_fa09\\6&abc"), vendorId, productId));
     EXPECT_EQ(vendorId, 0x3554);
     EXPECT_EQ(productId, 0xFA09);
@@ -132,11 +125,9 @@ TEST(WiredPeripheralRulesTest, RejectsInstanceIdsWithoutVendorOrProduct) {
     EXPECT_FALSE(mf::parseUsbVendorProduct(QString(), vendorId, productId));
 }
 
-// One physical unit reports several function names. The user wants one row.
 TEST(WiredPeripheralRulesTest, MergesFunctionNamesOfOneDevice) {
     EXPECT_EQ(mf::mergedDeviceName({QStringLiteral("Owl Lite Camera"), QStringLiteral("Owl Lite Audio")}),
               QStringLiteral("Owl Lite"));
-    // A name that fully contains the other stays whole.
     EXPECT_EQ(mf::mergedDeviceName({QStringLiteral("Gaming Keyboard"),
                                     QStringLiteral("Gaming Keyboard Consumer Control")}),
               QStringLiteral("Gaming Keyboard"));

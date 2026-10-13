@@ -1,6 +1,5 @@
 import QtQuick
 
-// A single Fluent icon glyph rendered in the bundled icon font.
 Text {
     property string glyph: ""
     property int size: 16

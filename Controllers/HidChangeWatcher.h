@@ -2,9 +2,6 @@
 
 #include <QObject>
 
-// Watch HID devices plug and unplug.
-// BatteryStatusController reacts before next poll.
-// Windows-only. Uses RegisterDeviceNotification on hidden message window.
 class HidChangeWatcher : public QObject {
         Q_OBJECT
 

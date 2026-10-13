@@ -8,8 +8,7 @@
 
 namespace {
 
-// Device names carry spaces, slashes and brackets, so an ini key per device
-// would need escaping. One JSON blob sidesteps that.
+// Device names carry separators that an ini key would need to escape. One JSON blob avoids that.
 QVariantMap parseNameMap(const QString& json) {
     QVariantMap names;
     if(json.trimmed().isEmpty())
@@ -30,14 +29,12 @@ QString serializeNameMap(const QVariantMap& names) {
     return QString::fromUtf8(QJsonDocument(object).toJson(QJsonDocument::Compact));
 }
 
-// Seed widget from taskbar alignment. Centered taskbar: use left side.
-// Left-aligned taskbar: use right side. Windows 10 always reports left.
+// Centered taskbar seeds the left side, left-aligned seeds the right. Windows 10 always reports left.
 int systemTaskbarSide() {
 #ifdef Q_OS_WIN
     const QSettings explorer(
         QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
         QSettings::NativeFormat);
-    // Widget side. 0 = left. 2 = right.
     return explorer.value(QStringLiteral("TaskbarAl"), 0).toInt() == 1 ? 0 : 2;
 #else
     return 2;
@@ -80,7 +77,7 @@ void Settings::reload() {
     m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), true).toBool();
     m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), true).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
-    // Field flyoutPosition is position index. 4 = BottomCenter. Duration is ms.
+    // Indexes mf::FlyoutPosition. 4 = BottomCenter.
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
     // -1 keeps volume flyout with media flyout.
@@ -95,7 +92,6 @@ void Settings::reload() {
     m_nextUpStyle = m_store.value(QStringLiteral("nextUpStyle"), 0).toInt();
     m_taskbarWidgetOffset = m_store.value(QStringLiteral("taskbarWidgetOffset"), 0).toInt();
     // Widget side. 0 = left. 1 = center. 2 = right.
-    // First run uses system taskbar alignment. Later system changes leave widget position.
     if(!m_store.contains(QStringLiteral("taskbarWidgetSide")))
         m_store.setValue(QStringLiteral("taskbarWidgetSide"), systemTaskbarSide());
     m_taskbarWidgetSide = m_store.value(QStringLiteral("taskbarWidgetSide"), 0).toInt();
@@ -104,24 +100,19 @@ void Settings::reload() {
     m_taskbarWidgetLayout = m_store.value(QStringLiteral("taskbarWidgetLayout"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
-    // Pause-all button is opt-in. Play-all follow-up is on once pause-all is enabled.
     m_taskbarWidgetPauseAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPauseAllEnabled"), false).toBool();
     m_taskbarWidgetPlayAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPlayAllEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
-    // Centered mirrors bars around middle. Other mode grows from bottom.
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
     // Visualizer style values. 0 = bars. 1 = radial. 2 = waveform. 3 = particles.
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
-    // Wired devices are opt-in. They would otherwise crowd the widget.
     m_peripheralsWidgetWiredEnabled = m_store.value(QStringLiteral("peripheralsWidgetWiredEnabled"), false).toBool();
-    // Devices show by default. This list stores hidden devices.
     m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
     m_peripheralNames = parseNameMap(m_store.value(QStringLiteral("peripheralNames")).toString());
     m_batteryRingUseAccent = m_store.value(QStringLiteral("batteryRingUseAccent"), false).toBool();
     m_peripheralFlyoutEnabled = m_store.value(QStringLiteral("peripheralFlyoutEnabled"), false).toBool();
     m_peripheralFlyoutDuration = m_store.value(QStringLiteral("peripheralFlyoutDuration"), 3000).toInt();
-    // Indexes mf::FlyoutPosition. 4 = BottomCenter.
     m_peripheralFlyoutPosition = m_store.value(QStringLiteral("peripheralFlyoutPosition"), 4).toInt();
     m_peripheralFlyoutMonitor = m_store.value(QStringLiteral("peripheralFlyoutMonitor"), 0).toInt();
     m_peripheralFlyoutOnConnect = m_store.value(QStringLiteral("peripheralFlyoutOnConnect"), true).toBool();
@@ -134,12 +125,10 @@ void Settings::reload() {
     m_chargerFlyoutOnPlug = m_store.value(QStringLiteral("chargerFlyoutOnPlug"), true).toBool();
     m_chargerFlyoutOnUnplug = m_store.value(QStringLiteral("chargerFlyoutOnUnplug"), true).toBool();
     m_chargerFlyoutDuration = m_store.value(QStringLiteral("chargerFlyoutDuration"), 3000).toInt();
-    // Indexes mf::FlyoutPosition. 4 = BottomCenter.
     m_chargerFlyoutPosition = m_store.value(QStringLiteral("chargerFlyoutPosition"), 4).toInt();
     m_chargerFlyoutMonitor = m_store.value(QStringLiteral("chargerFlyoutMonitor"), 0).toInt();
     m_onboardingCompleted = m_store.value(QStringLiteral("onboardingCompleted"), false).toBool();
     m_accentFromArt = m_store.value(QStringLiteral("accentFromArt"), false).toBool();
-    // Album-art accent also tints full app.
     m_accentFromArtAppWide = m_store.value(QStringLiteral("accentFromArtAppWide"), true).toBool();
     // Accent mode values. 0 = theme default. 1 = match system. 2 = custom.
     m_accentMode = m_store.value(QStringLiteral("accentMode"), 0).toInt();
@@ -365,7 +354,6 @@ bool Settings::playerAllowed(const QString& player) const {
             break;
         }
     }
-    // Blacklist hides listed players. Whitelist allows listed players.
     return m_filterMode == 1 ? !listed : listed;
 }
 int Settings::taskbarWidgetSide() const {
@@ -437,10 +425,8 @@ void Settings::setPeripheralDisplayName(const QString& name, const QString& cust
     if(name.isEmpty())
         return;
 
-    // Long enough for any product name, short enough to keep the widget sane.
     const QString trimmed = custom.trimmed().left(64);
     const QString previous = m_peripheralNames.value(name).toString();
-    // Blank, or back to the detected name, means the user wants the default.
     const QString next = (trimmed == name) ? QString() : trimmed;
     if(next == previous)
         return;

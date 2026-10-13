@@ -10,7 +10,6 @@
 #include "Settings.h"
 
 namespace {
-// Redirect QSettings to test location. Start each case clean.
 class SettingsTest : public ::testing::Test {
     protected:
         void SetUp() override {
@@ -58,20 +57,16 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.flyoutAnimationMs(), 300);
     EXPECT_EQ(s.flyoutAnimationEasingStyle(), 3);
     EXPECT_EQ(s.volumeFlyoutDuration(), 1800);
-    // Volume flyout is placed independently of media flyout.
     EXPECT_EQ(s.volumeFlyoutPosition(), 4);
     EXPECT_EQ(s.volumeFlyoutMonitor(), 0);
     EXPECT_EQ(s.nextUpDuration(), 2000);
     EXPECT_EQ(s.nextUpStyle(), 0);
     EXPECT_EQ(s.taskbarWidgetOffset(), 0);
-    // Seeded from system taskbar alignment. Only range is fixed.
     EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     EXPECT_EQ(s.taskbarWidgetMonitor(), 0);
-    // Widgets sit side by side until the user picks the stack.
     EXPECT_EQ(s.taskbarWidgetLayout(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
-    // Pause-all is opt-in. Play-all follow-up is ready once pause-all is on.
     EXPECT_FALSE(s.taskbarWidgetPauseAllEnabled());
     EXPECT_TRUE(s.taskbarWidgetPlayAllEnabled());
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
@@ -87,7 +82,6 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.filterList().isEmpty());
     EXPECT_FALSE(s.autoCheckUpdates());
     EXPECT_TRUE(s.skippedUpdateVersion().isEmpty());
-    // Peripheral flyout starts off. Default position is bottom center.
     EXPECT_FALSE(s.peripheralFlyoutEnabled());
     EXPECT_EQ(s.peripheralFlyoutDuration(), 3000);
     EXPECT_EQ(s.peripheralFlyoutPosition(), 4);
@@ -97,10 +91,8 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.peripheralFlyoutOnLowBattery());
     EXPECT_FALSE(s.peripheralFlyoutOnCharging());
     EXPECT_TRUE(s.peripheralLowBatteryToast());
-    // Wired devices are opt-in on both surfaces.
     EXPECT_FALSE(s.peripheralFlyoutOnWired());
     EXPECT_FALSE(s.peripheralsWidgetWiredEnabled());
-    // Charger flyout starts off. Both events start on.
     EXPECT_FALSE(s.chargerFlyoutEnabled());
     EXPECT_TRUE(s.chargerFlyoutOnPlug());
     EXPECT_TRUE(s.chargerFlyoutOnUnplug());
@@ -109,7 +101,6 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.chargerFlyoutMonitor(), 0);
 }
 
-// Skipping a release must survive a restart. Same value writes nothing.
 TEST_F(SettingsTest, SkippedUpdateVersionIsStoredAndRestorable) {
     {
         Settings s;
@@ -123,7 +114,6 @@ TEST_F(SettingsTest, SkippedUpdateVersionIsStoredAndRestorable) {
     EXPECT_EQ(reloaded.skippedUpdateVersion(), QStringLiteral("v1.5.0"));
 }
 
-// A dongle often reports something unhelpful, so the user can rename it.
 TEST_F(SettingsTest, PeripheralNameFallsBackToTheDetectedName) {
     Settings s;
     EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("2.4G Wireless Receiver")),
@@ -139,11 +129,9 @@ TEST_F(SettingsTest, PeripheralRenameIsStoredAndRestorable) {
     EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("2.4G Wireless Receiver")), QStringLiteral("AULA F75"));
     EXPECT_EQ(spy.count(), 1);
 
-    // Renaming to the same thing again must not churn the settings file.
     s.setPeripheralDisplayName(QStringLiteral("2.4G Wireless Receiver"), QStringLiteral("AULA F75"));
     EXPECT_EQ(spy.count(), 1);
 
-    // Clearing restores the detected name and drops the entry.
     s.setPeripheralDisplayName(QStringLiteral("2.4G Wireless Receiver"), QString());
     EXPECT_EQ(s.peripheralDisplayName(QStringLiteral("2.4G Wireless Receiver")),
               QStringLiteral("2.4G Wireless Receiver"));
@@ -157,7 +145,6 @@ TEST_F(SettingsTest, PeripheralRenameMatchingTheDetectedNameStoresNothing) {
     EXPECT_TRUE(s.peripheralNames().isEmpty());
 }
 
-// Names with separators would need escaping as ini keys, so they are stored as JSON.
 TEST_F(SettingsTest, PeripheralRenameSurvivesReloadAndAwkwardNames) {
     const QString awkward = QStringLiteral("Owl Lite / Audio = [main]");
     {
@@ -188,7 +175,7 @@ TEST_F(SettingsTest, SetterUpdatesValueAndEmitsChanged) {
 TEST_F(SettingsTest, SettingSameValueDoesNotEmit) {
     Settings s;
     QSignalSpy spy(&s, &Settings::changed);
-    s.setMediaFlyoutEnabled(true); // already the default
+    s.setMediaFlyoutEnabled(true);
     EXPECT_EQ(spy.count(), 0);
 }
 
@@ -198,7 +185,6 @@ TEST_F(SettingsTest, EachToggleIsIndependent) {
     s.setLaunchOnStartup(true);
     EXPECT_FALSE(s.volumeFlyoutEnabled());
     EXPECT_TRUE(s.launchOnStartup());
-    // Untouched toggles keep defaults.
     EXPECT_TRUE(s.mediaFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
 }
@@ -221,7 +207,6 @@ TEST_F(SettingsTest, TaskbarWidgetSideIsSeededOnceThenPinned) {
     {
         Settings first;
         seeded = first.taskbarWidgetSide();
-        // Pick different side. This distinguishes stored choice from re-seed.
         first.setTaskbarWidgetSide(seeded == 1 ? 0 : 1);
     }
     Settings second;
@@ -237,7 +222,6 @@ TEST_F(SettingsTest, ExportImportRoundTrip) {
         s.setFlyoutDuration(7000);
         EXPECT_TRUE(s.exportTo(QUrl::fromLocalFile(path)));
     }
-    // Wipe live store. Defaults return before import.
     QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
               QStringLiteral("MediaFlyouts"))
         .clear();
@@ -262,7 +246,7 @@ TEST_F(SettingsTest, BlacklistHidesListedPlayers) {
     s.setFilterMode(1);
     s.addFilterEntry(QStringLiteral("chrome"));
     EXPECT_FALSE(s.playerAllowed(QStringLiteral("chrome")));
-    EXPECT_FALSE(s.playerAllowed(QStringLiteral("Chrome"))); // case-insensitive
+    EXPECT_FALSE(s.playerAllowed(QStringLiteral("Chrome")));
     EXPECT_TRUE(s.playerAllowed(QStringLiteral("Spotify")));
 }
 
@@ -277,8 +261,8 @@ TEST_F(SettingsTest, WhitelistShowsOnlyListedPlayers) {
 TEST_F(SettingsTest, FilterEntriesAreUniqueAndRemovable) {
     Settings s;
     s.addFilterEntry(QStringLiteral("Spotify"));
-    s.addFilterEntry(QStringLiteral("spotify")); // duplicate, case-insensitive
-    s.addFilterEntry(QStringLiteral("  "));      // blank ignored
+    s.addFilterEntry(QStringLiteral("spotify"));
+    s.addFilterEntry(QStringLiteral("  "));
     EXPECT_EQ(s.filterList().size(), 1);
 
     s.removeFilterEntry(QStringLiteral("SPOTIFY"));

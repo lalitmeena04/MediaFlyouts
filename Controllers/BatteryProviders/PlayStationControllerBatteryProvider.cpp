@@ -26,8 +26,6 @@ struct ScopedHandle {
         }
 };
 
-// Read one input report from open HID device. Use short timeout.
-// Sleeping device must not block poll thread.
 bool readInputReport(HANDLE device, std::vector<BYTE>& buffer) {
     OVERLAPPED ov = {};
     ov.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
@@ -127,8 +125,6 @@ QVector<BatteryDeviceInfo> PlayStationControllerBatteryProvider::poll() {
 
         const bool isBluetooth = caps.InputReportByteLength != 64;
 
-        // Bluetooth controller starts in simple mode.
-        // Enable extended report and read a few times.
         if(isBluetooth)
             enableExtendedBluetoothReport(handle);
 

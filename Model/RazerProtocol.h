@@ -3,8 +3,6 @@
 #include <cstdint>
 #include <vector>
 
-// Razer 90-byte HID feature-report protocol.
-// Kept free of Windows and Qt types for tests.
 namespace razer {
 
 inline constexpr std::size_t kReportSize = 90;
@@ -27,21 +25,17 @@ enum class Status : std::uint8_t {
 // XOR of report bytes 2..87.
 std::uint8_t checksum(const std::vector<std::uint8_t>& buffer);
 
-// Build request buffer for power-class command.
 std::vector<std::uint8_t> buildRequest(std::uint8_t transactionId, std::uint8_t commandId);
 
 Status statusOf(const std::vector<std::uint8_t>& buffer);
 
-// True when buffer is device answer for given request.
 bool isReplyTo(const std::vector<std::uint8_t>& buffer, std::uint8_t transactionId, std::uint8_t commandId);
 
 // Battery level is reported on a 0-255 scale, not 0-100.
 int percentFromRaw(std::uint8_t raw);
 
-// Extract battery percentage from successful reply. Return -1 on failure.
 int batteryPercent(const std::vector<std::uint8_t>& buffer, std::uint8_t transactionId);
 
-// Extract charging state from successful reply. supported is false for NotSupported.
 bool chargingState(const std::vector<std::uint8_t>& buffer, std::uint8_t transactionId, bool& supported);
 
 } // namespace razer

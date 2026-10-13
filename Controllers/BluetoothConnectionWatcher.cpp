@@ -26,7 +26,6 @@ void BluetoothConnectionWatcher::onDeviceEvent() {
 }
 
 void BluetoothConnectionWatcher::attach(DeviceWatcher& watcher) {
-    // Any event means Bluetooth device changed. Re-poll. Overlap is guarded.
     watcher.Added([this](const DeviceWatcher&, const DeviceInformation&) { onDeviceEvent(); });
     watcher.Removed([this](const DeviceWatcher&, const DeviceInformationUpdate&) { onDeviceEvent(); });
     watcher.Updated([this](const DeviceWatcher&, const DeviceInformationUpdate&) { onDeviceEvent(); });
@@ -43,7 +42,6 @@ void BluetoothConnectionWatcher::start() {
                                                              extraProperties);
         attach(m_classicWatcher);
     } catch(...) {
-        // Watcher creation can fail without Bluetooth radio. Timer polling still works.
         TRC_WARN("bluetooth watcher: classic watcher unavailable");
     }
 

@@ -18,7 +18,6 @@
 
 namespace {
 
-// Google Fast Pair message stream RFCOMM service.
 constexpr GUID kFastPairMessageStream = {
     0xdf21fe2c, 0x2515, 0x4fdb, {0x88, 0x86, 0xf1, 0x2c, 0x4d, 0x67, 0x92, 0x7c}};
 
@@ -102,7 +101,7 @@ std::vector<FastPairDevice> enumerateFastPairDevices() {
     return devices;
 }
 
-// Blocking connect with bounded wait. Off device cannot stall thread.
+// Bounded wait. An off device must not stall the thread.
 SOCKET connectFastPair(quint64 address, int timeoutMs) {
     SOCKET sock = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
     if(sock == INVALID_SOCKET)

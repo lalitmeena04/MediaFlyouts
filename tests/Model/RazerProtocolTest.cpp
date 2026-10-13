@@ -21,7 +21,7 @@ TEST(RazerProtocolTest, ChecksumCoversTheCommandBytes) {
     auto request = buildRequest(0x1F, kCommandBatteryLevel);
     const std::uint8_t original = checksum(request);
 
-    request[8] = kCommandChargingStatus; // changing the command must change the checksum
+    request[8] = kCommandChargingStatus;
     EXPECT_NE(checksum(request), original);
 }
 
@@ -62,7 +62,6 @@ TEST(RazerProtocolTest, TreatsBusyAndTimeoutAsNoAnswer) {
 }
 
 TEST(RazerProtocolTest, RejectsUnrelatedReports) {
-    // Device also emits 0x0F/0x03 reports. They are not answers.
     auto other = buildRequest(0x1F, kCommandBatteryLevel);
     other[1] = static_cast<std::uint8_t>(Status::Successful);
     other[7] = 0x0F;

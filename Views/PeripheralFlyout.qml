@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// Show peripheral events as card row.
-// Devices from same snapshot share one window.
 FlyoutBase {
     id: root
 
@@ -14,7 +12,6 @@ FlyoutBase {
     height: 92
     hideInterval: settings.peripheralFlyoutDuration
 
-    // Events the user has switched off never reach the screen.
     function eventEnabled(event) {
         switch(event) {
         case "connected":       return settings.peripheralFlyoutOnConnect
@@ -27,9 +24,7 @@ FlyoutBase {
         return false
     }
 
-    // Wired devices are noisy. They stay silent until the user opts in.
     function alertEnabled(alert) {
-        // A device the user hid is ignored everywhere, not just on the widget.
         if(!settings.peripheralSelected(alert.name))
             return false
         if(alert.connectionKind === "usb" && !settings.peripheralFlyoutOnWired)

@@ -9,7 +9,6 @@ class QTimer;
 class Settings;
 class Capabilities;
 
-// Own notification-area icon and menu. Emit QML app intents.
 class TrayController : public QObject {
         Q_OBJECT
 
@@ -18,20 +17,16 @@ class TrayController : public QObject {
         ~TrayController() override;
 
         void show();
-        // Show balloon notification from tray icon.
         void notify(const QString& title, const QString& message);
-        // Report unavailable subsystems in the tray tooltip.
         void trackCapabilities(Capabilities* capabilities);
 
     public slots:
-        // Re-apply the icon so the shell picks the size for the current DPI.
         void refreshIcon();
 
     signals:
         void openDashboardRequested();
         void showFlyoutRequested();
         void openMixerRequested();
-        // Raised by the tray "Report a Bug" entry. Opens the report page.
         void reportBugRequested();
 
     private:
@@ -43,6 +38,5 @@ class TrayController : public QObject {
         QString m_iconFamily;
         Settings* m_settings = nullptr;
         Capabilities* m_capabilities = nullptr;
-        // Delay single-click flyout. Double-click can open dashboard.
         QTimer* m_singleClickTimer = nullptr;
 };

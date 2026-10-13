@@ -13,7 +13,6 @@
 #include "PlaybackController.h"
 #include "TrackInfo.h"
 
-// Bridge Windows SMTC to Qt. Control active session.
 class WinMediaProvider : public QObject, public mf::IPlaybackController {
         Q_OBJECT
 
@@ -23,10 +22,8 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
 
         void start();
 
-        // True after SMTC session manager is available.
         bool available() const;
 
-        // IPlaybackController methods forward to active session.
         void play() override;
         void pause() override;
         void next() override;

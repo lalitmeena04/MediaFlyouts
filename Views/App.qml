@@ -1,12 +1,9 @@
 import QtQuick
 import MediaFlyouts
 
-// Non-visual app root. Owns windows. Handles tray intents.
 QtObject {
     id: app
 
-    // Every flyout re-stacks on show and on size change. A size can change
-    // late, after a display scale change restores it.
     property MediaFlyout flyout: MediaFlyout {
         onVisibleChanged: app.restack()
         onHeightChanged: app.restack()
@@ -54,17 +51,14 @@ QtObject {
         peripheralsWidget: app.peripheralsWidget
     }
 
-    // Show first-run wizard once.
     Component.onCompleted: if(!settings.onboardingCompleted) onboarding.show()
 
-    // Optional update check after launch.
     property Timer _updateTimer: Timer {
         interval: 4000
         running: settings.autoCheckUpdates
         onTriggered: updateChecker.check()
     }
 
-    // Newer release found. A skipped version stays quiet.
     property Connections _updateConn: Connections {
         target: updateChecker
         function onUpdateFound(version) {
@@ -73,10 +67,8 @@ QtObject {
         }
     }
 
-    // Stacking order. Bottom-most first.
     readonly property var flyoutStack: [flyout, volumeFlyout, lockKeysFlyout, nextUpFlyout, peripheralFlyout, chargerFlyout]
 
-    // Volume, peripheral and charger flyouts have separate placement settings.
     function positionIndexFor(f) {
         if(f === volumeFlyout)
             return settings.volumeFlyoutPosition
@@ -98,13 +90,12 @@ QtObject {
 
     function restack() {
         var gap = 10
-        // Flyouts stack only when position and monitor match.
         var used = ({})
 
         for(var i = 0; i < flyoutStack.length; i++) {
             var f = flyoutStack[i]
             if(!f.visible) {
-                f.positioned = false // Next show snaps without slide.
+                f.positioned = false
                 continue
             }
 
@@ -120,7 +111,6 @@ QtObject {
                                                     settings.taskbarWidgetOffset, taskbarWidget.width,
                                                     taskbarWidget.height)
                 var screen = monitors.geometry(settings.taskbarWidgetMonitor)
-                // Center flyout over widget. Clamp to screen.
                 var fx = anchor.x + (taskbarWidget.width - f.width) / 2
                 fx = Math.max(screen.x + 8, Math.min(fx, screen.x + screen.width - f.width - 8))
                 f.placeAt(fx, anchor.y - f.height - 12 - cumulative)
@@ -129,17 +119,15 @@ QtObject {
                 f.placeAt(p.x, topAligned ? (p.y + cumulative) : (p.y - cumulative))
             }
             used[key] = cumulative + f.height + gap
-            f.positioned = true // Later shifts animate.
+            f.positioned = true
         }
     }
 
-    // Re-stack when position or monitor settings change.
     property Connections settingsConnection: Connections {
         target: settings
         function onChanged() { app.restack() }
     }
 
-    // Resolution or scale change moves work areas. Place visible flyouts again.
     property Connections monitorConnection: Connections {
         target: monitors
         function onChanged() {
@@ -165,13 +153,11 @@ QtObject {
             volumeMixerWindow.open()
         }
 
-        // Error reports live on the About page.
         function onReportBugRequested() {
             dashboard.showPage("About")
         }
     }
 
-    // Second launch shows dashboard only when tray icon is hidden.
     property Connections instanceConnection: Connections {
         target: instance
         function onActivated() {

@@ -19,9 +19,6 @@
 #include "WindowEffects.h"
 #include "WiredPeripheralRules.h"
 
-// These Windows controllers wrap COM and DWM APIs.
-// Tests use no real device or window.
-
 TEST(Win32ControllersTest, AudioCaptureStartsSilentAndInactive) {
     AudioCapture capture(24);
     EXPECT_FALSE(capture.active());
@@ -60,8 +57,6 @@ TEST(Win32ControllersTest, DeviceWatchersCanStartRepeatedly) {
     SUCCEED();
 }
 
-// Runs against whatever is plugged into the test machine.
-// Every entry must look like a wired peripheral, never a disk.
 TEST(Win32ControllersTest, WiredProviderReportsUsableDevicesOnly) {
     WiredPeripheralProvider provider;
     const QVector<BatteryDeviceInfo> devices = provider.poll();
@@ -74,7 +69,6 @@ TEST(Win32ControllersTest, WiredProviderReportsUsableDevicesOnly) {
     }
 }
 
-// The first reading only seeds the baseline, so no charger event fires at startup.
 TEST(Win32ControllersTest, PowerStatusStartRaisesNoChargerEvent) {
     PowerStatusController power;
     int events = 0;
@@ -109,8 +103,6 @@ TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {
     }
 }
 
-// COM lets tests use the real list and capture paths.
-// Tests pass with or without an audio device.
 class Win32ComTest : public ::testing::Test {
     protected:
         void SetUp() override {
@@ -140,8 +132,6 @@ TEST_F(Win32ComTest, AudioCaptureStartStopIsSafe) {
     EXPECT_EQ(capture.bands().size(), 16);
 }
 
-// A right-aligned widget must stop left of the tray drawn on ITS monitor.
-// Before the fix, secondary monitors reused the primary tray width.
 TEST_F(Win32ComTest, RightAlignedWidgetClearsEachMonitorsOwnTray) {
     MonitorMapper monitors;
     TaskbarInfo taskbar(&monitors);
@@ -154,15 +144,12 @@ TEST_F(Win32ComTest, RightAlignedWidgetClearsEachMonitorsOwnTray) {
     for(int i = 0; i < monitors.count(); ++i) {
         const QRect screen = monitors.geometry(i);
         const QPoint position = taskbar.widgetPosition(i, right, 0, width, height);
-        // Never off the right edge, never pushed past the whole screen.
         EXPECT_LT(position.x() + width, screen.right() + 1) << "monitor " << i;
         EXPECT_GE(position.x(), screen.left()) << "monitor " << i;
-        // Clock and notification area are always narrower than half the taskbar.
         EXPECT_GT(position.x() + width, screen.left() + screen.width() / 2) << "monitor " << i;
     }
 }
 
-// Repeated polls must hit the cache. The automation walk is slow.
 TEST_F(Win32ComTest, WidgetPositionIsStableAcrossRapidPolls) {
     MonitorMapper monitors;
     TaskbarInfo taskbar(&monitors);

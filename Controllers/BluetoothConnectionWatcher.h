@@ -4,8 +4,6 @@
 
 #include <winrt/Windows.Devices.Enumeration.h>
 
-// Watch Bluetooth devices connect and disconnect.
-// BatteryStatusController reacts before next poll.
 class BluetoothConnectionWatcher : public QObject {
         Q_OBJECT
 
@@ -16,7 +14,6 @@ class BluetoothConnectionWatcher : public QObject {
         void start();
 
     signals:
-        // Device was added, removed, or changed.
         void deviceChanged();
 
     private:

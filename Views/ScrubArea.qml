@@ -1,10 +1,8 @@
 import QtQuick
 
-// Drag gesture for horizontal tracks. Reports the pointer as a 0..1 fraction.
 MouseArea {
     id: scrub
 
-    // Width that maps pixels to a fraction. Defaults to the track it covers.
     property real trackWidth: parent ? parent.width : 0
 
     signal scrubStarted(real fraction)

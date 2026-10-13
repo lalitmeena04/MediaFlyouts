@@ -26,8 +26,6 @@ TEST(WindowScalePolicyTest, ResizeDuringScaleChangeIsNotAuthoritative) {
     EXPECT_FALSE(resizeIsAuthoritative(at(186, 32, 1.5), 1.0));
 }
 
-// The bug seen on hardware: scale 100 % -> 150 %, native stays 186x32,
-// Qt reports 124x21 logical. Restore the logical size the app chose.
 TEST(WindowScalePolicyTest, RestoresWhenNativeSizeDidNotFollowTheScale) {
     const QSize restore = sizeToRestore(at(186, 32, 1.0), QSize(186, 32), 1.5);
     EXPECT_EQ(restore, QSize(186, 32));
@@ -40,7 +38,6 @@ TEST(WindowScalePolicyTest, RestoresOnTheWayBackDownToo) {
 
 TEST(WindowScalePolicyTest, NoRestoreWhenQtAlreadyRescaled) {
     EXPECT_FALSE(sizeToRestore(at(186, 32, 1.0), QSize(279, 48), 1.5).isValid());
-    // One pixel of rounding slack per axis.
     EXPECT_FALSE(sizeToRestore(at(186, 32, 1.0), QSize(280, 47), 1.5).isValid());
 }
 
@@ -49,8 +46,6 @@ TEST(WindowScalePolicyTest, NoRestoreWhenScaleIsUnchanged) {
     EXPECT_FALSE(sizeToRestore(at(186, 32, 1.5), QSize(279, 48), 1.5).isValid());
 }
 
-// A size that matches neither the old nor the new scale is a real resize
-// the app made in between. Leave it alone.
 TEST(WindowScalePolicyTest, NoRestoreForAnUnrelatedSize) {
     EXPECT_FALSE(sizeToRestore(at(186, 32, 1.0), QSize(500, 90), 1.5).isValid());
 }

@@ -12,7 +12,6 @@ namespace {
 constexpr int kMargin = 8;
 constexpr int kWidth = 220;
 
-// A second monitor placed to the right of a 1920-wide primary.
 QRect secondaryScreen() {
     return QRect(1920, 0, 2560, 1440);
 }
@@ -31,7 +30,6 @@ TEST(TaskbarLayoutTest, RightSideSitsBesideTheMeasuredTray) {
     EXPECT_EQ(x, 1600 - kWidth - kMargin);
 }
 
-// The reported bug: a second monitor reserved the primary monitor's tray width.
 TEST(TaskbarLayoutTest, EachScreenUsesItsOwnTrayWidth) {
     const QRect screen = secondaryScreen();
 
@@ -45,7 +43,6 @@ TEST(TaskbarLayoutTest, EachScreenUsesItsOwnTrayWidth) {
 
     EXPECT_EQ(narrowX, 4360 - kWidth - kMargin);
     EXPECT_EQ(wideX, 4000 - kWidth - kMargin);
-    // A narrower tray must let the widget sit further right.
     EXPECT_GT(narrowX, wideX);
 }
 
@@ -56,7 +53,6 @@ TEST(TaskbarLayoutTest, RightSideFallsBackWhenTheTrayIsNotMeasured) {
     EXPECT_EQ(x, screen.right() + 1 - kUnmeasuredTrayWidth - kWidth - kMargin);
 }
 
-// Centred Windows 11 chrome is not an edge reserve. It must not move the widget.
 TEST(TaskbarLayoutTest, IgnoresChromeThatDoesNotTouchItsScreenEdge) {
     const QRect screen = primaryScreen();
 
@@ -93,7 +89,6 @@ TEST(TaskbarLayoutTest, OffsetMovesTheWidgetInwardFromEachSide) {
 
     EXPECT_EQ(taskbarWidgetX(screen, reserve, TaskbarSide::Right, 50, kWidth, kMargin), 1600 - kWidth - kMargin - 50);
     EXPECT_EQ(taskbarWidgetX(screen, TaskbarReserve{}, TaskbarSide::Left, 50, kWidth, kMargin), kMargin + 50);
-    // Centre accepts a negative offset. The edges do not.
     EXPECT_EQ(taskbarWidgetX(screen, TaskbarReserve{}, TaskbarSide::Left, -50, kWidth, kMargin), kMargin);
 }
 

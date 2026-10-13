@@ -3,7 +3,6 @@ import QtQuick.Window
 import QtQuick.Controls.Basic
 import MediaFlyouts
 
-// Asks the user to skip or install a newer release. The installer downloads in-app.
 Window {
     id: root
     width: 460
@@ -23,7 +22,6 @@ Window {
         root.requestActivate()
     }
 
-    // Remember the skipped tag. Auto-check stays quiet for it.
     function skip() {
         settings.skippedUpdateVersion = updateChecker.latestVersion
         root.close()
@@ -53,7 +51,6 @@ Window {
                                         : updateChecker.downloading ? "Downloading…"
                                         : "Download & install"
 
-    // Explains the path this copy takes to the new version.
     readonly property string routeText: root.storeInstall
                                         ? "This copy came from the Microsoft Store. The Store delivers the update; open it to install now."
                                         : root.portableInstall
@@ -67,7 +64,6 @@ Window {
                                          : updateChecker.downloading ? "Downloading… " + Math.round(updateChecker.downloadProgress * 100) + "%"
                                          : ""
 
-    // Closing mid-download stops it. Nothing is kept.
     onClosing: if(updateChecker.downloading) updateChecker.cancelDownload()
 
     Item {

@@ -2,7 +2,6 @@ pragma Singleton
 
 import QtQuick
 
-// Fluent System Icons (Filled) glyph codepoints.
 QtObject {
     property FontLoader _loader: FontLoader {
         source: "qrc:/qt/qml/MediaFlyouts/assets/fonts/FluentSystemIcons-Filled.ttf"

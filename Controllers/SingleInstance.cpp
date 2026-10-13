@@ -6,7 +6,6 @@
 #include "Logging.h"
 
 SingleInstance::SingleInstance(const QString& key, QObject* parent) : QObject(parent), m_key(key) {
-    // Existing server means another instance owns key.
     QLocalSocket socket;
     socket.connectToServer(m_key);
     if(socket.waitForConnected(200)) {

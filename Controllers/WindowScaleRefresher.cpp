@@ -45,7 +45,6 @@ bool WindowScaleRefresher::eventFilter(QObject* watched, QEvent* event) {
             } else if(mf::resizeIsAuthoritative(*it, window->devicePixelRatio())) {
                 record(window);
             } else {
-                // Scale changed under this window. Check it once the event settles.
                 QPointer<QWindow> guard(window);
                 QTimer::singleShot(0, this, [this, guard] {
                     if(guard)

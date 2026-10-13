@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Effects
 
-// Album art with rounded corners.
 // Mask image. Rectangle clip uses rectangular bounds.
 Item {
     id: root

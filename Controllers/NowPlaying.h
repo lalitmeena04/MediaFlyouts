@@ -13,8 +13,6 @@
 
 class AlbumArtProvider;
 
-// QML-facing now-playing model. Gets data from media provider.
-// Sends transport commands to controller.
 class NowPlaying : public QObject {
         Q_OBJECT
         Q_PROPERTY(QString title READ title NOTIFY changed)
@@ -35,7 +33,6 @@ class NowPlaying : public QObject {
         Q_PROPERTY(bool canShuffle READ canShuffle NOTIFY changed)
         Q_PROPERTY(int sessionCount READ sessionCount NOTIFY sessionsChanged)
         Q_PROPERTY(int selectedSessionIndex READ selectedSessionIndex NOTIFY sessionsChanged)
-        // True when play-all has work: pauseAll() paused sessions, or every session is paused.
         Q_PROPERTY(bool canResumeAll READ canResumeAll NOTIFY resumeAllChanged)
 
     public:
@@ -63,7 +60,6 @@ class NowPlaying : public QObject {
         int sessionCount() const;
         int selectedSessionIndex() const;
         bool canResumeAll() const;
-        // Media present, nothing playing in any session.
         bool allPaused() const;
 
         Q_INVOKABLE void playPause();
@@ -72,18 +68,14 @@ class NowPlaying : public QObject {
         Q_INVOKABLE void seekToFraction(double fraction);
         Q_INVOKABLE void cycleRepeat();
         Q_INVOKABLE void toggleShuffle();
-        // Cycle displayed media source for widget switcher.
         Q_INVOKABLE void cycleSession(int delta);
-        // Pause every playing session. Remember them for playAll().
         Q_INVOKABLE void pauseAll();
-        // Resume every paused session. Works after pauseAll() or a manual pause of everything.
         Q_INVOKABLE void playAll();
 
     public slots:
         void applyTrack(const mf::TrackInfo& track);
         void applyArt(const QImage& art);
         void noteMediaKey();
-        // Provider reports media session set change.
         void noteSessionsChanged();
 
     signals:
@@ -108,6 +100,6 @@ class NowPlaying : public QObject {
         QColor m_artAccent = QColor("#4CC2FF");
         qint64 m_lastMediaKeyMs = 0;
         bool m_seenFirstUpdate = false;
-        QStringList m_pausedByAll; // Source app ids paused by pauseAll().
+        QStringList m_pausedByAll;
         bool m_canResumeAll = false;
 };

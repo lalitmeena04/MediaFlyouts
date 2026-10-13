@@ -4,8 +4,6 @@
 
 #include "MonitorMapper.h"
 
-// Display changes arrive as several screen signals within a few ms.
-// Listeners must hear one changed() per burst, not one per signal.
 TEST(MonitorMapperTest, CoalescesBurstOfRefreshesIntoOneChange) {
     MonitorMapper map(nullptr, 20);
     QSignalSpy changed(&map, &MonitorMapper::changed);
@@ -19,7 +17,6 @@ TEST(MonitorMapperTest, CoalescesBurstOfRefreshesIntoOneChange) {
     EXPECT_EQ(changed.count(), 1);
 }
 
-// A second burst after the window closes must notify again.
 TEST(MonitorMapperTest, NotifiesAgainForALaterBurst) {
     MonitorMapper map(nullptr, 10);
     QSignalSpy changed(&map, &MonitorMapper::changed);
@@ -32,8 +29,6 @@ TEST(MonitorMapperTest, NotifiesAgainForALaterBurst) {
     EXPECT_EQ(changed.count(), 2);
 }
 
-// The test host is a QCoreApplication. It has no screens.
-// Every lookup must degrade to "nothing" instead of crashing.
 TEST(MonitorMapperTest, EmptyHostYieldsNoMonitors) {
     MonitorMapper map;
     EXPECT_EQ(map.count(), 0);
@@ -44,7 +39,6 @@ TEST(MonitorMapperTest, EmptyHostYieldsNoMonitors) {
     EXPECT_TRUE(map.availableGeometry(3).isEmpty());
 }
 
-// Saved settings can point past the last monitor after an unplug.
 TEST(MonitorMapperTest, OutOfRangeIndexFallsBackToZero) {
     MonitorMapper map;
     EXPECT_EQ(map.clampIndex(-1), 0);
@@ -52,15 +46,12 @@ TEST(MonitorMapperTest, OutOfRangeIndexFallsBackToZero) {
     EXPECT_EQ(map.clampIndex(7), 0);
 }
 
-// A secondary monitor at 150 % scale sits to the right of a 100 % primary.
-// Logical origin equals native origin. Only sizes and offsets scale.
 TEST(MonitorMapperTest, ToLogicalUsesTheMonitorsOwnScaleAndOrigin) {
     MonitorEntry monitor;
     monitor.logicalRect = QRect(2560, 0, 1707, 960);
     monitor.nativeRect = QRect(2560, 0, 2560, 1440);
     monitor.devicePixelRatio = 1.5;
 
-    // Tray 300 px wide at the far right of the native taskbar.
     const QRect nativeTray(2560 + 2560 - 300, 1440 - 72, 300, 72);
     const QRect logical = MonitorMapper::toLogical(monitor, nativeTray);
 
@@ -77,8 +68,6 @@ TEST(MonitorMapperTest, ToLogicalIsIdentityAtOneHundredPercent) {
     EXPECT_EQ(MonitorMapper::toLogical(monitor, rect), rect);
 }
 
-// A monitor placed above the primary has a negative native origin.
-// The offset must still be measured from that monitor's own corner.
 TEST(MonitorMapperTest, ToLogicalHandlesNegativeOrigins) {
     MonitorEntry monitor;
     monitor.logicalRect = QRect(-1920, -1080, 960, 540);
@@ -96,7 +85,6 @@ TEST(MonitorMapperTest, ToLogicalMapsNullRectToNull) {
     EXPECT_TRUE(MonitorMapper::toLogical(monitor, QRect()).isNull());
 }
 
-// A zero ratio would divide by zero. Treat it as 100 %.
 TEST(MonitorMapperTest, ToLogicalTreatsZeroRatioAsOne) {
     MonitorEntry monitor;
     monitor.logicalRect = QRect(0, 0, 100, 100);

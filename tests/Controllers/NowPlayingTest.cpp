@@ -83,7 +83,7 @@ TEST(NowPlayingTest, ManualSkipRaisesTrackUpdated) {
     QSignalSpy trackUpdated(&np, &NowPlaying::trackUpdated);
     QSignalSpy nextUp(&np, &NowPlaying::nextUpRequested);
 
-    np.noteMediaKey(); // Key press before track change means manual skip.
+    np.noteMediaKey();
     np.applyTrack(makeTrack(QStringLiteral("Second"), QStringLiteral("Band")));
 
     EXPECT_EQ(trackUpdated.count(), 1);
@@ -170,13 +170,11 @@ TEST(NowPlayingTest, PauseAllWithNothingPlayingLeavesNothingToResume) {
     EXPECT_FALSE(np.canResumeAll());
 }
 
-// Play-all must bring back every paused source, not only the ones pause-all touched.
 TEST(NowPlayingTest, PlayAllResumesEveryPausedSessionThenClears) {
     NowPlaying np;
     MockController controller;
     np.setController(&controller);
 
-    // Another source was paused by hand before pause-all. It resumes too.
     const QStringList paused{QStringLiteral("Spotify.exe")};
     EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(paused));
     np.pauseAll();
@@ -188,7 +186,6 @@ TEST(NowPlayingTest, PlayAllResumesEveryPausedSessionThenClears) {
     EXPECT_FALSE(np.canResumeAll());
     EXPECT_EQ(resumeAll.count(), 1);
 
-    // Second press has nothing to resume. Controller is not called.
     EXPECT_CALL(controller, resumeAllSessions()).Times(0);
     np.playAll();
 }
@@ -200,12 +197,10 @@ TEST(NowPlayingTest, AllSessionsPausedByHandOffersPlayAll) {
     ON_CALL(controller, playingSessionCount()).WillByDefault(::testing::Return(0));
     QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
 
-    // User paused the only player from the app itself.
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
     EXPECT_TRUE(np.canResumeAll());
     EXPECT_EQ(resumeAll.count(), 1);
 
-    // Nothing was remembered by pauseAll, so every paused session resumes.
     EXPECT_CALL(controller, resumeAllSessions()).Times(1);
     np.playAll();
 }
@@ -217,11 +212,9 @@ TEST(NowPlayingTest, PlayAllHiddenWhileAnotherSessionStillPlays) {
     int playing = 1;
     ON_CALL(controller, playingSessionCount()).WillByDefault(::testing::Invoke([&playing] { return playing; }));
 
-    // Displayed session is paused but a second app still plays.
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
     EXPECT_FALSE(np.canResumeAll());
 
-    // Second app pauses too. Provider reports the session set change.
     QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
     playing = 0;
     np.noteSessionsChanged();
@@ -247,11 +240,9 @@ TEST(NowPlayingTest, ManualResumeForgetsPauseAllSet) {
 
     EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(QStringList{QStringLiteral("Spotify.exe")}));
     np.pauseAll();
-    // Pause takes effect. Set stays.
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
     EXPECT_TRUE(np.canResumeAll());
 
-    // User resumes from the player itself. Set is dropped.
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
     EXPECT_FALSE(np.canResumeAll());
 }
@@ -265,7 +256,6 @@ TEST(NowPlayingTest, StalePlayingUpdateAfterPauseAllKeepsSet) {
     EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(QStringList{QStringLiteral("Spotify.exe")}));
     np.pauseAll();
 
-    // Timeline refresh still reports Playing. No state transition, so set stays.
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
     EXPECT_TRUE(np.canResumeAll());
 }
@@ -311,7 +301,6 @@ TEST(NowPlayingTest, EmptyTrackWithNullArtClearsEveryArtFacet) {
 
 TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
     NowPlaying np;
-    // Default accent before art.
     EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
 
     QImage red(8, 8, QImage::Format_ARGB32);
@@ -321,7 +310,6 @@ TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
     EXPECT_GT(accent.red(), accent.green());
     EXPECT_GT(accent.red(), accent.blue());
 
-    // Clearing art restores default accent.
     np.applyArt(QImage());
     EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
 }
@@ -349,7 +337,7 @@ TEST(NowPlayingTest, SeekToFractionNoOpWithoutDuration) {
     NowPlaying np;
     MockController controller;
     np.setController(&controller);
-    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"))); // durationMs stays 0
+    np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band")));
 
     EXPECT_CALL(controller, seek(::testing::_)).Times(0);
     np.seekToFraction(0.5);

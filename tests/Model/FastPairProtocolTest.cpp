@@ -11,7 +11,6 @@ std::vector<std::uint8_t> bytes(std::initializer_list<int> values) {
 } // namespace
 
 TEST(FastPairProtocolTest, DrainsCompleteFramesAndKeepsPartialTail) {
-    // Model-id frame. Then first 3 bytes of second frame.
     auto buffer = bytes({0x03, 0x01, 0x00, 0x03, 0x3F, 0x6F, 0x4A, 0x03, 0x02, 0x00});
     const auto frames = drainFrames(buffer);
 
@@ -19,7 +18,7 @@ TEST(FastPairProtocolTest, DrainsCompleteFramesAndKeepsPartialTail) {
     EXPECT_EQ(frames[0].group, 0x03);
     EXPECT_EQ(frames[0].code, 0x01);
     EXPECT_EQ(frames[0].payload, bytes({0x3F, 0x6F, 0x4A}));
-    EXPECT_EQ(buffer.size(), 3u); // Partial frame preserved for next read.
+    EXPECT_EQ(buffer.size(), 3u);
 }
 
 TEST(FastPairProtocolTest, DrainsSeveralFramesFromOneRead) {
@@ -57,7 +56,7 @@ TEST(FastPairProtocolTest, ParsesTrueWirelessLeftRightCase) {
     EXPECT_EQ(components[0].percent, 100);
     EXPECT_EQ(components[1].percent, 90);
     EXPECT_EQ(components[2].percent, 100);
-    EXPECT_EQ(lowestPercent(components), 90); // Ring shows weakest component.
+    EXPECT_EQ(lowestPercent(components), 90);
 }
 
 TEST(FastPairProtocolTest, DecodesTheChargingBit) {
@@ -82,7 +81,7 @@ TEST(FastPairProtocolTest, TreatsUnknownLevelsAsMissing) {
     ASSERT_EQ(components.size(), 3u);
     EXPECT_EQ(components[0].percent, -1);
     EXPECT_EQ(components[1].percent, 90);
-    EXPECT_EQ(lowestPercent(components), 90); // unknown components are skipped, not treated as 0
+    EXPECT_EQ(lowestPercent(components), 90);
 }
 
 TEST(FastPairProtocolTest, IgnoresNonBatteryFrames) {

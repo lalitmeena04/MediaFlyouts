@@ -119,14 +119,12 @@ QString mergedDeviceName(const QStringList& names) {
         prefix.truncate(shared);
     }
 
-    // Drop a half-finished word, unless the prefix is already a whole function name.
     if(!cleaned.contains(prefix, Qt::CaseInsensitive)) {
         const int lastSpace = prefix.lastIndexOf(QLatin1Char(' '));
         prefix = lastSpace > 0 ? prefix.left(lastSpace) : QString();
     }
     prefix = prefix.trimmed();
 
-    // Too little in common to name the device. Keep the first function name.
     return prefix.size() >= 3 ? prefix : cleaned.first();
 }
 

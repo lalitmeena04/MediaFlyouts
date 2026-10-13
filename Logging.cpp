@@ -18,7 +18,6 @@ namespace mf {
 
 namespace {
 
-// Qt and QML messages land in the same file as TRC_* lines.
 void qtMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message) {
     spdlog::level::level_enum level = spdlog::level::debug;
     switch(type) {
@@ -49,20 +48,17 @@ void flushLogging() {
 
 QString initLogging() {
 #if SPDLOG_ACTIVE_LEVEL >= SPDLOG_LEVEL_OFF
-    // Logging disabled at build time. No file. No sinks.
     return {};
 #else
     const QString dir = logDir();
     QDir().mkpath(dir);
     const QString file = dir + QStringLiteral("/mediaflyouts.log");
-    // Runtime level matches the compile-time level. Qt messages obey it too.
     const auto level = static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL);
 
     try {
         std::vector<spdlog::sink_ptr> sinks;
         auto fileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
             file.toStdString(), static_cast<std::size_t>(kLogFileMaxBytes), kLogFilesKept);
-        // Repeated identical lines within 5 s collapse into one "Skipped N" line.
         auto dedup = std::make_shared<spdlog::sinks::dup_filter_sink_mt>(std::chrono::seconds(5));
         dedup->add_sink(fileSink);
         sinks.push_back(dedup);
@@ -71,15 +67,12 @@ QString initLogging() {
 #endif
         auto logger = std::make_shared<spdlog::logger>("mediaflyouts", sinks.begin(), sinks.end());
         logger->set_level(level);
-        // Warnings hit disk at once. Everything else every 2 s.
         logger->flush_on(spdlog::level::warn);
         logger->set_pattern("%Y-%m-%d %H:%M:%S.%e [%L] [t:%t] %v  (%s:%#)");
         spdlog::set_default_logger(logger);
         spdlog::set_level(level);
         spdlog::flush_every(std::chrono::seconds(2));
     } catch(const std::exception&) {
-        // Keep process alive if file sink fails.
-        // Default stdout logger stays active.
         spdlog::set_level(level);
     }
     qInstallMessageHandler(qtMessageHandler);

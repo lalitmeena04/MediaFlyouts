@@ -1,12 +1,10 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// Device row for the peripherals page. The name is editable, because a dongle
-// often reports something unhelpful like "2.4G Wireless Receiver".
 Item {
     id: row
 
-    // Detected name. Stays the device identity even after a rename.
+    // Detected name. Stays the device identity after a rename.
     required property string deviceName
     property string description: ""
     property bool value: false
@@ -58,7 +56,6 @@ Item {
                     border.color: theme.accent
                 }
                 onAccepted: row.commit(text)
-                // Clicking elsewhere keeps the edit rather than dropping it.
                 onActiveFocusChanged: if(!activeFocus && row.editing) row.commit(text)
                 Keys.onEscapePressed: row.editing = false
             }

@@ -8,8 +8,6 @@
 
 struct ISimpleAudioVolume;
 
-// Enumerate per-app audio sessions on default render device.
-// Expose sessions to QML for volume and mute control.
 class VolumeMixer : public QObject {
         Q_OBJECT
         Q_PROPERTY(QVariantList sessions READ sessions NOTIFY sessionsChanged)
@@ -21,7 +19,6 @@ class VolumeMixer : public QObject {
         QVariantList sessions() const;
 
     public slots:
-        // Rebuild session list from current audio sessions.
         void refresh();
         void setSessionVolume(int index, int volume);
         void setSessionMute(int index, bool muted);
@@ -38,6 +35,5 @@ class VolumeMixer : public QObject {
         };
         std::vector<Entry> m_entries;
         QVariantList m_sessions;
-        // Exe path maps to icon data URI. Avoid extraction every refresh.
         QHash<QString, QString> m_iconCache;
 };

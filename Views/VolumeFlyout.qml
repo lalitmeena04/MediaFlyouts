@@ -5,9 +5,7 @@ import MediaFlyouts
 FlyoutBase {
     id: root
     width: 320
-    // Grow to fit per-app mixer when expanded.
     property bool expanded: false
-    // True while app slider is dragged. Prevent list rebuild.
     property bool appDragging: false
     readonly property int sessionCount: volumeMixer.sessions.length
     height: 64 + (expanded ? (16 + Math.max(1, sessionCount) * 48) : 0)
@@ -36,12 +34,10 @@ FlyoutBase {
         present()
     }
 
-    // Collapse mixer after fade-out.
     function afterHide() {
         root.expanded = false
     }
 
-    // Toggle per-app mixer. Keep flyout open while shown.
     function toggleMixer() {
         root.expanded = !root.expanded
         if(root.expanded) {
@@ -52,7 +48,6 @@ FlyoutBase {
         }
     }
 
-    // Refresh app levels while mixer is open.
     Timer {
         interval: 1000
         running: root.visible && root.expanded && !root.appDragging
@@ -88,7 +83,6 @@ FlyoutBase {
             anchors.rightMargin: 12
             spacing: 8
 
-            // Master volume row.
             Row {
                 width: parent.width
                 height: 40
@@ -147,7 +141,6 @@ FlyoutBase {
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                // Expand toggle for per-app mixer.
                 Text {
                     visible: settings.volumeFlyoutMixerEnabled
                     text: root.expanded ? "\u25B4" : "\u25BE"
@@ -174,7 +167,6 @@ FlyoutBase {
                 color: theme.flyoutBorder
             }
 
-            // Per-application mixer.
             Column {
                 visible: root.expanded
                 width: parent.width
@@ -192,7 +184,6 @@ FlyoutBase {
                     delegate: Row {
                         id: appRow
                         required property var modelData
-                        // Optimistic value. Handle tracks pointer before refresh.
                         property real shown: modelData.volume
                         width: parent.width
                         height: 40
@@ -204,7 +195,6 @@ FlyoutBase {
                             root.stopAutoHide()
                         }
 
-                        // Use app icon when available. Mute glyph wins when muted.
                         Item {
                             width: 18
                             height: 18

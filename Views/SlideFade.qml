@@ -1,22 +1,17 @@
 import QtQuick
 import MediaFlyouts
 
-// Slide-and-fade transition for widget content.
 // Bind a Translate on the target to `offset`. Then call enter(), leave() or replace().
 Item {
     id: fx
     property Item target: null
-    // Distance the content travels in px.
     property int distance: 14
-    // Scroll step. Positive moves content toward negative offset on leave.
     property int direction: 1
     property int durationMs: Anim.moveMs
     property real offset: 0
     readonly property bool running: enterAnim.running || leaveAnim.running
-    // Emitted when leave() ends. Not emitted when replace() swaps in place.
     signal finishedLeave()
 
-    // Callback run between leave and enter of replace().
     property var pendingSwap: null
 
     function reset() {
@@ -40,7 +35,6 @@ Item {
         fx.pendingSwap = null
         leaveAnim.restart()
     }
-    // Leave, run swap, then enter. Content changes while it is hidden.
     function replace(swap) {
         enterAnim.stop()
         fx.pendingSwap = swap

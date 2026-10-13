@@ -3,7 +3,6 @@ import QtQuick.Window
 import QtQuick.Controls.Basic
 import MediaFlyouts
 
-// First-run wizard that introduces the app and captures a few key preferences.
 Window {
     id: root
     width: 520
@@ -48,7 +47,6 @@ Window {
             }
         }
 
-        // Step content is between header and footer. It cannot overlap them.
         Item {
             anchors.top: header.bottom
             anchors.topMargin: 18
@@ -58,7 +56,6 @@ Window {
             anchors.right: parent.right
             clip: true
 
-            // 0: welcome
             Column {
                 visible: root.step === 0
                 width: parent.width
@@ -79,7 +76,6 @@ Window {
                 }
             }
 
-            // 1: theme
             Column {
                 visible: root.step === 1
                 width: parent.width
@@ -100,7 +96,6 @@ Window {
                 }
             }
 
-            // 2: features
             Column {
                 visible: root.step === 2
                 width: parent.width
@@ -140,7 +135,6 @@ Window {
                 }
             }
 
-            // 3: peripherals
             Column {
                 visible: root.step === 3
                 width: parent.width
@@ -176,7 +170,6 @@ Window {
                 }
             }
 
-            // 4: startup
             Column {
                 visible: root.step === 4
                 width: parent.width
@@ -211,7 +204,6 @@ Window {
             }
         }
 
-        // Pinned to bottom. Step content sizes around it.
         Column {
             id: footer
             anchors.bottom: parent.bottom

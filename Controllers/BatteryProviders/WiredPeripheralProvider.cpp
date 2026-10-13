@@ -29,7 +29,6 @@ QString devNodeDisplayName(DEVINST devInst) {
     return devNodeStringProperty(devInst, DEVPKEY_Device_DeviceDesc);
 }
 
-// One physical device. Its function nodes merge into this.
 struct WiredContainer {
         QStringList names;
         QStringList categories;

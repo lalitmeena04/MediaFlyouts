@@ -2,8 +2,6 @@
 
 #include <QObject>
 
-// Move Windows volume OSD off-screen. Let VolumeFlyout replace it.
-// Restore it on shutdown.
 class NativeFlyoutSuppressor : public QObject {
         Q_OBJECT
 
@@ -14,9 +12,7 @@ class NativeFlyoutSuppressor : public QObject {
         void start();
 
     public slots:
-        // Ensure native OSD host is off-screen. Safe to call again.
         void arm();
-        // Restore native OSD when override is off.
         void restore();
 
     private:

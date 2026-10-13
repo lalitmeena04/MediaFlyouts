@@ -11,7 +11,6 @@
 
 namespace {
 
-// Same folder as the settings ini, so config and profiles sit together.
 QString receiverProfilesPath() {
     const QSettings store(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
                           QStringLiteral("MediaFlyouts"));

@@ -19,7 +19,6 @@ class SettingsQtTest : public QObject {
 };
 
 void SettingsQtTest::initTestCase() {
-    // Keep tests from touching real user configuration.
     QStandardPaths::setTestModeEnabled(true);
 }
 
@@ -64,13 +63,11 @@ void SettingsQtTest::defaults() {
     QCOMPARE(s.flyoutAnimationMs(), 300);
     QCOMPARE(s.flyoutAnimationEasingStyle(), 3);
     QCOMPARE(s.volumeFlyoutDuration(), 1800);
-    // Volume flyout has independent placement.
     QCOMPARE(s.volumeFlyoutPosition(), 4);
     QCOMPARE(s.volumeFlyoutMonitor(), 0);
     QCOMPARE(s.nextUpDuration(), 2000);
     QCOMPARE(s.nextUpStyle(), 0);
     QCOMPARE(s.taskbarWidgetOffset(), 0);
-    // Seeded from system taskbar alignment. Only range is fixed.
     QVERIFY(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
     QCOMPARE(s.taskbarWidgetMonitor(), 0);
     QCOMPARE(s.taskbarWidgetLayout(), 0);
@@ -81,7 +78,6 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
     QCOMPARE(s.visualizerStyle(), 0);
-    // Peripheral flyout starts off. Default position is bottom center.
     QVERIFY(!s.peripheralFlyoutEnabled());
     QCOMPARE(s.peripheralFlyoutDuration(), 3000);
     QCOMPARE(s.peripheralFlyoutPosition(), 4);
@@ -110,7 +106,7 @@ void SettingsQtTest::setterEmitsChanged() {
 void SettingsQtTest::redundantSetDoesNotEmit() {
     Settings s;
     QSignalSpy spy(&s, &Settings::changed);
-    s.setNextUpEnabled(true); // already default
+    s.setNextUpEnabled(true);
     QCOMPARE(spy.count(), 0);
 }
 
@@ -136,7 +132,6 @@ void SettingsQtTest::legacySettingsKeepTheirValuesAndGainNewDefaults() {
     QCOMPARE(settings.flyoutPosition(), 2);
     QVERIFY(!settings.taskbarWidgetEnabled());
 
-    // Old INI files lack these values. Initialize without overwrite.
     QVERIFY(!settings.peripheralFlyoutEnabled());
     QCOMPARE(settings.peripheralFlyoutDuration(), 3000);
     QVERIFY(settings.peripheralFlyoutOnConnect());

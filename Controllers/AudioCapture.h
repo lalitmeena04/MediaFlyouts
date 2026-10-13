@@ -12,8 +12,6 @@ struct IAudioClient;
 struct IAudioCaptureClient;
 struct tWAVEFORMATEX;
 
-// Capture default render endpoint in WASAPI loopback mode.
-// Normalize signal to frequency bands for visualizer.
 class AudioCapture : public QObject {
         Q_OBJECT
         Q_PROPERTY(QVariantList bands READ bands NOTIFY bandsChanged)
@@ -36,7 +34,6 @@ class AudioCapture : public QObject {
         void bandsChanged();
         void activeChanged();
         void levelChanged();
-        // Emitted on detected bass beat. Particle visualizer consumes it.
         void beat();
 
     private:

@@ -4,7 +4,6 @@
 
 #include "Capabilities.h"
 
-// Capabilities start available. Subsystem failure clears them.
 TEST(CapabilitiesTest, DefaultsToAvailable) {
     Capabilities caps;
     EXPECT_TRUE(caps.audioAvailable());
@@ -37,13 +36,13 @@ TEST(CapabilitiesTest, EmitsChangedOnlyOnTransition) {
     Capabilities caps;
     QSignalSpy spy(&caps, &Capabilities::changed);
 
-    caps.setAudioAvailable(true); // no-op, already available
+    caps.setAudioAvailable(true);
     EXPECT_EQ(spy.count(), 0);
 
     caps.setAudioAvailable(false);
     EXPECT_EQ(spy.count(), 1);
 
-    caps.setAudioAvailable(false); // no-op, unchanged
+    caps.setAudioAvailable(false);
     EXPECT_EQ(spy.count(), 1);
 
     caps.setAudioAvailable(true);
@@ -67,7 +66,6 @@ TEST(CapabilitiesTest, ListsEveryDownSubsystemByName) {
     EXPECT_EQ(caps.statusSummary(), QStringLiteral("MediaFlyouts\nUnavailable: Audio devices, Lock keys"));
 }
 
-// Desktops have no battery. That is normal, not a failure.
 TEST(CapabilitiesTest, MissingChargerDoesNotCountAsDegraded) {
     Capabilities caps;
     caps.setChargerAvailable(false);

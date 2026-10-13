@@ -3,8 +3,6 @@
 #include <QObject>
 #include <QString>
 
-// Enable or disable auto-launch at logon.
-// MSIX builds use StartupTask. Unpackaged builds use Run key.
 class StartupController : public QObject {
         Q_OBJECT
 
@@ -12,7 +10,6 @@ class StartupController : public QObject {
         explicit StartupController(QObject* parent = nullptr);
 
     public slots:
-        // Make Run entry match enable. Point it at current executable.
         void setEnabled(bool enable);
 
     private:

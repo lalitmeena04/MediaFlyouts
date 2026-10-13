@@ -2,17 +2,12 @@ pragma Singleton
 import QtQuick
 import MediaFlyouts
 
-// Device-type glyph for battery widgets.
-// Prefer real device category. Fall back to name-keyword guess.
-// Font Awesome fills Fluent gaps.
 QtObject {
-    // Font Awesome is only used here.
     property FontLoader _fa: FontLoader {
         source: "qrc:/qt/qml/MediaFlyouts/assets/fonts/FontAwesome6-Solid.ttf"
     }
     readonly property string faFamily: _fa.name
 
-    // Resolve device to glyph and font source.
     function _resolve(name, connectionKind, category) {
         var cat = category
         if(!cat) {
@@ -32,19 +27,17 @@ QtObject {
             return { "glyph": Fluent.gamepad, "fa": false }
         if(cat === "headset")
             return { "glyph": Fluent.headset, "fa": false }
-        return { "glyph": Fluent.headphones, "fa": false } // Default audio glyph.
+        return { "glyph": Fluent.headphones, "fa": false }
     }
 
     function glyph(name, connectionKind, category) {
         return _resolve(name, connectionKind, category).glyph
     }
 
-    // Font family for glyph(). Fluent and Font Awesome are separate.
     function family(name, connectionKind, category) {
         return _resolve(name, connectionKind, category).fa ? faFamily : Fluent.fontFamily
     }
 
-    // Device transport label for tooltips.
     function transport(connectionKind) {
         switch(connectionKind) {
         case "bluetooth":
@@ -58,7 +51,6 @@ QtObject {
         return ""
     }
 
-    // Wired devices run off the cable. Absent is not the same as unknown.
     function hasBattery(connectionKind) {
         return connectionKind !== "usb"
     }
