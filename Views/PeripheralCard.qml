@@ -32,7 +32,9 @@ Item {
             height: 40
             thickness: 4
             percent: card.hasBattery ? card.alert.percent : 0
-            showGauge: DeviceIcons.hasBattery(card.alert.connectionKind)
+            charging: card.alert.charging === true
+            badgeBackground: theme.flyout
+            showGauge: DeviceIcons.hasBattery(card.alert.connectionKind, card.alert.percent)
 
             Text {
                 anchors.centerIn: parent

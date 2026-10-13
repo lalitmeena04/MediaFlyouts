@@ -864,7 +864,7 @@ Window {
                                         model: modelData.devices
                                         delegate: Rectangle {
                                     required property var modelData
-                                    readonly property bool hasBattery: DeviceIcons.hasBattery(modelData.connectionKind)
+                                    readonly property bool hasBattery: DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)
                                     width: 108
                                     height: modelData.components.length > 1 ? 168 : (hasBattery ? 128 : 112)
                                     radius: 12
@@ -882,6 +882,7 @@ Window {
                                             height: 64
                                             thickness: 5
                                             percent: modelData.percent
+                                            charging: modelData.charging
                                             showGauge: hasBattery
 
                                             Text {
@@ -931,6 +932,7 @@ Window {
                                                         height: 22
                                                         thickness: 2
                                                         percent: modelData.percent
+                                                        charging: modelData.charging
                                                     }
                                                     Text {
                                                         anchors.horizontalCenter: parent.horizontalCenter

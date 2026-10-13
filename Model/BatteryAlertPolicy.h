@@ -18,6 +18,7 @@ struct PeripheralAlert {
         BatteryBucket bucket = BatteryBucket::Unknown;
         QString category;
         QString connectionKind;
+        bool charging = false;
 };
 
 struct PeripheralSnapshot {

@@ -257,8 +257,8 @@ TEST(QmlContractTest, CamerasUseTheCameraGlyph) {
 
 TEST(QmlContractTest, WiredDevicesShowNoBatteryInfo) {
     const QString icons = loadSource("Views/DeviceIcons.qml");
-    expectContains(icons, QStringLiteral("function hasBattery(connectionKind)"));
-    expectContains(icons, QStringLiteral("connectionKind !== \"usb\""));
+    expectContains(icons, QStringLiteral("function hasBattery(connectionKind, percent)"));
+    expectContains(icons, QStringLiteral("connectionKind !== \"usb\" || percent >= 0"));
 
     const QString bring = loadSource("Views/BatteryRing.qml");
     expectContains(bring, QStringLiteral("property bool showGauge"));
@@ -266,11 +266,35 @@ TEST(QmlContractTest, WiredDevicesShowNoBatteryInfo) {
     expectContains(bring, QStringLiteral("if(!ring.showGauge)"));
 
     const QString widget = loadSource("Views/PeripheralsWidget.qml");
-    expectContains(widget, QStringLiteral("showGauge: DeviceIcons.hasBattery(modelData.connectionKind)"));
-    expectContains(widget, QStringLiteral("if(DeviceIcons.hasBattery(modelData.connectionKind))"));
+    expectContains(widget,
+                   QStringLiteral("showGauge: DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)"));
+    expectContains(widget,
+                   QStringLiteral("if(DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent))"));
 
     expectContains(loadSource("Views/PeripheralCard.qml"),
-                   QStringLiteral("showGauge: DeviceIcons.hasBattery(card.alert.connectionKind)"));
+                   QStringLiteral("showGauge: DeviceIcons.hasBattery(card.alert.connectionKind, card.alert.percent)"));
+    expectContains(loadSource("Views/Dashboard.qml"),
+                   QStringLiteral("DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)"));
+}
+
+TEST(QmlContractTest, BatteryRingShowsChargingSweepAndBadge) {
+    const QString ring = loadSource("Views/BatteryRing.qml");
+    expectContains(ring, QStringLiteral("property bool charging: false"));
+    expectContains(ring, QStringLiteral("property color badgeBackground"));
+    expectContains(ring, QStringLiteral("readonly property bool chargingShown: charging && showGauge"));
+    expectContains(ring, QStringLiteral("NumberAnimation on sweep"));
+    expectContains(ring, QStringLiteral("running: ring.chargingShown && ring.visible"));
+    expectContains(ring, QStringLiteral("loops: Animation.Infinite"));
+    expectContains(ring, QStringLiteral("id: chargeBadge"));
+    expectContains(ring, QStringLiteral("visible: ring.chargingShown"));
+    expectContains(ring, QStringLiteral("anchors.verticalCenter: parent.bottom"));
+    expectContains(ring, QStringLiteral("text: Fluent.flash"));
+
+    expectContains(loadSource("Views/PeripheralsWidget.qml"), QStringLiteral("charging: modelData.charging"));
+    expectContains(loadSource("Views/Dashboard.qml"), QStringLiteral("charging: modelData.charging"));
+    const QString card = loadSource("Views/PeripheralCard.qml");
+    expectContains(card, QStringLiteral("charging: card.alert.charging === true"));
+    expectContains(card, QStringLiteral("badgeBackground: theme.flyout"));
 }
 
 TEST(QmlContractTest, WiredWidgetToggleIsSeparatedFromWirelessDevices) {

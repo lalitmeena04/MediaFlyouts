@@ -105,6 +105,7 @@ TEST(PeripheralAlertsTest, ReportsChargingTransitions) {
 
     ASSERT_EQ(alerts.pending().size(), 1);
     EXPECT_EQ(eventOf(alerts.pending(), 0), QStringLiteral("chargingStarted"));
+    EXPECT_TRUE(alerts.pending().at(0).toMap().value(QStringLiteral("charging")).toBool());
 }
 
 TEST(PeripheralAlertsTest, ExposesBucketLabels) {

@@ -11,6 +11,7 @@
 #include "BatteryProviders/FastPairBatteryProvider.h"
 #include "BatteryProviders/GameControllerBatteryProvider.h"
 #include "BatteryProviders/IBatteryProvider.h"
+#include "BatteryProviders/JabraBatteryProvider.h"
 #include "BatteryProviders/LogitechBatteryProvider.h"
 #include "BatteryProviders/PlayStationControllerBatteryProvider.h"
 #include "BatteryProviders/RazerBatteryProvider.h"
@@ -26,6 +27,7 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
     m_providers.push_back(std::make_unique<PlayStationControllerBatteryProvider>());
     m_providers.push_back(std::make_unique<RazerBatteryProvider>());
     m_providers.push_back(std::make_unique<LogitechBatteryProvider>());
+    m_providers.push_back(std::make_unique<JabraBatteryProvider>());
     m_providers.push_back(std::make_unique<WirelessReceiverProvider>());
     // Wired devices carry no battery. Listed last so a wireless reading always wins the name.
     m_providers.push_back(std::make_unique<WiredPeripheralProvider>());

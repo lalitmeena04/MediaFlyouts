@@ -84,6 +84,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/HidppProtocol.cpp
     Model/HidppProtocol.h
     Model/InstallSource.cpp
+    Model/JabraGnpProtocol.cpp
+    Model/JabraGnpProtocol.h
     Model/InstallSource.h
     Model/PlaybackController.cpp
     Model/PlaybackController.h
@@ -258,6 +260,8 @@ if (WIN32)
         Controllers/BatteryProviders/HidCollections.cpp
         Controllers/BatteryProviders/HidCollections.h
         Controllers/BatteryProviders/IBatteryProvider.h
+        Controllers/BatteryProviders/JabraBatteryProvider.cpp
+        Controllers/BatteryProviders/JabraBatteryProvider.h
         Controllers/BatteryProviders/LogitechBatteryProvider.cpp
         Controllers/BatteryProviders/LogitechBatteryProvider.h
         Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp

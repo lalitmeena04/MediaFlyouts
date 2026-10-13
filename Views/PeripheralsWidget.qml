@@ -221,7 +221,8 @@ DockableWidget {
                                     height: 26
                                     thickness: 3
                                     percent: modelData.percent
-                                    showGauge: DeviceIcons.hasBattery(modelData.connectionKind)
+                                    charging: modelData.charging
+                                    showGauge: DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)
 
                                     Text {
                                         anchors.centerIn: parent
@@ -238,7 +239,7 @@ DockableWidget {
                                             onHoveredChanged: {
                                                 if(hovered) {
                                                     var tipText = settings.peripheralNames[modelData.name] || modelData.name
-                                                    if(DeviceIcons.hasBattery(modelData.connectionKind)) {
+                                                    if(DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)) {
                                                         tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
                                                         if(modelData.charging)
                                                             tipText += " \u26A1"

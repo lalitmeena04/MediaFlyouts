@@ -51,7 +51,8 @@ QtObject {
         return ""
     }
 
-    function hasBattery(connectionKind) {
-        return connectionKind !== "usb"
+    // A wired device normally has no battery. One that reports a level does.
+    function hasBattery(connectionKind, percent) {
+        return connectionKind !== "usb" || percent >= 0
     }
 }

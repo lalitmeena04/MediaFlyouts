@@ -38,4 +38,5 @@ QtObject {
     readonly property string shuffle: "\uEF37"
     readonly property string info: "\uF4AA"
     readonly property string charge: "\uF1CF"
+    readonly property string flash: "\uE625"
 }

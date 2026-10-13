@@ -44,7 +44,7 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
         if((!known || (reappeared && state.disconnectReported)) && m_seeded) {
             if(timestampMs - state.lastConnectionEventMs >= m_debounceMs) {
                 alerts.append({PeripheralEvent::Connected, device.name, device.percent, bucketOf(device.percent),
-                               device.category, device.connectionKind});
+                               device.category, device.connectionKind, device.charging});
                 state.lastConnectionEventMs = timestampMs;
             }
         }
@@ -55,7 +55,7 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
         if(known && !reappeared && device.charging != state.charging) {
             alerts.append({device.charging ? PeripheralEvent::ChargingStarted : PeripheralEvent::ChargingStopped,
                            device.name, device.percent, bucketOf(device.percent), device.category,
-                           device.connectionKind});
+                           device.connectionKind, device.charging});
         }
 
         // Charging above threshold arms alert again.
@@ -93,7 +93,8 @@ QVector<PeripheralAlert> BatteryAlertPolicy::update(const QVector<PeripheralSnap
             if(!it.value().disconnectReported &&
                timestampMs - it.value().absentSinceMs >= m_debounceMs) {
                 alerts.append({PeripheralEvent::Disconnected, it.key(), it.value().percent,
-                               bucketOf(it.value().percent), it.value().category, it.value().connectionKind});
+                               bucketOf(it.value().percent), it.value().category, it.value().connectionKind,
+                               it.value().charging});
                 it.value().disconnectReported = true;
                 it.value().lastConnectionEventMs = timestampMs;
             } else if(it.value().disconnectReported &&

@@ -133,10 +133,27 @@ TEST(BatteryAlertPolicyTest, ReportsChargingTransitions) {
     auto alerts = policy.update(snapshot({{"Earbuds", 50, true}}), 10000);
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::ChargingStarted);
+    EXPECT_TRUE(alerts[0].charging);
 
     alerts = policy.update(snapshot({{"Earbuds", 55, false}}), 20000);
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::ChargingStopped);
+    EXPECT_FALSE(alerts[0].charging);
+}
+
+TEST(BatteryAlertPolicyTest, ConnectAndDisconnectCarryTheChargingState) {
+    BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 55, false}}));
+
+    auto alerts = policy.update(snapshot({{"Mouse", 55, false}, {"Headset", 80, true}}), 10000);
+    ASSERT_EQ(alerts.size(), 1);
+    EXPECT_EQ(alerts[0].event, PeripheralEvent::Connected);
+    EXPECT_TRUE(alerts[0].charging);
+
+    policy.update(snapshot({{"Mouse", 55, false}}), 20000);
+    alerts = policy.update(snapshot({{"Mouse", 55, false}}), 24000);
+    ASSERT_EQ(alerts.size(), 1);
+    EXPECT_EQ(alerts[0].event, PeripheralEvent::Disconnected);
+    EXPECT_TRUE(alerts[0].charging);
 }
 
 TEST(BatteryAlertPolicyTest, DebouncesAFlappingBluetoothLink) {

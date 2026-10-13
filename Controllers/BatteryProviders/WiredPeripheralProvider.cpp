@@ -2,6 +2,8 @@
 
 #include "DevNodeHelpers.h"
 #include "WiredPeripheralRules.h"
+#include "JabraBatteryProvider.h"
+#include "JabraGnpProtocol.h"
 #include "WirelessReceiverProvider.h"
 
 #include <windows.h>
@@ -35,12 +37,15 @@ struct WiredContainer {
 };
 
 // A dongle is not the peripheral. WirelessReceiverProvider reports its paired device.
+// A Jabra GNP device reports its own battery through JabraBatteryProvider.
 bool isKnownReceiver(const QString& instanceId) {
     quint16 vendorId = 0;
     quint16 productId = 0;
     if(!mf::parseUsbVendorProduct(instanceId, vendorId, productId))
         return false;
-    return wirelessReceiverProfile(vendorId, productId) != nullptr;
+    if(wirelessReceiverProfile(vendorId, productId) != nullptr)
+        return true;
+    return vendorId == gnp::kVendorId && jabraGnpProductPresent(productId);
 }
 
 } // namespace
