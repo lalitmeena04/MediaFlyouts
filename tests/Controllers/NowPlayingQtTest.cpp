@@ -170,7 +170,6 @@ void NowPlayingQtTest::manualPauseOfEverythingOffersPlayAll() {
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing));
     QVERIFY(!np.canResumeAll());
 
-    // User pauses from the player. No pauseAll() involved.
     controller.playing.clear();
     np.applyTrack(makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Paused));
     QVERIFY(np.canResumeAll());

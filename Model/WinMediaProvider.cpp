@@ -77,7 +77,6 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
     QMetaObject::invokeMethod(this, [this] { emit availabilityChanged(); }, Qt::QueuedConnection);
 
     m_currentChangedToken = m_manager.CurrentSessionChanged([this](auto&&, auto&&) {
-        // OS current session controls. User selection overrides it.
         if(!m_manual) {
             hookSession(m_manager.GetCurrentSession());
             refreshSessionMeta();
@@ -86,7 +85,6 @@ winrt::fire_and_forget WinMediaProvider::initAsync() {
     });
 
     m_sessionsChangedToken = m_manager.SessionsChanged([this](auto&&, auto&&) {
-        // If chosen session is gone, use OS current session.
         if(m_manual) {
             auto sessions = m_manager.GetSessions();
             QString selectedAppId;
@@ -181,7 +179,6 @@ void WinMediaProvider::resumeAllSessions() {
         for(uint32_t i = 0; i < sessions.Size(); ++i) {
             try {
                 auto s = sessions.GetAt(i);
-                // Stopped or closed sessions stay as they are.
                 if(s.GetPlaybackInfo().PlaybackStatus() == PlaybackStatus::Paused)
                     s.TryPlayAsync();
             } catch(...) {
@@ -331,7 +328,6 @@ void WinMediaProvider::queueRefresh(Session session) {
     QMetaObject::invokeMethod(this, [this, session] { refresh(session); }, Qt::QueuedConnection);
 }
 
-// Coroutine. Use co_await. Safe for STA thread.
 winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     if(!session)
         co_return;
@@ -420,8 +416,7 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     const bool freshEmpty = track.title.isEmpty() && track.artist.isEmpty() && track.album.isEmpty();
     const bool active = track.state == mf::PlaybackState::Playing || track.state == mf::PlaybackState::Paused;
 
-    // Streaming apps can report empty metadata during buffering.
-    // Keep last good metadata for same source app.
+    // Streaming apps can report empty metadata during buffering. Keep the last good one.
     {
         std::lock_guard<std::mutex> lock(m_lastMutex);
         const bool lastHadMeta =
@@ -438,7 +433,7 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
         if(!art.isNull())
             m_lastArt = art;
         else if(!active)
-            m_lastArt = QImage(); // Media stopped. Drop stale artwork.
+            m_lastArt = QImage();
     }
 
     QMetaObject::invokeMethod(

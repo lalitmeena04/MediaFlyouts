@@ -89,8 +89,10 @@ stay in the report. Nothing is uploaded by the app.
   disconnect events arriving mid-poll are coalesced rather than dropped.
 - **BatteryProviders/** — one per transport: Bluetooth Classic (Hands-Free
   battery property), Bluetooth LE (GATT), Fast Pair (RFCOMM message stream),
-  DualSense (raw HID), Razer (90-byte feature reports) and Logitech (HID++,
-  long-report collection, all receiver slots probed at once).
+  DualSense (raw HID), Razer (90-byte feature reports), Logitech (HID++,
+  long-report collection, all receiver slots probed at once) and Jabra (GN
+  protocol through a Link adapter or the headset cable; wired-provider nodes
+  of the same product are suppressed).
   `HidCollections` is the shared HID enumeration helper; `DevNodeHelpers`
   holds the shared `CM_*` device-node property and Bluetooth address helpers.
 - **BluetoothConnectionWatcher / HidChangeWatcher** — instant connect and

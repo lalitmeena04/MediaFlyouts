@@ -60,7 +60,7 @@ TEST(FftTest, FrequencyBarsSilenceStaysLow) {
     for(double v : bars) {
         EXPECT_GE(v, 0.0);
         EXPECT_LE(v, 1.0);
-        EXPECT_LT(v, 0.05); // near-silence must not light the bars
+        EXPECT_LT(v, 0.05);
     }
 }
 
@@ -68,9 +68,8 @@ TEST(FftTest, FrequencyBarsLightBarAtToneFrequency) {
     const int fftSize = 1024;
     const double sampleRate = 48000.0;
     std::vector<double> mags(fftSize / 2, 0.0);
-    // Strong component near 1 kHz maps to bin 21.
     const int bin = static_cast<int>(1000.0 / (sampleRate / fftSize));
-    mags[bin] = fftSize * 0.5; // Full-scale magnitude.
+    mags[bin] = fftSize * 0.5;
 
     const int bars = 16;
     const std::vector<double> out = mf::frequencyBars(mags, sampleRate, fftSize, bars);
@@ -78,7 +77,7 @@ TEST(FftTest, FrequencyBarsLightBarAtToneFrequency) {
     double maxV = 0.0;
     for(double v : out)
         maxV = std::max(maxV, v);
-    EXPECT_GT(maxV, 0.5); // the tone should drive at least one bar high
+    EXPECT_GT(maxV, 0.5);
 }
 
 TEST(FftTest, MagnitudeSpectrumTruncatesToLargestPowerOfTwo) {
@@ -102,7 +101,7 @@ TEST(FftTest, SpectrumBandsZeroForTinyInput) {
 
 TEST(FftTest, FrequencyBarsGuardInvalidArguments) {
     const std::vector<double> mags(512, 1.0);
-    EXPECT_TRUE(mf::frequencyBars(mags, 48000.0, 1024, 0).empty()); // no bars
+    EXPECT_TRUE(mf::frequencyBars(mags, 48000.0, 1024, 0).empty());
 
     const std::vector<double> emptyMags = mf::frequencyBars({}, 48000.0, 1024, 8);
     ASSERT_EQ(emptyMags.size(), static_cast<std::size_t>(8));

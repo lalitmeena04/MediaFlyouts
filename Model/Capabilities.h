@@ -4,8 +4,6 @@
 #include <QString>
 #include <QStringList>
 
-// Track platform subsystem availability.
-// UI hides features that need unavailable APIs.
 // Flags start available and clear only after reported failure.
 class Capabilities : public QObject {
         Q_OBJECT
@@ -24,14 +22,10 @@ class Capabilities : public QObject {
         bool mediaSessionAvailable() const;
         bool lockKeysAvailable() const;
         bool mediaKeysAvailable() const;
-        // False on systems with no battery, such as desktops.
         bool chargerAvailable() const;
 
-        // True when a subsystem the app needs is down.
         bool degraded() const;
-        // Display names of the down subsystems.
         QStringList unavailableNames() const;
-        // One-line state for the tray tooltip.
         QString statusSummary() const;
 
     public slots:

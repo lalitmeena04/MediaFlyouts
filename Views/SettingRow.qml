@@ -1,13 +1,11 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// Labelled toggle row for dashboard settings pages.
 Item {
     id: row
     property string label: ""
     property string description: ""
     property bool value: false
-    // False dims row and disables switch. unavailableNote replaces description.
     property bool available: true
     property string unavailableNote: ""
     signal toggled(bool value)

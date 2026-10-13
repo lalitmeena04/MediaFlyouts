@@ -55,14 +55,12 @@ TEST(QmlContractTest, DashboardHidesTheChargerPageOnSystemsWithNoBattery) {
     expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
 }
 
-// A down subsystem must be explained, not silently dropped.
 TEST(QmlContractTest, DashboardBannerNamesUnavailableSubsystems) {
     const QString source = loadSource("Views/Dashboard.qml");
 
     expectContains(source, QStringLiteral("id: statusBanner"));
     expectContains(source, QStringLiteral("visible: capabilities.degraded"));
     expectContains(source, QStringLiteral("capabilities.unavailableNames.join(\", \")"));
-    // Page content sits below the banner so nothing is covered.
     expectContains(source, QStringLiteral("anchors.top: statusBanner.bottom"));
 }
 
@@ -76,7 +74,6 @@ TEST(QmlContractTest, ConnectsTheFlyoutToPeripheralAlertsAndEventSettings) {
     expectContains(source, QStringLiteral("settings.peripheralFlyoutDuration"));
 }
 
-// Wired devices stay silent until the user opts in.
 TEST(QmlContractTest, WiredAlertsAreGatedByTheirOwnSetting) {
     const QString source = loadSource("Views/PeripheralFlyout.qml");
 
@@ -84,8 +81,6 @@ TEST(QmlContractTest, WiredAlertsAreGatedByTheirOwnSetting) {
     expectContains(source, QStringLiteral("settings.peripheralFlyoutOnWired"));
 }
 
-// No transport signal links a dongle to the same peripheral on another radio,
-// so hiding a device has to silence it everywhere.
 TEST(QmlContractTest, HiddenDevicesAreIgnoredOnEverySurface) {
     expectContains(loadSource("Views/PeripheralFlyout.qml"),
                    QStringLiteral("!settings.peripheralSelected(alert.name)"));
@@ -93,7 +88,6 @@ TEST(QmlContractTest, HiddenDevicesAreIgnoredOnEverySurface) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("readonly property var shownDevices"));
     expectContains(dashboard, QStringLiteral("excluded.indexOf(device.name) === -1"));
-    // The picker itself keeps listing everything, or a hidden device is unreachable.
     expectContains(dashboard, QStringLiteral("model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []"));
 }
 
@@ -103,7 +97,6 @@ TEST(QmlContractTest, WidgetHidesWiredDevicesUntilEnabled) {
     expectContains(widget, QStringLiteral("settings.peripheralsWidgetWiredEnabled"));
     expectContains(widget, QStringLiteral("\"label\": \"Wired\""));
 
-    // Dashboard offers the group toggle plus a row per wired device.
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("settings.peripheralsWidgetWiredEnabled = value"));
     expectContains(dashboard, QStringLiteral("dash.wiredDevices"));
@@ -151,18 +144,15 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
     EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
 }
 
-// An available update must offer a way to get it, not just an announcement.
 TEST(QmlContractTest, AboutPageOffersTheDownloadWhenAnUpdateExists) {
     const QString source = loadSource("Views/Dashboard.qml");
 
     expectContains(source, QStringLiteral("visible: updateChecker.updateAvailable"));
     expectContains(source, QStringLiteral("updateChecker.notifyUpdate()"));
-    // A manual check must surface a version the user skipped earlier.
     expectContains(source, QStringLiteral("settings.skippedUpdateVersion = \"\""));
     EXPECT_FALSE(source.contains(QStringLiteral("openReleasePage")));
 }
 
-// The update prompt is a dialog. It downloads in-app and then installs.
 TEST(QmlContractTest, UpdateDialogSkipsOrDownloadsThenInstalls) {
     const QString app = loadSource("Views/App.qml");
     expectContains(app, QStringLiteral("property UpdateDialog updateDialog"));
@@ -175,9 +165,7 @@ TEST(QmlContractTest, UpdateDialogSkipsOrDownloadsThenInstalls) {
     expectContains(dialog, QStringLiteral("updateChecker.install()"));
     expectContains(dialog, QStringLiteral("updateChecker.cancelDownload()"));
     expectContains(dialog, QStringLiteral("updateChecker.downloadProgress"));
-    // Release with no installer still has a way out.
     expectContains(dialog, QStringLiteral("updateChecker.openReleasePage()"));
-    // Store copies go to the Store. Portable copies go to the release page.
     expectContains(dialog, QStringLiteral("updateChecker.installKind === \"store\""));
     expectContains(dialog, QStringLiteral("updateChecker.installKind === \"portable\""));
     expectContains(dialog, QStringLiteral("updateChecker.openStorePage()"));
@@ -186,7 +174,6 @@ TEST(QmlContractTest, UpdateDialogSkipsOrDownloadsThenInstalls) {
     expectContains(dashboard, QStringLiteral("updateChecker.installKindLabel"));
 }
 
-// First run offers every major feature, including the newer peripheral ones.
 TEST(QmlContractTest, OnboardingOffersPeripheralChargerAndUpdateOptions) {
     const QString source = loadSource("Views/OnboardingWindow.qml");
 
@@ -195,12 +182,10 @@ TEST(QmlContractTest, OnboardingOffersPeripheralChargerAndUpdateOptions) {
     expectContains(source, QStringLiteral("settings.peripheralFlyoutEnabled = value"));
     expectContains(source, QStringLiteral("settings.peripheralsWidgetEnabled = value"));
     expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
-    // Desktops have no battery, so the charger row must explain itself.
     expectContains(source, QStringLiteral("available: capabilities.chargerAvailable"));
     expectContains(source, QStringLiteral("settings.autoCheckUpdates = value"));
 }
 
-// Error reports are created on demand and the user posts them by hand.
 TEST(QmlContractTest, AboutPageOffersErrorReportsAndTrayOpensIt) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("errorReporter.createReport()"));
@@ -218,14 +203,12 @@ TEST(QmlContractTest, AboutPageOffersErrorReportsAndTrayOpensIt) {
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
     const QString source = loadSource("Views/DeviceIcons.qml");
 
-    // Fluent covers most device types.
     expectContains(source, QStringLiteral("import MediaFlyouts"));
     expectContains(source, QStringLiteral("Fluent.keyboard"));
     expectContains(source, QStringLiteral("Fluent.gamepad"));
     expectContains(source, QStringLiteral("Fluent.headset"));
     expectContains(source, QStringLiteral("Fluent.headphones"));
 
-    // Mouse uses bundled Font Awesome glyph.
     expectContains(source, QStringLiteral("FontAwesome6-Solid.ttf"));
     expectContains(source, QStringLiteral("\"fa\": true"));
     expectContains(source, QStringLiteral("\\uF8CC")); // Font Awesome computer-mouse
@@ -243,7 +226,6 @@ TEST(QmlContractTest, FluentDefinesPeripheralGlyphs) {
     expectContains(source, QStringLiteral("camera: \"\\uF255\""));
 }
 
-// Every glyph in the palette must have a consumer. Unused glyphs rot.
 TEST(QmlContractTest, FluentDefinesNoUnusedGlyphs) {
     const QString fluent = loadSource("Views/Fluent.qml");
 
@@ -273,24 +255,46 @@ TEST(QmlContractTest, CamerasUseTheCameraGlyph) {
     expectContains(source, QStringLiteral("Fluent.camera"));
 }
 
-// A cable-powered device has no battery. That is not the same as an unknown reading.
 TEST(QmlContractTest, WiredDevicesShowNoBatteryInfo) {
     const QString icons = loadSource("Views/DeviceIcons.qml");
-    expectContains(icons, QStringLiteral("function hasBattery(connectionKind)"));
-    expectContains(icons, QStringLiteral("connectionKind !== \"usb\""));
+    expectContains(icons, QStringLiteral("function hasBattery(connectionKind, percent)"));
+    expectContains(icons, QStringLiteral("connectionKind !== \"usb\" || percent >= 0"));
 
-    // The gauge can be switched off, leaving a plain outline around the icon.
     const QString bring = loadSource("Views/BatteryRing.qml");
     expectContains(bring, QStringLiteral("property bool showGauge"));
     expectContains(bring, QStringLiteral("property color outlineColor"));
     expectContains(bring, QStringLiteral("if(!ring.showGauge)"));
 
     const QString widget = loadSource("Views/PeripheralsWidget.qml");
-    expectContains(widget, QStringLiteral("showGauge: DeviceIcons.hasBattery(modelData.connectionKind)"));
-    expectContains(widget, QStringLiteral("if(DeviceIcons.hasBattery(modelData.connectionKind))"));
+    expectContains(widget,
+                   QStringLiteral("showGauge: DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)"));
+    expectContains(widget,
+                   QStringLiteral("if(DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent))"));
 
     expectContains(loadSource("Views/PeripheralCard.qml"),
-                   QStringLiteral("showGauge: DeviceIcons.hasBattery(card.alert.connectionKind)"));
+                   QStringLiteral("showGauge: DeviceIcons.hasBattery(card.alert.connectionKind, card.alert.percent)"));
+    expectContains(loadSource("Views/Dashboard.qml"),
+                   QStringLiteral("DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)"));
+}
+
+TEST(QmlContractTest, BatteryRingShowsChargingSweepAndBadge) {
+    const QString ring = loadSource("Views/BatteryRing.qml");
+    expectContains(ring, QStringLiteral("property bool charging: false"));
+    expectContains(ring, QStringLiteral("property color badgeBackground"));
+    expectContains(ring, QStringLiteral("readonly property bool chargingShown: charging && showGauge"));
+    expectContains(ring, QStringLiteral("NumberAnimation on sweep"));
+    expectContains(ring, QStringLiteral("running: ring.chargingShown && ring.visible"));
+    expectContains(ring, QStringLiteral("loops: Animation.Infinite"));
+    expectContains(ring, QStringLiteral("id: chargeBadge"));
+    expectContains(ring, QStringLiteral("visible: ring.chargingShown"));
+    expectContains(ring, QStringLiteral("anchors.verticalCenter: parent.bottom"));
+    expectContains(ring, QStringLiteral("text: Fluent.flash"));
+
+    expectContains(loadSource("Views/PeripheralsWidget.qml"), QStringLiteral("charging: modelData.charging"));
+    expectContains(loadSource("Views/Dashboard.qml"), QStringLiteral("charging: modelData.charging"));
+    const QString card = loadSource("Views/PeripheralCard.qml");
+    expectContains(card, QStringLiteral("charging: card.alert.charging === true"));
+    expectContains(card, QStringLiteral("badgeBackground: theme.flyout"));
 }
 
 TEST(QmlContractTest, WiredWidgetToggleIsSeparatedFromWirelessDevices) {
@@ -303,7 +307,6 @@ TEST(QmlContractTest, WiredWidgetToggleIsSeparatedFromWirelessDevices) {
     EXPECT_GT(wiredToggle, separator) << "Wired toggle must sit below the separator.";
 }
 
-// Renaming must not change the identity used for hiding or for alerts.
 TEST(QmlContractTest, PeripheralRowRenamesWithoutLosingTheDetectedName) {
     const QString row = loadSource("Views/PeripheralRow.qml");
 
@@ -324,7 +327,6 @@ TEST(QmlContractTest, RenamedDevicesShowTheirNewNameEverywhere) {
 }
 
 TEST(QmlContractTest, IconRenderSitesSelectTheResolvedFontFamily) {
-    // Each device glyph site must choose the matching font.
     for(const char* path : {"Views/PeripheralsWidget.qml", "Views/PeripheralCard.qml", "Views/Dashboard.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("font.family: DeviceIcons.family("));
@@ -338,7 +340,6 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
         expectContains(source, QStringLiteral("Bluetooth"));
         expectContains(source, QStringLiteral("connectionKind === \"wireless\""));
         expectContains(source, QStringLiteral("connectionKind === \"bluetooth\""));
-        // The home overview lists wired devices beside the wireless ones.
         expectContains(source, QStringLiteral("\"label\": \"Wired\""));
     }
 
@@ -348,7 +349,6 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
 }
 
 TEST(QmlContractTest, WidgetsHideForEveryFullscreenApp) {
-    // DockableWidget hides taskbar widgets for fullscreen apps.
     const QString base = loadSource("Views/DockableWidget.qml");
     expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
     EXPECT_FALSE(base.contains(QStringLiteral("fullscreen.shouldBlock(")));
@@ -404,7 +404,6 @@ TEST(QmlContractTest, FlyoutsDeriveFromFlyoutBaseWithoutDuplicatingChrome) {
                             "Views/NowPlayingFlyout.qml", "Views/PeripheralFlyout.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("FlyoutBase {"));
-        // FlyoutBase owns chrome and timers.
         EXPECT_FALSE(source.contains(QStringLiteral("flags: Qt.FramelessWindowHint")))
             << "Duplicated window chrome still present in " << path;
         EXPECT_FALSE(source.contains(QStringLiteral("id: hideTimer")))
@@ -421,8 +420,6 @@ TEST(QmlContractTest, DockableWidgetOwnsSharedDockingAndBlocking) {
     expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
 }
 
-// A resolution or scale change must re-place every window, not only a
-// settings change. MonitorMapper raises changed(); the views subscribe.
 TEST(QmlContractTest, WindowsRelayoutWhenTheMonitorLayoutChanges) {
     const QString app = loadSource("Views/App.qml");
     expectContains(app, QStringLiteral("target: monitors"));
@@ -442,8 +439,6 @@ TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingCh
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("DockableWidget {"));
         expectContains(source, QStringLiteral("pollActive:"));
-        // DockableWidget owns block state and fullscreen polling.
-        // PeripheralsWidget has a tooltip Window with flags.
         EXPECT_FALSE(source.contains(QStringLiteral("property bool blocked")))
             << "Duplicated block state still present in " << path;
         EXPECT_FALSE(source.contains(QStringLiteral("interval: 500")))
@@ -451,13 +446,11 @@ TEST(QmlContractTest, TaskbarWidgetsDeriveFromDockableWidgetWithoutDuplicatingCh
     }
 }
 
-// One MonitorMapper feeds every monitor lookup. QML must not keep a second path.
 TEST(QmlContractTest, QmlReadsMonitorFactsFromTheSharedMap) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("model: monitors.names"));
     EXPECT_FALSE(dashboard.contains(QStringLiteral("monitorNames()")));
 
-    // Tooltip clamping moved from PeripheralsWidget into the shared WidgetTooltip.
     for(const char* path : {"Views/App.qml", "Views/WidgetTooltip.qml"}) {
         const QString source = loadSource(path);
         expectContains(source, QStringLiteral("monitors.geometry("));
@@ -471,27 +464,22 @@ TEST(QmlContractTest, QmlReadsMonitorFactsFromTheSharedMap) {
 
 TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     const QString source = loadSource("Views/TaskbarWidget.qml");
-    // Capture runs only while the visualizer is on screen.
     expectContains(source, QStringLiteral("visualizerLive: root.visible && settings.taskbarVisualizerEnabled"));
     expectContains(source, QStringLiteral("audioCapture.start()"));
     expectContains(source, QStringLiteral("audioCapture.stop()"));
 }
 
-// One button pauses every source. It flips to play-all only when the follow-up option is on.
 TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     const QString widget = loadSource("Views/TaskbarWidget.qml");
     expectContains(widget, QStringLiteral("pauseAllVisible: settings.taskbarWidgetPauseAllEnabled"));
     expectContains(widget, QStringLiteral("showPlayAll: settings.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll"));
     expectContains(widget, QStringLiteral("glyph: root.showPlayAll ? Fluent.playCircle : Fluent.pauseCircle"));
     expectContains(widget, QStringLiteral("onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()"));
-    // Exactly one pause-all button exists in the widget.
     EXPECT_EQ(widget.count(QStringLiteral("nowPlaying.pauseAll()")), 1);
-    // Button sits at the right edge, past the visualizer boundary. Extra slot widens the widget.
     expectContains(widget, QStringLiteral("id: pauseAllButton"));
     expectContains(widget, QStringLiteral("anchors.right: parent.right"));
     expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     expectContains(widget, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
-    // Without play-all the button hides once everything is paused. Slot and width stay.
     expectContains(widget, QStringLiteral("pauseAllButtonShown: root.pauseAllVisible"));
     expectContains(widget, QStringLiteral("&& (settings.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
     expectContains(widget, QStringLiteral("opacity: root.pauseAllButtonShown ? 1 : 0"));
@@ -505,15 +493,12 @@ TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     expectContains(dashboard, QStringLiteral("settings.taskbarWidgetPlayAllEnabled = value"));
 }
 
-// Stack layout pages media and peripheral widgets through one taskbar slot.
-// Peripheral pages are split per section: 2.4 GHz, Bluetooth, Wired.
 TEST(QmlContractTest, WidgetStackPagesMediaAndPeripheralSections) {
     const QString stack = loadSource("Views/WidgetStack.qml");
     expectContains(stack, QStringLiteral("enabled: settings.taskbarWidgetLayout === 1"));
     expectContains(stack, QStringLiteral("list.push(stack.mediaPage)"));
     expectContains(stack, QStringLiteral("list.push(sections[i].label)"));
     expectContains(stack, QStringLiteral("function cycle(step)"));
-    // Media page comes first, then one page per peripheral section.
     EXPECT_LT(stack.indexOf(QStringLiteral("list.push(stack.mediaPage)")),
               stack.indexOf(QStringLiteral("list.push(sections[i].label)")));
 
@@ -531,7 +516,6 @@ TEST(QmlContractTest, WidgetStackPagesMediaAndPeripheralSections) {
     expectContains(peripherals, QStringLiteral("return deviceSections.filter(function(section) { return section.label === root.displayedSection })"));
     expectContains(peripherals, QStringLiteral("model: root.shownSections"));
     expectContains(peripherals, QStringLiteral("root.stack.cycle(event.angleDelta.y > 0 ? -1 : 1)"));
-    // Stack layout shares the slot. No offset past the media widget.
     expectContains(peripherals, QStringLiteral("if(!root.stacked && root.mediaWidget && root.mediaWidget.visible)"));
 
     const QString dashboard = loadSource("Views/Dashboard.qml");
@@ -539,7 +523,6 @@ TEST(QmlContractTest, WidgetStackPagesMediaAndPeripheralSections) {
     expectContains(dashboard, QStringLiteral("onActivated: settings.taskbarWidgetLayout = index"));
 }
 
-// Stack pages share one frame sized to the largest widget. Content centers in it.
 TEST(QmlContractTest, WidgetStackUsesOneFrameSizedToTheLargestWidget) {
     const QString stack = loadSource("Views/WidgetStack.qml");
     expectContains(stack, QStringLiteral("frameWidth: Math.max(mediaWidget ? mediaWidget.naturalWidth : 0,"));
@@ -561,7 +544,6 @@ TEST(QmlContractTest, WidgetStackUsesOneFrameSizedToTheLargestWidget) {
     expectContains(peripherals, QStringLiteral("widest = Math.max(widest, sectionWidth(deviceSections[i]))"));
 }
 
-// Page changes and media source changes slide and fade. Pages stay visible until they slid out.
 TEST(QmlContractTest, WidgetTransitionsSlideAndFade) {
     const QString fx = loadSource("Views/SlideFade.qml");
     expectContains(fx, QStringLiteral("function enter()"));
@@ -584,25 +566,21 @@ TEST(QmlContractTest, WidgetTransitionsSlideAndFade) {
     expectContains(media, QStringLiteral("id: sessionFx"));
     expectContains(media, QStringLiteral("onSessionIndexChanged: if(root.visible) sessionFx.enter()"));
     expectContains(media, QStringLiteral("transform: Translate { x: sessionFx.offset }"));
-    // Every source switch records its direction first.
     EXPECT_EQ(media.count(QStringLiteral("nowPlaying.cycleSession(")), 1);
     EXPECT_EQ(media.count(QStringLiteral("root.switchSession(")), 2);
 
-    // Section-to-section pages swap content between leave and enter.
     const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
     expectContains(peripherals, QStringLiteral("pageFx.replace(function() { root.displayedSection = root.activeSection })"));
 
     expectContains(loadSource("Views/WidgetStack.qml"), QStringLiteral("lastStep = step > 0 ? 1 : -1"));
 }
 
-// Every media widget button names itself on hover.
 TEST(QmlContractTest, TaskbarWidgetButtonsHaveTooltips) {
     const QString button = loadSource("Views/WidgetButton.qml");
     expectContains(button, QStringLiteral("property string tooltip"));
     expectContains(button, QStringLiteral("property var tip"));
     expectContains(button, QStringLiteral("button.tip.showAt("));
     expectContains(button, QStringLiteral("button.tip.hide()"));
-    // Text can change while hovered.
     expectContains(button, QStringLiteral("onTooltipChanged: refreshTip()"));
 
     const QString widget = loadSource("Views/TaskbarWidget.qml");
@@ -611,12 +589,10 @@ TEST(QmlContractTest, TaskbarWidgetButtonsHaveTooltips) {
     expectContains(widget, QStringLiteral("tooltip: \"Next\""));
     expectContains(widget, QStringLiteral("tooltip: nowPlaying.isPlaying ? \"Pause\" : \"Play\""));
     expectContains(widget, QStringLiteral("tooltip: root.showPlayAll ? \"Play all\" : \"Pause all\""));
-    // No bare IconLabel buttons remain. All go through WidgetButton.
     EXPECT_EQ(widget.count(QStringLiteral("WidgetButton {")), 4);
     EXPECT_FALSE(widget.contains(QStringLiteral("IconLabel {")));
 }
 
-// Both taskbar widgets share one tooltip window implementation.
 TEST(QmlContractTest, TaskbarWidgetsShareTheTooltipWindow) {
     const QString tooltip = loadSource("Views/WidgetTooltip.qml");
     expectContains(tooltip, QStringLiteral("function showAt(globalPoint, text)"));
@@ -640,8 +616,6 @@ TEST(QmlContractTest, PeekAreaHoldsTheFlyoutOpenWhileHovered) {
     expectContains(source, QStringLiteral("onExited: if(peek.flyout && !peek.pinned && !peek.swiped) peek.flyout.restartAutoHide()"));
 }
 
-// PeekArea only reports the raw gesture in screen coordinates. The flyout
-// owns the axis lock and the thresholds. A swipe must not count as a click.
 TEST(QmlContractTest, PeekAreaRecognizesSwipeAndSkipsClick) {
     const QString source = loadSource("Views/PeekArea.qml");
     expectContains(source, QStringLiteral("property bool swipeEnabled: settings.flyoutSwipeDismissEnabled"));
@@ -653,14 +627,10 @@ TEST(QmlContractTest, PeekAreaRecognizesSwipeAndSkipsClick) {
     EXPECT_FALSE(source.contains(QStringLiteral("swipe.recognize("))) << "Recognition belongs to FlyoutBase";
     EXPECT_FALSE(source.contains(QStringLiteral("swipe.lockAxis("))) << "Axis lock belongs to FlyoutBase";
     expectContains(source, QStringLiteral("onClicked: if(peek.flyout && !peek.pinned && !peek.swiped) peek.flyout.restartAutoHide()"));
-    // Cancelled presses slide the card back.
     expectContains(source, QStringLiteral("onCanceled:"));
     expectContains(source, QStringLiteral("peek.flyout.releaseSwipe(0, 0, 0)"));
 }
 
-// The base owns the gesture. App stacks by the home position; the window sits
-// at home plus an axis-locked swipe offset, so the fling is a straight line
-// and nothing is clipped at a window edge. Derived flyouts need no change.
 TEST(QmlContractTest, FlyoutBaseFlingsTheWindowOnSwipe) {
     const QString base = loadSource("Views/FlyoutBase.qml");
     expectContains(base, QStringLiteral("default property alias content: slot.data"));
@@ -678,30 +648,23 @@ TEST(QmlContractTest, FlyoutBaseFlingsTheWindowOnSwipe) {
     expectContains(base, QStringLiteral("function dismissBySwipe(direction)"));
     expectContains(base, QStringLiteral("function resetSwipe()"));
     expectContains(base, QStringLiteral("swipe.vector(direction)"));
-    // No imperative x/y writes and no content translate.
     EXPECT_FALSE(base.contains(QStringLiteral("base.x = ")));
     EXPECT_FALSE(base.contains(QStringLiteral("base.y = ")));
     EXPECT_FALSE(base.contains(QStringLiteral("Translate {")));
-    // The stacking slide must not fight the fling.
     expectContains(base, QStringLiteral("enabled: base.positioned && !base.swiping"));
-    // Swipe-out stops the auto-hide timer and fades like a normal hide.
     const int dismiss = base.indexOf(QStringLiteral("function dismissBySwipe(direction)"));
     const int dismissEnd = base.indexOf(QStringLiteral("\n    }"), dismiss);
     const QString body = base.mid(dismiss, dismissEnd - dismiss);
     EXPECT_TRUE(body.contains(QStringLiteral("hideTimer.stop()")));
     EXPECT_TRUE(body.contains(QStringLiteral("fadeOut.restart()")));
-    // The offset resets after the fade so the next show is clean.
     const int fade = base.indexOf(QStringLiteral("id: fadeOut"));
     EXPECT_GT(base.indexOf(QStringLiteral("base.resetSwipe()"), fade), fade);
-    // Derived flyouts do not duplicate the gesture plumbing.
     for(const char* path : {"Views/MediaFlyout.qml", "Views/VolumeFlyout.qml", "Views/LockKeysFlyout.qml",
                             "Views/NowPlayingFlyout.qml", "Views/PeripheralFlyout.qml", "Views/ChargerFlyout.qml"}) {
         EXPECT_FALSE(loadSource(path).contains(QStringLiteral("swipe."))) << path;
     }
 }
 
-// Stacking writes the home position, never x/y, so a swipe in progress and
-// the stacking math cannot overwrite each other.
 TEST(QmlContractTest, AppStacksFlyoutsByHomePosition) {
     const QString app = loadSource("Views/App.qml");
     EXPECT_EQ(app.count(QStringLiteral("f.placeAt(")), 2);
@@ -722,13 +685,10 @@ TEST(QmlContractTest, FlyoutsUsePeekAreaInsteadOfInlineHoverHandling) {
         expectContains(source, QStringLiteral("PeekArea {"));
         expectContains(source, QStringLiteral("flyout: root"));
     }
-    // Pinned flyouts stay open after the pointer leaves.
     expectContains(loadSource("Views/MediaFlyout.qml"), QStringLiteral("pinned: settings.mediaFlyoutAlwaysDisplay"));
     expectContains(loadSource("Views/VolumeFlyout.qml"), QStringLiteral("pinned: root.expanded"));
 }
 
-// Every flyout must re-stack when its size changes. Content-sized flyouts
-// change often. All of them change after a display scale fix.
 TEST(QmlContractTest, AllFlyoutsRestackOnSizeChange) {
     const QString app = loadSource("Views/App.qml");
     for(const char* name : {"MediaFlyout flyout", "VolumeFlyout volumeFlyout", "LockKeysFlyout lockKeysFlyout",
@@ -743,9 +703,6 @@ TEST(QmlContractTest, AllFlyoutsRestackOnSizeChange) {
     }
 }
 
-// The monitor combos take their model from monitors.names, which changes
-// on plug, unplug and mode change. ComboBox drops its currentIndex binding
-// when the model is replaced, so the row must re-bind the selection.
 TEST(QmlContractTest, SettingComboKeepsSelectionWhenTheModelIsReplaced) {
     const QString combo = loadSource("Views/SettingCombo.qml");
     expectContains(combo, QStringLiteral("onModelChanged: currentIndex = Qt.binding(function() { return root.currentIndex })"));
@@ -753,7 +710,6 @@ TEST(QmlContractTest, SettingComboKeepsSelectionWhenTheModelIsReplaced) {
     EXPECT_GE(dashboard.count(QStringLiteral("model: monitors.names")), 5);
 }
 
-// Redock on size change belongs to the shared base, not each widget.
 TEST(QmlContractTest, DockableWidgetRedocksOnSizeChange) {
     const QString base = loadSource("Views/DockableWidget.qml");
     expectContains(base, QStringLiteral("onWidthChanged: base.updatePosition()"));
@@ -771,7 +727,6 @@ TEST(QmlContractTest, ScrubAreaReportsTrackPositionAsFraction) {
     expectContains(source, QStringLiteral("signal scrubStarted(real fraction)"));
     expectContains(source, QStringLiteral("signal scrubMoved(real fraction)"));
     expectContains(source, QStringLiteral("signal scrubEnded(real fraction)"));
-    // Fraction stays inside the track.
     expectContains(source, QStringLiteral("Math.max(0, Math.min(1, px / scrub.trackWidth))"));
 }
 
@@ -801,7 +756,6 @@ TEST(QmlContractTest, SharedAnimationDurationsComeFromAnim) {
 TEST(QmlContractTest, PeripheralWidgetPageUsesVerticalBatteryIcon) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("BatteryIcon"));
-    // Fill follows the battery percent.
     expectContains(source, QStringLiteral("modelData.percent / 100"));
 }
 

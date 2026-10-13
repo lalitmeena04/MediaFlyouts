@@ -44,7 +44,6 @@ MonitorMapper::MonitorMapper(QObject* parent, int coalesceMs) : QObject(parent) 
         emit changed();
     });
 
-    // qGuiApp is null in a QCoreApplication test host. The map stays empty there.
     if(QGuiApplication* app = qGuiApp) {
         connect(app, &QGuiApplication::screenAdded, this, [this](QScreen* screen) {
             watchScreen(screen);
@@ -65,7 +64,6 @@ void MonitorMapper::watchScreen(QScreen* screen) {
 }
 
 void MonitorMapper::refresh() {
-    // Lookups see fresh data at once. Listeners hear about it once per burst.
     m_dirty = true;
     m_coalesce.start();
 }

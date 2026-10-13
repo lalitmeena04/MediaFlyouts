@@ -11,6 +11,7 @@
 #include "BatteryProviders/FastPairBatteryProvider.h"
 #include "BatteryProviders/GameControllerBatteryProvider.h"
 #include "BatteryProviders/IBatteryProvider.h"
+#include "BatteryProviders/JabraBatteryProvider.h"
 #include "BatteryProviders/LogitechBatteryProvider.h"
 #include "BatteryProviders/PlayStationControllerBatteryProvider.h"
 #include "BatteryProviders/RazerBatteryProvider.h"
@@ -24,20 +25,18 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
     m_providers.push_back(std::make_unique<BluetoothLeBatteryProvider>());
     m_providers.push_back(std::make_unique<GameControllerBatteryProvider>());
     m_providers.push_back(std::make_unique<PlayStationControllerBatteryProvider>());
-    // 2.4 GHz dongle devices. No standard battery channel.
     m_providers.push_back(std::make_unique<RazerBatteryProvider>());
     m_providers.push_back(std::make_unique<LogitechBatteryProvider>());
+    m_providers.push_back(std::make_unique<JabraBatteryProvider>());
     m_providers.push_back(std::make_unique<WirelessReceiverProvider>());
     // Wired devices carry no battery. Listed last so a wireless reading always wins the name.
     m_providers.push_back(std::make_unique<WiredPeripheralProvider>());
     m_pollOnWorkerThread = true;
 
-    // Poll as fallback. Catch missed events. Connect/disconnect reacts instantly.
     m_timer.setInterval(15 * 1000);
     connect(&m_timer, &QTimer::timeout, this, &BatteryStatusController::refresh);
     m_timer.start();
 
-    // React immediately on device connect/disconnect. Do not wait for timer tick.
     connect(&m_bluetoothWatcher, &BluetoothConnectionWatcher::deviceChanged, this,
             &BatteryStatusController::refresh);
     connect(&m_hidWatcher, &HidChangeWatcher::deviceChanged, this, &BatteryStatusController::refresh);
@@ -61,10 +60,8 @@ QVariantList BatteryStatusController::devices() const {
 
 void BatteryStatusController::refresh() {
     // Real providers use blocking WinRT APIs. Qt main thread is STA.
-    // Poll on worker thread.
     if(m_pollOnWorkerThread) {
         if(m_refreshing) {
-            // Keep this event. Device state changed. Current snapshot is stale.
             m_refreshPending = true;
             return;
         }
@@ -95,7 +92,6 @@ void BatteryStatusController::refresh() {
         return;
     }
 
-    // Test path. Fake providers do no real I/O. Keep tests deterministic.
     QVector<BatteryDeviceInfo> polled;
     for(auto& provider : m_providers)
         polled += provider->poll();
@@ -106,7 +102,6 @@ void BatteryStatusController::applyPolled(const QVector<BatteryDeviceInfo>& poll
     QVariantList devices;
     QSet<QString> seen;
     for(const BatteryDeviceInfo& info : polled) {
-        // Same device can come from more than one provider. Keep first source.
         if(seen.contains(info.name))
             continue;
         seen.insert(info.name);

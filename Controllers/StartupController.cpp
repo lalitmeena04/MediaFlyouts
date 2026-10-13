@@ -31,7 +31,6 @@ void StartupController::setEnabled(bool enable) {
         } else {
             task.Disable();
         }
-        // StartupTask is source of truth for packaged builds.
         // Remove old Run key to prevent double launch.
         QSettings(runKeyPath(), QSettings::NativeFormat).remove(m_appName);
         TRC_INFO("startup: StartupTask enabled={} state={}", enable, static_cast<int>(task.State()));

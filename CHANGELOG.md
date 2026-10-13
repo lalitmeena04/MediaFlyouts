@@ -7,6 +7,15 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ### Added
 
+- **Jabra headsets.** Battery level and charging state for Jabra headsets
+  paired to a Jabra Link USB adapter (Link 390 verified) or plugged in by
+  their own USB cable, read over Jabra's GN protocol. A headset behind a
+  Link adapter is listed under Bluetooth, named after the headset rather
+  than the adapter. Wired devices that report a level now show the battery
+  ring, which also covers a DualSense on USB.
+- **Charging indicator.** A charging device shows a bolt badge on the bottom
+  of its battery ring and a light sweeping along the ring, in the taskbar
+  widget, the dashboard and the peripheral flyout card.
 - **Swipe to dismiss.** Drag any flyout quickly left, right, up or down, with
   the mouse or a finger, to close it. The card follows the pointer, slides
   out along the swipe and fades. A short or slow drag springs back. Works on

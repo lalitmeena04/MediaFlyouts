@@ -17,7 +17,6 @@ QPoint FlyoutPlacement::positionAt(int width, int height, int positionIndex, int
     if(!entry)
         return QPoint(0, 0);
 
-    // Available geometry excludes taskbar. Use small uniform margin.
     const auto pos = mf::FlyoutPosition(qBound(0, positionIndex, int(mf::FlyoutPosition::BottomRight)));
     return mf::computeFlyoutRect(entry->availableRect, QSize(width, height), pos, 24).topLeft();
 }

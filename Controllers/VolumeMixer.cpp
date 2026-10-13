@@ -172,7 +172,6 @@ void VolumeMixer::refresh() {
         control->QueryInterface(__uuidof(IAudioSessionControl2), reinterpret_cast<void**>(&control2));
         control->QueryInterface(__uuidof(ISimpleAudioVolume), reinterpret_cast<void**>(&volume));
 
-        // Skip inactive sessions. Keep list to apps making sound.
         AudioSessionState state = AudioSessionStateInactive;
         control->GetState(&state);
 
@@ -224,7 +223,6 @@ void VolumeMixer::refresh() {
     }
 
     cleanup();
-    // Notify only when list changed. Avoid mixer rebuild every tick.
     if(m_sessions != previous)
         emit sessionsChanged();
 }

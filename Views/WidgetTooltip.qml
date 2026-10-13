@@ -1,9 +1,7 @@
 import QtQuick
 import QtQuick.Window
 
-// Hover tooltip for taskbar widgets.
 // Popup or ToolTip would clip to the widget window bounds.
-// Use a small top-level window instead.
 Window {
     id: tip
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.WindowDoesNotAcceptFocus
@@ -11,7 +9,6 @@ Window {
     width: tipText.implicitWidth + 16
     height: tipText.implicitHeight + 10
 
-    // Monitor used to keep the tooltip on screen.
     property int monitor: settings.taskbarWidgetMonitor
 
     Rectangle {
@@ -28,7 +25,6 @@ Window {
         }
     }
 
-    // Show text centered above globalPoint. Clamp to monitor edges.
     function showAt(globalPoint, text) {
         tipText.text = text
         var mon = monitors.geometry(tip.monitor)

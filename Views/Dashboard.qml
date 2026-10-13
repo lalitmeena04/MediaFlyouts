@@ -14,7 +14,6 @@ Window {
     title: "MediaFlyouts"
     color: theme.window
 
-    // Keep title bar matching theme.
     function applyChrome() {
         windowEffects.setDarkFrame(dash, theme.dark)
     }
@@ -26,9 +25,7 @@ Window {
     }
 
     property int currentIndex: 0
-    // Reset scroll position. Keep new page starting at top.
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
-    // Open the window on a page by name. Used by tray entries.
     function showPage(name) {
         for(var i = 0; i < pages.length; i++) {
             if(pages[i].name === name) {
@@ -40,15 +37,12 @@ Window {
         raise()
         requestActivate()
     }
-    // Wired devices carry no battery, so they stay out of the battery lists.
     readonly property var wirelessDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind !== "usb"
     })
     readonly property var wiredDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind === "usb"
     })
-    // Devices the user kept. The picker below still lists everything, so a
-    // hidden device can be brought back.
     readonly property var shownDevices: {
         var excluded = settings.peripheralsWidgetExcluded
         return batteryStatus.devices.filter(function(device) {
@@ -80,7 +74,6 @@ Window {
         { "icon": Fluent.info,      "name": "About",        "desc": "App info, updates and error reports." }
     ]
 
-    // Searchable settings index. Values map to host pages.
     readonly property var searchIndex: [
         { "label": "Seekbar", "page": 1 }, { "label": "Interactive seekbar", "page": 1 },
         { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
@@ -124,7 +117,6 @@ Window {
     property string searchQuery: ""
     property bool sidebarSearchOpen: false
 
-    // Hide to tray. Do not quit app.
     onClosing: (event) => {
         event.accepted = false
         dash.hide()
@@ -239,7 +231,6 @@ Window {
                     anchors.right: parent.right
                     clip: true
 
-                    // Search results replace nav list.
                     Column {
                     width: navigationScroll.availableWidth
                     spacing: 4
@@ -530,7 +521,6 @@ Window {
                 wrapMode: Text.WordWrap
             }
 
-            // Explain silent feature loss when a subsystem is down.
             Rectangle {
                 id: statusBanner
                 anchors.top: pageDesc.bottom
@@ -572,7 +562,6 @@ Window {
                 }
             }
 
-            // Scroll long pages. Prevent content cut-off.
             ScrollView {
                 id: pageScroll
                 anchors.top: statusBanner.bottom
@@ -596,7 +585,6 @@ Window {
                         width: parent.width
                         spacing: 16
 
-                        // Live feature state. Direct setting reads keep binding reactive.
                         function featureOn(key) {
                             switch(key) {
                             case "media": return settings.mediaFlyoutEnabled
@@ -610,7 +598,6 @@ Window {
                             return false
                         }
 
-                        // Now Playing hero card.
                         Rectangle {
                             width: parent.width
                             height: 176
@@ -693,7 +680,6 @@ Window {
                                         }
                                     }
 
-                                    // Progress bar and times.
                                     Column {
                                         width: parent.width
                                         spacing: 4
@@ -731,7 +717,6 @@ Window {
                                         }
                                     }
 
-                                    // Transport controls.
                                     Row {
                                         spacing: 22
                                         topPadding: 8
@@ -785,7 +770,6 @@ Window {
                             topPadding: 4
                         }
 
-                        // Feature status cards. Click jumps to section.
                         Flow {
                             width: parent.width
                             spacing: 12
@@ -848,7 +832,6 @@ Window {
                             }
                         }
 
-                        // Connected peripherals, grouped by how they attach.
                         Text {
                             visible: dash.peripheralSections.length > 0
                             text: "Peripherals"
@@ -881,8 +864,7 @@ Window {
                                         model: modelData.devices
                                         delegate: Rectangle {
                                     required property var modelData
-                                    // A cable-powered device has no gauge and no reading to show.
-                                    readonly property bool hasBattery: DeviceIcons.hasBattery(modelData.connectionKind)
+                                    readonly property bool hasBattery: DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)
                                     width: 108
                                     height: modelData.components.length > 1 ? 168 : (hasBattery ? 128 : 112)
                                     radius: 12
@@ -900,6 +882,7 @@ Window {
                                             height: 64
                                             thickness: 5
                                             percent: modelData.percent
+                                            charging: modelData.charging
                                             showGauge: hasBattery
 
                                             Text {
@@ -949,6 +932,7 @@ Window {
                                                         height: 22
                                                         thickness: 2
                                                         percent: modelData.percent
+                                                        charging: modelData.charging
                                                     }
                                                     Text {
                                                         anchors.horizontalCenter: parent.horizontalCenter
@@ -991,7 +975,6 @@ Window {
                         }
                     }
 
-                // Media Flyout page
                 Column {
                     visible: dash.currentIndex === 1
                     width: parent.width
@@ -1014,7 +997,6 @@ Window {
                         onToggled: settings.seekbarEnabled = value
                     }
                     SettingRow {
-                        // Sub-option. Visible only when seekbar is enabled.
                         visible: settings.seekbarEnabled
                         x: 16
                         width: parent.width - 16
@@ -1059,7 +1041,6 @@ Window {
                         onToggled: settings.accentFromArt = value
                     }
                     SettingRow {
-                        // Sub-option. Visible only when album-art accent is enabled.
                         visible: settings.accentFromArt
                         x: 16
                         width: parent.width - 16
@@ -1170,7 +1151,6 @@ Window {
                     }
                 }
 
-                // Volume page
                 Column {
                     visible: dash.currentIndex === 6
                     width: parent.width
@@ -1228,7 +1208,6 @@ Window {
                     }
                 }
 
-                // Lock Keys page
                 Column {
                     visible: dash.currentIndex === 7
                     width: parent.width
@@ -1287,7 +1266,6 @@ Window {
                     }
                 }
 
-                // Media Widget page
                 Column {
                     visible: dash.currentIndex === 4
                     width: parent.width
@@ -1394,7 +1372,6 @@ Window {
                     SettingSlider {
                         width: parent.width
                         label: "Widget offset"
-                        // Centered widgets move both ways. Edge widgets move inward.
                         description: settings.taskbarWidgetSide === 1
                             ? "Shift the centered widget left or right along the taskbar."
                             : "Fine-tune the widget's horizontal position on the taskbar."
@@ -1416,7 +1393,6 @@ Window {
                     }
                 }
 
-                // Peripheral Widget page
                 Column {
                     visible: dash.currentIndex === 5
                     width: parent.width
@@ -1522,7 +1498,6 @@ Window {
                     }
                 }
 
-                // Peripheral Flyout page
                 Column {
                     visible: dash.currentIndex === 2
                     width: parent.width
@@ -1613,7 +1588,6 @@ Window {
                     }
                 }
 
-                // Charger Flyout page
                 Column {
                     visible: dash.currentIndex === 3
                     width: parent.width
@@ -1680,7 +1654,6 @@ Window {
                     }
                 }
 
-                // App Filtering page
                 Column {
                     visible: dash.currentIndex === 8
                     width: parent.width
@@ -1781,7 +1754,6 @@ Window {
                     }
                 }
 
-                // Additional Settings page
                 Column {
                     visible: dash.currentIndex === 9
                     width: parent.width
@@ -1861,7 +1833,6 @@ Window {
                     }
                 }
 
-                // About page
                 Column {
                     visible: dash.currentIndex === 10
                     width: parent.width
@@ -1907,7 +1878,6 @@ Window {
                         Button {
                             text: "Check for updates"
                             enabled: !updateChecker.checking
-                            // A manual check clears the skipped version.
                             onClicked: {
                                 settings.skippedUpdateVersion = ""
                                 updateChecker.check()
@@ -1988,7 +1958,6 @@ Window {
                         font.pixelSize: 12
                     }
 
-                    // Icon-only link to project page.
                     Rectangle {
                         width: 40
                         height: 40

@@ -1,23 +1,16 @@
 import QtQuick
 
-// Peek gesture for flyouts. Hover holds the flyout open, leaving lets it hide.
-// A quick drag in any direction swipes the flyout away. Mouse and touch.
 MouseArea {
     id: peek
 
-    // Flyout that owns the auto-hide timer.
     property var flyout: null
-    // True keeps the flyout open after the pointer leaves.
     property bool pinned: false
-    // Swipe can be switched off in settings. Hover and click still work.
     property bool swipeEnabled: settings.flyoutSwipeDismissEnabled
 
-    // Press start in screen coordinates. The window moves under the pointer
-    // during a drag, so window or local coordinates would feed back into the offset.
+    // Screen coordinates. The window moves under the pointer during a drag.
     property point pressGlobal: Qt.point(0, 0)
     property double pressTime: 0
     property bool dragging: false
-    // True after a release that counted as a swipe. Blocks click and exit handling.
     property bool swiped: false
 
     anchors.fill: parent
@@ -49,7 +42,6 @@ MouseArea {
         if(!peek.flyout || !peek.dragging)
             return
         var d = peek.globalDelta(mouse)
-        // The flyout owns the axis lock and the thresholds. It reports the result.
         peek.swiped = peek.flyout.releaseSwipe(d.x, d.y, Date.now() - peek.pressTime) !== 0
         peek.dragging = false
     }

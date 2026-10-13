@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// Theme-aware tooltip with hover delay.
-// Appears to right of parent.
 ToolTip {
     id: control
     property bool hovered: false
@@ -23,7 +21,6 @@ ToolTip {
         radius: 6
     }
 
-    // Show after pointer rests on control.
     Timer {
         interval: 750
         running: control.hovered

@@ -62,7 +62,6 @@ TEST(UpdateCheckerTest, UsesReleaseRepository) {
               QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/latest"));
 }
 
-// Without a check the download button still reaches the releases index.
 TEST(UpdateCheckerTest, ReleaseUrlFallsBackToTheReleasesPage) {
     UpdateChecker u;
     EXPECT_EQ(u.releaseUrl(), UpdateChecker::releasesPageUrl());
@@ -77,7 +76,6 @@ TEST(UpdateCheckerTest, TrustsOnlyHttpsGitHubLinks) {
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QString()));
 }
 
-// Only a plain setup file name may be written to disk.
 TEST(UpdateCheckerTest, InstallerNameMustBeAPlainSetupExecutable) {
     EXPECT_TRUE(UpdateChecker::isInstallerName(QStringLiteral("MediaFlyouts-1.5.0-setup.exe")));
     EXPECT_TRUE(UpdateChecker::isInstallerName(QStringLiteral("MediaFlyouts-1.5.0-rc1-Setup.EXE")));
@@ -113,7 +111,6 @@ TEST(UpdateCheckerTest, PicksTheSetupAssetAndSkipsTheRest) {
     EXPECT_EQ(picked.sha256, kSha);
 }
 
-// A setup file hosted off GitHub is never downloaded.
 TEST(UpdateCheckerTest, IgnoresSetupAssetsFromUntrustedHosts) {
     QJsonArray assets;
     assets.append(asset(QStringLiteral("MediaFlyouts-1.5.0-setup.exe"),
@@ -122,7 +119,6 @@ TEST(UpdateCheckerTest, IgnoresSetupAssetsFromUntrustedHosts) {
     EXPECT_FALSE(UpdateChecker::pickInstallerAsset(QJsonArray()).valid());
 }
 
-// A full response with a short write on disk must not pass as verified.
 TEST(UpdateCheckerTest, VerifiesDigestAndSizeTogether) {
     UpdateChecker::InstallerAsset withDigest;
     withDigest.url = kSetupUrl;
@@ -130,7 +126,6 @@ TEST(UpdateCheckerTest, VerifiesDigestAndSizeTogether) {
     withDigest.sha256 = kSha;
     EXPECT_TRUE(UpdateChecker::matchesAsset(withDigest, 10, kSha.toUpper()));
     EXPECT_FALSE(UpdateChecker::matchesAsset(withDigest, 10, QStringLiteral("deadbeef")));
-    // Right digest but wrong size: the file on disk is not the response.
     EXPECT_FALSE(UpdateChecker::matchesAsset(withDigest, 9, kSha));
     EXPECT_FALSE(UpdateChecker::matchesAsset(withDigest, 0, kSha));
 
@@ -152,13 +147,11 @@ TEST(UpdateCheckerTest, VerifiesDigestAndSizeTogether) {
     EXPECT_FALSE(UpdateChecker::matchesAsset(unknown, 0, QString()));
 }
 
-// A missing file fails before any UAC prompt. No window must open.
 TEST(UpdateCheckerTest, LaunchElevatedFailsForAMissingFile) {
     EXPECT_FALSE(UpdateChecker::launchElevated(QStringLiteral("C:/nonexistent-mediaflyouts/missing-setup.exe")));
     EXPECT_FALSE(UpdateChecker::launchElevated(QString()));
 }
 
-// Only an absolute path to a regular file reaches the shell.
 TEST(UpdateCheckerTest, LaunchElevatedRejectsFoldersAndRelativePaths) {
     QTemporaryDir temp;
     ASSERT_TRUE(temp.isValid());
@@ -180,7 +173,6 @@ TEST(UpdateCheckerTest, FileSha256MatchesTheContent) {
     EXPECT_TRUE(UpdateChecker::fileSha256(temp.filePath(QStringLiteral("missing"))).isEmpty());
 }
 
-// Only the setup we wrote into our folder may be started. Nothing else.
 TEST(UpdateCheckerTest, InstallerPathMustBeOurFileInOurFolder) {
     QTemporaryDir temp;
     ASSERT_TRUE(temp.isValid());
@@ -197,20 +189,15 @@ TEST(UpdateCheckerTest, InstallerPathMustBeOurFileInOurFolder) {
     }
     EXPECT_TRUE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
 
-    // Same file, wrong folder.
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.filePath(QStringLiteral("other"))));
-    // An unknown download folder never matches.
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, QString()));
-    // Right folder, different name.
     const QString other = temp.filePath(QStringLiteral("Other-1.0.0-setup.exe"));
     ASSERT_TRUE(QFile::copy(good, other));
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(other, asset, temp.path()));
-    // Size drift after verification.
     asset.size = 4;
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
     asset.size = -1;
     EXPECT_TRUE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
-    // Same size, different bytes. The digest catches a swapped file.
     asset.sha256 = QString::fromLatin1(QCryptographicHash::hash("setup", QCryptographicHash::Sha256).toHex());
     EXPECT_TRUE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
     {
@@ -220,13 +207,11 @@ TEST(UpdateCheckerTest, InstallerPathMustBeOurFileInOurFolder) {
     }
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
     asset.sha256.clear();
-    // Gone from disk.
     ASSERT_TRUE(QFile::remove(good));
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(good, asset, temp.path()));
     EXPECT_FALSE(UpdateChecker::isDownloadedInstaller(QString(), asset, temp.path()));
 }
 
-// Store copies update through the Store. ZIP copies have nothing to run the setup over.
 TEST(UpdateCheckerTest, OnlyInstallerInstallsMaySelfUpdate) {
     EXPECT_TRUE(UpdateChecker::selfUpdateAllowed(mf::InstallKind::Installer));
     EXPECT_FALSE(UpdateChecker::selfUpdateAllowed(mf::InstallKind::Store));
@@ -242,14 +227,11 @@ TEST(UpdateCheckerTest, InstallKindIsExposedToQml) {
     EXPECT_EQ(u.installKindId(), QStringLiteral("store"));
     EXPECT_EQ(u.installKindLabel(), QStringLiteral("Microsoft Store"));
     EXPECT_EQ(kindChanged.count(), 1);
-    // Same value again is silent.
     u.setInstallKind(mf::InstallKind::Store);
     EXPECT_EQ(kindChanged.count(), 1);
-    // Store copies never offer the in-app installer, update or not.
     EXPECT_FALSE(u.installerAvailable());
 }
 
-// Nothing to run before a download. Nothing to fetch before a check.
 TEST(UpdateCheckerTest, DownloadAndInstallAreNoOpsWithoutAnUpdate) {
     UpdateChecker u;
     QSignalSpy started(&u, &UpdateChecker::installStarted);

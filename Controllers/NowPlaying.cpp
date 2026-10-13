@@ -7,7 +7,6 @@
 NowPlaying::NowPlaying(QObject* parent) : QObject(parent) {
     m_sinceUpdate.start();
 
-    // Repaint interval for smooth position between updates.
     m_timer.setInterval(500);
     connect(&m_timer, &QTimer::timeout, this, [this] {
         if(m_track.state == mf::PlaybackState::Playing)
@@ -82,7 +81,6 @@ QColor NowPlaying::artAccent() const {
 QColor NowPlaying::computeArtAccent(const QImage& art) {
     if(art.isNull())
         return QColor("#4CC2FF");
-    // Average downscaled copy. Favor saturated pixels.
     const QImage small =
         art.scaled(24, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation).convertToFormat(QImage::Format_ARGB32);
     double r = 0, g = 0, b = 0, weight = 0;
@@ -91,7 +89,7 @@ QColor NowPlaying::computeArtAccent(const QImage& art) {
         for(int x = 0; x < small.width(); ++x) {
             const QColor c(line[x]);
             const double s = c.saturationF();
-            const double w = 0.1 + s * s; // Favor colorful pixels.
+            const double w = 0.1 + s * s;
             r += c.redF() * w;
             g += c.greenF() * w;
             b += c.blueF() * w;
@@ -101,7 +99,6 @@ QColor NowPlaying::computeArtAccent(const QImage& art) {
     if(weight <= 0)
         return QColor("#4CC2FF");
     QColor c = QColor::fromRgbF(r / weight, g / weight, b / weight);
-    // Keep accent vivid and readable on light and dark surfaces.
     float h, s, l, a;
     c.getHslF(&h, &s, &l, &a);
     s = qBound(0.45f, s < 0.35f ? 0.5f : s, 1.0f);
@@ -217,7 +214,6 @@ void NowPlaying::pauseAll() {
 }
 
 void NowPlaying::playAll() {
-    // Pause-all set only says there is work. Every paused session resumes.
     if(m_controller && (!m_pausedByAll.isEmpty() || allPaused()))
         m_controller->resumeAllSessions();
     m_pausedByAll.clear();
@@ -225,8 +221,7 @@ void NowPlaying::playAll() {
 }
 
 void NowPlaying::applyTrack(const mf::TrackInfo& track) {
-    // Reveal flyout only for new track identity or play/pause change.
-    // Timeline updates must not reset auto-hide timer.
+    // Timeline updates must not reset the auto-hide timer.
     const bool identityChanged =
         track.title != m_track.title || track.artist != m_track.artist || track.album != m_track.album;
     const bool stateChanged = track.state != m_track.state;
@@ -235,7 +230,6 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     m_sinceUpdate.restart();
     emit changed();
 
-    // User resumed playback by other means. Forget the pause-all set.
     if(stateChanged && track.state == mf::PlaybackState::Playing)
         m_pausedByAll.clear();
     updateResumeAll();
@@ -248,8 +242,7 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
 
     if(identityChanged) {
         const bool stopped = track.title.isEmpty() && track.artist.isEmpty();
-        // Title change inside manual window means user pressed next/prev.
-        // Otherwise track auto-advanced. Show Next Up flyout.
+        // Title change inside the manual window means the user pressed next/prev.
         const bool manual = (QDateTime::currentMSecsSinceEpoch() - m_lastMediaKeyMs) < 1500;
         if(stopped || manual)
             emit trackUpdated();

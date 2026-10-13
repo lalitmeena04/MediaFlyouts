@@ -72,6 +72,8 @@ visualizer. This document describes the features that ship in the app.
   - **DualSense / DualSense Edge** controllers over raw HID
   - **Razer** wireless devices on their 2.4GHz dongle
   - **Logitech** HID++ devices (Unifying / Lightspeed / Bolt receivers)
+  - **Jabra** headsets behind a Jabra Link USB adapter or on their own
+    cable, via Jabra's GN protocol (name, level and charging state)
 - Wired USB and 2.4 GHz devices are listed when their battery data is exposed
   through a supported HID interface.
 - Device type (mouse / keyboard / headset / gamepad) is decoded from the

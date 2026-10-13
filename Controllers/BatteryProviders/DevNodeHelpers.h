@@ -6,7 +6,6 @@
 
 #include <QString>
 
-
 QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key);
 
 QString devNodeContainerId(DEVINST devInst);

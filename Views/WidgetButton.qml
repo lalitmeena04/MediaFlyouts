@@ -1,10 +1,8 @@
 import QtQuick
 
-// Icon button for taskbar widgets. Shows a tooltip above itself on hover.
 IconLabel {
     id: button
     property string tooltip: ""
-    // WidgetTooltip instance owned by the widget.
     property var tip: null
     property color idleColor: "#C8C8C8"
     property color hoverColor: "white"
@@ -20,7 +18,6 @@ IconLabel {
         else
             button.tip.hide()
     }
-    // Text can change while hovered, e.g. pause-all turns into play-all.
     onTooltipChanged: refreshTip()
 
     MouseArea {

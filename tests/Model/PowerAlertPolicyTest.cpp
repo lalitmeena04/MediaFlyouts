@@ -13,7 +13,6 @@ mf::PowerSnapshot snapshot(mf::PowerSource source, int percent) {
 
 } // namespace
 
-// First known reading only records the baseline.
 TEST(PowerAlertPolicyTest, FirstReadingRaisesNoAlert) {
     mf::PowerAlertPolicy policy;
 
@@ -45,7 +44,6 @@ TEST(PowerAlertPolicyTest, RepeatedSameSourceRaisesNoAlert) {
     EXPECT_FALSE(policy.update(snapshot(mf::PowerSource::Battery, 38)).has_value());
 }
 
-// An unknown reading must not look like a transition.
 TEST(PowerAlertPolicyTest, UnknownReadingKeepsTheLastSource) {
     mf::PowerAlertPolicy policy;
     policy.update(snapshot(mf::PowerSource::AC, 90));

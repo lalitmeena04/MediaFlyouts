@@ -29,8 +29,7 @@ bool isHidppPage(USAGE page) {
     return page == kUsbVendorPage;
 }
 
-// Windows splits short and long HID++ reports into two collections.
-// Device replies land on the long one. Prefer it when the product has one.
+// Device replies land on the long collection. Prefer it when the product has one.
 bool hasLongCollection(const std::vector<HidCollection>& collections, USHORT productId) {
     for(const HidCollection& collection : collections) {
         if(collection.productId == productId && isHidppPage(collection.usagePage)
@@ -63,7 +62,6 @@ bool writeReport(HANDLE device, const std::vector<std::uint8_t>& frame) {
     return ok && written == frame.size();
 }
 
-// False on timeout. Frame can be a notification or reply to other request.
 bool readReport(HANDLE device, USHORT length, DWORD timeoutMs, std::vector<std::uint8_t>& frame) {
     frame.assign(length, 0);
     OVERLAPPED ov = {};
@@ -83,7 +81,6 @@ bool readReport(HANDLE device, USHORT length, DWORD timeoutMs, std::vector<std::
     return true;
 }
 
-// Write one request. Wait for its reply. Skip unrelated frames.
 bool exchange(HANDLE device, const HidCollection& collection, const std::vector<std::uint8_t>& request,
               std::vector<std::uint8_t>& reply) {
     if(!writeReport(device, frameFor(collection, request)))
@@ -98,8 +95,6 @@ bool exchange(HANDLE device, const HidCollection& collection, const std::vector<
     return false;
 }
 
-// Ask every device index at once. Replies carry the index.
-// Returns index -> UnifiedBattery feature index. 0 means device answered without it.
 // Empty receiver slots stay silent on the long collection.
 // A direct device echoes every index. Then only 0xFF is kept.
 std::map<std::uint8_t, std::uint8_t> scanDevices(HANDLE device, const HidCollection& collection,
@@ -149,7 +144,6 @@ std::uint8_t featureIndex(HANDLE device, const HidCollection& collection, std::u
     return hidpp::featureIndexOf(reply);
 }
 
-// Try unified battery first. Then try legacy battery.
 int readBattery(HANDLE device, const HidCollection& collection, std::uint8_t deviceIndex,
                 std::uint8_t unifiedIndex, bool& charging) {
     std::vector<std::uint8_t> reply;
@@ -167,7 +161,6 @@ int readBattery(HANDLE device, const HidCollection& collection, std::uint8_t dev
     return -1;
 }
 
-// Read device name and type through feature 0x0005.
 // Receiver product string names the dongle, not the device.
 void readIdentity(HANDLE device, const HidCollection& collection, std::uint8_t deviceIndex, QString& name,
                   QString& category) {

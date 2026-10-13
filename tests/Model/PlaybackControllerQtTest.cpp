@@ -5,7 +5,6 @@
 using namespace mf;
 
 namespace {
-// Record transport calls. Test asserts toggle logic.
 class SpyController : public IPlaybackController {
     public:
         int plays = 0;

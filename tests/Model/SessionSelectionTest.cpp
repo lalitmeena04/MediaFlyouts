@@ -28,8 +28,6 @@ TEST(SessionSelectionTest, FallsBackToZeroWhenNothingIsSelected) {
     EXPECT_EQ(selectedSessionIndexByAppId({}, QString()), 0);
 }
 
-// Regression test. WinRT identity differs across SMTC calls.
-// App id matching fixes stuck indicator state.
 TEST(SessionSelectionTest, SelectsTheNewCurrentSessionWhenItArrivesSecond) {
     const QStringList appIds{"Music.App", "Video.App"};
     EXPECT_EQ(selectedSessionIndexByAppId(appIds, "Video.App"), 1);

@@ -99,8 +99,7 @@ QVector<BatteryDeviceInfo> BluetoothLeBatteryProvider::poll() {
 
             const int percent = readBatteryPercent(device);
 
-            // DeviceInformation.Name is paired name from Windows Bluetooth settings.
-            // BluetoothLEDevice.Name can be generic placeholder.
+            // DeviceInformation.Name is the paired name. BluetoothLEDevice.Name can be a placeholder.
             QString name = QString::fromWCharArray(info.Name().c_str());
             if(name.isEmpty())
                 name = QString::fromWCharArray(device.Name().c_str());

@@ -72,7 +72,6 @@ TEST(PeripheralAlertsTest, ReportsSeveralDevicesFromOneSnapshot) {
     BatteryStatusController status(providersOf([&devices] { return devices; }));
     PeripheralAlerts alerts(&status);
 
-    // Two devices connect between polls. Flyout shows them side by side.
     devices.append({"Mouse", 53, "wireless", "mouse"});
     devices.append({"Keyboard", 90, "wireless", "keyboard"});
     status.refresh();
@@ -90,7 +89,6 @@ TEST(PeripheralAlertsTest, WarnsOnceWhenTheBatteryCrossesTheLowThreshold) {
     ASSERT_EQ(alerts.pending().size(), 1);
     EXPECT_EQ(eventOf(alerts.pending(), 0), QStringLiteral("lowBattery"));
 
-    // Next poll still sees low battery. Do not warn again.
     alerts.clear();
     devices[0].percent = 17;
     status.refresh();
@@ -107,6 +105,7 @@ TEST(PeripheralAlertsTest, ReportsChargingTransitions) {
 
     ASSERT_EQ(alerts.pending().size(), 1);
     EXPECT_EQ(eventOf(alerts.pending(), 0), QStringLiteral("chargingStarted"));
+    EXPECT_TRUE(alerts.pending().at(0).toMap().value(QStringLiteral("charging")).toBool());
 }
 
 TEST(PeripheralAlertsTest, ExposesBucketLabels) {
@@ -118,7 +117,6 @@ TEST(PeripheralAlertsTest, ExposesBucketLabels) {
 }
 
 TEST(PeripheralAlertsTest, CarriesTheDeviceTypeAndTransportToTheCard) {
-    // These prevent name guess and wrong icon.
     QVector<BatteryDeviceInfo> devices{{"Headset", 80, "bluetooth", "headset"}};
     BatteryStatusController status(providersOf([&devices] { return devices; }));
     PeripheralAlerts alerts(&status);

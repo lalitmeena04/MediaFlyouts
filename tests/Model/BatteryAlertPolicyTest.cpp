@@ -10,7 +10,6 @@ QVector<PeripheralSnapshot> snapshot(std::initializer_list<PeripheralSnapshot> d
     return QVector<PeripheralSnapshot>(devices);
 }
 
-// Seed baseline. Later snapshots report real transitions.
 BatteryAlertPolicy seededWith(const QVector<PeripheralSnapshot>& devices) {
     BatteryAlertPolicy policy;
     policy.update(devices, 0);
@@ -41,7 +40,6 @@ TEST(BatteryAlertPolicyTest, MapsPercentagesToBuckets) {
 }
 
 TEST(BatteryAlertPolicyTest, FirstSnapshotOnlySeedsTheBaseline) {
-    // Prevent false newly-connected event on launch.
     BatteryAlertPolicy policy;
     const auto alerts = policy.update(snapshot({{"Mouse", 55, false}, {"Headset", 80, false}}), 0);
 
@@ -89,7 +87,6 @@ TEST(BatteryAlertPolicyTest, AlertsOnceWhenCrossingTheLowThreshold) {
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::LowBattery);
 
-    // Repeated poll sees 19% and 18%. No repeat alerts.
     EXPECT_TRUE(policy.update(snapshot({{"Mouse", 19, false}}), 25000).isEmpty());
     EXPECT_TRUE(policy.update(snapshot({{"Mouse", 18, false}}), 40000).isEmpty());
 }
@@ -114,9 +111,8 @@ TEST(BatteryAlertPolicyTest, GoingStraightToVeryLowSkipsTheLowAlert) {
 
 TEST(BatteryAlertPolicyTest, ChargingBackUpReArmsTheThreshold) {
     BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 25, false}}));
-    policy.update(snapshot({{"Mouse", 15, false}}), 10000); // low alert fires
+    policy.update(snapshot({{"Mouse", 15, false}}), 10000);
 
-    // Charge above threshold. Drain again. Warning fires again.
     policy.update(snapshot({{"Mouse", 60, true}}), 20000);
     policy.update(snapshot({{"Mouse", 60, false}}), 30000);
     const auto alerts = policy.update(snapshot({{"Mouse", 15, false}}), 40000);
@@ -137,17 +133,33 @@ TEST(BatteryAlertPolicyTest, ReportsChargingTransitions) {
     auto alerts = policy.update(snapshot({{"Earbuds", 50, true}}), 10000);
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::ChargingStarted);
+    EXPECT_TRUE(alerts[0].charging);
 
     alerts = policy.update(snapshot({{"Earbuds", 55, false}}), 20000);
     ASSERT_EQ(alerts.size(), 1);
     EXPECT_EQ(alerts[0].event, PeripheralEvent::ChargingStopped);
+    EXPECT_FALSE(alerts[0].charging);
+}
+
+TEST(BatteryAlertPolicyTest, ConnectAndDisconnectCarryTheChargingState) {
+    BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 55, false}}));
+
+    auto alerts = policy.update(snapshot({{"Mouse", 55, false}, {"Headset", 80, true}}), 10000);
+    ASSERT_EQ(alerts.size(), 1);
+    EXPECT_EQ(alerts[0].event, PeripheralEvent::Connected);
+    EXPECT_TRUE(alerts[0].charging);
+
+    policy.update(snapshot({{"Mouse", 55, false}}), 20000);
+    alerts = policy.update(snapshot({{"Mouse", 55, false}}), 24000);
+    ASSERT_EQ(alerts.size(), 1);
+    EXPECT_EQ(alerts[0].event, PeripheralEvent::Disconnected);
+    EXPECT_TRUE(alerts[0].charging);
 }
 
 TEST(BatteryAlertPolicyTest, DebouncesAFlappingBluetoothLink) {
     BatteryAlertPolicy policy = seededWith(snapshot({{"Mouse", 55, false}}));
     policy.setDebounceMs(3000);
 
-    // Drops out and comes back. One disconnect. No connect storm.
     policy.update(snapshot({}), 10000);
     const auto alerts = policy.update(snapshot({{"Mouse", 55, false}}), 11000);
     EXPECT_TRUE(alerts.isEmpty());

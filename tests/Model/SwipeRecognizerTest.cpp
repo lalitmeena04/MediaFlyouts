@@ -14,7 +14,6 @@ TEST(SwipeRecognizerTest, ClearSwipesMapToTheFourDirections) {
 TEST(SwipeRecognizerTest, ShortTravelIsNotASwipe) {
     EXPECT_EQ(recognizeSwipe(QPointF(-47, 0), 100), SwipeDirection::None);
     EXPECT_EQ(recognizeSwipe(QPointF(0, 47), 100), SwipeDirection::None);
-    // Exactly the threshold counts.
     EXPECT_EQ(recognizeSwipe(QPointF(48, 0), 100), SwipeDirection::Right);
 }
 
@@ -25,9 +24,7 @@ TEST(SwipeRecognizerTest, SlowDragIsNotASwipe) {
 }
 
 TEST(SwipeRecognizerTest, DiagonalIsNotASwipe) {
-    // Cross travel above 60 % of the main axis.
     EXPECT_EQ(recognizeSwipe(QPointF(100, 70), 200), SwipeDirection::None);
-    // Just inside the cone.
     EXPECT_EQ(recognizeSwipe(QPointF(100, 55), 200), SwipeDirection::Right);
 }
 
@@ -44,12 +41,10 @@ TEST(SwipeRecognizerTest, ThresholdsAreTunable) {
     EXPECT_EQ(recognizeSwipe(QPointF(12, 11), 4000, loose), SwipeDirection::Right);
 }
 
-// The drag axis is chosen once, after a few px, and then stays.
 TEST(SwipeRecognizerTest, AxisLocksAfterSmallTravelAndStaysLocked) {
     EXPECT_EQ(lockSwipeAxis(QPointF(3, 2), SwipeAxis::None), SwipeAxis::None);
     EXPECT_EQ(lockSwipeAxis(QPointF(9, 2), SwipeAxis::None), SwipeAxis::Horizontal);
     EXPECT_EQ(lockSwipeAxis(QPointF(2, -9), SwipeAxis::None), SwipeAxis::Vertical);
-    // Later travel on the other axis does not flip it.
     EXPECT_EQ(lockSwipeAxis(QPointF(5, 200), SwipeAxis::Horizontal), SwipeAxis::Horizontal);
     EXPECT_EQ(lockSwipeAxis(QPointF(200, 5), SwipeAxis::Vertical), SwipeAxis::Vertical);
 }
@@ -68,7 +63,6 @@ TEST(SwipeRecognizerTest, VectorsAreUnitAxes) {
     EXPECT_EQ(swipeVector(SwipeDirection::None), QPointF(0, 0));
 }
 
-// QML receives these as plain ints. The mapping must stay stable.
 TEST(SwipeRecognizerTest, EnumValuesMatchTheQmlContract) {
     EXPECT_EQ(static_cast<int>(SwipeDirection::None), 0);
     EXPECT_EQ(static_cast<int>(SwipeDirection::Left), 1);

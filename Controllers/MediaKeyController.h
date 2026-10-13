@@ -2,7 +2,6 @@
 
 #include <QObject>
 
-// Watch hardware media keys. Detect manual skip.
 class MediaKeyController : public QObject {
         Q_OBJECT
 
@@ -12,10 +11,8 @@ class MediaKeyController : public QObject {
 
         void start();
 
-        // True after low-level keyboard hook installs.
         bool available() const;
 
-        // Internal. Called by keyboard hook on main thread.
         void notifyPressed();
         void notifyVolumePressed();
 

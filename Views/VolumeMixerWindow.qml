@@ -3,7 +3,6 @@ import QtQuick.Window
 import QtQuick.Controls.Basic
 import MediaFlyouts
 
-// Per-application volume mixer window, opened from the tray menu.
 Window {
     id: root
     width: 420
@@ -31,7 +30,6 @@ Window {
         root.requestActivate()
     }
 
-    // Keep levels in sync while window is open.
     Timer {
         interval: 1000
         running: root.visible

@@ -76,7 +76,6 @@ void PowerStatusController::start() {
     if(!m_notificationHandle)
         TRC_WARN("charger notifications unavailable");
 
-    // First reading only sets the baseline.
     refresh();
 }
 

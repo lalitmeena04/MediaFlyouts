@@ -36,7 +36,6 @@ TEST(AlbumArtProviderTest, ScalesToRequestedSize) {
 
     QSize size;
     const QImage result = provider.requestImage(QStringLiteral("cover"), &size, QSize(50, 50));
-    // KeepAspectRatioByExpanding guarantees the result covers the requested box
     EXPECT_GE(result.width(), 50);
     EXPECT_GE(result.height(), 50);
 }

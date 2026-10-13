@@ -4,7 +4,6 @@
 
 class MonitorMapper;
 
-// Detect fullscreen game in foreground. Prevent flyout focus issues.
 class FullscreenDetector : public QObject {
         Q_OBJECT
 

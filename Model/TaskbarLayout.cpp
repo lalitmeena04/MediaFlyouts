@@ -34,7 +34,6 @@ int taskbarWidgetX(const QRect& screen, const TaskbarReserve& reserve, TaskbarSi
         x = rightEdge - width - margin - qMax(0, offset);
     }
 
-    // Keep the widget on its own screen.
     const int maxX = qMax(screen.left(), screen.right() + 1 - width);
     return qBound(screen.left(), x, maxX);
 }

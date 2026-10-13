@@ -1,7 +1,5 @@
 import QtQuick
 
-// Small vertical battery icon drawn with shapes.
-// Level sets fill height. Color sets fill color.
 Item {
     id: bat
     property color color: "white"
@@ -12,7 +10,6 @@ Item {
     readonly property real _nub: Math.max(1, Math.round(implicitHeight * 0.09))
     readonly property real _clamped: Math.max(0, Math.min(1, level))
 
-    // Terminal nub on top.
     Rectangle {
         width: parent.width * 0.44
         height: bat._nub
@@ -22,7 +19,6 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    // Body outline with bottom-anchored fill.
     Rectangle {
         id: body
         anchors.bottom: parent.bottom

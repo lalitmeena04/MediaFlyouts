@@ -6,7 +6,6 @@
 #include <QUrl>
 #include <QVariantMap>
 
-// Persistent user settings, stored per-user (MSIX-safe) via QSettings. Exposed to QML.
 class Settings : public QObject {
         Q_OBJECT
         Q_PROPERTY(bool mediaFlyoutEnabled READ mediaFlyoutEnabled WRITE setMediaFlyoutEnabled NOTIFY changed)
@@ -75,7 +74,6 @@ class Settings : public QObject {
         Q_PROPERTY(bool peripheralsWidgetWiredEnabled READ peripheralsWidgetWiredEnabled WRITE
                        setPeripheralsWidgetWiredEnabled NOTIFY changed)
         Q_PROPERTY(QStringList peripheralsWidgetExcluded READ peripheralsWidgetExcluded NOTIFY changed)
-        // Detected name mapped to the name the user prefers.
         Q_PROPERTY(QVariantMap peripheralNames READ peripheralNames NOTIFY changed)
         Q_PROPERTY(bool batteryRingUseAccent READ batteryRingUseAccent WRITE setBatteryRingUseAccent NOTIFY changed)
         Q_PROPERTY(bool peripheralFlyoutEnabled READ peripheralFlyoutEnabled WRITE setPeripheralFlyoutEnabled
@@ -118,10 +116,8 @@ class Settings : public QObject {
     public:
         explicit Settings(QObject* parent = nullptr);
 
-        // Write and read settings from portable ini file.
         Q_INVOKABLE bool exportTo(const QUrl& file) const;
         Q_INVOKABLE bool importFrom(const QUrl& file);
-        // Folder that contains settings ini.
         Q_INVOKABLE QString configDir() const;
 
         bool mediaFlyoutEnabled() const;
@@ -153,12 +149,10 @@ class Settings : public QObject {
         bool taskbarWidgetControlsEnabled() const;
         int flyoutPosition() const;
         int flyoutMonitor() const;
-        // Independent of media flyout. Indexes mf::FlyoutPosition.
         int volumeFlyoutPosition() const;
         int volumeFlyoutMonitor() const;
         int flyoutDuration() const;
         int flyoutAnimationSpeed() const;
-        // Fade duration in ms. Derived from flyoutAnimationSpeed.
         int flyoutAnimationMs() const;
         int flyoutAnimationEasingStyle() const;
         int volumeFlyoutDuration() const;
@@ -167,8 +161,6 @@ class Settings : public QObject {
         int taskbarWidgetOffset() const;
         int taskbarWidgetSide() const;
         int taskbarWidgetMonitor() const;
-        // How media and peripheral widgets share the taskbar.
-        // 0 = side by side. 1 = one slot, scroll wheel pages through them.
         int taskbarWidgetLayout() const;
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
@@ -178,16 +170,12 @@ class Settings : public QObject {
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
         bool peripheralsWidgetEnabled() const;
-        // Wired devices are hidden until the user asks for them.
         bool peripheralsWidgetWiredEnabled() const;
         QStringList peripheralsWidgetExcluded() const;
-        // True unless device is hidden in peripherals-widget picker.
         Q_INVOKABLE bool peripheralSelected(const QString& name) const;
         Q_INVOKABLE void setPeripheralSelected(const QString& name, bool selected);
         QVariantMap peripheralNames() const;
-        // Name to show for a device. Falls back to the detected name.
         Q_INVOKABLE QString peripheralDisplayName(const QString& name) const;
-        // Empty or unchanged custom name restores the detected one.
         Q_INVOKABLE void setPeripheralDisplayName(const QString& name, const QString& custom);
         bool batteryRingUseAccent() const;
         bool peripheralFlyoutEnabled() const;
@@ -204,7 +192,6 @@ class Settings : public QObject {
         bool chargerFlyoutOnPlug() const;
         bool chargerFlyoutOnUnplug() const;
         int chargerFlyoutDuration() const;
-        // Independent of the other flyouts. Indexes mf::FlyoutPosition.
         int chargerFlyoutPosition() const;
         int chargerFlyoutMonitor() const;
         bool onboardingCompleted() const;
@@ -216,9 +203,7 @@ class Settings : public QObject {
         int filterMode() const;
         QStringList filterList() const;
         bool autoCheckUpdates() const;
-        // Release tag the user chose to skip. Empty when none.
         QString skippedUpdateVersion() const;
-        // True when current filter allows player flyout.
         Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
         void setMediaFlyoutEnabled(bool v);

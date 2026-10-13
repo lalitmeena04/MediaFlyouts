@@ -1,7 +1,6 @@
 import QtQuick
 import MediaFlyouts
 
-// One peripheral card. Shows icon, name, event, and battery ring.
 Item {
     id: card
 
@@ -32,9 +31,10 @@ Item {
             width: 40
             height: 40
             thickness: 4
-            // Device with no reading still shows empty ring outline.
             percent: card.hasBattery ? card.alert.percent : 0
-            showGauge: DeviceIcons.hasBattery(card.alert.connectionKind)
+            charging: card.alert.charging === true
+            badgeBackground: theme.flyout
+            showGauge: DeviceIcons.hasBattery(card.alert.connectionKind, card.alert.percent)
 
             Text {
                 anchors.centerIn: parent

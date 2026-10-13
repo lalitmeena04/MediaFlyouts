@@ -18,7 +18,6 @@ const GUID kVolumeEventContext = {0x9a1b2c3d, 0x1234, 0x5678, {0x9a, 0xbc, 0xde,
 
 } // namespace
 
-// COM sink. Forward endpoint volume notifications to Qt thread.
 struct VolumeCallback : IAudioEndpointVolumeCallback {
         LONG ref = 1;
         VolumeController* owner = nullptr;
@@ -56,7 +55,6 @@ struct VolumeCallback : IAudioEndpointVolumeCallback {
         }
 };
 
-// COM sink. Re-bind to new default output on device switch.
 struct DeviceNotificationClient : IMMNotificationClient {
         LONG ref = 1;
         VolumeController* owner = nullptr;
@@ -175,7 +173,6 @@ void VolumeController::start() {
         return;
     }
 
-    // Follow default output device. Flyout reflects current endpoint.
     m_deviceNotifier = new DeviceNotificationClient(this);
     m_enumerator->RegisterEndpointNotificationCallback(m_deviceNotifier);
 

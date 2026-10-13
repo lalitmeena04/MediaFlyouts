@@ -58,6 +58,7 @@ add_executable(mediaflyout_gtest
     Model/FlyoutPositionerTest.cpp
     Model/HidppProtocolTest.cpp
     Model/InstallSourceTest.cpp
+    Model/JabraGnpProtocolTest.cpp
     Model/PlaybackControllerTest.cpp
     Model/PowerAlertPolicyTest.cpp
     Model/RazerProtocolTest.cpp
@@ -90,6 +91,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/FastPairBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/GameControllerBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/HidCollections.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/JabraBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/LogitechBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/PlayStationControllerBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/RazerBatteryProvider.cpp

@@ -7,8 +7,6 @@
 
 namespace {
 
-// Provider stub. Test supplies poll() result.
-// No real Bluetooth, BLE, or gamepad APIs needed.
 class FakeProvider : public IBatteryProvider {
     public:
         explicit FakeProvider(std::function<QVector<BatteryDeviceInfo>()> poller) : m_poller(std::move(poller)) {}
@@ -69,11 +67,9 @@ TEST(BatteryStatusControllerTest, RefreshUpdatesDevicesAndEmitsSignalOnChange) {
     int changedCount = 0;
     QObject::connect(&controller, &BatteryStatusController::devicesChanged, [&] { ++changedCount; });
 
-    // Same reading again. No observable change. No signal.
     controller.refresh();
     EXPECT_EQ(changedCount, 0);
 
-    // Battery level changed. Refresh updates and notifies.
     percent = 35;
     controller.refresh();
     EXPECT_EQ(changedCount, 1);
@@ -81,8 +77,6 @@ TEST(BatteryStatusControllerTest, RefreshUpdatesDevicesAndEmitsSignalOnChange) {
 }
 
 TEST(BatteryStatusControllerTest, KeepsOnlyTheFirstProviderReportingADevice) {
-    // Same headset is visible over Fast Pair and Hands-Free.
-    // First provider wins and prevents duplicate.
     std::vector<std::unique_ptr<IBatteryProvider>> providers;
     providers.push_back(std::make_unique<FakeProvider>([] {
         BatteryDeviceInfo fastPair{"Ear (2)", 80, "bluetooth", "headset"};

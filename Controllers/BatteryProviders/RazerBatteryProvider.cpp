@@ -13,7 +13,6 @@ constexpr USHORT kRazerVendorId = 0x1532;
 // Transaction ids vary by model. Current wireless mice answer on low ids first.
 constexpr std::uint8_t kTransactionIds[] = {0x00, 0x1F, 0x2F, 0x3F, 0x4F, 0x5F, 0x6F, 0x7F, 0x9F};
 
-// Send power-class command. Wait for matching answer.
 // Device can return busy or unrelated reports.
 bool exchange(HANDLE device, std::uint8_t transactionId, std::uint8_t commandId,
               std::vector<std::uint8_t>& reply) {
@@ -32,8 +31,6 @@ bool exchange(HANDLE device, std::uint8_t transactionId, std::uint8_t commandId,
     return false;
 }
 
-// Try known transaction ids until battery answer succeeds.
-// Try last working id first.
 int readBattery(HANDLE device, std::uint8_t& workingTransactionId, std::uint8_t preferred) {
     std::vector<std::uint8_t> reply;
     std::vector<std::uint8_t> order;
@@ -69,8 +66,7 @@ QVector<BatteryDeviceInfo> RazerBatteryProvider::poll() {
         if(handledProducts.contains(collection.productId))
             continue;
 
-        // No access rights. Windows refuses read/write on system HID collections.
-        // Feature reports still work.
+        // Windows refuses read/write on system HID collections. Feature reports still work.
         HANDLE device = CreateFileW(reinterpret_cast<const wchar_t*>(collection.path.utf16()), 0,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
         if(device == INVALID_HANDLE_VALUE)
@@ -80,7 +76,7 @@ QVector<BatteryDeviceInfo> RazerBatteryProvider::poll() {
         const int percent = readBattery(device, transactionId, m_transactionIds.value(collection.productId, 0xFF));
         if(percent < 0) {
             CloseHandle(device);
-            continue; // wired device, or the dongle has nothing paired to it
+            continue;
         }
         handledProducts.insert(collection.productId);
         m_transactionIds.insert(collection.productId, transactionId);

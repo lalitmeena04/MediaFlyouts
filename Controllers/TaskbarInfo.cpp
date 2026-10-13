@@ -114,7 +114,6 @@ QRect trayRectViaAutomation(HWND taskbar) {
     return unionRect;
 }
 
-// Prefer the Win32 child. Fall back to automation when the shell hides it.
 QRect trayRectOf(HWND taskbar) {
     const QRect win32 = nativeWindowRect(trayChildOf(taskbar));
     if(!win32.isEmpty())
@@ -132,7 +131,6 @@ void pinWindowTopmost(HWND hwnd) {
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 }
 
-// Runs on foreground change or minimize.
 // Shell can move taskbar above app windows. Re-pin tracked windows.
 void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DWORD, DWORD) {
     TRC_DEBUG("winEventProc: event={:#x} hwnd={:#x}", event, reinterpret_cast<std::uintptr_t>(hwnd));
@@ -143,8 +141,7 @@ void CALLBACK winEventProc(HWINEVENTHOOK, DWORD event, HWND hwnd, LONG, LONG, DW
 
 TaskbarInfo::TaskbarInfo(const MonitorMapper* monitors, QObject* parent) : QObject(parent), m_monitors(monitors) {
     g_taskbarInfo = this;
-    // Keep pinning during the minimize animation.
-    // The taskbar can move above widgets more than once.
+    // The taskbar can move above widgets more than once during the minimize animation.
     m_repinBurst.setInterval(30);
     connect(&m_repinBurst, &QTimer::timeout, this, [this] {
         repinTracked();
@@ -209,7 +206,6 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
     const QRect full = entry->logicalRect;
     const QRect avail = entry->availableRect;
 
-    // Use the bottom taskbar height. Use 40 px if none is found.
     int taskbarHeight = full.bottom() - avail.bottom();
     int taskbarTop;
     if(taskbarHeight > 0) {
@@ -220,7 +216,6 @@ QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width,
     }
     const int y = taskbarTop + qMax(0, (taskbarHeight - height) / 2);
 
-    // Measure the chrome on this monitor. Every taskbar sizes its own tray.
     const int x = mf::taskbarWidgetX(full, reserveFor(*entry), static_cast<mf::TaskbarSide>(side), offset, width, 8);
     return QPoint(x, y);
 }
@@ -231,7 +226,6 @@ void TaskbarInfo::pinTopmost(QWindow* window) const {
     if(!m_pinned.contains(window))
         m_pinned.append(window);
     HWND hwnd = reinterpret_cast<HWND>(window->winId());
-    // Move above other topmost windows. Do not take focus.
     pinWindowTopmost(hwnd);
 }
 

@@ -25,7 +25,6 @@ PeripheralAlerts::PeripheralAlerts(BatteryStatusController* status, QObject* par
     : QObject(parent), m_status(status) {
     if(m_status) {
         connect(m_status, &BatteryStatusController::devicesChanged, this, &PeripheralAlerts::onDevicesChanged);
-        // Seed baseline from connected devices. Do not announce all at launch.
         onDevicesChanged();
     }
 }
@@ -76,6 +75,7 @@ void PeripheralAlerts::onDevicesChanged() {
         entry[QStringLiteral("bucket")] = mf::bucketLabel(alert.bucket);
         entry[QStringLiteral("category")] = alert.category;
         entry[QStringLiteral("connectionKind")] = alert.connectionKind;
+        entry[QStringLiteral("charging")] = alert.charging;
         m_pending.append(entry);
 
         if(alert.event == mf::PeripheralEvent::LowBattery || alert.event == mf::PeripheralEvent::VeryLowBattery)

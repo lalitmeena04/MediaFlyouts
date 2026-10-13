@@ -24,7 +24,6 @@ AudioCapture::AudioCapture(int bandCount, QObject* parent)
     m_smoothed.assign(m_bandCount, 0.0);
     for(int i = 0; i < m_bandCount; ++i)
         m_bands.append(0.0);
-    // Poll at ~60 fps. Keep loopback buffer clear. Update bars often.
     m_timer.setInterval(16);
     connect(&m_timer, &QTimer::timeout, this, &AudioCapture::poll);
 }
@@ -151,8 +150,6 @@ void AudioCapture::publishSilence() {
 }
 
 void AudioCapture::handleDeviceLoss() {
-    // WASAPI call failed. Endpoint is stale.
-    // Release device. poll() can acquire current endpoint.
     if(m_client)
         m_client->Stop();
     releaseDevice();
@@ -161,8 +158,6 @@ void AudioCapture::handleDeviceLoss() {
 }
 
 void AudioCapture::tryRecover() {
-    // Re-acquire default render endpoint after device loss.
-    // Throttle to avoid retry on every poll tick.
     const qint64 now = QDateTime::currentMSecsSinceEpoch();
     if(now - m_lastRecoverMs < 750)
         return;
@@ -216,7 +211,6 @@ void AudioCapture::poll() {
     if(static_cast<int>(m_accum.size()) < kFftSize)
         return;
 
-    // Use most recent window. Apply Hann taper.
     std::vector<double> window(m_accum.end() - kFftSize, m_accum.end());
     m_accum.clear();
     for(int i = 0; i < kFftSize; ++i)
@@ -227,7 +221,6 @@ void AudioCapture::poll() {
 
     bool changed = false;
     for(int i = 0; i < m_bandCount; ++i) {
-        // Rise quickly. Fall slowly.
         const double target = raw[i];
         if(target > m_smoothed[i])
             m_smoothed[i] = target;
@@ -242,7 +235,6 @@ void AudioCapture::poll() {
     if(changed)
         emit bandsChanged();
 
-    // Overall level and bass-energy beat detector.
     double sum = 0.0;
     const int bassCount = std::max(1, m_bandCount / 4);
     double bass = 0.0;

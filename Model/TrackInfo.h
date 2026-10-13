@@ -22,13 +22,10 @@ struct TrackInfo {
         bool canShuffle = false;
 };
 
-// Formats milliseconds as m:ss, or h:mm:ss when at least one hour.
 QString formatDuration(qint64 ms);
 
-// Joins title and artist as "Title — Artist", tolerating either being empty.
 QString formatTrackLine(const TrackInfo& track);
 
-// Returns playback progress in the closed interval [0, 1].
 double playbackProgress(const TrackInfo& track);
 
 } // namespace mf

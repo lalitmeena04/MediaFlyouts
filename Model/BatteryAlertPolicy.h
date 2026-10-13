@@ -4,8 +4,6 @@
 #include <QString>
 #include <QVector>
 
-// Decide which peripheral events are worth showing.
-// Keep rules free of Windows and Qt GUI types.
 namespace mf {
 
 // Battery buckets align with BatteryRing colors.
@@ -18,12 +16,11 @@ struct PeripheralAlert {
         QString deviceName;
         int percent = -1;
         BatteryBucket bucket = BatteryBucket::Unknown;
-        // Card uses these for icon and link type.
         QString category;
         QString connectionKind;
+        bool charging = false;
 };
 
-// One device as seen in a poll snapshot.
 struct PeripheralSnapshot {
         QString name;
         int percent = -1;
@@ -35,17 +32,14 @@ struct PeripheralSnapshot {
 BatteryBucket bucketOf(int percent);
 QString bucketLabel(BatteryBucket bucket);
 
-// Track device state across snapshots. Report useful transitions only.
 class BatteryAlertPolicy {
     public:
         // Thresholds are the levels a device must cross *downward* to alert.
         static constexpr int kLowThreshold = 20;
         static constexpr int kVeryLowThreshold = 10;
 
-        // First snapshot sets baseline. Existing devices are not new connections.
         QVector<PeripheralAlert> update(const QVector<PeripheralSnapshot>& snapshot, qint64 timestampMs);
 
-        // Collapse repeated connect/disconnect inside this window.
         // Prevent alert spam from unstable Bluetooth links.
         void setDebounceMs(qint64 ms) { m_debounceMs = ms; }
 

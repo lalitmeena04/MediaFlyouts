@@ -7,7 +7,6 @@
 using mf::InstallKind;
 
 TEST(InstallSourceTest, PackagedProcessIsAStoreInstall) {
-    // Package identity wins even when an installer entry exists.
     EXPECT_EQ(mf::classifyInstall(true, QStringLiteral("C:/Program Files/MediaFlyouts"),
                                   QStringLiteral("C:/Program Files/MediaFlyouts")),
               InstallKind::Store);
@@ -19,17 +18,14 @@ TEST(InstallSourceTest, NoUninstallEntryMeansPortable) {
 }
 
 TEST(InstallSourceTest, RunningFromTheInstalledFolderIsAnInstallerInstall) {
-    // Inno writes a native path with a trailing backslash. The app reports forward slashes.
     EXPECT_EQ(mf::classifyInstall(false, QStringLiteral("C:\\Program Files\\MediaFlyouts\\"),
                                   QStringLiteral("C:/Program Files/MediaFlyouts")),
               InstallKind::Installer);
-    // Case differences on Windows paths must not matter.
     EXPECT_EQ(mf::classifyInstall(false, QStringLiteral("c:\\program files\\mediaflyouts"),
                                   QStringLiteral("C:/Program Files/MediaFlyouts/")),
               InstallKind::Installer);
 }
 
-// A ZIP copy next to an installed copy must not run the setup over itself.
 TEST(InstallSourceTest, RunningElsewhereWithAnInstallEntryIsPortable) {
     EXPECT_EQ(mf::classifyInstall(false, QStringLiteral("C:\\Program Files\\MediaFlyouts\\"),
                                   QStringLiteral("D:/Downloads/MediaFlyouts-1.4.1-win64")),
@@ -51,7 +47,6 @@ TEST(InstallSourceTest, StoreUrlUsesTheStoreScheme) {
     EXPECT_TRUE(mf::storeUpdatesUrl().startsWith(QStringLiteral("ms-windows-store://")));
 }
 
-// The test binary is neither packaged nor installed by Inno Setup.
 TEST(InstallSourceTest, DetectionRunsWithoutCrashing) {
     const InstallKind kind = mf::detectInstallKind();
     EXPECT_TRUE(kind == InstallKind::Portable || kind == InstallKind::Unknown);

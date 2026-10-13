@@ -15,7 +15,6 @@
 #include "Version.h"
 
 namespace {
-// Settings must not touch the real user profile.
 class ErrorReporterTest : public ::testing::Test {
     protected:
         void SetUp() override {
@@ -43,7 +42,6 @@ TEST_F(ErrorReporterTest, SummaryNamesVersionOsAndCapabilities) {
     EXPECT_TRUE(summary.contains(QStringLiteral("OS: ")));
     EXPECT_TRUE(summary.contains(QStringLiteral("Qt: ")));
     EXPECT_TRUE(summary.contains(QStringLiteral("Unavailable: ")));
-    // Without a GUI app there is no screen list, and that must not crash.
     EXPECT_TRUE(summary.contains(QStringLiteral("Screens: n/a")));
 }
 
@@ -73,7 +71,6 @@ TEST_F(ErrorReporterTest, ReportBundlesSummarySettingsAndLogs) {
     EXPECT_TRUE(written.contains(QStringLiteral("settings.ini")));
     EXPECT_TRUE(written.contains(QStringLiteral("logs/mediaflyouts.log")));
     EXPECT_TRUE(written.contains(QStringLiteral("logs/mediaflyouts.1.log")));
-    // Only *.log files travel. Stray files in the folder stay home.
     EXPECT_FALSE(written.contains(QStringLiteral("logs/notes.txt")));
     EXPECT_TRUE(QFile::exists(target + QStringLiteral("/logs/mediaflyouts.log")));
 
@@ -87,7 +84,6 @@ TEST_F(ErrorReporterTest, ReportBundlesSummarySettingsAndLogs) {
     EXPECT_TRUE(text.contains(QStringLiteral(MEDIAFLYOUTS_VERSION)));
 }
 
-// Logging may be compiled out. The report still works with no log folder.
 TEST_F(ErrorReporterTest, ReportWorksWithoutLogs) {
     QTemporaryDir temp;
     ASSERT_TRUE(temp.isValid());
@@ -102,7 +98,6 @@ TEST_F(ErrorReporterTest, PruneKeepsOnlyTheNewestReports) {
     const QDir root(temp.path());
     for(int day = 1; day <= 5; ++day) {
         const QString name = ErrorReporter::reportName(QDateTime(QDate(2026, 1, day), QTime(12, 0)));
-        // Mix folders and zips. Both count as reports.
         if(day % 2)
             ASSERT_TRUE(root.mkpath(name));
         else
@@ -128,7 +123,6 @@ TEST_F(ErrorReporterTest, ReportNameIsSortableByTime) {
     EXPECT_LT(a, b);
 }
 
-// The URL goes to GitHub when the page opens. Only the report file name may ride along.
 TEST_F(ErrorReporterTest, IssueUrlCarriesOnlyTheReportFileName) {
     const QString url = ErrorReporter::issueUrlFor(QStringLiteral("C:/Users/someone/x/MediaFlyouts-report-1.zip"));
     EXPECT_TRUE(url.startsWith(ErrorReporter::issueUrl()));
@@ -136,9 +130,7 @@ TEST_F(ErrorReporterTest, IssueUrlCarriesOnlyTheReportFileName) {
     const QUrlQuery query(QUrl(url).query(QUrl::FullyEncoded));
     const QString body = query.queryItemValue(QStringLiteral("body"), QUrl::FullyDecoded);
     EXPECT_TRUE(body.contains(QStringLiteral("MediaFlyouts-report-1.zip")));
-    // Only the file name goes in. The local folder path stays private.
     EXPECT_FALSE(body.contains(QStringLiteral("someone")));
-    // System details stay in the report. They must never be in the URL.
     EXPECT_FALSE(body.contains(QStringLiteral("App version:")));
     EXPECT_FALSE(body.contains(QStringLiteral("OS:")));
     EXPECT_FALSE(body.contains(QStringLiteral("Settings file:")));
@@ -154,7 +146,6 @@ TEST_F(ErrorReporterTest, CompressFolderProducesAZipWhenAnArchiverExists) {
 
     const QString zip = ErrorReporter::compressFolder(folder);
     if(zip.isEmpty()) {
-        // No archiver on this machine. The folder must survive as the fallback.
         EXPECT_TRUE(QFile::exists(folder + QStringLiteral("/report.txt")));
         return;
     }

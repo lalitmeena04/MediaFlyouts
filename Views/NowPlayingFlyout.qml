@@ -5,9 +5,7 @@ import MediaFlyouts
 FlyoutBase {
     id: root
     readonly property bool compact: settings.nextUpStyle === 1
-    // Flyout accent follows album art when enabled. Else use theme accent.
     readonly property color accentColor: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
-    // Width fits track text. Clamp to range.
     readonly property int contentWidth: Math.max(titleMetrics.implicitWidth, artistMetrics.implicitWidth, 80)
     width: Math.round(Math.max(300, Math.min(560, (root.compact ? 190 : 100) + contentWidth)))
     height: root.compact ? 64 : 96
@@ -102,7 +100,6 @@ FlyoutBase {
             }
         }
 
-        // Compact pill layout. Note, art, title, artist.
         Row {
             anchors.fill: parent
             anchors.leftMargin: 14

@@ -23,7 +23,6 @@ bool ThemeController::computeDark() const {
         return false;
     if(mode == 2)
         return true;
-    // System mode follows OS color scheme.
     if(const QStyleHints* hints = QGuiApplication::styleHints())
         return hints->colorScheme() != Qt::ColorScheme::Light;
     return true;

@@ -7,7 +7,6 @@ using DualSenseProtocol::crc32;
 using DualSenseProtocol::parseBatteryPercent;
 
 TEST(DualSenseProtocolTest, Crc32MatchesStandardCheckValue) {
-    // "123456789" is standard CRC-32 test vector.
     const std::string testVector("123456789");
     const std::vector<uint8_t> input(testVector.begin(), testVector.end());
     EXPECT_EQ(crc32(input), 0xCBF43926u);

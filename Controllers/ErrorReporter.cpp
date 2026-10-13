@@ -142,7 +142,6 @@ QStringList ErrorReporter::writeReport(const QString& targetDir, const QString& 
 
 int ErrorReporter::pruneReports(const QString& dir, int keep) {
     const QDir root(dir);
-    // Names carry a sortable timestamp. Newest sorts last.
     QStringList entries = root.entryList({QString::fromLatin1(kReportPrefix) + QLatin1Char('*')},
                                          QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
     int removed = 0;

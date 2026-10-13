@@ -1,8 +1,6 @@
 import QtQuick
 import MediaFlyouts
 
-// Audio visualizer for taskbar widget.
-// Bands drive bars, radial, and waveform. Beat drives particles.
 Item {
     id: viz
     clip: true
@@ -11,7 +9,6 @@ Item {
     readonly property color col: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
     property var particles: []
 
-    // Style 0. Mirrored or bottom-anchored bars.
     Row {
         anchors.fill: parent
         spacing: 2
@@ -39,7 +36,6 @@ Item {
         }
     }
 
-    // Styles 1-3. Radial rays, waveform, and particles.
     Canvas {
         id: field
         anchors.fill: parent

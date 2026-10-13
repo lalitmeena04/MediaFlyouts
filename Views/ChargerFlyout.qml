@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Window
 import MediaFlyouts
 
-// Announce charger plug and unplug.
-// Only systems with a battery raise these events.
 FlyoutBase {
     id: root
 
@@ -13,7 +11,6 @@ FlyoutBase {
     height: 92
     hideInterval: settings.chargerFlyoutDuration
 
-    // Events the user has switched off never reach the screen.
     function eventEnabled(pluggedIn) {
         return pluggedIn ? settings.chargerFlyoutOnPlug : settings.chargerFlyoutOnUnplug
     }
