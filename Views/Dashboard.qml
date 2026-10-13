@@ -1098,6 +1098,13 @@ Window {
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: "Swipe to dismiss"
+                        description: "Drag a flyout quickly in any direction, with the mouse or a finger, to close it."
+                        value: settings.flyoutSwipeDismissEnabled
+                        onToggled: settings.flyoutSwipeDismissEnabled = value
+                    }
 
                     SettingCombo {
                         width: parent.width

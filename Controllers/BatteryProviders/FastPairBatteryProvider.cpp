@@ -31,7 +31,6 @@ struct FastPairDevice {
 };
 
 // PnP service sub-node has generic name. Ask Bluetooth API for paired name.
-// Skip devices that are not connected.
 bool connectedDeviceInfo(quint64 address, QString& name, QString& category) {
     BLUETOOTH_DEVICE_INFO info = {};
     info.dwSize = sizeof(info);
@@ -56,8 +55,6 @@ bool addressFromServiceId(const std::wstring& id, quint64& out) {
     return true;
 }
 
-// Paired devices that advertise Fast Pair message stream.
-// Use device BTHENUM node for friendly name.
 std::vector<FastPairDevice> enumerateFastPairDevices() {
     ULONG listSize = 0;
     if(CM_Get_Device_ID_List_SizeW(&listSize, L"BTHENUM", CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS
@@ -94,7 +91,7 @@ std::vector<FastPairDevice> enumerateFastPairDevices() {
         QString name;
         QString category;
         if(!connectedDeviceInfo(address, name, category))
-            continue; // Paired but not connected now.
+            continue;
 
         FastPairDevice device;
         device.address = address;
@@ -140,7 +137,7 @@ SOCKET connectFastPair(quint64 address, int timeoutMs) {
 QVector<BatteryComponentInfo> describeComponents(const std::vector<fastpair::BatteryComponent>& components) {
     QVector<BatteryComponentInfo> described;
     if(components.size() < 2)
-        return described; // Single-battery device has headline percent.
+        return described;
 
     // Three components mean true wireless set. Other counts use position labels.
     static const char* twsLabels[] = {"L", "R", "Case"};
@@ -215,7 +212,6 @@ void FastPairBatteryProvider::run() {
                 if(!bluetoothAddressConnected(connections[i].address))
                     dropConnection(i);
         }
-        // Periodically pick up newly connected devices.
         if(std::chrono::steady_clock::now() >= nextScan) {
             nextScan = std::chrono::steady_clock::now() + std::chrono::seconds(3);
             for(const FastPairDevice& device : enumerateFastPairDevices()) {
@@ -230,7 +226,7 @@ void FastPairBatteryProvider::run() {
 
                 const SOCKET sock = connectFastPair(device.address, 3000);
                 if(sock == INVALID_SOCKET)
-                    continue; // device is paired but not in range/connected
+                    continue;
                 Connection connection;
                 connection.sock = sock;
                 connection.address = device.address;

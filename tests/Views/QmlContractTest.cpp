@@ -637,7 +637,82 @@ TEST(QmlContractTest, PeekAreaHoldsTheFlyoutOpenWhileHovered) {
     expectContains(source, QStringLiteral("property bool pinned"));
     expectContains(source, QStringLiteral("hoverEnabled: true"));
     expectContains(source, QStringLiteral("onEntered: if(peek.flyout) peek.flyout.stopAutoHide()"));
-    expectContains(source, QStringLiteral("onExited: if(peek.flyout && !peek.pinned) peek.flyout.restartAutoHide()"));
+    expectContains(source, QStringLiteral("onExited: if(peek.flyout && !peek.pinned && !peek.swiped) peek.flyout.restartAutoHide()"));
+}
+
+// PeekArea only reports the raw gesture in screen coordinates. The flyout
+// owns the axis lock and the thresholds. A swipe must not count as a click.
+TEST(QmlContractTest, PeekAreaRecognizesSwipeAndSkipsClick) {
+    const QString source = loadSource("Views/PeekArea.qml");
+    expectContains(source, QStringLiteral("property bool swipeEnabled: settings.flyoutSwipeDismissEnabled"));
+    expectContains(source, QStringLiteral("peek.mapToGlobal(mouse.x, mouse.y)"));
+    EXPECT_FALSE(source.contains(QStringLiteral("mapToItem(null")))
+        << "Window-relative coordinates shift while the window is dragged";
+    expectContains(source, QStringLiteral("peek.flyout.dragSwipe(d.x, d.y)"));
+    expectContains(source, QStringLiteral("peek.swiped = peek.flyout.releaseSwipe(d.x, d.y, Date.now() - peek.pressTime) !== 0"));
+    EXPECT_FALSE(source.contains(QStringLiteral("swipe.recognize("))) << "Recognition belongs to FlyoutBase";
+    EXPECT_FALSE(source.contains(QStringLiteral("swipe.lockAxis("))) << "Axis lock belongs to FlyoutBase";
+    expectContains(source, QStringLiteral("onClicked: if(peek.flyout && !peek.pinned && !peek.swiped) peek.flyout.restartAutoHide()"));
+    // Cancelled presses slide the card back.
+    expectContains(source, QStringLiteral("onCanceled:"));
+    expectContains(source, QStringLiteral("peek.flyout.releaseSwipe(0, 0, 0)"));
+}
+
+// The base owns the gesture. App stacks by the home position; the window sits
+// at home plus an axis-locked swipe offset, so the fling is a straight line
+// and nothing is clipped at a window edge. Derived flyouts need no change.
+TEST(QmlContractTest, FlyoutBaseFlingsTheWindowOnSwipe) {
+    const QString base = loadSource("Views/FlyoutBase.qml");
+    expectContains(base, QStringLiteral("default property alias content: slot.data"));
+    expectContains(base, QStringLiteral("property real homeX"));
+    expectContains(base, QStringLiteral("property real homeY"));
+    expectContains(base, QStringLiteral("x: base.homeX + base.swipeDx"));
+    expectContains(base, QStringLiteral("y: base.homeY + base.swipeDy"));
+    expectContains(base, QStringLiteral("function placeAt(px, py)"));
+    expectContains(base, QStringLiteral("property int swipeAxis"));
+    expectContains(base, QStringLiteral("swipe.lockAxis(dx, dy, base.swipeAxis)"));
+    expectContains(base, QStringLiteral("swipe.project(dx, dy, base.swipeAxis)"));
+    expectContains(base, QStringLiteral("xScale: base.swipeScale"));
+    expectContains(base, QStringLiteral("function dragSwipe(dx, dy)"));
+    expectContains(base, QStringLiteral("function releaseSwipe(dx, dy, elapsedMs)"));
+    expectContains(base, QStringLiteral("function dismissBySwipe(direction)"));
+    expectContains(base, QStringLiteral("function resetSwipe()"));
+    expectContains(base, QStringLiteral("swipe.vector(direction)"));
+    // No imperative x/y writes and no content translate.
+    EXPECT_FALSE(base.contains(QStringLiteral("base.x = ")));
+    EXPECT_FALSE(base.contains(QStringLiteral("base.y = ")));
+    EXPECT_FALSE(base.contains(QStringLiteral("Translate {")));
+    // The stacking slide must not fight the fling.
+    expectContains(base, QStringLiteral("enabled: base.positioned && !base.swiping"));
+    // Swipe-out stops the auto-hide timer and fades like a normal hide.
+    const int dismiss = base.indexOf(QStringLiteral("function dismissBySwipe(direction)"));
+    const int dismissEnd = base.indexOf(QStringLiteral("\n    }"), dismiss);
+    const QString body = base.mid(dismiss, dismissEnd - dismiss);
+    EXPECT_TRUE(body.contains(QStringLiteral("hideTimer.stop()")));
+    EXPECT_TRUE(body.contains(QStringLiteral("fadeOut.restart()")));
+    // The offset resets after the fade so the next show is clean.
+    const int fade = base.indexOf(QStringLiteral("id: fadeOut"));
+    EXPECT_GT(base.indexOf(QStringLiteral("base.resetSwipe()"), fade), fade);
+    // Derived flyouts do not duplicate the gesture plumbing.
+    for(const char* path : {"Views/MediaFlyout.qml", "Views/VolumeFlyout.qml", "Views/LockKeysFlyout.qml",
+                            "Views/NowPlayingFlyout.qml", "Views/PeripheralFlyout.qml", "Views/ChargerFlyout.qml"}) {
+        EXPECT_FALSE(loadSource(path).contains(QStringLiteral("swipe."))) << path;
+    }
+}
+
+// Stacking writes the home position, never x/y, so a swipe in progress and
+// the stacking math cannot overwrite each other.
+TEST(QmlContractTest, AppStacksFlyoutsByHomePosition) {
+    const QString app = loadSource("Views/App.qml");
+    EXPECT_EQ(app.count(QStringLiteral("f.placeAt(")), 2);
+    EXPECT_FALSE(app.contains(QStringLiteral("f.x = ")));
+    EXPECT_FALSE(app.contains(QStringLiteral("f.y = ")));
+}
+
+TEST(QmlContractTest, DashboardExposesSwipeDismissSetting) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("value: settings.flyoutSwipeDismissEnabled"));
+    expectContains(dashboard, QStringLiteral("onToggled: settings.flyoutSwipeDismissEnabled = value"));
 }
 
 TEST(QmlContractTest, FlyoutsUsePeekAreaInsteadOfInlineHoverHandling) {

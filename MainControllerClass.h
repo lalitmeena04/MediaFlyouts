@@ -14,6 +14,7 @@ class Settings;
 class MonitorMapper;
 class FlyoutPlacement;
 class WindowScaleRefresher;
+class SwipeDetector;
 class ThemeController;
 class UpdateChecker;
 class ErrorReporter;
@@ -71,6 +72,7 @@ class MainControllerClass {
         std::unique_ptr<FlyoutPlacement> m_placement;
         // Restores window sizes that Qt leaves small after a scale change.
         std::unique_ptr<WindowScaleRefresher> m_scaleRefresher;
+        std::unique_ptr<SwipeDetector> m_swipe;
         std::unique_ptr<ThemeController> m_theme;
         std::unique_ptr<UpdateChecker> m_updateChecker;
         std::unique_ptr<Capabilities> m_capabilities;

@@ -64,6 +64,7 @@ add_executable(mediaflyout_gtest
     Model/ReceiverProfilesTest.cpp
     Model/SessionSelectionTest.cpp
     Model/SettingsTest.cpp
+    Model/SwipeRecognizerTest.cpp
     Model/TaskbarLayoutTest.cpp
     Model/TrackInfoTest.cpp
     Model/WiredPeripheralRulesTest.cpp

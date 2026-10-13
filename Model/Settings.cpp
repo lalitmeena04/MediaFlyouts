@@ -74,6 +74,7 @@ void Settings::reload() {
     m_lockKeysDuration = m_store.value(QStringLiteral("lockKeysDuration"), 2000).toInt();
     m_nextUpEnabled = m_store.value(QStringLiteral("nextUpEnabled"), true).toBool();
     m_disableOnFullscreen = m_store.value(QStringLiteral("disableOnFullscreen"), true).toBool();
+    m_flyoutSwipeDismissEnabled = m_store.value(QStringLiteral("flyoutSwipeDismissEnabled"), true).toBool();
     m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), true).toBool();
     m_trayIconHidden = m_store.value(QStringLiteral("trayIconHidden"), false).toBool();
     m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), true).toBool();
@@ -270,6 +271,9 @@ bool Settings::nextUpEnabled() const {
 }
 bool Settings::disableOnFullscreen() const {
     return m_disableOnFullscreen;
+}
+bool Settings::flyoutSwipeDismissEnabled() const {
+    return m_flyoutSwipeDismissEnabled;
 }
 bool Settings::launchOnStartup() const {
     return m_launchOnStartup;
@@ -577,6 +581,9 @@ void Settings::setNextUpEnabled(bool v) {
 }
 void Settings::setDisableOnFullscreen(bool v) {
     assign("disableOnFullscreen", m_disableOnFullscreen, v);
+}
+void Settings::setFlyoutSwipeDismissEnabled(bool v) {
+    assign("flyoutSwipeDismissEnabled", m_flyoutSwipeDismissEnabled, v);
 }
 void Settings::setLaunchOnStartup(bool v) {
     assign("launchOnStartup", m_launchOnStartup, v);

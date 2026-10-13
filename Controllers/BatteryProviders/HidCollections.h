@@ -9,7 +9,6 @@
 
 #include <vector>
 
-// One HID top-level collection, as needed by the vendor battery providers.
 struct HidCollection {
         QString path;
         USHORT vendorId = 0;
@@ -22,14 +21,8 @@ struct HidCollection {
         QString product;
 };
 
-// List HID collections for one vendor.
-// Open with no access rights for descriptor queries.
 std::vector<HidCollection> enumerateHidCollections(USHORT vendorId);
 
-// Map Generic Desktop usage to icon category.
-// Return empty string for unknown page or usage.
 QString categoryFromHidUsage(USAGE usagePage, USAGE usage);
 
-// Best device type for a product across all collections.
-// More specific type wins.
 QString categoryForProduct(const std::vector<HidCollection>& collections, USHORT productId);
