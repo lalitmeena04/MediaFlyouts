@@ -123,12 +123,10 @@ QtObject {
                 // Center flyout over widget. Clamp to screen.
                 var fx = anchor.x + (taskbarWidget.width - f.width) / 2
                 fx = Math.max(screen.x + 8, Math.min(fx, screen.x + screen.width - f.width - 8))
-                f.x = fx
-                f.y = anchor.y - f.height - 12 - cumulative
+                f.placeAt(fx, anchor.y - f.height - 12 - cumulative)
             } else {
                 var p = placement.positionAt(f.width, f.height, posIndex, monitor)
-                f.x = p.x
-                f.y = topAligned ? (p.y + cumulative) : (p.y - cumulative)
+                f.placeAt(p.x, topAligned ? (p.y + cumulative) : (p.y - cumulative))
             }
             used[key] = cumulative + f.height + gap
             f.positioned = true // Later shifts animate.

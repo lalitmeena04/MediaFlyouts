@@ -95,6 +95,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/ReceiverProfiles.h
     Model/SessionSelection.cpp
     Model/SessionSelection.h
+    Model/SwipeRecognizer.cpp
+    Model/SwipeRecognizer.h
     Model/TaskbarLayout.cpp
     Model/TaskbarLayout.h
     Model/TrackInfo.cpp
@@ -143,6 +145,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/QmlLogger.h
     Controllers/SingleInstance.cpp
     Controllers/SingleInstance.h
+    Controllers/SwipeDetector.cpp
+    Controllers/SwipeDetector.h
     Controllers/ThemeController.cpp
     Controllers/ThemeController.h
     Controllers/WindowScaleRefresher.cpp

@@ -16,6 +16,7 @@
 #include "QmlLogger.h"
 #include "Settings.h"
 #include "SingleInstance.h"
+#include "SwipeDetector.h"
 #include "ThemeController.h"
 #include "TrayController.h"
 #include "UpdateChecker.h"
@@ -99,6 +100,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_placement = std::make_unique<FlyoutPlacement>(m_settings.get(), m_monitors.get());
     // First listener on monitors.changed. Sizes are right before QML re-places windows.
     m_scaleRefresher = std::make_unique<WindowScaleRefresher>(m_monitors.get());
+    m_swipe = std::make_unique<SwipeDetector>();
     m_theme = std::make_unique<ThemeController>(m_settings.get(), m_nowPlaying.get());
     m_updateChecker = std::make_unique<UpdateChecker>();
     // Track platform subsystem availability. UI hides unavailable features.
@@ -244,6 +246,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("errorReporter", m_errorReporter.get());
     ctx->setContextProperty("placement", m_placement.get());
+    ctx->setContextProperty("swipe", m_swipe.get());
     ctx->setContextProperty("monitors", m_monitors.get());
     ctx->setContextProperty("instance", m_instance.get());
     ctx->setContextProperty("tray", m_tray.get());

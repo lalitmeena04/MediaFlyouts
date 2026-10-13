@@ -5,6 +5,14 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- **Swipe to dismiss.** Drag any flyout quickly left, right, up or down, with
+  the mouse or a finger, to close it. The card follows the pointer, slides
+  out along the swipe and fades. A short or slow drag springs back. Works on
+  pinned flyouts too; they return on their next event. Switch it off under
+  Settings → Flyouts → "Swipe to dismiss".
+
 ### Changed
 
 - The release workflow mirrors the published GitHub Release (tag, artifacts,

@@ -16,7 +16,6 @@
 
 namespace {
 
-// Stable PnP property for classic Bluetooth battery.
 // Value is 0-100, DEVPROP_TYPE_BYTE. BTHENUM sub-node varies by device.
 constexpr DEVPROPKEY kBluetoothBatteryKey = {
     {0x104ea319, 0x6ee2, 0x4701, {0xbd, 0x47, 0x8d, 0xdb, 0xf4, 0x25, 0xbb, 0xe5}}, 2};
@@ -26,7 +25,6 @@ constexpr DEVPROPKEY kBluetoothBatteryKey = {
 constexpr DEVPROPKEY kBluetoothDeviceAddressKey = {
     {0x2bd67d8b, 0x8beb, 0x48d5, {0x87, 0xe0, 0x6c, 0xda, 0x34, 0x28, 0x04, 0x0a}}, 1};
 
-// Runtime property schema defines this key. SDK headers do not.
 // Value is 24-bit Bluetooth Class of Device.
 constexpr DEVPROPKEY kBluetoothClassOfDeviceKey = {
     {0x2bd67d8b, 0x8beb, 0x48d5, {0x87, 0xe0, 0x6c, 0xda, 0x34, 0x28, 0x04, 0x0a}}, 4};
@@ -91,8 +89,6 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
         result.append({name, static_cast<int>(percent), QStringLiteral("bluetooth"), category});
     }
 
-    // Second pass reports connected devices with unknown battery.
-    // Connect/disconnect events still surface.
     for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
         DEVINST devInst = 0;
         if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)

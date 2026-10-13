@@ -32,6 +32,8 @@ class Settings : public QObject {
         Q_PROPERTY(int lockKeysDuration READ lockKeysDuration WRITE setLockKeysDuration NOTIFY changed)
         Q_PROPERTY(bool nextUpEnabled READ nextUpEnabled WRITE setNextUpEnabled NOTIFY changed)
         Q_PROPERTY(bool disableOnFullscreen READ disableOnFullscreen WRITE setDisableOnFullscreen NOTIFY changed)
+        Q_PROPERTY(bool flyoutSwipeDismissEnabled READ flyoutSwipeDismissEnabled WRITE setFlyoutSwipeDismissEnabled NOTIFY
+                       changed)
         Q_PROPERTY(bool launchOnStartup READ launchOnStartup WRITE setLaunchOnStartup NOTIFY changed)
         Q_PROPERTY(bool trayIconHidden READ trayIconHidden WRITE setTrayIconHidden NOTIFY changed)
         Q_PROPERTY(bool trayLeftClickShowsFlyout READ trayLeftClickShowsFlyout WRITE setTrayLeftClickShowsFlyout NOTIFY
@@ -143,6 +145,7 @@ class Settings : public QObject {
         int lockKeysDuration() const;
         bool nextUpEnabled() const;
         bool disableOnFullscreen() const;
+        bool flyoutSwipeDismissEnabled() const;
         bool launchOnStartup() const;
         bool trayIconHidden() const;
         bool trayLeftClickShowsFlyout() const;
@@ -239,6 +242,7 @@ class Settings : public QObject {
         void setLockKeysDuration(int v);
         void setNextUpEnabled(bool v);
         void setDisableOnFullscreen(bool v);
+        void setFlyoutSwipeDismissEnabled(bool v);
         void setLaunchOnStartup(bool v);
         void setTrayIconHidden(bool v);
         void setTrayLeftClickShowsFlyout(bool v);
@@ -326,6 +330,7 @@ class Settings : public QObject {
         int m_lockKeysDuration;
         bool m_nextUpEnabled;
         bool m_disableOnFullscreen;
+        bool m_flyoutSwipeDismissEnabled;
         bool m_launchOnStartup;
         bool m_trayIconHidden;
         bool m_trayLeftClickShowsFlyout;

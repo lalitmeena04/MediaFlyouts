@@ -17,7 +17,6 @@ namespace {
 constexpr winrt::guid kAppearanceCharacteristicUuid{
     0x00002a01, 0x0000, 0x1000, {0x80, 0x00, 0x00, 0x80, 0x5f, 0x9b, 0x34, 0xfb}};
 
-// Read Battery Level characteristic from Battery Service. Return -1 if absent.
 int readBatteryPercent(const BluetoothLEDevice& device) {
     auto serviceResult = device.GetGattServicesForUuidAsync(GattServiceUuids::Battery(), BluetoothCacheMode::Uncached)
                               .get();
@@ -42,8 +41,6 @@ int readBatteryPercent(const BluetoothLEDevice& device) {
     return static_cast<int>(reader.ReadByte());
 }
 
-// Read GAP Appearance from Generic Access Service. Map to rough device category.
-// Return empty string if absent or unmapped.
 QString readCategory(const BluetoothLEDevice& device) {
     try {
         auto serviceResult =
@@ -110,12 +107,9 @@ QVector<BatteryDeviceInfo> BluetoothLeBatteryProvider::poll() {
             if(name.isEmpty())
                 continue;
 
-            // Report devices without Battery Service as unknown battery.
-            // This keeps connect/disconnect events visible.
             result.append({name, percent, QStringLiteral("ble"), readCategory(device)});
         }
     } catch(...) {
-        // BLE GATT access can fail transiently. Skip this cycle.
     }
 
     return result;

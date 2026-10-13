@@ -45,6 +45,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.lockKeysDuration(), 2000);
     EXPECT_TRUE(s.nextUpEnabled());
     EXPECT_TRUE(s.disableOnFullscreen());
+    EXPECT_TRUE(s.flyoutSwipeDismissEnabled());
     EXPECT_TRUE(s.launchOnStartup());
     EXPECT_FALSE(s.trayIconHidden());
     EXPECT_TRUE(s.trayLeftClickShowsFlyout());
@@ -207,10 +208,12 @@ TEST_F(SettingsTest, ValuesPersistAcrossInstances) {
         Settings first;
         first.setOverrideNativeOsd(false);
         first.setLaunchOnStartup(true);
+        first.setFlyoutSwipeDismissEnabled(false);
     }
     Settings second;
     EXPECT_FALSE(second.overrideNativeOsd());
     EXPECT_TRUE(second.launchOnStartup());
+    EXPECT_FALSE(second.flyoutSwipeDismissEnabled());
 }
 
 TEST_F(SettingsTest, TaskbarWidgetSideIsSeededOnceThenPinned) {
