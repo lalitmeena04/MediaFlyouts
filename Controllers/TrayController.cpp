@@ -13,6 +13,7 @@
 #include <QUrl>
 
 #include "Capabilities.h"
+#include "InstallSource.h"
 #include "Logging.h"
 #include "Settings.h"
 
@@ -76,8 +77,12 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
             [] { QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts"))); });
     connect(bugAction, &QAction::triggered, this, &TrayController::reportBugRequested);
     connect(configAction, &QAction::triggered, this, [this] {
-        if(m_settings)
-            QDesktopServices::openUrl(QUrl::fromLocalFile(m_settings->configDir()));
+        if(!m_settings)
+            return;
+        // Packaged installs keep the folder inside the package cache.
+        const QString dir = mf::hostVisiblePath(m_settings->configDir());
+        TRC_INFO("tray: open config folder {}", dir.toStdString());
+        QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
     });
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 

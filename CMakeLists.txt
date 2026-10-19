@@ -312,6 +312,7 @@ if (WIN32)
         WindowsApp.lib
         dwmapi.lib
         shell32.lib
+        shcore.lib
         gdi32.lib
         user32.lib
         cfgmgr32.lib

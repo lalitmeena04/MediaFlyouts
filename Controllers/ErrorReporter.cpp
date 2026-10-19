@@ -12,11 +12,13 @@
 #include <QScreen>
 #include <QStandardPaths>
 #include <QSysInfo>
+#include <QTemporaryFile>
 #include <QTextStream>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "Capabilities.h"
+#include "InstallSource.h"
 #include "Logging.h"
 #include "Settings.h"
 #include "Version.h"
@@ -56,7 +58,37 @@ QString ErrorReporter::issueUrlFor(const QString& reportPath) {
 }
 
 QString ErrorReporter::reportsDir() {
-    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/reports");
+    return firstWritableDir(reportRootCandidates());
+}
+
+QStringList ErrorReporter::reportRootCandidates() {
+    QStringList roots;
+    const QString sub = QStringLiteral("/MediaFlyouts/reports");
+    const QString programData = QDir::fromNativeSeparators(qEnvironmentVariable("ProgramData"));
+    if(!programData.isEmpty())
+        roots << QDir::cleanPath(programData + sub);
+    const QString downloads = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    if(!downloads.isEmpty())
+        roots << QDir::cleanPath(downloads + sub);
+    roots << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/reports");
+    return roots;
+}
+
+QString ErrorReporter::firstWritableDir(const QStringList& candidates) {
+    for(const QString& dir : candidates) {
+        if(dir.isEmpty())
+            continue;
+        if(!QDir().mkpath(dir)) {
+            TRC_DEBUG("report: cannot create {}", dir.toStdString());
+            continue;
+        }
+        // A probe file proves write access. ACLs can deny it on managed PCs.
+        QTemporaryFile probe(dir + QStringLiteral("/.probe-XXXXXX"));
+        if(probe.open())
+            return dir;
+        TRC_DEBUG("report: not writable {}", dir.toStdString());
+    }
+    return {};
 }
 
 QString ErrorReporter::reportName(const QDateTime& when) {
@@ -93,7 +125,7 @@ QString ErrorReporter::systemSummary(const Settings* settings, const Capabilitie
             out << "Unavailable: " << capabilities->unavailableNames().join(QStringLiteral(", ")) << '\n';
     }
     if(settings)
-        out << "Settings file: " << settings->configDir() << '\n';
+        out << "Settings file: " << mf::hostVisiblePath(settings->configDir()) << '\n';
     return text;
 }
 
@@ -176,13 +208,18 @@ QString ErrorReporter::compressFolder(const QString& folder) {
 
 void ErrorReporter::createReport() {
     const QString root = reportsDir();
-    QDir().mkpath(root);
+    if(root.isEmpty()) {
+        TRC_WARN("report: no writable folder among {}", reportRootCandidates().join(QStringLiteral(", ")).toStdString());
+        m_status = QStringLiteral("Couldn't find a writable folder for the report.");
+        emit changed();
+        return;
+    }
     const QString folder = root + QLatin1Char('/') + reportName(QDateTime::currentDateTime());
     TRC_INFO("report: creating {}", folder.toStdString());
 
     const QStringList files = writeReport(folder, mf::logDir(), m_settings, m_capabilities);
     if(files.isEmpty()) {
-        m_status = QStringLiteral("Couldn't write the report. Check that the app data folder is writable.");
+        m_status = QStringLiteral("Couldn't write the report. Check that %1 is writable.").arg(QDir::toNativeSeparators(root));
         emit changed();
         return;
     }
@@ -192,7 +229,7 @@ void ErrorReporter::createReport() {
         result = folder;
     pruneReports(root, kReportsKept);
 
-    m_lastReportPath = result;
+    m_lastReportPath = QDir::toNativeSeparators(result);
     m_status = QStringLiteral("Report saved with %1 files.").arg(files.size());
     TRC_INFO("report: saved {}", result.toStdString());
     emit changed();
@@ -201,12 +238,23 @@ void ErrorReporter::createReport() {
 void ErrorReporter::revealReport() {
     if(m_lastReportPath.isEmpty())
         return;
+    QString target = m_lastReportPath;
+    if(!QFileInfo::exists(target)) {
+        // Pruned or deleted by hand. Show the folder instead of letting Explorer guess.
+        TRC_WARN("report: {} is gone; opening the reports folder", target.toStdString());
+        target = reportsDir();
+        if(target.isEmpty())
+            return;
+    }
+    TRC_INFO("report: reveal {}", target.toStdString());
 #ifdef Q_OS_WIN
-    if(QProcess::startDetached(QStringLiteral("explorer.exe"),
-                               {QStringLiteral("/select,"), QDir::toNativeSeparators(m_lastReportPath)}))
+    if(QFileInfo(target).isFile()
+       && QProcess::startDetached(QStringLiteral("explorer.exe"),
+                                  {QStringLiteral("/select,"), QDir::toNativeSeparators(target)}))
         return;
 #endif
-    QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(m_lastReportPath).absolutePath()));
+    const QFileInfo info(target);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir() ? info.absoluteFilePath() : info.absolutePath()));
 }
 
 void ErrorReporter::openIssuePage() {

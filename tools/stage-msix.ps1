@@ -26,6 +26,11 @@
 .PARAMETER Layout
   Layout folder, wiped and recreated. Default: build\msix-layout.
 
+.PARAMETER Sideload
+  The package is for a local, self-signed install, not the Store. Skips the
+  Store identity warning. Pass -IdentityPublisher equal to the certificate
+  subject.
+
 .EXAMPLE
   .\tools\stage-msix.ps1 -Version 1.4.1.0 -Output store\MediaFlyouts-1.4.1.msix `
       -IdentityName 12345Publisher.MediaFlyouts -IdentityPublisher 'CN=00000000-0000-0000-0000-000000000000'
@@ -36,7 +41,8 @@ param(
     [Parameter(Mandatory)][string]$Output,
     [string]$IdentityName,
     [string]$IdentityPublisher,
-    [string]$Layout = 'build\msix-layout'
+    [string]$Layout = 'build\msix-layout',
+    [switch]$Sideload
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -59,7 +65,9 @@ $manifest = Get-Content (Join-Path $root 'packaging\msix\AppxManifest.xml') -Raw
 $manifest = $manifest -replace '\bVersion="\d+\.\d+\.\d+\.\d+"', "Version=`"$Version`""
 if ($IdentityName)      { $manifest = $manifest -replace '\bName="MediaFlyouts"', "Name=`"$IdentityName`"" }
 if ($IdentityPublisher) { $manifest = $manifest -replace 'Publisher="CN=MediaFlyouts"', "Publisher=`"$IdentityPublisher`"" }
-if (-not $IdentityName -or -not $IdentityPublisher) {
+if ($Sideload) {
+    if (-not $IdentityPublisher) { throw 'A sideload package needs -IdentityPublisher equal to the signing certificate subject.' }
+} elseif (-not $IdentityName -or -not $IdentityPublisher) {
     Write-Warning 'No Store identity given; the package keeps the repo manifest identity and the Store will reject it.'
 }
 Set-Content (Join-Path $layoutPath 'AppxManifest.xml') $manifest -Encoding utf8 -NoNewline
@@ -68,4 +76,4 @@ $outputPath = if ([IO.Path]::IsPathRooted($Output)) { $Output } else { Join-Path
 New-Item -ItemType Directory -Force (Split-Path $outputPath -Parent) | Out-Null
 & $makeappx pack /o /d $layoutPath /p $outputPath | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'makeappx failed.' }
-Write-Host "Unsigned MSIX written to $outputPath"
+Write-Host "$(if ($Sideload) { 'Unsigned sideload' } else { 'Unsigned' }) MSIX written to $outputPath"

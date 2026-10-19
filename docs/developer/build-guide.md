@@ -55,8 +55,12 @@ debugger output when available.
 
 `ErrorReporter` (About page → **Create error report**) copies these logs plus
 `settings.ini` and a `report.txt` system summary into
-`%LOCALAPPDATA%\MediaFlyouts\MediaFlyouts\reports\`, zips it with the built-in
-`tar.exe`, and keeps the three newest reports.
+`C:\ProgramData\MediaFlyouts\reports\` (falling back to
+`Downloads\MediaFlyouts\reports\`, then the app data folder), zips it with the
+built-in `tar.exe`, and keeps the three newest reports. The report does not go
+under `AppData` because packaged (Store) builds have `AppData` writes
+redirected into `%LOCALAPPDATA%\Packages\<family>\LocalCache`, where Explorer
+cannot be pointed at it.
 
 ## Release artifacts
 
