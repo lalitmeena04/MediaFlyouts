@@ -67,6 +67,8 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     QAction* configAction =
         m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF41D)), QStringLiteral("Open Config Folder"));
     m_menu->addSeparator();
+    QAction* restartAction =
+        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF13E)), QStringLiteral("Restart MediaFlyouts"));
     QAction* quitAction =
         m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF619)), QStringLiteral("Quit MediaFlyouts"));
 
@@ -84,6 +86,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
         TRC_INFO("tray: open config folder {}", dir.toStdString());
         QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
     });
+    connect(restartAction, &QAction::triggered, this, &TrayController::restartRequested);
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
     m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, kTrayGlyph), this);

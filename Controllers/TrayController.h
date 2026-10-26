@@ -28,6 +28,7 @@ class TrayController : public QObject {
         void showFlyoutRequested();
         void openMixerRequested();
         void reportBugRequested();
+        void restartRequested();
 
     private:
         void applyVisibility();

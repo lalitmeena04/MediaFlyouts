@@ -159,6 +159,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/UpdateChecker.h
     Controllers/ErrorReporter.cpp
     Controllers/ErrorReporter.h
+    Controllers/AppRestarter.cpp
+    Controllers/AppRestarter.h
     main.cpp
     MainControllerClass.cpp
     MainControllerClass.h

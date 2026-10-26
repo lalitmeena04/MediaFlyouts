@@ -8,6 +8,8 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/UpdateChecker.h
     ${CMAKE_SOURCE_DIR}/Controllers/ErrorReporter.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/ErrorReporter.h
+    ${CMAKE_SOURCE_DIR}/Controllers/AppRestarter.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/AppRestarter.h
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.h
     ${CMAKE_SOURCE_DIR}/Model/Settings.cpp
@@ -44,6 +46,7 @@ FetchContent_MakeAvailable(googletest)
 # One GoogleTest executable aggregating every per-class test file.
 add_executable(mediaflyout_gtest
     Controllers/ErrorReporterTest.cpp
+    Controllers/AppRestarterTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp

@@ -156,6 +156,10 @@ QtObject {
         function onReportBugRequested() {
             dashboard.showPage("About")
         }
+
+        function onRestartRequested() {
+            restarter.restart()
+        }
     }
 
     property Connections instanceConnection: Connections {

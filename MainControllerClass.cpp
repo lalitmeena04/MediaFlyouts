@@ -7,6 +7,7 @@
 #include <QSysInfo>
 
 #include "AlbumArtProvider.h"
+#include "AppRestarter.h"
 #include "Capabilities.h"
 #include "ErrorReporter.h"
 #include "FlyoutPlacement.h"
@@ -53,6 +54,8 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     TRC_INFO("os: {} ({}), qt {}", QSysInfo::prettyProductName().toStdString(), QSysInfo::kernelVersion().toStdString(),
              qVersion());
 
+    // A restarted instance must not hand over to the instance it replaces.
+    AppRestarter::waitForPredecessor(QCoreApplication::arguments());
     m_instance = std::make_unique<SingleInstance>(QStringLiteral("MediaFlyouts.singleInstance"));
     if(!m_instance->isPrimary())
         return;
@@ -102,6 +105,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_updateChecker = std::make_unique<UpdateChecker>();
     m_capabilities = std::make_unique<Capabilities>();
     m_errorReporter = std::make_unique<ErrorReporter>(m_settings.get(), m_capabilities.get());
+    m_restarter = std::make_unique<AppRestarter>(m_errorReporter.get());
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_qmlLog = std::make_unique<QmlLogger>();
@@ -224,6 +228,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("errorReporter", m_errorReporter.get());
+    ctx->setContextProperty("restarter", m_restarter.get());
     ctx->setContextProperty("placement", m_placement.get());
     ctx->setContextProperty("swipe", m_swipe.get());
     ctx->setContextProperty("monitors", m_monitors.get());

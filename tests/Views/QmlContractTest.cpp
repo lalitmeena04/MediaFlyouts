@@ -200,6 +200,20 @@ TEST(QmlContractTest, AboutPageOffersErrorReportsAndTrayOpensIt) {
     expectContains(app, QStringLiteral("dashboard.showPage(\"About\")"));
 }
 
+TEST(QmlContractTest, AboutPageAndTrayCanRestartTheAppWithAReport) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("restarter.restart()"));
+    expectContains(dashboard, QStringLiteral("Save report and restart"));
+    expectContains(dashboard, QStringLiteral("text: restarter.status"));
+    // The report comes first, so the session log survives the restart.
+    EXPECT_LT(dashboard.indexOf(QStringLiteral("errorReporter.createReport()")),
+              dashboard.indexOf(QStringLiteral("restarter.restart()")));
+
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("function onRestartRequested()"));
+    expectContains(app, QStringLiteral("restarter.restart()"));
+}
+
 TEST(QmlContractTest, DeviceIconsUseFluentWithFontAwesomeFallbackForMouse) {
     const QString source = loadSource("Views/DeviceIcons.qml");
 

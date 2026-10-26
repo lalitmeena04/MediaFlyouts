@@ -1958,6 +1958,34 @@ Window {
                         font.pixelSize: 12
                     }
 
+                    Text {
+                        text: "Restart"
+                        color: theme.textPrimary
+                        font.pixelSize: 15
+                        font.bold: true
+                        topPadding: 12
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Saves an error report, then closes and reopens the app. Use it when a flyout or widget looks wrong: the report keeps the log of this session so the problem can be traced after the restart."
+                        color: theme.textSecondary
+                        font.pixelSize: 13
+                    }
+                    Row {
+                        spacing: 12
+                        Button {
+                            text: "Save report and restart"
+                            onClicked: restarter.restart()
+                        }
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: restarter.status
+                            color: theme.textTertiary
+                            font.pixelSize: 12
+                        }
+                    }
+
                     Rectangle {
                         width: 40
                         height: 40
