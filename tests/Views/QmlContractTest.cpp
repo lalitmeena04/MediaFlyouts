@@ -140,7 +140,7 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
 
     expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-light.svg"));
     expectContains(source, QStringLiteral("qrc:/qt/qml/MediaFlyouts/Views/assets/github-mark-dark.svg"));
-    expectContains(source, QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases"));
+    expectContains(source, QStringLiteral("https://github.com/lalitmeena04/MediaFlyouts-Releases"));
     EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
 }
 

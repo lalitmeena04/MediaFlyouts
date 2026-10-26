@@ -1,6 +1,6 @@
 # MediaFlyouts Privacy Policy
 
-**Effective date:** 9 October 2026
+**Effective date:** 26 October 2026
 **Applies to:** MediaFlyouts / "Media Flyouts" for Windows, all distribution
 channels (Microsoft Store, installer, portable ZIP, source build).
 
@@ -46,8 +46,11 @@ processed in memory on your device and is never transmitted anywhere.
   identical lines are collapsed. Delete the folder at any time; the app
   recreates an empty log on next start. Developer builds log at a more
   verbose level.
-- **Error reports** — only when you click **Create error report** on the About
-  page (or **Report a Bug** in the tray menu, which opens that page). The app
+- **Error reports** — only when you ask for one: **Create error report** or
+  **Save report and restart** on the About page, or **Restart MediaFlyouts**
+  in the tray menu (**Report a Bug** in the tray menu opens the About page).
+  The restart actions save a report first so the log of the session you are
+  restarting is kept. The app
   writes a report under `C:\ProgramData\MediaFlyouts\reports\` (or
   `Downloads\MediaFlyouts\reports\` when that folder is not writable)
   containing: `report.txt` (app version, Windows version and build, CPU
@@ -59,11 +62,12 @@ processed in memory on your device and is never transmitted anywhere.
   account on the PC, so other users of the same PC can read a report there.
   **The report stays on your PC.**
   You decide whether to attach it to a GitHub issue; **Open new issue** only
-  opens your browser with a prefilled issue template that contains the short
-  system summary from `report.txt`. You can open and edit the report before
-  posting. Once posted, it is public under GitHub's policies.
+  opens your browser on a blank issue template that names the report file.
+  No system details are placed in the URL. You can open and edit the report
+  before posting. Once posted, it is public under GitHub's policies.
 
-Nothing is written outside your user profile and nothing is uploaded.
+Apart from error reports, nothing is written outside your user profile.
+Nothing is uploaded.
 
 ## 3. Network access
 
@@ -71,7 +75,7 @@ MediaFlyouts makes exactly one kind of network request, and only if you let it:
 
 - **Update check and download** — when "check for updates" is enabled (or
   triggered manually from the dashboard), the app sends an HTTPS `GET` to
-  `https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest`
+  `https://api.github.com/repos/lalitmeena04/MediaFlyouts-Releases/releases/latest`
   to compare version numbers. If you installed with the setup program and then
   choose **Download & install**, the app downloads the installer file listed in
   that release from `github.com` over HTTPS, verifies its checksum, and starts
@@ -131,4 +135,4 @@ changelog. The effective date at the top is updated with each change.
 ## 8. Contact
 
 Questions about this policy: open an issue at
-<https://github.com/scleaverzer0ne/MediaFlyouts-Releases/issues>.
+<https://github.com/lalitmeena04/MediaFlyouts-Releases/issues>.

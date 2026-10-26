@@ -2009,7 +2009,7 @@ Window {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: Qt.openUrlExternally("https://github.com/scleaverzer0ne/MediaFlyouts-Releases")
+                            onClicked: Qt.openUrlExternally("https://github.com/lalitmeena04/MediaFlyouts-Releases")
                         }
                     }
                 }

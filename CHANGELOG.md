@@ -3,7 +3,11 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.5.0] — 2026-10-26
+
+Jabra headset battery support, charging indicators, swipe-to-dismiss flyouts
+and a restart-with-report action, plus fixes for stale album art, display
+changes and report locations on Store installs.
 
 ### Added
 
@@ -30,6 +34,9 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ### Changed
 
+- The privacy policy now covers the new report location (`ProgramData`),
+  the restart actions that save a report, and states that "Open new issue"
+  puts only the report file name in the URL.
 - The release workflow mirrors the published GitHub Release (tag, artifacts,
   notes) from `MediaFlyouts-Releases` back into the main repository, so both
   repos carry the same release files.
@@ -344,9 +351,9 @@ written from scratch in Qt 6 / C++ / QML.
 - GitHub Actions CI building and testing both debug and release, running on
   Node 24 action runtimes.
 
-[1.1.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.1.0
-[1.0.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.0.0
-[1.2.0]: https://github.com/scleaverzer0ne/MediaFlyouts/releases/tag/v1.2.0
-[1.3.0]: https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.3.0
-[1.4.0]: https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.4.0
-[1.4.1]: https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.4.1
+[1.1.0]: https://github.com/lalitmeena04/MediaFlyouts/releases/tag/v1.1.0
+[1.0.0]: https://github.com/lalitmeena04/MediaFlyouts/releases/tag/v1.0.0
+[1.2.0]: https://github.com/lalitmeena04/MediaFlyouts/releases/tag/v1.2.0
+[1.3.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.3.0
+[1.4.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.0
+[1.4.1]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.1

@@ -158,7 +158,7 @@ TEST_F(ErrorReporterTest, DefaultStateBeforeAnyReport) {
     ErrorReporter reporter(nullptr, nullptr);
     EXPECT_TRUE(reporter.lastReportPath().isEmpty());
     EXPECT_FALSE(reporter.status().isEmpty());
-    EXPECT_EQ(ErrorReporter::issueUrl(), QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts/issues/new"));
+    EXPECT_EQ(ErrorReporter::issueUrl(), QStringLiteral("https://github.com/lalitmeena04/MediaFlyouts/issues/new"));
 }
 
 TEST_F(ErrorReporterTest, FirstWritableDirSkipsFoldersItCannotCreate) {

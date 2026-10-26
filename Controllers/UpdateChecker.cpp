@@ -24,8 +24,8 @@
 #endif
 
 namespace {
-constexpr char kReleasesApi[] = "https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
-constexpr char kReleasesPage[] = "https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/latest";
+constexpr char kReleasesApi[] = "https://api.github.com/repos/lalitmeena04/MediaFlyouts-Releases/releases/latest";
+constexpr char kReleasesPage[] = "https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/latest";
 constexpr char kUserAgent[] = "MediaFlyouts";
 } // namespace
 

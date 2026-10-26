@@ -76,7 +76,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     connect(flyoutAction, &QAction::triggered, this, &TrayController::showFlyoutRequested);
     connect(mixerAction, &QAction::triggered, this, &TrayController::openMixerRequested);
     connect(repoAction, &QAction::triggered, this,
-            [] { QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts"))); });
+            [] { QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/lalitmeena04/MediaFlyouts"))); });
     connect(bugAction, &QAction::triggered, this, &TrayController::reportBugRequested);
     connect(configAction, &QAction::triggered, this, [this] {
         if(!m_settings)

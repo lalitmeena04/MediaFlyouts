@@ -11,7 +11,7 @@
 #endif
 #define MyAppName "MediaFlyouts"
 #define MyAppPublisher "MediaFlyouts"
-#define MyAppURL "https://github.com/scleaverzer0ne/MediaFlyouts"
+#define MyAppURL "https://github.com/lalitmeena04/MediaFlyouts"
 #define MyAppExeName "MediaFlyouts.exe"
 
 [Setup]

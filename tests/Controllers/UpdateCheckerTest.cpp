@@ -22,7 +22,7 @@ QJsonObject asset(const QString& name, const QString& url, qint64 size = 1024, c
 }
 
 const QString kSetupUrl = QStringLiteral(
-    "https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/download/v1.5.0/MediaFlyouts-1.5.0-setup.exe");
+    "https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/download/v1.5.0/MediaFlyouts-1.5.0-setup.exe");
 const QString kSha = QStringLiteral("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
 } // namespace
 
@@ -57,9 +57,9 @@ TEST(UpdateCheckerTest, DefaultState) {
 
 TEST(UpdateCheckerTest, UsesReleaseRepository) {
     EXPECT_EQ(UpdateChecker::releasesApiUrl(),
-              QStringLiteral("https://api.github.com/repos/scleaverzer0ne/MediaFlyouts-Releases/releases/latest"));
+              QStringLiteral("https://api.github.com/repos/lalitmeena04/MediaFlyouts-Releases/releases/latest"));
     EXPECT_EQ(UpdateChecker::releasesPageUrl(),
-              QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/latest"));
+              QStringLiteral("https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/latest"));
 }
 
 TEST(UpdateCheckerTest, ReleaseUrlFallsBackToTheReleasesPage) {
@@ -69,7 +69,7 @@ TEST(UpdateCheckerTest, ReleaseUrlFallsBackToTheReleasesPage) {
 
 TEST(UpdateCheckerTest, TrustsOnlyHttpsGitHubLinks) {
     EXPECT_TRUE(UpdateChecker::isTrustedReleaseUrl(
-        QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts-Releases/releases/tag/v1.4.1")));
+        QStringLiteral("https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.1")));
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("http://github.com/owner/repo")));
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("https://github.com.evil.test/owner/repo")));
     EXPECT_FALSE(UpdateChecker::isTrustedReleaseUrl(QStringLiteral("file:///C:/Windows/System32/cmd.exe")));

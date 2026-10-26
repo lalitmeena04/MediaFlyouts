@@ -6,7 +6,7 @@ lock-key, now-playing, peripheral-battery and charger flyouts, a per-app volume
 mixer, and a taskbar widget stack with a now-playing readout, battery rings and
 a live audio visualizer.
 
-> **Status:** stable — `v1.4.2`. Windows 10/11 (x64).
+> **Status:** stable — `v1.5.0`. Windows 10/11 (x64).
 
 ## Highlights
 
@@ -43,7 +43,7 @@ Full documentation lives in [docs/](docs/README.md):
 
 ## Install
 
-Grab the latest build from the [Releases page](https://github.com/scleaverzer0ne/MediaFlyouts/releases):
+Grab the latest build from the [Releases page](https://github.com/lalitmeena04/MediaFlyouts/releases):
 
 - **Installer** — `MediaFlyouts-<version>-setup.exe`. Recommended for most users.
 - **Microsoft Store** — search for **Media Flyouts** in the Store. Signed by
