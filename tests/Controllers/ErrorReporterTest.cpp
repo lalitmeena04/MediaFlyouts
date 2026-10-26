@@ -160,3 +160,42 @@ TEST_F(ErrorReporterTest, DefaultStateBeforeAnyReport) {
     EXPECT_FALSE(reporter.status().isEmpty());
     EXPECT_EQ(ErrorReporter::issueUrl(), QStringLiteral("https://github.com/scleaverzer0ne/MediaFlyouts/issues/new"));
 }
+
+TEST_F(ErrorReporterTest, FirstWritableDirSkipsFoldersItCannotCreate) {
+    QTemporaryDir temp;
+    ASSERT_TRUE(temp.isValid());
+    // A path below a regular file can never be created.
+    writeFile(temp.filePath(QStringLiteral("blocker")), "x");
+    const QString blocked = temp.filePath(QStringLiteral("blocker/reports"));
+    const QString good = temp.filePath(QStringLiteral("ok/MediaFlyouts/reports"));
+
+    EXPECT_EQ(ErrorReporter::firstWritableDir({QString(), blocked, good}), good);
+    EXPECT_TRUE(QDir(good).exists());
+    EXPECT_TRUE(QDir(good).entryList(QDir::Files | QDir::Hidden).isEmpty()) << "probe file must be removed";
+}
+
+TEST_F(ErrorReporterTest, FirstWritableDirIsEmptyWhenNothingWorks) {
+    QTemporaryDir temp;
+    ASSERT_TRUE(temp.isValid());
+    writeFile(temp.filePath(QStringLiteral("blocker")), "x");
+    EXPECT_TRUE(ErrorReporter::firstWritableDir({temp.filePath(QStringLiteral("blocker/a")), QString()}).isEmpty());
+    EXPECT_TRUE(ErrorReporter::firstWritableDir({}).isEmpty());
+}
+
+TEST_F(ErrorReporterTest, ReportRootsPreferSharedDiskOverAppData) {
+    const QStringList roots = ErrorReporter::reportRootCandidates();
+    ASSERT_GE(roots.size(), 2);
+    // Store builds get AppData redirected into the package. Keep it last.
+    EXPECT_TRUE(roots.last().endsWith(QStringLiteral("/reports")));
+    EXPECT_EQ(roots.last(),
+              QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/reports"));
+    for(int i = 0; i < roots.size() - 1; ++i) {
+        EXPECT_TRUE(roots.at(i).endsWith(QStringLiteral("/MediaFlyouts/reports"))) << roots.at(i).toStdString();
+        EXPECT_FALSE(roots.at(i).contains(QStringLiteral("AppData"), Qt::CaseInsensitive)) << roots.at(i).toStdString();
+    }
+#ifdef Q_OS_WIN
+    EXPECT_TRUE(roots.first().startsWith(QDir::fromNativeSeparators(qEnvironmentVariable("ProgramData")),
+                                         Qt::CaseInsensitive))
+        << roots.first().toStdString();
+#endif
+}

@@ -55,6 +55,12 @@
 .PARAMETER StoreIdentityPublisher
     (package) Microsoft Store Identity Publisher (CN=<GUID>) for the MSIX.
 
+.PARAMETER SignLocal
+    (package) Also build a self-signed, installable MSIX plus its .cer.
+
+.PARAMETER NewCertificate
+    (package) With -SignLocal: replace the local signing certificate.
+
 .PARAMETER AppDir
     (run) Directory holding an installed MediaFlyouts.exe.
 
@@ -115,6 +121,8 @@ param(
     [string]$OutDir       = "release",
     [string]$StoreIdentityName = "",
     [string]$StoreIdentityPublisher = "",
+    [switch]$SignLocal,
+    [switch]$NewCertificate,
 
     # -- run ------------------------------------------------------------------
     [string]$AppDir       = "",
@@ -279,6 +287,8 @@ function Invoke-ShowHelp {
     Write-Host "    -OutDir <dir>             Output folder (default: release)"
     Write-Host "    -StoreIdentityName <n>    Store Identity Name for the MSIX"
     Write-Host "    -StoreIdentityPublisher <p> Store Identity Publisher (CN=<GUID>)"
+    Write-Host "    -SignLocal                Also build a self-signed, installable MSIX + .cer"
+    Write-Host "    -NewCertificate           With -SignLocal: make a new signing certificate"
     Write-Host ""
     Write-Host "  Examples:" -ForegroundColor Cyan
     Write-Host "    .\mediaflyouts.ps1 build"
@@ -286,6 +296,7 @@ function Invoke-ShowHelp {
     Write-Host "    .\mediaflyouts.ps1 build -RunTests"
     Write-Host "    .\mediaflyouts.ps1 test -Filter `"HidCollectionsTest.*`""
     Write-Host "    .\mediaflyouts.ps1 package -SkipBuild"
+    Write-Host "    .\mediaflyouts.ps1 package -SignLocal   # then .\tools\install-local-msix.ps1"
     Write-Host ""
 }
 
@@ -462,6 +473,8 @@ function Invoke-Package {
     if ($SkipBuild) { $releaseArgs["SkipBuild"] = $true }
     if ($StoreIdentityName)      { $releaseArgs["StoreIdentityName"]      = $StoreIdentityName }
     if ($StoreIdentityPublisher) { $releaseArgs["StoreIdentityPublisher"] = $StoreIdentityPublisher }
+    if ($SignLocal)              { $releaseArgs["SignLocal"]              = $true }
+    if ($NewCertificate)         { $releaseArgs["NewCertificate"]         = $true }
 
     & $script @releaseArgs
 }

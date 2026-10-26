@@ -44,6 +44,23 @@ All notable changes to MediaFlyouts are documented here. This project follows
   icon size and re-applied after a change, so it stays sharp at any DPI.
   The monitor lists in Settings refresh when displays are added, removed or
   change mode, keep their selection, and show the native resolution.
+- **Oversized flyouts after a monitor is unplugged and plugged back in.**
+  Windows holds back the DPI change of a hidden window until it is shown.
+  When the laptop screen and the external monitor run at different scales,
+  a flyout that was last shown on one of them came back on the other at
+  1.5x or 2x its size (or shrunk), with the text at the normal size, and the
+  wrong size stuck. Window sizes are now ignored while the native window and
+  the screen Qt binds it to disagree on DPI, and the size the app asked for
+  is put back once they agree.
+- **"Show report" opened the wrong folder on Store installs.** Packaged
+  (Microsoft Store) apps have their `AppData` writes redirected into the
+  package's `LocalCache`, so nothing appeared under `%APPDATA%\MediaFlyouts`
+  and Explorer, which runs outside the package, fell back to a default
+  folder. Reports are now written to `C:\ProgramData\MediaFlyouts\reports`,
+  or the Downloads folder when that is not writable. The tray's **Open
+  Config Folder** and the report's "Settings file" line point at the real
+  on-disk location in packaged installs. "Show report" opens the reports
+  folder when the last report was deleted.
 
 ## [1.4.2] — 2026-10-09
 

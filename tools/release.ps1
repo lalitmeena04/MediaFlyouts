@@ -29,11 +29,23 @@
   "<base>-<git commit count>.<short sha>" and is embedded in the binary and all
   artifact names. The MSIX/installer keep a numeric version (<base>.<count>).
 
+.PARAMETER SignLocal
+  Also produce "MediaFlyouts-<ver>-local.msix", signed with a self-signed
+  certificate kept in the current user's certificate store (created on first
+  use by tools\sign-msix-local.ps1), plus the matching "MediaFlyouts-<ver>-local.cer".
+  Trust the .cer once and the package installs on this PC. The Store MSIX is
+  still produced unsigned.
+
+.PARAMETER NewCertificate
+  With -SignLocal: replace the local signing certificate with a new one. The
+  new .cer must be trusted again.
+
 .EXAMPLE
   .\tools\release.ps1
   .\tools\release.ps1 -StoreIdentityName 12345Publisher.MediaFlyouts -StoreIdentityPublisher 'CN=<GUID>'
   .\tools\release.ps1 -DevBuild
   .\tools\release.ps1 -SkipBuild -OutDir dist
+  .\tools\release.ps1 -SkipBuild -SignLocal
 #>
 [CmdletBinding()]
 param(
@@ -41,7 +53,9 @@ param(
     [switch]$SkipBuild,
     [string]$StoreIdentityName,
     [string]$StoreIdentityPublisher,
-    [switch]$DevBuild
+    [switch]$DevBuild,
+    [switch]$SignLocal,
+    [switch]$NewCertificate
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -72,11 +86,10 @@ if ($DevBuild) {
 }
 Step "MediaFlyouts $ver -> $OutDir"
 
-# Stop running instance before bin cleanup.
-Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\bin\*" } | Stop-Process -Force -ErrorAction SilentlyContinue
-
 # 1. Clean release build. windeployqt goes into bin\.
 if (-not $SkipBuild) {
+    # Stop running instance before bin cleanup.
+    Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\bin\*" } | Stop-Process -Force -ErrorAction SilentlyContinue
     Step 'Clean release build'
     if ($DevBuild) {
         & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging -BuildNumber $buildNumber | Out-Host
@@ -132,6 +145,36 @@ if ($makeappx) {
 } else {
     Write-Warning 'Windows SDK makeappx.exe not found - skipping the MSIX.'
     $results['Store MSIX'] = 'SKIPPED (install the Windows SDK)'
+}
+
+# 6. Locally signed MSIX for sideloading. Same bits, publisher equal to the
+#    self-signed certificate subject, signed so Windows installs it once the
+#    certificate is trusted.
+if ($SignLocal) {
+    $localSubject = 'CN=MediaFlyouts'
+    if ($makeappx -and (Find-SdkTool 'signtool.exe')) {
+        Step 'Local MSIX (self-signed)'
+        $localMsix = Join-Path $out "MediaFlyouts-$ver-local.msix"
+        $localArgs = @{
+            Version           = "$verBase.$msixRevision"
+            Output            = $localMsix
+            IdentityPublisher = $localSubject
+            Layout            = 'build\msix-layout-local'
+            Sideload          = $true
+        }
+        if ($StoreIdentityName) { $localArgs['IdentityName'] = $StoreIdentityName }
+        & (Join-Path $root 'tools\stage-msix.ps1') @localArgs | Out-Host
+        $signArgs = @{ Package = $localMsix; Subject = $localSubject }
+        if ($NewCertificate) { $signArgs['NewCertificate'] = $true }
+        $signed = & (Join-Path $root 'tools\sign-msix-local.ps1') @signArgs
+        $signed | Where-Object { $_ -isnot [pscustomobject] } | Out-Host
+        $info = $signed | Where-Object { $_ -is [pscustomobject] } | Select-Object -Last 1
+        $results['Local MSIX'] = "MediaFlyouts-$ver-local.msix (signed, thumbprint $($info.Thumbprint))"
+        $results['Local cert'] = "MediaFlyouts-$ver-local.cer (trust it: .\tools\install-local-msix.ps1)"
+    } else {
+        Write-Warning 'Windows SDK makeappx.exe / signtool.exe not found - skipping the local MSIX.'
+        $results['Local MSIX'] = 'SKIPPED (install the Windows SDK)'
+    }
 }
 
 # Summary.

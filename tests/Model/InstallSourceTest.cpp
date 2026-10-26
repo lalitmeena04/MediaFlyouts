@@ -51,3 +51,48 @@ TEST(InstallSourceTest, DetectionRunsWithoutCrashing) {
     const InstallKind kind = mf::detectInstallKind();
     EXPECT_TRUE(kind == InstallKind::Portable || kind == InstallKind::Unknown);
 }
+
+namespace {
+const QString kRoaming = QStringLiteral("C:/Users/me/AppData/Roaming");
+const QString kLocal = QStringLiteral("C:/Users/me/AppData/Local");
+const QString kFamily = QStringLiteral("Publisher.MediaFlyouts_abc123");
+const QString kCache = QStringLiteral("C:/Users/me/AppData/Local/Packages/Publisher.MediaFlyouts_abc123/LocalCache");
+} // namespace
+
+TEST(InstallSourceTest, PackagedRoamingPathMovesIntoTheLocalCache) {
+    EXPECT_EQ(mf::packagedRedirectPath(QStringLiteral("C:/Users/me/AppData/Roaming/MediaFlyouts/MediaFlyouts.ini"),
+                                       kRoaming, kLocal, kFamily),
+              kCache + QStringLiteral("/Roaming/MediaFlyouts/MediaFlyouts.ini"));
+    EXPECT_EQ(mf::packagedRedirectPath(QStringLiteral("C:\\Users\\me\\AppData\\Roaming\\MediaFlyouts"),
+                                       QStringLiteral("C:\\Users\\me\\AppData\\Roaming\\"), kLocal, kFamily),
+              kCache + QStringLiteral("/Roaming/MediaFlyouts"));
+}
+
+TEST(InstallSourceTest, PackagedLocalPathMovesIntoTheLocalCache) {
+    EXPECT_EQ(mf::packagedRedirectPath(QStringLiteral("c:/users/me/appdata/local/MediaFlyouts/cache"), kRoaming, kLocal,
+                                       kFamily),
+              kCache + QStringLiteral("/Local/MediaFlyouts/cache"));
+}
+
+TEST(InstallSourceTest, PackagedPathLeavesRealLocationsAlone) {
+    const QString packages = kLocal + QStringLiteral("/Packages/Other_xyz/LocalState/x.txt");
+    EXPECT_EQ(mf::packagedRedirectPath(packages, kRoaming, kLocal, kFamily), packages);
+    const QString programData = QStringLiteral("C:/ProgramData/MediaFlyouts/reports");
+    EXPECT_EQ(mf::packagedRedirectPath(programData, kRoaming, kLocal, kFamily), programData);
+    const QString sibling = QStringLiteral("C:/Users/me/AppData/LocalLow/x");
+    EXPECT_EQ(mf::packagedRedirectPath(sibling, kRoaming, kLocal, kFamily), sibling);
+    const QString roamingPrefix = QStringLiteral("C:/Users/me/AppData/Roaming2/x");
+    EXPECT_EQ(mf::packagedRedirectPath(roamingPrefix, kRoaming, kLocal, kFamily), roamingPrefix);
+}
+
+TEST(InstallSourceTest, PackagedPathNeedsAFamilyName) {
+    const QString path = QStringLiteral("C:/Users/me/AppData/Roaming/MediaFlyouts");
+    EXPECT_EQ(mf::packagedRedirectPath(path, kRoaming, kLocal, QString()), path);
+    EXPECT_EQ(mf::packagedRedirectPath(path, kRoaming, QString(), kFamily), path);
+    EXPECT_EQ(mf::packagedRedirectPath(QString(), kRoaming, kLocal, kFamily), QString());
+}
+
+TEST(InstallSourceTest, HostVisiblePathIsIdentityWhenUnpackaged) {
+    const QString path = QStringLiteral("C:/Users/me/AppData/Roaming/MediaFlyouts");
+    EXPECT_EQ(mf::hostVisiblePath(path), path);
+}

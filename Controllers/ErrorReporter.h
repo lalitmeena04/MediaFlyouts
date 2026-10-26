@@ -22,7 +22,13 @@ class ErrorReporter : public QObject {
 
         static QString issueUrl();
         static QString issueUrlFor(const QString& reportPath);
+        // First writable folder from reportRootCandidates().
         static QString reportsDir();
+        // Folders to try, best first. ProgramData and Downloads are real disk
+        // locations in every install kind. Packaged (Store) apps get AppData
+        // redirected into the package, where Explorer cannot find it.
+        static QStringList reportRootCandidates();
+        static QString firstWritableDir(const QStringList& candidates);
         static constexpr int kReportsKept = 3;
 
         static QString systemSummary(const Settings* settings, const Capabilities* capabilities);

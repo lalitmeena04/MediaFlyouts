@@ -1,5 +1,7 @@
 #include "InstallSource.h"
 
+#include <string>
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QSettings>
@@ -10,6 +12,8 @@
 
 #include <appmodel.h>
 #endif
+
+#include "Logging.h"
 
 namespace mf {
 
@@ -33,6 +37,16 @@ bool runningPackaged() {
     UINT32 length = 0;
     const LONG rc = GetCurrentPackageFullName(&length, nullptr);
     return rc != APPMODEL_ERROR_NO_PACKAGE;
+}
+
+QString currentPackageFamilyName() {
+    UINT32 length = 0;
+    if(GetCurrentPackageFamilyName(&length, nullptr) != ERROR_INSUFFICIENT_BUFFER || length == 0)
+        return {};
+    std::wstring name(length, L'\0');
+    if(GetCurrentPackageFamilyName(&length, name.data()) != ERROR_SUCCESS)
+        return {};
+    return QString::fromWCharArray(name.c_str());
 }
 
 QString innoInstallLocation() {
@@ -90,6 +104,63 @@ QString installKindLabel(InstallKind kind) {
 
 QString storeUpdatesUrl() {
     return QStringLiteral("ms-windows-store://downloadsandupdates");
+}
+
+namespace {
+
+// Sets rel to the part of path below root. False when path is not inside root.
+bool relativeUnder(const QString& path, const QString& root, QString* rel) {
+    if(root.isEmpty())
+        return false;
+    const QString cleanPath = QDir::cleanPath(QDir::fromNativeSeparators(path));
+    const QString cleanRoot = normalisedDir(root);
+    const QString lowerPath = cleanPath.toLower();
+    if(lowerPath == cleanRoot) {
+        rel->clear();
+        return true;
+    }
+    if(!lowerPath.startsWith(cleanRoot + QLatin1Char('/')))
+        return false;
+    *rel = cleanPath.mid(cleanRoot.size() + 1);
+    return true;
+}
+
+} // namespace
+
+QString packagedRedirectPath(const QString& path, const QString& roamingDir, const QString& localDir,
+                             const QString& packageFamilyName) {
+    if(path.isEmpty() || packageFamilyName.isEmpty() || localDir.isEmpty())
+        return path;
+    const QString cache = QDir::cleanPath(QDir::fromNativeSeparators(localDir)) + QStringLiteral("/Packages/")
+                          + packageFamilyName + QStringLiteral("/LocalCache/");
+
+    QString rel;
+    if(relativeUnder(path, roamingDir, &rel))
+        return QDir::cleanPath(cache + QStringLiteral("Roaming/") + rel);
+    if(!relativeUnder(path, localDir, &rel))
+        return path;
+    // Already inside Packages: that is a real location, not a virtual one.
+    const QString first = rel.section(QLatin1Char('/'), 0, 0);
+    if(first.compare(QStringLiteral("Packages"), Qt::CaseInsensitive) == 0)
+        return path;
+    return QDir::cleanPath(cache + QStringLiteral("Local/") + rel);
+}
+
+QString hostVisiblePath(const QString& path) {
+#ifdef Q_OS_WIN
+    if(!runningPackaged())
+        return path;
+    const QString family = currentPackageFamilyName();
+    // The container keeps the real folders in these variables.
+    const QString roaming = qEnvironmentVariable("APPDATA");
+    const QString local = qEnvironmentVariable("LOCALAPPDATA");
+    const QString mapped = packagedRedirectPath(path, roaming, local, family);
+    if(mapped != path)
+        TRC_DEBUG("packaged path: {} -> {}", path.toStdString(), mapped.toStdString());
+    return mapped;
+#else
+    return path;
+#endif
 }
 
 } // namespace mf
