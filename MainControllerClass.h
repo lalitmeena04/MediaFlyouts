@@ -18,6 +18,7 @@ class SwipeDetector;
 class ThemeController;
 class UpdateChecker;
 class ErrorReporter;
+class AppRestarter;
 class Capabilities;
 class QmlLogger;
 class AlbumArtProvider;
@@ -72,6 +73,7 @@ class MainControllerClass {
         std::unique_ptr<UpdateChecker> m_updateChecker;
         std::unique_ptr<Capabilities> m_capabilities;
         std::unique_ptr<ErrorReporter> m_errorReporter;
+        std::unique_ptr<AppRestarter> m_restarter;
         std::unique_ptr<QQmlApplicationEngine> m_engine;
         std::unique_ptr<QmlLogger> m_qmlLog;
         std::unique_ptr<TrayController> m_tray;

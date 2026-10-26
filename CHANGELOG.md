@@ -7,6 +7,12 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ### Added
 
+- **Restart with a report.** **Restart MediaFlyouts** in the tray menu and
+  **Save report and restart** on the About page save an error report (log,
+  settings, system facts), then close and reopen the app. The new process
+  waits for the old one to exit, so the single-instance guard does not send
+  it away. Use it when a flyout or widget looks wrong: the report keeps the
+  log of the session that misbehaved.
 - **Jabra headsets.** Battery level and charging state for Jabra headsets
   paired to a Jabra Link USB adapter (Link 390 verified) or plugged in by
   their own USB cable, read over Jabra's GN protocol. A headset behind a

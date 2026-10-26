@@ -70,6 +70,17 @@ stay in the report. Nothing is uploaded by the app.
 path to its real `LocalCache` location for packaged installs; the tray's
 **Open Config Folder** and the report's "Settings file" line use it.
 
+### AppRestarter
+Restarts the app from the tray menu (**Restart MediaFlyouts**) or the About
+page (**Save report and restart**). `restart()` first calls
+`ErrorReporter::createReport()`, so the log of the session that misbehaved is
+kept, flushes logging, starts a new process with
+`relaunchArguments()` (the current arguments plus `--wait-for-pid <pid>`) and
+quits. At startup `waitForPredecessor()` reads that switch and blocks (up to
+`kPredecessorTimeoutMs`) until the old process is gone, *before*
+`SingleInstance` is created; otherwise the new process would hand over to the
+one it replaces and exit. `status` tells QML whether the relaunch failed.
+
 ### WindowScaleRefresher
 Keeps every top-level window at the logical size the app asked for across
 DPI changes. Windows defers `WM_DPICHANGED` for hidden windows, so after a

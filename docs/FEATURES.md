@@ -149,8 +149,9 @@ visualizer. This document describes the features that ship in the app.
 ## System tray & single instance
 
 - Tray icon with a dark, Fluent-style context menu (Settings, Show Media
-  Flyout, Volume Mixer, Repository, Report a Bug, Open Config Folder, Quit),
-  each with an icon.
+  Flyout, Volume Mixer, Repository, Report a Bug, Open Config Folder, Restart,
+  Quit), each with an icon. Restart saves an error report first, then
+  relaunches the app; the new process waits for the old one to exit.
 - Option to hide the tray icon and to choose the left-click behavior; the
   dashboard opens on double-click when single-click is set to show the flyout.
 - Single-instance handling: a second launch exits after signaling the running
