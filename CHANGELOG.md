@@ -9,6 +9,20 @@ Jabra headset battery support, charging indicators, swipe-to-dismiss flyouts
 and a restart-with-report action, plus fixes for stale album art, display
 changes and report locations on Store installs.
 
+### Changed
+
+- **New app icon.** The "MF" mark replaces the blue music-note tile. It is
+  now used everywhere: the exe and installer, the MSIX tiles, the tray icon,
+  window frames and taskbar buttons, and the headers of the dashboard,
+  onboarding window and update dialog. All sizes are rendered from one master
+  PNG by `tools/generate_icon.ps1`.
+
+## [1.5.0] — 2026-10-26
+
+Jabra headset battery support, charging indicators, swipe-to-dismiss flyouts
+and a restart-with-report action, plus fixes for stale album art, display
+changes and report locations on Store installs.
+
 ### Added
 
 - **Restart with a report.** **Restart MediaFlyouts** in the tray menu and

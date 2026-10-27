@@ -151,13 +151,9 @@ Window {
                     anchors.leftMargin: sidebar.collapsed ? 8 : 9
                     spacing: 12
                     bottomPadding: 12
-                    IconLabel {
-                        glyph: Fluent.musicNote
+                    AppLogo {
                         size: 24
-                        width: 24
-                        height: 24
                         anchors.verticalCenter: parent.verticalCenter
-                        color: theme.accent
                     }
                     Text {
                         visible: !sidebar.collapsed
@@ -1840,11 +1836,9 @@ Window {
 
                     Row {
                         spacing: 12
-                        IconLabel {
+                        AppLogo {
                             anchors.verticalCenter: parent.verticalCenter
-                            glyph: Fluent.musicNote
-                            size: 32
-                            color: theme.accent
+                            size: 40
                         }
                         Column {
                             anchors.verticalCenter: parent.verticalCenter

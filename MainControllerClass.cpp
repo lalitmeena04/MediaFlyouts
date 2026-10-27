@@ -7,6 +7,7 @@
 #include <QSysInfo>
 
 #include "AlbumArtProvider.h"
+#include "AppIcon.h"
 #include "AppRestarter.h"
 #include "Capabilities.h"
 #include "ErrorReporter.h"
@@ -53,6 +54,8 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     TRC_INFO("log file: {}", logFile.toStdString());
     TRC_INFO("os: {} ({}), qt {}", QSysInfo::prettyProductName().toStdString(), QSysInfo::kernelVersion().toStdString(),
              qVersion());
+    // Every QML Window inherits this icon for its frame and taskbar button.
+    QApplication::setWindowIcon(mf::loadAppIcon());
 
     // A restarted instance must not hand over to the instance it replaces.
     AppRestarter::waitForPredecessor(QCoreApplication::arguments());

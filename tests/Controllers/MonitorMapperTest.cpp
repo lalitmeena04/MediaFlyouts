@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <QGuiApplication>
 #include <QSignalSpy>
 
 #include "MonitorMapper.h"
@@ -29,21 +30,35 @@ TEST(MonitorMapperTest, NotifiesAgainForALaterBurst) {
     EXPECT_EQ(changed.count(), 2);
 }
 
-TEST(MonitorMapperTest, EmptyHostYieldsNoMonitors) {
+TEST(MonitorMapperTest, MirrorsTheHostScreenList) {
     MonitorMapper map;
-    EXPECT_EQ(map.count(), 0);
-    EXPECT_TRUE(map.names().isEmpty());
-    EXPECT_EQ(map.entry(0), nullptr);
-    EXPECT_EQ(map.entry(-1), nullptr);
-    EXPECT_TRUE(map.geometry(0).isEmpty());
-    EXPECT_TRUE(map.availableGeometry(3).isEmpty());
+    const int screens = QGuiApplication::screens().size();
+    EXPECT_EQ(map.count(), screens);
+    EXPECT_EQ(map.names().size(), screens);
+    for(int i = 0; i < screens; ++i) {
+        ASSERT_NE(map.entry(i), nullptr) << "monitor " << i;
+        EXPECT_FALSE(map.geometry(i).isEmpty()) << "monitor " << i;
+        EXPECT_FALSE(map.availableGeometry(i).isEmpty()) << "monitor " << i;
+    }
+}
+
+TEST(MonitorMapperTest, OutOfRangeIndexFallsBackToTheFirstMonitor) {
+    MonitorMapper map;
+    const int screens = QGuiApplication::screens().size();
+    // Without screens nothing can be returned. With screens, index 0 is the fallback.
+    const MonitorEntry* fallback = screens > 0 ? map.entry(0) : nullptr;
+    EXPECT_EQ(map.entry(-1), fallback);
+    EXPECT_EQ(map.entry(screens), fallback);
+    EXPECT_EQ(map.geometry(screens), map.geometry(0));
+    EXPECT_EQ(map.availableGeometry(screens + 3), map.availableGeometry(0));
 }
 
 TEST(MonitorMapperTest, OutOfRangeIndexFallsBackToZero) {
     MonitorMapper map;
+    const int screens = QGuiApplication::screens().size();
     EXPECT_EQ(map.clampIndex(-1), 0);
     EXPECT_EQ(map.clampIndex(0), 0);
-    EXPECT_EQ(map.clampIndex(7), 0);
+    EXPECT_EQ(map.clampIndex(screens + 7), 0);
 }
 
 TEST(MonitorMapperTest, ToLogicalUsesTheMonitorsOwnScaleAndOrigin) {

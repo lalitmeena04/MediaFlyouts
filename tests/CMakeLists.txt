@@ -73,6 +73,7 @@ add_executable(mediaflyout_gtest
     Model/TrackInfoTest.cpp
     Model/WiredPeripheralRulesTest.cpp
     Model/WindowScalePolicyTest.cpp
+    Packaging/IconAssetsTest.cpp
     Views/QmlContractTest.cpp
 )
 target_link_libraries(mediaflyout_gtest PRIVATE

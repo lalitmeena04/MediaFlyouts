@@ -3,6 +3,7 @@
 #include "TaskbarLayout.h"
 
 using mf::kUnmeasuredTrayWidth;
+using mf::reserveOnScreen;
 using mf::TaskbarReserve;
 using mf::TaskbarSide;
 using mf::taskbarWidgetX;
@@ -21,6 +22,30 @@ QRect primaryScreen() {
 }
 
 } // namespace
+
+TEST(TaskbarLayoutTest, ReserveOffTheScreenIsDropped) {
+    TaskbarReserve reserve;
+    reserve.leading = QRect(0, 1040, 48, 40);
+    reserve.trailing = QRect(1600, 1040, 320, 40);
+
+    const TaskbarReserve kept = reserveOnScreen(primaryScreen(), reserve);
+    EXPECT_EQ(kept.leading, reserve.leading);
+    EXPECT_EQ(kept.trailing, reserve.trailing);
+
+    const TaskbarReserve dropped = reserveOnScreen(secondaryScreen(), reserve);
+    EXPECT_TRUE(dropped.leading.isEmpty());
+    EXPECT_TRUE(dropped.trailing.isEmpty());
+}
+
+TEST(TaskbarLayoutTest, ForeignTrayDoesNotPinTheWidgetToTheEdge) {
+    const QRect screen(0, 0, 800, 600);
+    TaskbarReserve foreign;
+    foreign.trailing = QRect(2300, 1400, 260, 40);
+
+    const int x = taskbarWidgetX(screen, reserveOnScreen(screen, foreign), TaskbarSide::Right, 0, kWidth, kMargin);
+    EXPECT_EQ(x, 800 - kUnmeasuredTrayWidth - kWidth - kMargin);
+    EXPECT_LT(x + kWidth, screen.right() + 1);
+}
 
 TEST(TaskbarLayoutTest, RightSideSitsBesideTheMeasuredTray) {
     TaskbarReserve reserve;
