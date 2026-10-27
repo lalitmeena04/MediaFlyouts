@@ -17,6 +17,14 @@ bool holdsRightEdge(const QRect& screen, const QRect& reserve) {
 
 } // namespace
 
+TaskbarReserve reserveOnScreen(const QRect& screen, TaskbarReserve reserve) {
+    if(!reserve.leading.intersects(screen))
+        reserve.leading = QRect();
+    if(!reserve.trailing.intersects(screen))
+        reserve.trailing = QRect();
+    return reserve;
+}
+
 int taskbarWidgetX(const QRect& screen, const TaskbarReserve& reserve, TaskbarSide side, int offset, int width,
                    int margin) {
     int x = screen.left();

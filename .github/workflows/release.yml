@@ -82,6 +82,8 @@ jobs:
           cmake --build --preset msvc-release
 
       - name: Test
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: ctest --preset msvc-release --output-on-failure
 
       - name: Stage Qt runtime (windeployqt)

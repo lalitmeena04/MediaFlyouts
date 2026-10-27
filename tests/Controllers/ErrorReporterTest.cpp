@@ -3,6 +3,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QGuiApplication>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTemporaryDir>
@@ -42,7 +43,11 @@ TEST_F(ErrorReporterTest, SummaryNamesVersionOsAndCapabilities) {
     EXPECT_TRUE(summary.contains(QStringLiteral("OS: ")));
     EXPECT_TRUE(summary.contains(QStringLiteral("Qt: ")));
     EXPECT_TRUE(summary.contains(QStringLiteral("Unavailable: ")));
-    EXPECT_TRUE(summary.contains(QStringLiteral("Screens: n/a")));
+    // Screen count follows the test host. QCoreApplication hosts report n/a.
+    const auto* gui = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    const QString screens =
+        gui ? QStringLiteral("Screens: %1").arg(gui->screens().size()) : QStringLiteral("Screens: n/a");
+    EXPECT_TRUE(summary.contains(screens)) << summary.toStdString();
 }
 
 TEST_F(ErrorReporterTest, SummaryToleratesMissingSources) {

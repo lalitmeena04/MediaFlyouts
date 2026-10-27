@@ -186,6 +186,8 @@ mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
     reserve.trailing = MonitorMapper::toLogical(monitor, trayRectOf(taskbar));
     reserve.leading =
         MonitorMapper::toLogical(monitor, nativeWindowRect(FindWindowExW(taskbar, nullptr, L"Start", nullptr)));
+    // A null monitor handle falls back to the primary taskbar. Its chrome may lie off this screen.
+    reserve = mf::reserveOnScreen(monitor.logicalRect, reserve);
     TRC_DEBUG("taskbar reserve: monitor={} leading=({},{} {}x{}) trailing=({},{} {}x{})", monitor.index,
               reserve.leading.x(), reserve.leading.y(), reserve.leading.width(), reserve.leading.height(),
               reserve.trailing.x(), reserve.trailing.y(), reserve.trailing.width(), reserve.trailing.height());

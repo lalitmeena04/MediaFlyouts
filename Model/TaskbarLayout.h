@@ -15,6 +15,10 @@ struct TaskbarReserve {
 inline constexpr int kUnmeasuredTrayWidth = 200;
 inline constexpr int kEdgeTolerance = 8;
 
+// Drops reserve rects that do not touch the screen. Shell chrome read for
+// another monitor must not steer a widget on this one.
+TaskbarReserve reserveOnScreen(const QRect& screen, TaskbarReserve reserve);
+
 int taskbarWidgetX(const QRect& screen, const TaskbarReserve& reserve, TaskbarSide side, int offset, int width,
                    int margin);
 
