@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QUrl>
 
+#include "AppIcon.h"
 #include "Capabilities.h"
 #include "InstallSource.h"
 #include "Logging.h"
@@ -21,8 +22,8 @@ namespace {
 
 // Shell small-icon size runs 16 px at 100 % up to 64 px at 400 %.
 constexpr int kIconSizes[] = {16, 20, 24, 32, 48, 64};
-constexpr QChar kTrayGlyph(0xE863);
 
+// Menu item icons. Font glyphs tinted white for the dark menu.
 QIcon renderGlyphIcon(const QString& family, QChar glyph) {
     QIcon icon;
     for(int size : kIconSizes) {
@@ -89,7 +90,8 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     connect(restartAction, &QAction::triggered, this, &TrayController::restartRequested);
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
-    m_tray = new QSystemTrayIcon(renderGlyphIcon(m_iconFamily, kTrayGlyph), this);
+    // Tray shows the app icon. The .ico holds every shell size.
+    m_tray = new QSystemTrayIcon(mf::loadAppIcon(), this);
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
 
@@ -149,7 +151,7 @@ void TrayController::refreshIcon() {
     if(!m_tray)
         return;
     TRC_DEBUG("tray: re-applying icon after display change");
-    m_tray->setIcon(renderGlyphIcon(m_iconFamily, kTrayGlyph));
+    m_tray->setIcon(mf::loadAppIcon());
 }
 
 void TrayController::notify(const QString& title, const QString& message) {

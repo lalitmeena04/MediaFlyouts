@@ -144,6 +144,24 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
     EXPECT_FALSE(source.contains(QStringLiteral("glyph: Fluent.link")));
 }
 
+TEST(QmlContractTest, AppLogoRendersTheBundledIconBitmap) {
+    const QString logo = loadSource("Views/AppLogo.qml");
+    expectContains(logo, QStringLiteral("source: \"qrc:/icons/icon-256.png\""));
+    expectContains(logo, QStringLiteral("mipmap: true"));
+    expectContains(logo, QStringLiteral("property int size"));
+}
+
+TEST(QmlContractTest, EveryWindowHeaderShowsTheAppLogo) {
+    // The music-note glyph stays for album-art placeholders only.
+    const QRegularExpression accentGlyph(
+        QStringLiteral("glyph: Fluent\\.musicNote\\s*\\n\\s*size: \\d+\\s*\\n\\s*color: theme\\.accent"));
+    for(const char* path : {"Views/Dashboard.qml", "Views/OnboardingWindow.qml", "Views/UpdateDialog.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("AppLogo {"));
+        EXPECT_FALSE(source.contains(accentGlyph)) << path << " still uses the note glyph as the app mark";
+    }
+}
+
 TEST(QmlContractTest, AboutPageOffersTheDownloadWhenAnUpdateExists) {
     const QString source = loadSource("Views/Dashboard.qml");
 

@@ -33,10 +33,9 @@ Window {
             anchors.top: parent.top
             anchors.left: parent.left
             spacing: 12
-            IconLabel {
-                glyph: Fluent.musicNote
+            AppLogo {
                 size: 28
-                color: theme.accent
+                anchors.verticalCenter: parent.verticalCenter
             }
             Text {
                 text: "MediaFlyouts"

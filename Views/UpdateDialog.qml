@@ -79,11 +79,9 @@ Window {
 
             Row {
                 spacing: 12
-                IconLabel {
+                AppLogo {
                     anchors.verticalCenter: parent.verticalCenter
-                    glyph: Fluent.musicNote
                     size: 28
-                    color: theme.accent
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter

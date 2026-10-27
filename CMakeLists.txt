@@ -153,6 +153,7 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/ThemeController.h
     Controllers/WindowScaleRefresher.cpp
     Controllers/WindowScaleRefresher.h
+    Controllers/AppIcon.h
     Controllers/TrayController.cpp
     Controllers/TrayController.h
     Controllers/UpdateChecker.cpp
@@ -195,6 +196,7 @@ qt_add_qml_module(MediaFlyouts
     QML_FILES
         Views/Anim.qml
         Views/App.qml
+        Views/AppLogo.qml
         Views/BatteryIcon.qml
         Views/BatteryRing.qml
         Views/ChargerFlyout.qml
@@ -233,6 +235,16 @@ qt_add_qml_module(MediaFlyouts
         Views/assets/fonts/FontAwesome6-Solid.ttf
         Views/assets/github-mark-dark.svg
         Views/assets/github-mark-light.svg
+)
+
+# App icon for tray, window frames and QML headers. Same files the exe and
+# installer embed. See tools/generate_icon.ps1.
+qt_add_resources(MediaFlyouts "appicon"
+    PREFIX "/icons"
+    BASE packaging/assets
+    FILES
+        packaging/assets/MediaFlyouts.ico
+        packaging/assets/icon-256.png
 )
 
 target_link_libraries(MediaFlyouts PRIVATE
