@@ -31,6 +31,10 @@ icon, and a fix for the unit tests wiping the app's settings.
 
 ### Changed
 
+- **Proprietary license.** MediaFlyouts is no longer MIT-licensed. The
+  source code is all rights reserved; end users may install and run the
+  official binaries. Releases no longer include a source ZIP, and the
+  release repository ships the `LICENSE` file next to the README.
 - **New app icon.** The "MF" mark replaces the blue music-note tile. It is
   now used everywhere: the exe and installer, the MSIX tiles, the tray icon,
   window frames and taskbar buttons, and the headers of the dashboard,
