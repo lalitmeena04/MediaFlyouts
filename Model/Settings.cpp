@@ -100,6 +100,7 @@ void Settings::reload() {
     m_taskbarWidgetLayout = m_store.value(QStringLiteral("taskbarWidgetLayout"), 0).toInt();
     m_taskbarWidgetShowPauseOverlay = m_store.value(QStringLiteral("taskbarWidgetShowPauseOverlay"), true).toBool();
     m_taskbarWidgetScrollingEnabled = m_store.value(QStringLiteral("taskbarWidgetScrollingEnabled"), true).toBool();
+    m_taskbarWidgetAdaptiveColors = m_store.value(QStringLiteral("taskbarWidgetAdaptiveColors"), true).toBool();
     m_taskbarWidgetPauseAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPauseAllEnabled"), false).toBool();
     m_taskbarWidgetPlayAllEnabled = m_store.value(QStringLiteral("taskbarWidgetPlayAllEnabled"), true).toBool();
     m_taskbarVisualizerEnabled = m_store.value(QStringLiteral("taskbarVisualizerEnabled"), false).toBool();
@@ -180,6 +181,19 @@ bool Settings::importFrom(const QUrl& file) {
     TRC_INFO("settings: imported {} keys from {}", keys.size(), path.toStdString());
     emit changed();
     return true;
+}
+
+void Settings::resetToDefaults() {
+    const int dropped = m_store.allKeys().size();
+    const bool onboarded = m_onboardingCompleted;
+    m_store.clear();
+    // The user is already past the wizard. A reset must not bring it back.
+    if(onboarded)
+        m_store.setValue(QStringLiteral("onboardingCompleted"), true);
+    m_store.sync();
+    reload();
+    TRC_INFO("settings: reset to defaults, dropped {} keys (onboardingCompleted={})", dropped, onboarded);
+    emit changed();
 }
 
 void Settings::assignInt(const char* key, int& field, int v) {
@@ -370,6 +384,9 @@ bool Settings::taskbarWidgetShowPauseOverlay() const {
 }
 bool Settings::taskbarWidgetScrollingEnabled() const {
     return m_taskbarWidgetScrollingEnabled;
+}
+bool Settings::taskbarWidgetAdaptiveColors() const {
+    return m_taskbarWidgetAdaptiveColors;
 }
 bool Settings::taskbarWidgetPauseAllEnabled() const {
     return m_taskbarWidgetPauseAllEnabled;
@@ -672,6 +689,9 @@ void Settings::setTaskbarWidgetShowPauseOverlay(bool v) {
 }
 void Settings::setTaskbarWidgetScrollingEnabled(bool v) {
     assign("taskbarWidgetScrollingEnabled", m_taskbarWidgetScrollingEnabled, v);
+}
+void Settings::setTaskbarWidgetAdaptiveColors(bool v) {
+    assign("taskbarWidgetAdaptiveColors", m_taskbarWidgetAdaptiveColors, v);
 }
 void Settings::setTaskbarWidgetPauseAllEnabled(bool v) {
     assign("taskbarWidgetPauseAllEnabled", m_taskbarWidgetPauseAllEnabled, v);

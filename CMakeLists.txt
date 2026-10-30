@@ -67,6 +67,8 @@ endif()
 qt_add_library(mediaflyout_core STATIC
     Logging.cpp
     Logging.h
+    Model/BackdropContrast.cpp
+    Model/BackdropContrast.h
     Model/BatteryAlertPolicy.cpp
     Model/BatteryAlertPolicy.h
     Model/BatteryUtils.cpp
@@ -306,6 +308,8 @@ if (WIN32)
         Controllers/PowerStatusController.h
         Controllers/StartupController.cpp
         Controllers/StartupController.h
+        Controllers/TaskbarBackdrop.cpp
+        Controllers/TaskbarBackdrop.h
         Controllers/TaskbarInfo.cpp
         Controllers/TaskbarInfo.h
         Controllers/VolumeController.cpp

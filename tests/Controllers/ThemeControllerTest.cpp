@@ -7,16 +7,14 @@
 
 #include "Settings.h"
 #include "NowPlaying.h"
+#include "TestSupport/IsolatedSettings.h"
 #include "ThemeController.h"
 
 namespace {
 class ThemeControllerTest : public ::testing::Test {
     protected:
         void SetUp() override {
-            QStandardPaths::setTestModeEnabled(true);
-            QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
-                      QStringLiteral("MediaFlyouts"))
-                .clear();
+            mftest::clearUserSettings();
         }
 };
 } // namespace

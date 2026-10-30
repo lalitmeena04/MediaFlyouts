@@ -753,6 +753,65 @@ TEST(QmlContractTest, DockableWidgetRedocksOnSizeChange) {
     }
 }
 
+TEST(QmlContractTest, DockableWidgetOwnsTheBackdropAwarePalette) {
+    const QString base = loadSource("Views/DockableWidget.qml");
+    expectContains(base, QStringLiteral("adaptiveColors: settings.taskbarWidgetAdaptiveColors"));
+    expectContains(base, QStringLiteral("lightBackdrop: base.adaptiveColors && taskbarBackdrop.light"));
+    expectContains(base, QStringLiteral("running: base.visible && base.adaptiveColors"));
+    expectContains(base, QStringLiteral("taskbarBackdrop.sample(base)"));
+    expectContains(base, QStringLiteral("taskbarBackdrop.readable(theme.accent, taskbarBackdrop.light)"));
+    for(const char* name : {"fgPrimary", "fgSecondary", "fgControl", "fgMuted", "hoverBg", "artPlaceholder",
+                            "divider", "accent"}) {
+        expectContains(base, QStringLiteral("readonly property color %1:").arg(QLatin1String(name)));
+    }
+}
+
+TEST(QmlContractTest, TaskbarWidgetsUseThePaletteInsteadOfFixedColors) {
+    const QString media = loadSource("Views/TaskbarWidget.qml");
+    expectContains(media, QStringLiteral("color: root.fgPrimary"));
+    expectContains(media, QStringLiteral("color: root.fgSecondary"));
+    expectContains(media, QStringLiteral("idleColor: root.fgControl"));
+    expectContains(media, QStringLiteral("accent: root.accent"));
+    EXPECT_FALSE(media.contains(QStringLiteral("color: \"#AAAAAA\"")));
+    EXPECT_FALSE(media.contains(QStringLiteral("idleColor: \"white\"")));
+    EXPECT_FALSE(media.contains(QStringLiteral("color: \"#333333\"")));
+
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("color: root.accent"));
+    expectContains(peripherals, QStringLiteral("color: root.divider"));
+    EXPECT_FALSE(peripherals.contains(QStringLiteral("color: theme.accent")));
+
+    for(const char* path : {"Views/TaskbarWidget.qml", "Views/PeripheralsWidget.qml"}) {
+        const QString source = loadSource(path);
+        expectContains(source, QStringLiteral("? root.hoverBg : \"transparent\""));
+        EXPECT_FALSE(source.contains(QStringLiteral("? \"#2A2A2A\" : \"transparent\"")))
+            << "Fixed hover color still present in " << path;
+    }
+
+    const QString visualizer = loadSource("Views/TaskbarVisualizer.qml");
+    expectContains(visualizer, QStringLiteral("property color accent: theme.accent"));
+    expectContains(visualizer, QStringLiteral(": viz.accent"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("settings.taskbarWidgetAdaptiveColors = value"));
+}
+
+TEST(QmlContractTest, DashboardOffersAConfirmedResetToDefaults) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("{ \"label\": \"Restore default settings\", \"page\": 9 }"));
+    expectContains(dashboard, QStringLiteral("text: \"Restore default settings…\""));
+    expectContains(dashboard, QStringLiteral("onClicked: resetConfirm.open()"));
+    expectContains(dashboard, QStringLiteral("id: resetConfirm"));
+    expectContains(dashboard, QStringLiteral("modal: true"));
+    expectContains(dashboard, QStringLiteral("settings.resetToDefaults()"));
+    // The reset must only run from the confirmation popup, never straight from the page button.
+    EXPECT_EQ(dashboard.count(QStringLiteral("settings.resetToDefaults()")), 1);
+    expectContains(dashboard, QStringLiteral("function resetToDefaults()"));
+    EXPECT_EQ(dashboard.count(QStringLiteral("dash.resetToDefaults()")), 1);
+    EXPECT_GT(dashboard.indexOf(QStringLiteral("dash.resetToDefaults()")),
+              dashboard.indexOf(QStringLiteral("id: resetConfirm")));
+}
+
 TEST(QmlContractTest, ScrubAreaReportsTrackPositionAsFraction) {
     const QString source = loadSource("Views/ScrubArea.qml");
     expectContains(source, QStringLiteral("property real trackWidth"));

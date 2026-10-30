@@ -36,6 +36,7 @@
 #include "PeripheralAlerts.h"
 #include "PowerStatusController.h"
 #include "StartupController.h"
+#include "TaskbarBackdrop.h"
 #include "TaskbarInfo.h"
 #include "VolumeController.h"
 #include "VolumeMixer.h"
@@ -174,6 +175,7 @@ void MainControllerClass::buildPlatformSubsystems() {
                      [this] { m_startup->setEnabled(m_settings->launchOnStartup()); });
 
     m_taskbar = std::make_unique<TaskbarInfo>(m_monitors.get());
+    m_taskbarBackdrop = std::make_unique<TaskbarBackdrop>();
 
     m_volumeMixer = std::make_unique<VolumeMixer>();
 
@@ -242,6 +244,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("fullscreen", m_fullscreen.get());
     ctx->setContextProperty("lockKeys", m_lockKeys.get());
     ctx->setContextProperty("taskbar", m_taskbar.get());
+    ctx->setContextProperty("taskbarBackdrop", m_taskbarBackdrop.get());
     ctx->setContextProperty("volumeMixer", m_volumeMixer.get());
     ctx->setContextProperty("audioCapture", m_audioCapture.get());
     ctx->setContextProperty("windowEffects", m_windowEffects.get());

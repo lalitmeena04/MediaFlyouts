@@ -13,16 +13,14 @@
 #include "Capabilities.h"
 #include "ErrorReporter.h"
 #include "Settings.h"
+#include "TestSupport/IsolatedSettings.h"
 #include "Version.h"
 
 namespace {
 class ErrorReporterTest : public ::testing::Test {
     protected:
         void SetUp() override {
-            QStandardPaths::setTestModeEnabled(true);
-            QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
-                      QStringLiteral("MediaFlyouts"))
-                .clear();
+            mftest::clearUserSettings();
         }
 };
 

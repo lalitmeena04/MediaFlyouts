@@ -97,7 +97,8 @@ DockableWidget {
         id: card
         anchors.fill: parent
         radius: 6
-        color: hover.hovered ? "#2A2A2A" : "transparent"
+        color: hover.hovered ? root.hoverBg : "transparent"
+        Behavior on color { ColorAnimation { duration: Anim.hoverMs } }
 
         HoverHandler {
             id: hover
@@ -139,6 +140,7 @@ DockableWidget {
             TaskbarVisualizer {
                 id: visualizer
                 visible: settings.taskbarVisualizerEnabled
+                accent: root.accent
                 anchors.fill: parent
                 anchors.margins: 3
                 anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)
@@ -158,7 +160,7 @@ DockableWidget {
                         width: 4
                         height: 4
                         radius: 2
-                        color: index === nowPlaying.selectedSessionIndex ? "#4CC2FF" : "#5A5A5A"
+                        color: index === nowPlaying.selectedSessionIndex ? "#4CC2FF" : root.fgMuted
                         Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                     }
                 }
@@ -176,7 +178,8 @@ DockableWidget {
                     width: 30
                     height: 30
                     radius: 5
-                    color: "#333333"
+                    color: root.artPlaceholder
+                    Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                     clip: true
                     anchors.verticalCenter: parent.verticalCenter
 
@@ -231,7 +234,8 @@ DockableWidget {
                         Text {
                             id: titleText
                             text: nowPlaying.title
-                            color: "white"
+                            color: root.fgPrimary
+                            Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                             font.pixelSize: 12
                             property bool overflow: settings.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
                             width: overflow ? titleMetrics.width : titleClip.width
@@ -252,7 +256,8 @@ DockableWidget {
                     Text {
                         width: parent.width
                         text: nowPlaying.artist
-                        color: "#AAAAAA"
+                        color: root.fgSecondary
+                        Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                         font.pixelSize: 11
                         elide: Text.ElideRight
                     }
@@ -267,6 +272,8 @@ DockableWidget {
                     WidgetButton {
                         glyph: Fluent.previous
                         size: 14
+                        idleColor: root.fgControl
+                        hoverColor: root.fgPrimary
                         tip: widgetTip
                         tooltip: "Previous"
                         onClicked: nowPlaying.previous()
@@ -274,7 +281,8 @@ DockableWidget {
                     WidgetButton {
                         glyph: nowPlaying.isPlaying ? Fluent.pause : Fluent.play
                         size: 16
-                        idleColor: "white"
+                        idleColor: root.fgPrimary
+                        hoverColor: root.fgPrimary
                         tip: widgetTip
                         tooltip: nowPlaying.isPlaying ? "Pause" : "Play"
                         onClicked: nowPlaying.playPause()
@@ -282,6 +290,8 @@ DockableWidget {
                     WidgetButton {
                         glyph: Fluent.next
                         size: 14
+                        idleColor: root.fgControl
+                        hoverColor: root.fgPrimary
                         tip: widgetTip
                         tooltip: "Next"
                         onClicked: nowPlaying.next()
@@ -301,6 +311,8 @@ DockableWidget {
                 width: root.pauseAllSlot
                 glyph: root.showPlayAll ? Fluent.playCircle : Fluent.pauseCircle
                 size: 16
+                idleColor: root.fgControl
+                hoverColor: root.fgPrimary
                 tip: widgetTip
                 tooltip: root.showPlayAll ? "Play all" : "Pause all"
                 onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()

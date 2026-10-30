@@ -8,18 +8,23 @@
 #include <QUrl>
 
 #include "Settings.h"
+#include "TestSupport/IsolatedSettings.h"
 
 namespace {
 class SettingsTest : public ::testing::Test {
     protected:
         void SetUp() override {
-            QStandardPaths::setTestModeEnabled(true);
-            QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
-                      QStringLiteral("MediaFlyouts"))
-                .clear();
+            mftest::clearUserSettings();
         }
 };
 } // namespace
+
+TEST_F(SettingsTest, StoreLivesInTheIsolatedScratchDirNotTheUserProfile) {
+    Settings s;
+    const QString dir = QDir::cleanPath(s.configDir());
+    EXPECT_TRUE(dir.startsWith(mftest::isolateUserSettings(), Qt::CaseInsensitive)) << dir.toStdString();
+    EXPECT_FALSE(dir.contains(QStringLiteral("/AppData/Roaming/"), Qt::CaseInsensitive)) << dir.toStdString();
+}
 
 TEST_F(SettingsTest, Defaults) {
     Settings s;
@@ -67,6 +72,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_EQ(s.taskbarWidgetLayout(), 0);
     EXPECT_TRUE(s.taskbarWidgetShowPauseOverlay());
     EXPECT_TRUE(s.taskbarWidgetScrollingEnabled());
+    EXPECT_TRUE(s.taskbarWidgetAdaptiveColors());
     EXPECT_FALSE(s.taskbarWidgetPauseAllEnabled());
     EXPECT_TRUE(s.taskbarWidgetPlayAllEnabled());
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
@@ -222,15 +228,59 @@ TEST_F(SettingsTest, ExportImportRoundTrip) {
         s.setFlyoutDuration(7000);
         EXPECT_TRUE(s.exportTo(QUrl::fromLocalFile(path)));
     }
-    QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
-              QStringLiteral("MediaFlyouts"))
-        .clear();
+    mftest::clearUserSettings();
     Settings restored;
     EXPECT_TRUE(restored.mediaFlyoutEnabled());
     EXPECT_TRUE(restored.importFrom(QUrl::fromLocalFile(path)));
     EXPECT_FALSE(restored.mediaFlyoutEnabled());
     EXPECT_EQ(restored.flyoutDuration(), 7000);
     QFile::remove(path);
+}
+
+TEST_F(SettingsTest, ResetToDefaultsDropsEveryValueButKeepsOnboardingDone) {
+    {
+        Settings s;
+        s.setOnboardingCompleted(true);
+        s.setMediaFlyoutEnabled(false);
+        s.setFlyoutDuration(7000);
+        s.setFilterMode(1);
+        s.addFilterEntry(QStringLiteral("chrome"));
+        s.setPeripheralDisplayName(QStringLiteral("Mouse"), QStringLiteral("Desk mouse"));
+        s.setTaskbarWidgetSide(1);
+    }
+    Settings s;
+    QSignalSpy spy(&s, &Settings::changed);
+    s.resetToDefaults();
+    EXPECT_EQ(spy.count(), 1);
+
+    EXPECT_TRUE(s.onboardingCompleted());
+    EXPECT_TRUE(s.mediaFlyoutEnabled());
+    EXPECT_EQ(s.flyoutDuration(), 4500);
+    EXPECT_EQ(s.filterMode(), 0);
+    EXPECT_TRUE(s.filterList().isEmpty());
+    EXPECT_TRUE(s.peripheralNames().isEmpty());
+    // The first-run side seeding runs again.
+    EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
+
+    // The reset is on disk. Only the kept flag and the re-seeded side remain.
+    Settings again;
+    EXPECT_TRUE(again.onboardingCompleted());
+    EXPECT_TRUE(again.mediaFlyoutEnabled());
+    EXPECT_EQ(again.flyoutDuration(), 4500);
+    const QStringList keys = QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
+                                       QStringLiteral("MediaFlyouts"))
+                                 .allKeys();
+    EXPECT_TRUE(keys.contains(QStringLiteral("onboardingCompleted")));
+    EXPECT_TRUE(keys.contains(QStringLiteral("taskbarWidgetSide")));
+    EXPECT_EQ(keys.size(), 2) << keys.join(QLatin1Char(',')).toStdString();
+}
+
+TEST_F(SettingsTest, ResetBeforeOnboardingLeavesOnboardingPending) {
+    Settings s;
+    s.setFlyoutDuration(7000);
+    s.resetToDefaults();
+    EXPECT_FALSE(s.onboardingCompleted());
+    EXPECT_EQ(s.flyoutDuration(), 4500);
 }
 
 TEST_F(SettingsTest, FilterOffAllowsEveryPlayer) {

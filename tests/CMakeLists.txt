@@ -52,6 +52,7 @@ add_executable(mediaflyout_gtest
     Controllers/UpdateCheckerTest.cpp
     gtest_main.cpp
     Model/AlbumArtProviderTest.cpp
+    Model/BackdropContrastTest.cpp
     Model/BatteryAlertPolicyTest.cpp
     Model/BatteryUtilsTest.cpp
     Model/CapabilitiesTest.cpp
@@ -83,6 +84,7 @@ target_link_libraries(mediaflyout_gtest PRIVATE
     GTest::gmock
 )
 target_compile_definitions(mediaflyout_gtest PRIVATE MEDIAFLYOUTS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+target_include_directories(mediaflyout_gtest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME gtest_all COMMAND mediaflyout_gtest)
 
 # Windows-only audio/DWM controllers get default-state smoke tests
@@ -107,6 +109,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/MonitorMapper.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PowerStatusController.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/TaskbarBackdrop.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarInfo.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
@@ -153,6 +156,7 @@ foreach(src IN LISTS qt_test_sources)
     get_filename_component(name ${src} NAME_WE)
     qt_add_executable(${name} ${src})
     target_link_libraries(${name} PRIVATE Qt6::Test mediaflyout_testlib)
+    target_include_directories(${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     add_test(NAME ${name} COMMAND ${name})
     list(APPEND qt_test_names ${name})
 endforeach()
