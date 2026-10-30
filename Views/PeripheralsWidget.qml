@@ -169,7 +169,8 @@ DockableWidget {
     Rectangle {
         anchors.fill: parent
         radius: 6
-        color: cardHover.hovered ? "#2A2A2A" : "transparent"
+        color: cardHover.hovered ? root.hoverBg : "transparent"
+        Behavior on color { ColorAnimation { duration: Anim.hoverMs } }
 
         HoverHandler {
             id: cardHover
@@ -198,7 +199,7 @@ DockableWidget {
                         width: 1
                         height: 28
                         anchors.verticalCenter: parent.verticalCenter
-                        color: theme.border
+                        color: root.divider
                     }
 
                     Row {
@@ -209,7 +210,8 @@ DockableWidget {
                             text: root.sectionGlyph(modelData.label)
                             font.family: Fluent.fontFamily
                             font.pixelSize: 17
-                            color: theme.accent
+                            color: root.accent
+                            Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                         }
 
                         Repeater {
@@ -223,13 +225,18 @@ DockableWidget {
                                     percent: modelData.percent
                                     charging: modelData.charging
                                     showGauge: DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)
+                                    trackColor: root.lightBackdrop ? "#C8C8C8" : "#3A3A3A"
+                                    outlineColor: root.lightBackdrop ? "#8A8A8A" : theme.textMuted
+                                    unknownColor: root.lightBackdrop ? "#8A8A8A" : theme.textMuted
+                                    badgeBackground: root.lightBackdrop ? "#F3F3F3" : theme.card
 
                                     Text {
                                         anchors.centerIn: parent
                                         text: DeviceIcons.glyph(modelData.name, modelData.connectionKind, modelData.category)
                                         font.family: DeviceIcons.family(modelData.name, modelData.connectionKind, modelData.category)
                                         font.pixelSize: 13
-                                        color: theme.accent
+                                        color: root.accent
+                                        Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                                     }
 
                                     Item {

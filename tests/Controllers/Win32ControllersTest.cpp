@@ -14,6 +14,7 @@
 #include "HidChangeWatcher.h"
 #include "MonitorMapper.h"
 #include "PowerStatusController.h"
+#include "TaskbarBackdrop.h"
 #include "TaskbarInfo.h"
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
@@ -101,6 +102,53 @@ TEST(Win32ControllersTest, TaskbarWidgetPositionsStayOnTheSelectedScreen) {
         EXPECT_GE(position.y(), screen.top());
         EXPECT_LE(position.y() + height, screen.bottom() + 1);
     }
+}
+
+TEST(Win32ControllersTest, TaskbarBackdropStartsDarkAndToleratesNullWindow) {
+    TaskbarBackdrop backdrop;
+    EXPECT_FALSE(backdrop.known());
+    EXPECT_FALSE(backdrop.light());
+    EXPECT_LT(backdrop.luminance(), 0.0);
+    backdrop.sample(nullptr);
+    EXPECT_FALSE(backdrop.known());
+}
+
+TEST(Win32ControllersTest, TaskbarBackdropFlipsToneAndNotifiesOnce) {
+    TaskbarBackdrop backdrop;
+    int notified = 0;
+    QObject::connect(&backdrop, &TaskbarBackdrop::changed, &backdrop, [&notified] { ++notified; });
+
+    backdrop.applyLuma(0.1);
+    EXPECT_TRUE(backdrop.known());
+    EXPECT_FALSE(backdrop.light());
+    EXPECT_EQ(notified, 1);
+
+    backdrop.applyLuma(0.1); // No movement. No signal.
+    EXPECT_EQ(notified, 1);
+
+    for(int i = 0; i < 10 && !backdrop.light(); ++i)
+        backdrop.applyLuma(1.0);
+    EXPECT_TRUE(backdrop.light());
+    EXPECT_GE(notified, 2);
+}
+
+TEST(Win32ControllersTest, TaskbarBackdropReadableKeepsHueAndAlpha) {
+    TaskbarBackdrop backdrop;
+    const QColor white("#FFFFFF");
+    const QColor black("#000000");
+    EXPECT_LT(backdrop.readable(white, true).lightnessF(), 0.5);
+    EXPECT_GT(backdrop.readable(black, false).lightnessF(), 0.5);
+    EXPECT_EQ(backdrop.readable(white, false), white);
+    EXPECT_EQ(backdrop.readable(black, true), black);
+
+    QColor accent("#7FD6FF");
+    accent.setAlphaF(0.5f);
+    const QColor onLight = backdrop.readable(accent, true);
+    EXPECT_NEAR(onLight.hueF(), accent.hueF(), 0.01);
+    EXPECT_NEAR(onLight.alphaF(), 0.5, 0.01);
+    EXPECT_LT(onLight.lightnessF(), accent.lightnessF());
+
+    EXPECT_FALSE(backdrop.readable(QColor(), true).isValid());
 }
 
 class Win32ComTest : public ::testing::Test {

@@ -1,9 +1,11 @@
 #include <QtTest>
 
+#include <QDir>
 #include <QSignalSpy>
 #include <QStandardPaths>
 
 #include "Settings.h"
+#include "TestSupport/IsolatedSettings.h"
 
 class SettingsQtTest : public QObject {
         Q_OBJECT
@@ -11,6 +13,7 @@ class SettingsQtTest : public QObject {
     private slots:
         void initTestCase();
         void init();
+        void storeIsIsolatedFromTheUserProfile();
         void defaults();
         void setterEmitsChanged();
         void redundantSetDoesNotEmit();
@@ -19,13 +22,18 @@ class SettingsQtTest : public QObject {
 };
 
 void SettingsQtTest::initTestCase() {
-    QStandardPaths::setTestModeEnabled(true);
+    mftest::isolateUserSettings();
 }
 
 void SettingsQtTest::init() {
-    QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
-              QStringLiteral("MediaFlyouts"))
-        .clear();
+    mftest::clearUserSettings();
+}
+
+void SettingsQtTest::storeIsIsolatedFromTheUserProfile() {
+    Settings s;
+    const QString dir = QDir::cleanPath(s.configDir());
+    QVERIFY2(dir.startsWith(mftest::isolateUserSettings(), Qt::CaseInsensitive), qPrintable(dir));
+    QVERIFY2(!dir.contains(QStringLiteral("/AppData/Roaming/"), Qt::CaseInsensitive), qPrintable(dir));
 }
 
 void SettingsQtTest::defaults() {

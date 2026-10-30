@@ -32,6 +32,7 @@ class FullscreenDetector;
 class LockKeysController;
 class StartupController;
 class TaskbarInfo;
+class TaskbarBackdrop;
 class VolumeMixer;
 class AudioCapture;
 class WindowEffects;
@@ -87,6 +88,7 @@ class MainControllerClass {
         std::unique_ptr<LockKeysController> m_lockKeys;
         std::unique_ptr<StartupController> m_startup;
         std::unique_ptr<TaskbarInfo> m_taskbar;
+        std::unique_ptr<TaskbarBackdrop> m_taskbarBackdrop;
         std::unique_ptr<VolumeMixer> m_volumeMixer;
         std::unique_ptr<AudioCapture> m_audioCapture;
         std::unique_ptr<WindowEffects> m_windowEffects;

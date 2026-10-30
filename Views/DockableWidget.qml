@@ -12,6 +12,32 @@ Window {
     property bool pollActive: false
     property string logName: "DockableWidget"
 
+    // Widget colors. They follow the taskbar backdrop when adaptive colors are on,
+    // so text stays readable over a transparent taskbar or a live wallpaper.
+    readonly property bool adaptiveColors: settings.taskbarWidgetAdaptiveColors
+    readonly property bool lightBackdrop: base.adaptiveColors && taskbarBackdrop.light
+    readonly property color fgPrimary: base.lightBackdrop ? "#1A1A1A" : "#FFFFFF"
+    readonly property color fgSecondary: base.lightBackdrop ? "#555555" : "#AAAAAA"
+    readonly property color fgControl: base.lightBackdrop ? "#3C3C3C" : "#C8C8C8"
+    readonly property color fgMuted: base.lightBackdrop ? "#8A8A8A" : "#5A5A5A"
+    readonly property color hoverBg: base.lightBackdrop ? "#1F000000" : "#2A2A2A"
+    readonly property color artPlaceholder: base.lightBackdrop ? "#D0D0D0" : "#333333"
+    readonly property color divider: base.lightBackdrop ? "#33000000" : theme.border
+    readonly property color accent: base.adaptiveColors
+        ? taskbarBackdrop.readable(theme.accent, taskbarBackdrop.light)
+        : theme.accent
+
+    onLightBackdropChanged: log.debug(base.logName + ".lightBackdrop=" + base.lightBackdrop
+        + " luminance=" + taskbarBackdrop.luminance.toFixed(2))
+
+    Timer {
+        interval: 500
+        running: base.visible && base.adaptiveColors
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: taskbarBackdrop.sample(base)
+    }
+
     onWidthChanged: base.updatePosition()
     onHeightChanged: base.updatePosition()
 

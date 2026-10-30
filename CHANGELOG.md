@@ -3,11 +3,31 @@
 All notable changes to MediaFlyouts are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
-## [1.5.0] — 2026-10-26
+## [Unreleased]
 
-Jabra headset battery support, charging indicators, swipe-to-dismiss flyouts
-and a restart-with-report action, plus fixes for stale album art, display
-changes and report locations on Store installs.
+Backdrop-aware taskbar widget colors, a restore-defaults option, a new app
+icon, and a fix for the unit tests wiping the app's settings.
+
+### Added
+
+- **Backdrop-aware widget colors.** The taskbar widgets now read the taskbar
+  pixels beside them and switch between light and dark text, icons and
+  accents. This keeps them readable over a transparent taskbar, a light
+  taskbar, or a live wallpaper that changes color. The widget's own pixels
+  are never sampled, so it still appears in screenshots and recordings.
+  **Adapt colors to the taskbar** in the Taskbar widget settings turns it off.
+- **Restore default settings.** **Additional Settings** has a
+  **Restore default settings…** button. After a confirmation prompt, every
+  setting goes back to its factory value. The first-run wizard stays done.
+
+### Fixed
+
+- **Running the unit tests reset the app's settings.** The settings tests
+  cleared the user-scope `QSettings` store and relied on `QStandardPaths` test
+  mode to redirect it, which Qt ignores for ini files on Windows. Every
+  `build -RunTests` or `test` run wiped `%APPDATA%\MediaFlyouts\MediaFlyouts.ini`,
+  so the next launch showed the onboarding wizard with defaults. Tests now
+  point the store at a scratch folder and a guard test keeps it there.
 
 ### Changed
 

@@ -87,6 +87,7 @@ Item {
     }
 
     onPercentChanged: canvas.requestPaint()
+    onTrackColorChanged: canvas.requestPaint()
     onProgressColorChanged: canvas.requestPaint()
     onUnknownColorChanged: canvas.requestPaint()
     onShowGaugeChanged: canvas.requestPaint()

@@ -6,7 +6,9 @@ Item {
     clip: true
 
     readonly property int style: settings.visualizerStyle
-    readonly property color col: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : theme.accent
+    // The host widget passes an accent that stays readable on its backdrop.
+    property color accent: theme.accent
+    readonly property color col: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : viz.accent
     property var particles: []
 
     Row {

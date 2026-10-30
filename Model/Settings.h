@@ -60,6 +60,8 @@ class Settings : public QObject {
                        setTaskbarWidgetShowPauseOverlay NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetScrollingEnabled READ taskbarWidgetScrollingEnabled WRITE
                        setTaskbarWidgetScrollingEnabled NOTIFY changed)
+        Q_PROPERTY(bool taskbarWidgetAdaptiveColors READ taskbarWidgetAdaptiveColors WRITE
+                       setTaskbarWidgetAdaptiveColors NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetPauseAllEnabled READ taskbarWidgetPauseAllEnabled WRITE
                        setTaskbarWidgetPauseAllEnabled NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetPlayAllEnabled READ taskbarWidgetPlayAllEnabled WRITE
@@ -118,6 +120,8 @@ class Settings : public QObject {
 
         Q_INVOKABLE bool exportTo(const QUrl& file) const;
         Q_INVOKABLE bool importFrom(const QUrl& file);
+        // Drops every stored value and reloads the defaults. Onboarding stays completed.
+        Q_INVOKABLE void resetToDefaults();
         Q_INVOKABLE QString configDir() const;
 
         bool mediaFlyoutEnabled() const;
@@ -164,6 +168,7 @@ class Settings : public QObject {
         int taskbarWidgetLayout() const;
         bool taskbarWidgetShowPauseOverlay() const;
         bool taskbarWidgetScrollingEnabled() const;
+        bool taskbarWidgetAdaptiveColors() const;
         bool taskbarWidgetPauseAllEnabled() const;
         bool taskbarWidgetPlayAllEnabled() const;
         bool taskbarVisualizerEnabled() const;
@@ -249,6 +254,7 @@ class Settings : public QObject {
         void setTaskbarWidgetLayout(int v);
         void setTaskbarWidgetShowPauseOverlay(bool v);
         void setTaskbarWidgetScrollingEnabled(bool v);
+        void setTaskbarWidgetAdaptiveColors(bool v);
         void setTaskbarWidgetPauseAllEnabled(bool v);
         void setTaskbarWidgetPlayAllEnabled(bool v);
         void setTaskbarVisualizerEnabled(bool v);
@@ -337,6 +343,7 @@ class Settings : public QObject {
         int m_taskbarWidgetLayout;
         bool m_taskbarWidgetShowPauseOverlay;
         bool m_taskbarWidgetScrollingEnabled;
+        bool m_taskbarWidgetAdaptiveColors;
         bool m_taskbarWidgetPauseAllEnabled;
         bool m_taskbarWidgetPlayAllEnabled;
         bool m_taskbarVisualizerEnabled;

@@ -9,6 +9,7 @@ IconLabel {
     signal clicked()
 
     color: area.containsMouse ? button.hoverColor : button.idleColor
+    Behavior on color { ColorAnimation { duration: Anim.hoverMs } }
 
     function refreshTip() {
         if(!button.tip)

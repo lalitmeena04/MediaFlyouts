@@ -104,6 +104,7 @@ Window {
         { "label": "Theme", "page": 9 }, { "label": "Accent color", "page": 9 },
         { "label": "Launch on startup", "page": 9 }, { "label": "Hide tray icon", "page": 9 },
         { "label": "Export settings", "page": 9 }, { "label": "Import settings", "page": 9 },
+        { "label": "Restore default settings", "page": 9 },
         { "label": "Check for updates", "page": 10 }, { "label": "Version", "page": 10 },
         { "label": "Report a problem", "page": 10 }, { "label": "Error report", "page": 10 }
     ]
@@ -1331,6 +1332,13 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
+                        label: "Adapt colors to the taskbar"
+                        description: "Read the taskbar next to the widgets and switch between light and dark text. Keeps the widgets readable over a transparent taskbar or a live wallpaper."
+                        value: settings.taskbarWidgetAdaptiveColors
+                        onToggled: settings.taskbarWidgetAdaptiveColors = value
+                    }
+                    SettingRow {
+                        width: parent.width
                         label: "Audio visualizer"
                         description: "Show a live spectrum of the system audio behind the widget."
                         available: capabilities.audioAvailable
@@ -1827,6 +1835,34 @@ Window {
                             onClicked: importDialog.open()
                         }
                     }
+
+                    Text {
+                        text: "Restore defaults"
+                        color: theme.textPrimary
+                        font.pixelSize: 15
+                        font.bold: true
+                        topPadding: 12
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: "Puts every setting back to its factory value, including flyout positions, widget options, player filters and peripheral names. Export your settings first if you may want them back. The first-run wizard does not show again."
+                        color: theme.textSecondary
+                        font.pixelSize: 13
+                    }
+                    Row {
+                        spacing: 12
+                        Button {
+                            text: "Restore default settings…"
+                            onClicked: resetConfirm.open()
+                        }
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: dash.resetStatus
+                            color: theme.textTertiary
+                            font.pixelSize: 12
+                        }
+                    }
                 }
 
                 Column {
@@ -2031,5 +2067,66 @@ Window {
         id: accentDialog
         title: "Choose accent color"
         onAccepted: settings.customAccent = selectedColor
+    }
+
+    property string resetStatus: ""
+    Timer {
+        id: resetStatusTimer
+        interval: 4000
+        onTriggered: dash.resetStatus = ""
+    }
+    function resetToDefaults() {
+        log.info("Dashboard: user restored default settings")
+        settings.resetToDefaults()
+        dash.resetStatus = "Defaults restored."
+        resetStatusTimer.restart()
+    }
+
+    // Reset drops every stored value. Ask first.
+    Popup {
+        id: resetConfirm
+        anchors.centerIn: parent
+        width: 380
+        modal: true
+        focus: true
+        padding: 20
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 12
+            Text {
+                text: "Restore default settings?"
+                color: theme.textPrimary
+                font.pixelSize: 15
+                font.bold: true
+            }
+            Text {
+                width: parent.width
+                wrapMode: Text.WordWrap
+                text: "All settings go back to their factory values. This cannot be undone."
+                color: theme.textSecondary
+                font.pixelSize: 13
+            }
+            Row {
+                anchors.right: parent.right
+                spacing: 8
+                topPadding: 4
+                Button {
+                    text: "Cancel"
+                    onClicked: resetConfirm.close()
+                }
+                Button {
+                    text: "Restore defaults"
+                    onClicked: {
+                        resetConfirm.close()
+                        dash.resetToDefaults()
+                    }
+                }
+            }
+        }
     }
 }
