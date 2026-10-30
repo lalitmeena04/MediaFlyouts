@@ -94,9 +94,7 @@ jobs:
         shell: pwsh
         run: New-Item -ItemType Directory -Force dist | Out-Null
 
-      - name: Source ZIP
-        run: git archive --format=zip -o "dist/MediaFlyouts-${{ steps.ver.outputs.version }}-src.zip" HEAD
-
+      # No source archive is published. The source is proprietary (see LICENSE).
       - name: Portable ZIP
         shell: pwsh
         run: Compress-Archive -Path bin\* -DestinationPath "dist/MediaFlyouts-${{ steps.ver.outputs.version }}-win64.zip"
@@ -159,6 +157,8 @@ jobs:
           Get-ChildItem -Force | Where-Object { $_.Name -notin @('.git', '.github') } | Remove-Item -Recurse -Force
           Copy-Item "${{ github.workspace }}\bin\*" . -Recurse -Force
           Copy-Item "${{ github.workspace }}\README.md" README.md -Force
+          # The README links to LICENSE. Ship it so the terms are public.
+          Copy-Item "${{ github.workspace }}\LICENSE" LICENSE -Force
           # docs/ powers the README navigation links, so ship the whole tree.
           Copy-Item "${{ github.workspace }}\docs" docs -Recurse -Force
           # Extra files the README links to. Copy when present so older tags

@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Builds MediaFlyouts and produces the release artifacts into a clean folder:
-  installer (.exe), portable ZIP, source ZIP and an unsigned Store MSIX.
+  installer (.exe), portable ZIP and an unsigned Store MSIX.
 
 .DESCRIPTION
   Version is read from VERSION.txt. Missing optional tools (Inno Setup, Windows
@@ -108,17 +108,12 @@ New-Item -ItemType Directory -Force $out | Out-Null
 
 $results = [ordered]@{}
 
-# 2. Source ZIP.
-Step 'Source ZIP'
-git archive --format=zip -o (Join-Path $out "MediaFlyouts-$ver-src.zip") HEAD
-$results['Source ZIP'] = "MediaFlyouts-$ver-src.zip"
-
-# 3. Portable ZIP.
+# 2. Portable ZIP. No source archive: the source is proprietary (see LICENSE).
 Step 'Portable ZIP'
 Compress-Archive -Path (Join-Path $root 'bin\*') -DestinationPath (Join-Path $out "MediaFlyouts-$ver-win64.zip")
 $results['Portable ZIP'] = "MediaFlyouts-$ver-win64.zip"
 
-# 4. Installer. Inno Setup.
+# 3. Installer. Inno Setup.
 $iscc = Find-Tool @("$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
     "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe")
 if ($iscc) {
@@ -130,7 +125,7 @@ if ($iscc) {
     $results['Installer'] = 'SKIPPED (install Inno Setup 6)'
 }
 
-# 5. Unsigned Store MSIX.
+# 4. Unsigned Store MSIX.
 $makeappx = Find-SdkTool 'makeappx.exe'
 if ($makeappx) {
     Step 'Store MSIX (unsigned)'
@@ -147,7 +142,7 @@ if ($makeappx) {
     $results['Store MSIX'] = 'SKIPPED (install the Windows SDK)'
 }
 
-# 6. Locally signed MSIX for sideloading. Same bits, publisher equal to the
+# 5. Locally signed MSIX for sideloading. Same bits, publisher equal to the
 #    self-signed certificate subject, signed so Windows installs it once the
 #    certificate is trusted.
 if ($SignLocal) {
