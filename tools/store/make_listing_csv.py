@@ -1,0 +1,764 @@
+"""Builds the Partner Center listing import for all 11 languages.
+
+Reads the exported CSV (structure, IDs, screenshot URLs), replaces the text
+fields in every language column, and writes the import package to
+tools/store/import/: listing-import.csv plus the dashboard screenshots from
+tools/store/screenshots/ (one per language, captured by capture-dashboard.ps1).
+Upload that folder with "Import listings > Upload folder".
+
+    python tools\\store\\make_listing_csv.py listingData-<app>-<submission>.csv
+
+Image cells must hold the path *including the root folder name*
+("import/dashboard-de.png"); a bare file name fails the import. English keeps
+the screenshots already on Partner Center (URLs); every other language gets
+DesktopScreenshot1 = its dashboard capture, because the Store requires at
+least one screenshot per listing. The import folder is committed as a fallback.
+"""
+import csv
+import shutil
+import sys
+from pathlib import Path
+
+SRC = Path(sys.argv[1])
+HERE = Path(__file__).parent
+SHOTS = HERE / "screenshots"
+OUT_DIR = HERE / "import"
+OUT = OUT_DIR / "listing-import.csv"
+
+# Column order in the export. Keys are the Partner Center language codes.
+LANGS = ["en-us", "ar", "zh-hans", "fr-fr", "de-de", "hi", "id", "ja", "ko", "pt-br", "es-es"]
+# Partner Center code -> app language code used in the screenshot file names.
+SHOT_LANG = {"en-us": "en", "ar": "ar", "zh-hans": "zh_CN", "fr-fr": "fr", "de-de": "de", "hi": "hi",
+             "id": "id", "ja": "ja", "ko": "ko", "pt-br": "pt_BR", "es-es": "es"}
+
+# ---------------------------------------------------------------- content ---
+# One entry per language. Lists keep the same order as English.
+
+T = {}
+
+T["en-us"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Fluent-style media, volume, lock-key and battery flyouts for Windows, plus a taskbar now-playing widget with a live visualizer.",
+    Description="""Media Flyouts replaces the dated Windows media and volume pop-ups with Fluent-style flyouts and adds a compact now-playing widget to your taskbar.
+
+MEDIA FLYOUT
+Album art, title, artist, transport controls, repeat and shuffle, and a draggable seekbar. Appears on media and volume keys while something is playing. Choose compact or centered layouts, or pin it on screen.
+
+VOLUME FLYOUT AND MIXER
+Replaces the native volume overlay, follows your default output device, and expands into a per-app mixer with the real app icons. A standalone Volume Mixer window is one click away in the tray menu.
+
+TASKBAR WIDGET
+A now-playing readout docked next to the system tray, with optional transport controls, a Pause all / Play all button, marquee titles and a live audio visualizer in four styles. It reads the taskbar beside it and switches between light and dark text, so it stays readable over any wallpaper. Scroll over it to switch between media sources.
+
+PERIPHERAL BATTERY
+Battery rings for wireless mice, keyboards, headsets and controllers over Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech and Jabra. Flyouts on connect, disconnect, charging and low battery.
+
+ALSO
+- Lock-key flyout for Caps, Num, Scroll and Insert
+- Now Playing flyout when the track changes
+- Charger flyout on plug in and unplug
+- Light, dark or system theme; accent from the system or from album art
+- App filtering: whitelist or blacklist which players may show flyouts
+- Hidden automatically over fullscreen apps
+- Eleven languages, switched without a restart
+- Settings backup and restore
+
+PRIVACY
+No account, no telemetry, no ads. The only network request is an optional update check. Settings stay in a local file you can export, import or delete.
+
+Media Flyouts runs in the tray and starts with Windows if you want it to. Open the dashboard from the tray icon to configure every flyout, position, duration and monitor.""",
+    ReleaseNotes="""- Eleven languages. Media Flyouts now speaks English, Spanish, Simplified Chinese, Japanese, German, French, Korean, Brazilian Portuguese, Hindi, Arabic and Indonesian. It follows your Windows display language; pick another under Additional Settings > Language. Everything switches at once, no restart.
+- Support page. A new page in the dashboard with ways to say thanks. Donations are voluntary and unlock nothing.
+- What's new. This note appears once after each update. Find it again any time on the About page.""",
+    Features=[
+        "Fluent-style media flyout with album art, seekbar, repeat and shuffle",
+        "Volume flyout that replaces the Windows overlay, with a per-app mixer",
+        "Taskbar now-playing widget with transport controls and Pause all",
+        "Live audio visualizer behind the widget, four styles",
+        "Widgets adapt their colors to your taskbar and wallpaper",
+        "Battery rings for Bluetooth, Fast Pair, DualSense, Razer, Logitech and Jabra devices",
+        "Peripheral flyouts on connect, disconnect, charging and low battery",
+        "Lock-key, Now Playing and charger flyouts",
+        "Light, dark or system theme with system or album-art accent",
+        "Eleven languages, switched without a restart",
+        "No account, no telemetry, no ads",
+    ],
+    Captions=[
+        "Welcome screen on first start",
+        "Dashboard home",
+        "Media flyout on media keys",
+        "Taskbar media widget",
+        "Media and peripheral flyouts",
+        "Peripheral battery flyout",
+    ],
+    SearchTerms=["media flyout", "volume flyout", "now playing", "taskbar widget", "audio visualizer", "battery monitor", "volume mixer"],
+)
+
+T["de-de"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Fluent-Flyouts für Medien, Lautstärke, Feststelltasten und Akku unter Windows, plus ein Taskleisten-Widget mit Live-Visualizer.",
+    Description="""Media Flyouts ersetzt die veralteten Medien- und Lautstärke-Pop-ups von Windows durch Flyouts im Fluent-Stil und bringt ein kompaktes Now-Playing-Widget auf die Taskleiste.
+
+MEDIEN-FLYOUT
+Albumcover, Titel, Interpret, Wiedergabesteuerung, Wiederholen und Zufallswiedergabe sowie eine ziehbare Fortschrittsleiste. Erscheint bei Medien- und Lautstärketasten, solange etwas läuft. Kompaktes oder zentriertes Layout, oder dauerhaft angeheftet.
+
+LAUTSTÄRKE-FLYOUT UND MIXER
+Ersetzt das native Lautstärke-Overlay, folgt dem Standard-Ausgabegerät und klappt zu einem App-Mixer mit den echten App-Symbolen auf. Ein eigenständiges Mixerfenster ist im Tray-Menü einen Klick entfernt.
+
+TASKLEISTEN-WIDGET
+Eine Now-Playing-Anzeige neben dem Infobereich, mit optionaler Wiedergabesteuerung, einer Taste für Alle pausieren / Alle abspielen, Laufschrift für lange Titel und einem Live-Audio-Visualizer in vier Stilen. Das Widget liest die Taskleiste daneben und wechselt zwischen heller und dunkler Schrift, damit es auf jedem Hintergrund lesbar bleibt. Scrollen über dem Widget wechselt zwischen Medienquellen.
+
+AKKU VON PERIPHERIEGERÄTEN
+Akkuringe für kabellose Mäuse, Tastaturen, Headsets und Controller über Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech und Jabra. Flyouts bei Verbinden, Trennen, Laden und niedrigem Akkustand.
+
+AUSSERDEM
+- Flyout für Feststell-, Num-, Rollen- und Einfg-Taste
+- Now-Playing-Flyout beim Titelwechsel
+- Ladegerät-Flyout beim Ein- und Ausstecken
+- Helles, dunkles oder Systemdesign; Akzentfarbe vom System oder vom Albumcover
+- App-Filter: Positiv- oder Negativliste für Player, die Flyouts zeigen dürfen
+- Wird über Vollbild-Apps automatisch ausgeblendet
+- Elf Sprachen, Wechsel ohne Neustart
+- Einstellungen sichern und wiederherstellen
+
+DATENSCHUTZ
+Kein Konto, keine Telemetrie, keine Werbung. Die einzige Netzwerkanfrage ist eine optionale Update-Prüfung. Einstellungen bleiben in einer lokalen Datei, die du exportieren, importieren oder löschen kannst.
+
+Media Flyouts läuft im Tray und startet auf Wunsch mit Windows. Über das Tray-Symbol öffnest du das Dashboard und konfigurierst jedes Flyout, Position, Dauer und Monitor.""",
+    ReleaseNotes="""- Elf Sprachen. Media Flyouts spricht jetzt Englisch, Spanisch, vereinfachtes Chinesisch, Japanisch, Deutsch, Französisch, Koreanisch, brasilianisches Portugiesisch, Hindi, Arabisch und Indonesisch. Die App folgt der Windows-Anzeigesprache; eine andere wählst du unter Weitere Einstellungen > Sprache. Alles wechselt sofort, ohne Neustart.
+- Unterstützen-Seite. Eine neue Seite im Dashboard mit Möglichkeiten, Danke zu sagen. Spenden sind freiwillig und schalten nichts frei.
+- Neuigkeiten. Dieser Hinweis erscheint einmal nach jedem Update. Du findest ihn jederzeit auf der Info-Seite wieder.""",
+    Features=[
+        "Medien-Flyout im Fluent-Stil mit Albumcover, Fortschrittsleiste, Wiederholen und Zufall",
+        "Lautstärke-Flyout, das das Windows-Overlay ersetzt, mit App-Mixer",
+        "Now-Playing-Widget in der Taskleiste mit Wiedergabesteuerung und Alle pausieren",
+        "Live-Audio-Visualizer hinter dem Widget, vier Stile",
+        "Widgets passen ihre Farben an Taskleiste und Hintergrund an",
+        "Akkuringe für Bluetooth-, Fast-Pair-, DualSense-, Razer-, Logitech- und Jabra-Geräte",
+        "Peripherie-Flyouts bei Verbinden, Trennen, Laden und niedrigem Akku",
+        "Flyouts für Feststelltasten, Now Playing und Ladegerät",
+        "Helles, dunkles oder Systemdesign mit System- oder Albumcover-Akzent",
+        "Elf Sprachen, Wechsel ohne Neustart",
+        "Kein Konto, keine Telemetrie, keine Werbung",
+    ],
+    Captions=[
+        "Willkommensbildschirm beim ersten Start",
+        "Dashboard-Startseite",
+        "Medien-Flyout bei Medientasten",
+        "Medien-Widget in der Taskleiste",
+        "Medien- und Peripherie-Flyouts",
+        "Akku-Flyout für Peripheriegeräte",
+    ],
+    SearchTerms=["medien flyout", "lautstärke flyout", "now playing", "taskleisten widget", "audio visualizer", "akku anzeige", "lautstärkemixer"],
+)
+
+T["fr-fr"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Flyouts de style Fluent pour les médias, le volume, les touches de verrouillage et la batterie sous Windows, plus un widget de barre des tâches avec visualiseur.",
+    Description="""Media Flyouts remplace les pop-ups vieillissants de Windows pour les médias et le volume par des flyouts de style Fluent et ajoute un widget compact « En lecture » à votre barre des tâches.
+
+FLYOUT MÉDIA
+Pochette, titre, artiste, commandes de lecture, répétition et lecture aléatoire, et une barre de progression que l'on peut faire glisser. Apparaît sur les touches média et volume tant que quelque chose est en lecture. Disposition compacte ou centrée, ou épinglé à l'écran.
+
+FLYOUT VOLUME ET MIXEUR
+Remplace l'overlay de volume natif, suit votre périphérique de sortie par défaut et se déploie en mixeur par application avec les vraies icônes des applications. Une fenêtre de mixeur indépendante est à un clic dans le menu de la zone de notification.
+
+WIDGET DE BARRE DES TÂCHES
+Un affichage « En lecture » ancré à côté de la zone de notification, avec commandes de lecture optionnelles, un bouton Tout mettre en pause / Tout lire, des titres défilants et un visualiseur audio en direct en quatre styles. Il lit la barre des tâches à côté de lui et bascule entre texte clair et foncé pour rester lisible sur n'importe quel fond d'écran. Faites défiler dessus pour changer de source média.
+
+BATTERIE DES PÉRIPHÉRIQUES
+Anneaux de batterie pour souris, claviers, casques et manettes sans fil via Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech et Jabra. Flyouts à la connexion, à la déconnexion, en charge et en batterie faible.
+
+ET AUSSI
+- Flyout pour Verr Maj, Verr Num, Arrêt défil et Inser
+- Flyout « En lecture » au changement de piste
+- Flyout chargeur au branchement et au débranchement
+- Thème clair, sombre ou système ; accent du système ou de la pochette
+- Filtrage des applications : liste blanche ou noire des lecteurs autorisés à afficher des flyouts
+- Masqué automatiquement par-dessus les applications plein écran
+- Onze langues, changement sans redémarrage
+- Sauvegarde et restauration des réglages
+
+CONFIDENTIALITÉ
+Pas de compte, pas de télémétrie, pas de publicité. La seule requête réseau est une vérification de mise à jour facultative. Les réglages restent dans un fichier local que vous pouvez exporter, importer ou supprimer.
+
+Media Flyouts tourne dans la zone de notification et démarre avec Windows si vous le souhaitez. Ouvrez le tableau de bord depuis l'icône pour configurer chaque flyout, sa position, sa durée et son écran.""",
+    ReleaseNotes="""- Onze langues. Media Flyouts parle désormais anglais, espagnol, chinois simplifié, japonais, allemand, français, coréen, portugais brésilien, hindi, arabe et indonésien. L'application suit la langue d'affichage de Windows ; choisissez-en une autre sous Paramètres supplémentaires > Langue. Tout change d'un coup, sans redémarrage.
+- Page Soutenir. Une nouvelle page du tableau de bord pour dire merci. Les dons sont volontaires et ne débloquent rien.
+- Nouveautés. Cette note apparaît une fois après chaque mise à jour. Retrouvez-la à tout moment sur la page À propos.""",
+    Features=[
+        "Flyout média de style Fluent avec pochette, barre de progression, répétition et aléatoire",
+        "Flyout volume qui remplace l'overlay Windows, avec mixeur par application",
+        "Widget « En lecture » dans la barre des tâches avec commandes et Tout mettre en pause",
+        "Visualiseur audio en direct derrière le widget, quatre styles",
+        "Les widgets adaptent leurs couleurs à la barre des tâches et au fond d'écran",
+        "Anneaux de batterie pour appareils Bluetooth, Fast Pair, DualSense, Razer, Logitech et Jabra",
+        "Flyouts périphériques à la connexion, déconnexion, charge et batterie faible",
+        "Flyouts touches de verrouillage, En lecture et chargeur",
+        "Thème clair, sombre ou système avec accent système ou pochette",
+        "Onze langues, changement sans redémarrage",
+        "Pas de compte, pas de télémétrie, pas de publicité",
+    ],
+    Captions=[
+        "Écran d'accueil au premier lancement",
+        "Accueil du tableau de bord",
+        "Flyout média sur les touches média",
+        "Widget média de la barre des tâches",
+        "Flyouts média et périphériques",
+        "Flyout batterie des périphériques",
+    ],
+    SearchTerms=["flyout média", "flyout volume", "en lecture", "widget barre des tâches", "visualiseur audio", "batterie périphérique", "mixeur volume"],
+)
+
+T["es-es"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Flyouts de estilo Fluent para multimedia, volumen, teclas de bloqueo y batería en Windows, más un widget de barra de tareas con visualizador en vivo.",
+    Description="""Media Flyouts sustituye los anticuados avisos de multimedia y volumen de Windows por flyouts de estilo Fluent y añade un widget compacto de reproducción a la barra de tareas.
+
+FLYOUT MULTIMEDIA
+Carátula, título, artista, controles de reproducción, repetir y aleatorio, y una barra de progreso arrastrable. Aparece con las teclas multimedia y de volumen mientras algo suena. Diseño compacto o centrado, o fijado en pantalla.
+
+FLYOUT DE VOLUMEN Y MEZCLADOR
+Sustituye la superposición de volumen nativa, sigue tu dispositivo de salida predeterminado y se despliega en un mezclador por aplicación con los iconos reales. Una ventana de mezclador independiente está a un clic en el menú de la bandeja.
+
+WIDGET DE BARRA DE TAREAS
+Un indicador de reproducción anclado junto al área de notificación, con controles opcionales, un botón Pausar todo / Reproducir todo, títulos en marquesina y un visualizador de audio en vivo con cuatro estilos. Lee la barra de tareas a su lado y alterna entre texto claro y oscuro para seguir siendo legible sobre cualquier fondo. Desplázate sobre él para cambiar de fuente multimedia.
+
+BATERÍA DE PERIFÉRICOS
+Anillos de batería para ratones, teclados, auriculares y mandos inalámbricos por Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech y Jabra. Flyouts al conectar, desconectar, cargar y con batería baja.
+
+ADEMÁS
+- Flyout para Bloq Mayús, Bloq Num, Bloq Despl e Insert
+- Flyout de reproducción al cambiar de pista
+- Flyout de cargador al conectar y desconectar
+- Tema claro, oscuro o del sistema; acento del sistema o de la carátula
+- Filtro de aplicaciones: lista blanca o negra de reproductores que pueden mostrar flyouts
+- Se oculta automáticamente sobre aplicaciones a pantalla completa
+- Once idiomas, cambio sin reiniciar
+- Copia de seguridad y restauración de ajustes
+
+PRIVACIDAD
+Sin cuenta, sin telemetría, sin anuncios. La única petición de red es una comprobación de actualizaciones opcional. Los ajustes se guardan en un archivo local que puedes exportar, importar o borrar.
+
+Media Flyouts se ejecuta en la bandeja y arranca con Windows si lo deseas. Abre el panel desde el icono de la bandeja para configurar cada flyout, posición, duración y monitor.""",
+    ReleaseNotes="""- Once idiomas. Media Flyouts ahora habla inglés, español, chino simplificado, japonés, alemán, francés, coreano, portugués de Brasil, hindi, árabe e indonesio. Sigue el idioma de Windows; elige otro en Ajustes adicionales > Idioma. Todo cambia a la vez, sin reiniciar.
+- Página Apoyo. Una nueva página en el panel con formas de dar las gracias. Las donaciones son voluntarias y no desbloquean nada.
+- Novedades. Esta nota aparece una vez tras cada actualización. Vuelve a verla cuando quieras en la página Acerca de.""",
+    Features=[
+        "Flyout multimedia de estilo Fluent con carátula, barra de progreso, repetir y aleatorio",
+        "Flyout de volumen que sustituye la superposición de Windows, con mezclador por aplicación",
+        "Widget de reproducción en la barra de tareas con controles y Pausar todo",
+        "Visualizador de audio en vivo tras el widget, cuatro estilos",
+        "Los widgets adaptan sus colores a la barra de tareas y al fondo",
+        "Anillos de batería para dispositivos Bluetooth, Fast Pair, DualSense, Razer, Logitech y Jabra",
+        "Flyouts de periféricos al conectar, desconectar, cargar y con batería baja",
+        "Flyouts de teclas de bloqueo, reproducción y cargador",
+        "Tema claro, oscuro o del sistema con acento del sistema o de la carátula",
+        "Once idiomas, cambio sin reiniciar",
+        "Sin cuenta, sin telemetría, sin anuncios",
+    ],
+    Captions=[
+        "Pantalla de bienvenida en el primer inicio",
+        "Inicio del panel",
+        "Flyout multimedia con las teclas multimedia",
+        "Widget multimedia de la barra de tareas",
+        "Flyouts multimedia y de periféricos",
+        "Flyout de batería de periféricos",
+    ],
+    SearchTerms=["flyout multimedia", "flyout volumen", "reproduciendo", "widget barra de tareas", "visualizador audio", "batería periféricos", "mezclador volumen"],
+)
+
+T["pt-br"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Flyouts no estilo Fluent para mídia, volume, teclas de bloqueio e bateria no Windows, mais um widget da barra de tarefas com visualizador ao vivo.",
+    Description="""O Media Flyouts substitui os antigos pop-ups de mídia e volume do Windows por flyouts no estilo Fluent e adiciona um widget compacto de reprodução à barra de tarefas.
+
+FLYOUT DE MÍDIA
+Capa do álbum, título, artista, controles de reprodução, repetir e aleatório, e uma barra de progresso arrastável. Aparece com as teclas de mídia e volume enquanto algo estiver tocando. Layout compacto ou centralizado, ou fixo na tela.
+
+FLYOUT DE VOLUME E MIXER
+Substitui a sobreposição de volume nativa, segue o dispositivo de saída padrão e se expande em um mixer por aplicativo com os ícones reais. Uma janela de mixer independente está a um clique no menu da bandeja.
+
+WIDGET DA BARRA DE TAREFAS
+Um indicador de reprodução ao lado da área de notificação, com controles opcionais, um botão Pausar tudo / Tocar tudo, títulos em letreiro e um visualizador de áudio ao vivo em quatro estilos. Ele lê a barra de tarefas ao lado e alterna entre texto claro e escuro para continuar legível sobre qualquer papel de parede. Role sobre ele para trocar de fonte de mídia.
+
+BATERIA DE PERIFÉRICOS
+Anéis de bateria para mouses, teclados, headsets e controles sem fio via Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech e Jabra. Flyouts ao conectar, desconectar, carregar e com bateria fraca.
+
+E MAIS
+- Flyout para Caps Lock, Num Lock, Scroll Lock e Insert
+- Flyout de reprodução na troca de faixa
+- Flyout de carregador ao conectar e desconectar
+- Tema claro, escuro ou do sistema; cor de destaque do sistema ou da capa do álbum
+- Filtro de aplicativos: lista de permissão ou bloqueio dos players que podem mostrar flyouts
+- Oculto automaticamente sobre aplicativos em tela cheia
+- Onze idiomas, troca sem reiniciar
+- Backup e restauração das configurações
+
+PRIVACIDADE
+Sem conta, sem telemetria, sem anúncios. A única solicitação de rede é uma verificação de atualização opcional. As configurações ficam em um arquivo local que você pode exportar, importar ou excluir.
+
+O Media Flyouts roda na bandeja e inicia com o Windows se você quiser. Abra o painel pelo ícone da bandeja para configurar cada flyout, posição, duração e monitor.""",
+    ReleaseNotes="""- Onze idiomas. O Media Flyouts agora fala inglês, espanhol, chinês simplificado, japonês, alemão, francês, coreano, português do Brasil, hindi, árabe e indonésio. Ele segue o idioma de exibição do Windows; escolha outro em Configurações adicionais > Idioma. Tudo muda de uma vez, sem reiniciar.
+- Página Apoiar. Uma nova página no painel com formas de agradecer. Doações são voluntárias e não desbloqueiam nada.
+- Novidades. Esta nota aparece uma vez após cada atualização. Encontre-a novamente a qualquer momento na página Sobre.""",
+    Features=[
+        "Flyout de mídia no estilo Fluent com capa, barra de progresso, repetir e aleatório",
+        "Flyout de volume que substitui a sobreposição do Windows, com mixer por aplicativo",
+        "Widget de reprodução na barra de tarefas com controles e Pausar tudo",
+        "Visualizador de áudio ao vivo atrás do widget, quatro estilos",
+        "Os widgets adaptam as cores à barra de tarefas e ao papel de parede",
+        "Anéis de bateria para dispositivos Bluetooth, Fast Pair, DualSense, Razer, Logitech e Jabra",
+        "Flyouts de periféricos ao conectar, desconectar, carregar e com bateria fraca",
+        "Flyouts de teclas de bloqueio, reprodução e carregador",
+        "Tema claro, escuro ou do sistema com destaque do sistema ou da capa",
+        "Onze idiomas, troca sem reiniciar",
+        "Sem conta, sem telemetria, sem anúncios",
+    ],
+    Captions=[
+        "Tela de boas-vindas no primeiro início",
+        "Início do painel",
+        "Flyout de mídia nas teclas de mídia",
+        "Widget de mídia da barra de tarefas",
+        "Flyouts de mídia e periféricos",
+        "Flyout de bateria de periféricos",
+    ],
+    SearchTerms=["flyout de mídia", "flyout de volume", "tocando agora", "widget barra de tarefas", "visualizador de áudio", "bateria periféricos", "mixer de volume"],
+)
+
+T["id"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Flyout bergaya Fluent untuk media, volume, tombol kunci, dan baterai di Windows, plus widget taskbar dengan visualizer langsung.",
+    Description="""Media Flyouts menggantikan pop-up media dan volume Windows yang usang dengan flyout bergaya Fluent dan menambahkan widget sedang diputar yang ringkas ke taskbar Anda.
+
+FLYOUT MEDIA
+Sampul album, judul, artis, kontrol pemutaran, ulangi dan acak, serta bilah pencarian yang bisa digeser. Muncul saat tombol media dan volume ditekan selama ada yang diputar. Pilih tata letak ringkas atau tengah, atau sematkan di layar.
+
+FLYOUT VOLUME DAN MIXER
+Menggantikan overlay volume bawaan, mengikuti perangkat keluaran default, dan membuka mixer per aplikasi dengan ikon aplikasi asli. Jendela Volume Mixer terpisah tersedia satu klik dari menu tray.
+
+WIDGET TASKBAR
+Tampilan sedang diputar di samping area notifikasi, dengan kontrol pemutaran opsional, tombol Jeda semua / Putar semua, judul berjalan, dan visualizer audio langsung dalam empat gaya. Widget membaca taskbar di sampingnya dan beralih antara teks terang dan gelap agar tetap terbaca di wallpaper apa pun. Gulir di atasnya untuk berpindah sumber media.
+
+BATERAI PERIFERAL
+Cincin baterai untuk mouse, keyboard, headset, dan kontroler nirkabel melalui Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech, dan Jabra. Flyout saat tersambung, terputus, mengisi daya, dan baterai lemah.
+
+JUGA
+- Flyout tombol kunci untuk Caps, Num, Scroll, dan Insert
+- Flyout Sedang Diputar saat lagu berganti
+- Flyout pengisi daya saat dicolok dan dicabut
+- Tema terang, gelap, atau sistem; aksen dari sistem atau sampul album
+- Filter aplikasi: daftar putih atau hitam pemutar yang boleh menampilkan flyout
+- Otomatis tersembunyi di atas aplikasi layar penuh
+- Sebelas bahasa, berganti tanpa mulai ulang
+- Cadangkan dan pulihkan pengaturan
+
+PRIVASI
+Tanpa akun, tanpa telemetri, tanpa iklan. Satu-satunya permintaan jaringan adalah pemeriksaan pembaruan opsional. Pengaturan tersimpan di file lokal yang bisa Anda ekspor, impor, atau hapus.
+
+Media Flyouts berjalan di tray dan dapat dimulai bersama Windows. Buka dasbor dari ikon tray untuk mengatur setiap flyout, posisi, durasi, dan monitor.""",
+    ReleaseNotes="""- Sebelas bahasa. Media Flyouts kini tersedia dalam bahasa Inggris, Spanyol, Mandarin Sederhana, Jepang, Jerman, Prancis, Korea, Portugis Brasil, Hindi, Arab, dan Indonesia. Aplikasi mengikuti bahasa tampilan Windows; pilih yang lain di Pengaturan tambahan > Bahasa. Semuanya berganti sekaligus, tanpa mulai ulang.
+- Halaman Dukungan. Halaman baru di dasbor dengan cara untuk berterima kasih. Donasi bersifat sukarela dan tidak membuka fitur apa pun.
+- Yang baru. Catatan ini muncul sekali setelah setiap pembaruan. Temukan lagi kapan saja di halaman Tentang.""",
+    Features=[
+        "Flyout media bergaya Fluent dengan sampul album, bilah pencarian, ulangi, dan acak",
+        "Flyout volume yang menggantikan overlay Windows, dengan mixer per aplikasi",
+        "Widget sedang diputar di taskbar dengan kontrol pemutaran dan Jeda semua",
+        "Visualizer audio langsung di belakang widget, empat gaya",
+        "Widget menyesuaikan warnanya dengan taskbar dan wallpaper",
+        "Cincin baterai untuk perangkat Bluetooth, Fast Pair, DualSense, Razer, Logitech, dan Jabra",
+        "Flyout periferal saat tersambung, terputus, mengisi daya, dan baterai lemah",
+        "Flyout tombol kunci, Sedang Diputar, dan pengisi daya",
+        "Tema terang, gelap, atau sistem dengan aksen sistem atau sampul album",
+        "Sebelas bahasa, berganti tanpa mulai ulang",
+        "Tanpa akun, tanpa telemetri, tanpa iklan",
+    ],
+    Captions=[
+        "Layar sambutan saat pertama dibuka",
+        "Beranda dasbor",
+        "Flyout media pada tombol media",
+        "Widget media taskbar",
+        "Flyout media dan periferal",
+        "Flyout baterai periferal",
+    ],
+    SearchTerms=["flyout media", "flyout volume", "sedang diputar", "widget taskbar", "visualizer audio", "monitor baterai", "mixer volume"],
+)
+
+T["ja"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Windows 向けの Fluent スタイルのメディア・音量・ロックキー・バッテリー フライアウトと、ライブ ビジュアライザー付きタスクバー ウィジェット。",
+    Description="""Media Flyouts は、古い Windows のメディア・音量ポップアップを Fluent スタイルのフライアウトに置き換え、タスクバーにコンパクトな再生中ウィジェットを追加します。
+
+メディア フライアウト
+アルバム アート、タイトル、アーティスト、再生コントロール、リピートとシャッフル、ドラッグできるシークバー。再生中にメディア キーや音量キーを押すと表示されます。コンパクト表示や中央揃え、画面へのピン留めも選べます。
+
+音量フライアウトとミキサー
+標準の音量オーバーレイを置き換え、既定の出力デバイスに追従し、実際のアプリ アイコン付きのアプリ別ミキサーに展開します。独立した音量ミキサー ウィンドウもトレイ メニューからワンクリックで開けます。
+
+タスクバー ウィジェット
+通知領域の隣に表示される再生中インジケーター。オプションの再生コントロール、すべて一時停止 / すべて再生ボタン、長いタイトルのスクロール、4 種類のライブ オーディオ ビジュアライザーを備えています。隣接するタスクバーの色を読み取って明るい文字と暗い文字を切り替えるので、どんな壁紙でも読みやすいままです。ウィジェット上でスクロールするとメディア ソースを切り替えられます。
+
+周辺機器のバッテリー
+Bluetooth、Bluetooth LE、Google Fast Pair、DualSense、Razer、Logitech、Jabra に対応したワイヤレス マウス・キーボード・ヘッドセット・コントローラーのバッテリー リング。接続、切断、充電、バッテリー残量低下時にフライアウトを表示します。
+
+その他
+- Caps、Num、Scroll、Insert のロックキー フライアウト
+- トラック切り替え時の再生中フライアウト
+- 電源アダプターの接続・取り外し時のフライアウト
+- ライト、ダーク、システム テーマ。アクセント カラーはシステムまたはアルバム アートから
+- アプリ フィルター: フライアウトを表示できるプレーヤーをホワイトリストまたはブラックリストで指定
+- 全画面アプリの上では自動的に非表示
+- 11 言語に対応、再起動なしで切り替え
+- 設定のバックアップと復元
+
+プライバシー
+アカウント不要、テレメトリなし、広告なし。ネットワーク通信は任意の更新チェックのみです。設定はローカル ファイルに保存され、エクスポート、インポート、削除が自由にできます。
+
+Media Flyouts はトレイに常駐し、必要なら Windows と一緒に起動します。トレイ アイコンからダッシュボードを開いて、各フライアウトの位置、表示時間、モニターを設定できます。""",
+    ReleaseNotes="""- 11 言語に対応。英語、スペイン語、簡体字中国語、日本語、ドイツ語、フランス語、韓国語、ブラジル ポルトガル語、ヒンディー語、アラビア語、インドネシア語で利用できます。Windows の表示言語に従い、追加設定 > 言語 で別の言語も選べます。再起動なしで一度に切り替わります。
+- サポート ページ。ダッシュボードに感謝を伝えるための新しいページを追加しました。寄付は任意で、機能の解除はありません。
+- 新着情報。この案内は更新後に一度だけ表示されます。バージョン情報ページからいつでも再表示できます。""",
+    Features=[
+        "アルバム アート、シークバー、リピート、シャッフル付きの Fluent スタイル メディア フライアウト",
+        "Windows のオーバーレイを置き換える音量フライアウトとアプリ別ミキサー",
+        "再生コントロールとすべて一時停止を備えたタスクバー再生中ウィジェット",
+        "ウィジェット背面のライブ オーディオ ビジュアライザー、4 種類のスタイル",
+        "ウィジェットはタスクバーと壁紙に合わせて色を自動調整",
+        "Bluetooth、Fast Pair、DualSense、Razer、Logitech、Jabra 機器のバッテリー リング",
+        "接続、切断、充電、残量低下時の周辺機器フライアウト",
+        "ロックキー、再生中、電源アダプターのフライアウト",
+        "ライト・ダーク・システム テーマ、システムまたはアルバム アートのアクセント",
+        "11 言語、再起動なしで切り替え",
+        "アカウント不要、テレメトリなし、広告なし",
+    ],
+    Captions=[
+        "初回起動時のようこそ画面",
+        "ダッシュボードのホーム",
+        "メディア キーで表示されるメディア フライアウト",
+        "タスクバーのメディア ウィジェット",
+        "メディアと周辺機器のフライアウト",
+        "周辺機器のバッテリー フライアウト",
+    ],
+    SearchTerms=["メディア フライアウト", "音量 フライアウト", "再生中", "タスクバー ウィジェット", "オーディオ ビジュアライザー", "バッテリー モニター", "音量ミキサー"],
+)
+
+T["ko"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Windows용 Fluent 스타일 미디어·볼륨·잠금 키·배터리 플라이아웃과 라이브 시각화가 있는 작업 표시줄 위젯.",
+    Description="""Media Flyouts는 오래된 Windows 미디어·볼륨 팝업을 Fluent 스타일 플라이아웃으로 바꾸고 작업 표시줄에 간결한 지금 재생 중 위젯을 추가합니다.
+
+미디어 플라이아웃
+앨범 아트, 제목, 아티스트, 재생 컨트롤, 반복과 셔플, 드래그할 수 있는 탐색 바. 재생 중에 미디어 키나 볼륨 키를 누르면 나타납니다. 간결한 레이아웃이나 가운데 정렬을 선택하거나 화면에 고정할 수 있습니다.
+
+볼륨 플라이아웃과 믹서
+기본 볼륨 오버레이를 대체하고 기본 출력 장치를 따라가며 실제 앱 아이콘이 있는 앱별 믹서로 펼쳐집니다. 독립된 볼륨 믹서 창은 트레이 메뉴에서 한 번의 클릭으로 열립니다.
+
+작업 표시줄 위젯
+알림 영역 옆에 고정되는 지금 재생 중 표시기. 선택적 재생 컨트롤, 모두 일시 정지 / 모두 재생 버튼, 흐르는 제목, 네 가지 스타일의 라이브 오디오 시각화를 제공합니다. 옆의 작업 표시줄을 읽어 밝은 글자와 어두운 글자를 전환하므로 어떤 배경에서도 잘 보입니다. 위젯 위에서 스크롤하면 미디어 소스를 전환합니다.
+
+주변기기 배터리
+Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech, Jabra를 통한 무선 마우스, 키보드, 헤드셋, 컨트롤러의 배터리 링. 연결, 연결 해제, 충전, 배터리 부족 시 플라이아웃을 표시합니다.
+
+그 외
+- Caps, Num, Scroll, Insert 잠금 키 플라이아웃
+- 트랙이 바뀔 때 지금 재생 중 플라이아웃
+- 충전기를 꽂거나 뺄 때 플라이아웃
+- 라이트, 다크, 시스템 테마. 강조 색은 시스템 또는 앨범 아트에서
+- 앱 필터: 플라이아웃을 표시할 수 있는 플레이어를 허용 목록 또는 차단 목록으로 지정
+- 전체 화면 앱 위에서는 자동으로 숨김
+- 11개 언어, 다시 시작 없이 전환
+- 설정 백업 및 복원
+
+개인정보
+계정 없음, 원격 분석 없음, 광고 없음. 유일한 네트워크 요청은 선택 사항인 업데이트 확인입니다. 설정은 내보내기, 가져오기, 삭제할 수 있는 로컬 파일에 저장됩니다.
+
+Media Flyouts는 트레이에서 실행되며 원하면 Windows와 함께 시작합니다. 트레이 아이콘에서 대시보드를 열어 모든 플라이아웃의 위치, 표시 시간, 모니터를 설정하세요.""",
+    ReleaseNotes="""- 11개 언어. Media Flyouts가 이제 영어, 스페인어, 중국어 간체, 일본어, 독일어, 프랑스어, 한국어, 브라질 포르투갈어, 힌디어, 아랍어, 인도네시아어를 지원합니다. Windows 표시 언어를 따르며 추가 설정 > 언어에서 다른 언어를 고를 수 있습니다. 다시 시작 없이 한 번에 전환됩니다.
+- 후원 페이지. 감사를 전할 수 있는 새 대시보드 페이지입니다. 기부는 자발적이며 어떤 기능도 잠금 해제하지 않습니다.
+- 새로운 기능. 이 안내는 업데이트 후 한 번만 표시됩니다. 정보 페이지에서 언제든 다시 볼 수 있습니다.""",
+    Features=[
+        "앨범 아트, 탐색 바, 반복, 셔플이 있는 Fluent 스타일 미디어 플라이아웃",
+        "Windows 오버레이를 대체하는 볼륨 플라이아웃과 앱별 믹서",
+        "재생 컨트롤과 모두 일시 정지가 있는 작업 표시줄 지금 재생 중 위젯",
+        "위젯 뒤의 라이브 오디오 시각화, 네 가지 스타일",
+        "작업 표시줄과 배경에 맞춰 색을 바꾸는 위젯",
+        "Bluetooth, Fast Pair, DualSense, Razer, Logitech, Jabra 기기의 배터리 링",
+        "연결, 연결 해제, 충전, 배터리 부족 시 주변기기 플라이아웃",
+        "잠금 키, 지금 재생 중, 충전기 플라이아웃",
+        "시스템 또는 앨범 아트 강조 색의 라이트·다크·시스템 테마",
+        "11개 언어, 다시 시작 없이 전환",
+        "계정 없음, 원격 분석 없음, 광고 없음",
+    ],
+    Captions=[
+        "처음 실행 시 환영 화면",
+        "대시보드 홈",
+        "미디어 키로 표시되는 미디어 플라이아웃",
+        "작업 표시줄 미디어 위젯",
+        "미디어 및 주변기기 플라이아웃",
+        "주변기기 배터리 플라이아웃",
+    ],
+    SearchTerms=["미디어 플라이아웃", "볼륨 플라이아웃", "지금 재생 중", "작업 표시줄 위젯", "오디오 시각화", "배터리 모니터", "볼륨 믹서"],
+)
+
+T["zh-hans"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="面向 Windows 的 Fluent 风格媒体、音量、锁定键和电量弹出面板，外加带实时可视化的任务栏正在播放小组件。",
+    Description="""Media Flyouts 用 Fluent 风格的弹出面板取代 Windows 过时的媒体和音量弹窗，并在任务栏上添加一个紧凑的正在播放小组件。
+
+媒体弹出面板
+专辑封面、标题、艺术家、播放控制、重复与随机播放，以及可拖动的进度条。播放期间按下媒体键或音量键即显示。可选紧凑或居中布局，也可固定在屏幕上。
+
+音量弹出面板与混音器
+取代系统自带的音量叠加层，跟随默认输出设备，并可展开为带真实应用图标的按应用混音器。独立的音量混音器窗口在托盘菜单中一键打开。
+
+任务栏小组件
+停靠在通知区域旁的正在播放显示，可选播放控制、全部暂停 / 全部播放按钮、滚动标题，以及四种样式的实时音频可视化。它会读取旁边的任务栏颜色并在浅色与深色文字间切换，在任何壁纸上都清晰可读。在小组件上滚动即可切换媒体来源。
+
+外设电量
+通过 Bluetooth、Bluetooth LE、Google Fast Pair、DualSense、Razer、Logitech 和 Jabra，为无线鼠标、键盘、耳机和手柄显示电量环。连接、断开、充电和电量低时弹出提示。
+
+还有
+- Caps、Num、Scroll 和 Insert 锁定键弹出面板
+- 切换曲目时的正在播放弹出面板
+- 插拔充电器时的弹出面板
+- 浅色、深色或跟随系统主题；强调色来自系统或专辑封面
+- 应用过滤：用白名单或黑名单决定哪些播放器可以显示弹出面板
+- 在全屏应用上自动隐藏
+- 十一种语言，无需重启即可切换
+- 设置备份与恢复
+
+隐私
+无账户、无遥测、无广告。唯一的网络请求是可选的更新检查。设置保存在本地文件中，可随时导出、导入或删除。
+
+Media Flyouts 常驻托盘，可随 Windows 启动。通过托盘图标打开仪表板，配置每个弹出面板的位置、时长和显示器。""",
+    ReleaseNotes="""- 十一种语言。Media Flyouts 现已支持英语、西班牙语、简体中文、日语、德语、法语、韩语、巴西葡萄牙语、印地语、阿拉伯语和印尼语。默认跟随 Windows 显示语言；可在 其他设置 > 语言 中另选。所有界面同时切换，无需重启。
+- 支持页面。仪表板新增一个页面，提供表达感谢的方式。捐赠完全自愿，不会解锁任何功能。
+- 新功能。此说明在每次更新后显示一次，随时可在关于页面再次查看。""",
+    Features=[
+        "带专辑封面、进度条、重复和随机播放的 Fluent 风格媒体弹出面板",
+        "取代 Windows 叠加层的音量弹出面板，含按应用混音器",
+        "带播放控制和全部暂停的任务栏正在播放小组件",
+        "小组件背后的实时音频可视化，四种样式",
+        "小组件根据任务栏和壁纸自动调整颜色",
+        "Bluetooth、Fast Pair、DualSense、Razer、Logitech 和 Jabra 设备的电量环",
+        "连接、断开、充电和电量低时的外设弹出面板",
+        "锁定键、正在播放和充电器弹出面板",
+        "浅色、深色或系统主题，强调色来自系统或专辑封面",
+        "十一种语言，无需重启即可切换",
+        "无账户、无遥测、无广告",
+    ],
+    Captions=[
+        "首次启动的欢迎界面",
+        "仪表板主页",
+        "按下媒体键时的媒体弹出面板",
+        "任务栏媒体小组件",
+        "媒体与外设弹出面板",
+        "外设电量弹出面板",
+    ],
+    SearchTerms=["媒体弹窗", "音量弹窗", "正在播放", "任务栏小组件", "音频可视化", "电量监视", "音量混音器"],
+)
+
+T["hi"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="Windows के लिए Fluent शैली के मीडिया, वॉल्यूम, लॉक-की और बैटरी फ्लाईआउट, साथ में लाइव विज़ुअलाइज़र वाला टास्कबार विजेट।",
+    Description="""Media Flyouts Windows के पुराने मीडिया और वॉल्यूम पॉप-अप की जगह Fluent शैली के फ्लाईआउट लाता है और आपके टास्कबार पर एक कॉम्पैक्ट नाउ-प्लेइंग विजेट जोड़ता है।
+
+मीडिया फ्लाईआउट
+एल्बम आर्ट, शीर्षक, कलाकार, प्लेबैक नियंत्रण, रिपीट और शफल, और खींचने योग्य सीकबार। कुछ चलते समय मीडिया या वॉल्यूम कुंजी दबाने पर दिखता है। कॉम्पैक्ट या केंद्रित लेआउट चुनें, या इसे स्क्रीन पर पिन करें।
+
+वॉल्यूम फ्लाईआउट और मिक्सर
+Windows के वॉल्यूम ओवरले की जगह लेता है, डिफ़ॉल्ट आउटपुट डिवाइस का अनुसरण करता है, और असली ऐप आइकन के साथ प्रति-ऐप मिक्सर में खुलता है। अलग वॉल्यूम मिक्सर विंडो ट्रे मेनू में एक क्लिक दूर है।
+
+टास्कबार विजेट
+सिस्टम ट्रे के बगल में डॉक किया गया नाउ-प्लेइंग डिस्प्ले, वैकल्पिक प्लेबैक नियंत्रण, सब रोकें / सब चलाएँ बटन, स्क्रॉल होते शीर्षक और चार शैलियों में लाइव ऑडियो विज़ुअलाइज़र के साथ। यह बगल के टास्कबार को पढ़कर हल्के और गहरे टेक्स्ट के बीच बदलता है, ताकि किसी भी वॉलपेपर पर पढ़ने योग्य रहे। मीडिया स्रोत बदलने के लिए इस पर स्क्रॉल करें।
+
+पेरिफेरल बैटरी
+Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech और Jabra के ज़रिए वायरलेस माउस, कीबोर्ड, हेडसेट और कंट्रोलर के लिए बैटरी रिंग। कनेक्ट, डिस्कनेक्ट, चार्जिंग और कम बैटरी पर फ्लाईआउट।
+
+और भी
+- Caps, Num, Scroll और Insert के लिए लॉक-की फ्लाईआउट
+- ट्रैक बदलने पर नाउ-प्लेइंग फ्लाईआउट
+- चार्जर लगाने और हटाने पर फ्लाईआउट
+- लाइट, डार्क या सिस्टम थीम; एक्सेंट सिस्टम या एल्बम आर्ट से
+- ऐप फ़िल्टरिंग: कौन से प्लेयर फ्लाईआउट दिखा सकते हैं, इसकी व्हाइटलिस्ट या ब्लैकलिस्ट
+- फ़ुलस्क्रीन ऐप्स पर अपने आप छिप जाता है
+- ग्यारह भाषाएँ, बिना रीस्टार्ट के बदलें
+- सेटिंग्स का बैकअप और पुनर्स्थापना
+
+गोपनीयता
+कोई खाता नहीं, कोई टेलीमेट्री नहीं, कोई विज्ञापन नहीं। एकमात्र नेटवर्क अनुरोध वैकल्पिक अपडेट जाँच है। सेटिंग्स एक स्थानीय फ़ाइल में रहती हैं जिसे आप निर्यात, आयात या हटा सकते हैं।
+
+Media Flyouts ट्रे में चलता है और चाहें तो Windows के साथ शुरू होता है। हर फ्लाईआउट की स्थिति, अवधि और मॉनिटर सेट करने के लिए ट्रे आइकन से डैशबोर्ड खोलें।""",
+    ReleaseNotes="""- ग्यारह भाषाएँ। Media Flyouts अब अंग्रेज़ी, स्पेनिश, सरलीकृत चीनी, जापानी, जर्मन, फ़्रेंच, कोरियाई, ब्राज़ीलियाई पुर्तगाली, हिंदी, अरबी और इंडोनेशियाई में उपलब्ध है। यह Windows की प्रदर्शन भाषा का अनुसरण करता है; अतिरिक्त सेटिंग्स > भाषा में दूसरी चुनें। सब कुछ एक साथ बदलता है, बिना रीस्टार्ट के।
+- सहयोग पेज। डैशबोर्ड में धन्यवाद कहने के तरीकों वाला नया पेज। दान स्वैच्छिक है और इससे कुछ भी अनलॉक नहीं होता।
+- नया क्या है। यह नोट हर अपडेट के बाद एक बार दिखता है। इसे कभी भी परिचय पेज पर फिर से देखें।""",
+    Features=[
+        "एल्बम आर्ट, सीकबार, रिपीट और शफल के साथ Fluent शैली का मीडिया फ्लाईआउट",
+        "Windows ओवरले की जगह लेने वाला वॉल्यूम फ्लाईआउट, प्रति-ऐप मिक्सर के साथ",
+        "प्लेबैक नियंत्रण और सब रोकें के साथ टास्कबार नाउ-प्लेइंग विजेट",
+        "विजेट के पीछे लाइव ऑडियो विज़ुअलाइज़र, चार शैलियाँ",
+        "विजेट टास्कबार और वॉलपेपर के अनुसार रंग बदलते हैं",
+        "Bluetooth, Fast Pair, DualSense, Razer, Logitech और Jabra डिवाइस के लिए बैटरी रिंग",
+        "कनेक्ट, डिस्कनेक्ट, चार्जिंग और कम बैटरी पर पेरिफेरल फ्लाईआउट",
+        "लॉक-की, नाउ-प्लेइंग और चार्जर फ्लाईआउट",
+        "सिस्टम या एल्बम-आर्ट एक्सेंट के साथ लाइट, डार्क या सिस्टम थीम",
+        "ग्यारह भाषाएँ, बिना रीस्टार्ट के बदलें",
+        "कोई खाता नहीं, कोई टेलीमेट्री नहीं, कोई विज्ञापन नहीं",
+    ],
+    Captions=[
+        "पहली बार शुरू करने पर स्वागत स्क्रीन",
+        "डैशबोर्ड होम",
+        "मीडिया कुंजियों पर मीडिया फ्लाईआउट",
+        "टास्कबार मीडिया विजेट",
+        "मीडिया और पेरिफेरल फ्लाईआउट",
+        "पेरिफेरल बैटरी फ्लाईआउट",
+    ],
+    SearchTerms=["मीडिया फ्लाईआउट", "वॉल्यूम फ्लाईआउट", "नाउ प्लेइंग", "टास्कबार विजेट", "ऑडियो विज़ुअलाइज़र", "बैटरी मॉनिटर", "वॉल्यूम मिक्सर"],
+)
+
+T["ar"] = dict(
+    Title="Media Flyouts",
+    ShortDescription="نوافذ منبثقة بنمط Fluent للوسائط والصوت ومفاتيح القفل والبطارية في Windows، مع أداة شريط مهام تعرض ما يتم تشغيله ومصوّر صوتي مباشر.",
+    Description="""يستبدل Media Flyouts نوافذ الوسائط والصوت القديمة في Windows بنوافذ منبثقة بنمط Fluent، ويضيف أداة مدمجة لعرض ما يتم تشغيله إلى شريط المهام.
+
+نافذة الوسائط
+صورة الألبوم والعنوان والفنان وأزرار التحكم والتكرار والخلط وشريط تقدم قابل للسحب. تظهر عند الضغط على مفاتيح الوسائط أو الصوت أثناء التشغيل. اختر تخطيطًا مدمجًا أو متوسطًا، أو ثبّتها على الشاشة.
+
+نافذة الصوت وخلاط الصوت
+تحل محل طبقة الصوت الأصلية، وتتبع جهاز الإخراج الافتراضي، وتتوسع إلى خلاط لكل تطبيق مع أيقونات التطبيقات الحقيقية. نافذة خلاط صوت مستقلة على بُعد نقرة واحدة من قائمة علبة النظام.
+
+أداة شريط المهام
+عرض لما يتم تشغيله بجوار منطقة الإعلام، مع أزرار تحكم اختيارية، وزر إيقاف الكل مؤقتًا / تشغيل الكل، وعناوين متحركة، ومصوّر صوتي مباشر بأربعة أنماط. تقرأ الأداة شريط المهام المجاور وتبدّل بين النص الفاتح والداكن لتبقى مقروءة فوق أي خلفية. مرّر فوقها للتبديل بين مصادر الوسائط.
+
+بطارية الأجهزة الطرفية
+حلقات بطارية للفأرة ولوحة المفاتيح وسماعات الرأس وأذرع التحكم اللاسلكية عبر Bluetooth وBluetooth LE وGoogle Fast Pair وDualSense وRazer وLogitech وJabra. نوافذ منبثقة عند الاتصال والانفصال والشحن وانخفاض البطارية.
+
+وأيضًا
+- نافذة لمفاتيح Caps وNum وScroll وInsert
+- نافذة «قيد التشغيل» عند تغيّر المقطع
+- نافذة للشاحن عند التوصيل والفصل
+- سمة فاتحة أو داكنة أو حسب النظام؛ لون التمييز من النظام أو من صورة الألبوم
+- تصفية التطبيقات: قائمة سماح أو حظر للمشغّلات التي يمكنها إظهار النوافذ
+- إخفاء تلقائي فوق تطبيقات ملء الشاشة
+- إحدى عشرة لغة، تبديل دون إعادة تشغيل
+- نسخ احتياطي للإعدادات واستعادتها
+
+الخصوصية
+لا حساب ولا قياس عن بُعد ولا إعلانات. طلب الشبكة الوحيد هو فحص اختياري للتحديثات. تبقى الإعدادات في ملف محلي يمكنك تصديره أو استيراده أو حذفه.
+
+يعمل Media Flyouts في علبة النظام ويبدأ مع Windows إن أردت. افتح لوحة التحكم من أيقونة علبة النظام لضبط موضع كل نافذة ومدتها وشاشتها.""",
+    ReleaseNotes="""- إحدى عشرة لغة. يتحدث Media Flyouts الآن الإنجليزية والإسبانية والصينية المبسطة واليابانية والألمانية والفرنسية والكورية والبرتغالية البرازيلية والهندية والعربية والإندونيسية. يتبع لغة عرض Windows؛ اختر لغة أخرى من الإعدادات الإضافية > اللغة. يتغير كل شيء دفعة واحدة دون إعادة تشغيل.
+- صفحة الدعم. صفحة جديدة في لوحة التحكم تضم طرقًا لقول شكرًا. التبرعات طوعية ولا تفتح أي ميزات.
+- ما الجديد. تظهر هذه الملاحظة مرة واحدة بعد كل تحديث. يمكنك العودة إليها في أي وقت من صفحة حول.""",
+    Features=[
+        "نافذة وسائط بنمط Fluent مع صورة الألبوم وشريط التقدم والتكرار والخلط",
+        "نافذة صوت تحل محل طبقة Windows، مع خلاط لكل تطبيق",
+        "أداة شريط مهام لما يتم تشغيله مع أزرار تحكم وإيقاف الكل مؤقتًا",
+        "مصوّر صوتي مباشر خلف الأداة بأربعة أنماط",
+        "تكيّف الأدوات ألوانها مع شريط المهام والخلفية",
+        "حلقات بطارية لأجهزة Bluetooth وFast Pair وDualSense وRazer وLogitech وJabra",
+        "نوافذ للأجهزة الطرفية عند الاتصال والانفصال والشحن وانخفاض البطارية",
+        "نوافذ لمفاتيح القفل و«قيد التشغيل» والشاحن",
+        "سمة فاتحة أو داكنة أو حسب النظام مع لون تمييز من النظام أو صورة الألبوم",
+        "إحدى عشرة لغة، تبديل دون إعادة تشغيل",
+        "لا حساب ولا قياس عن بُعد ولا إعلانات",
+    ],
+    Captions=[
+        "شاشة الترحيب عند أول تشغيل",
+        "الصفحة الرئيسية للوحة التحكم",
+        "نافذة الوسائط عند الضغط على مفاتيح الوسائط",
+        "أداة الوسائط في شريط المهام",
+        "نوافذ الوسائط والأجهزة الطرفية",
+        "نافذة بطارية الأجهزة الطرفية",
+    ],
+    SearchTerms=["نافذة وسائط", "نافذة صوت", "قيد التشغيل", "أداة شريط المهام", "مصوّر صوتي", "مراقب البطارية", "خلاط الصوت"],
+)
+
+# Shared, language-independent values.
+DEV_STUDIO = "ScleaverZer0ne"
+COPYRIGHT = "© 2026 ScleaverZer0ne. All rights reserved."
+
+# --------------------------------------------------------------- generate ---
+
+def value_for(field: str, lang: str) -> str | None:
+    t = T[lang]
+    if field in ("Title", "ShortDescription", "Description", "ReleaseNotes"):
+        return t[field]
+    if field == "DevStudio":
+        return DEV_STUDIO
+    if field == "CopyrightTrademarkInformation":
+        return COPYRIGHT
+    for prefix, key in (("Feature", "Features"), ("DesktopScreenshotCaption", "Captions"), ("SearchTerm", "SearchTerms")):
+        if field.startswith(prefix) and field[len(prefix):].isdigit():
+            idx = int(field[len(prefix):]) - 1
+            items = t[key]
+            return items[idx] if idx < len(items) else ""
+    return None  # not a text field we manage
+
+
+with SRC.open(encoding="utf-8-sig", newline="") as f:
+    rows = list(csv.reader(f))
+
+header = rows[0]
+col = {name: i for i, name in enumerate(header)}
+missing = [l for l in LANGS if l not in col]
+if missing:
+    sys.exit(f"export lacks language columns: {missing}")
+
+changed = 0
+shots_used = []
+for row in rows[1:]:
+    if len(row) < len(header):
+        row.extend([""] * (len(header) - len(row)))
+    field, ftype = row[col["Field"]], row[col["Type (Type)"]]
+    if field == "DesktopScreenshot1":
+        # Languages that have no screenshot yet get the dashboard capture. Existing URLs stay.
+        for lang in LANGS:
+            if row[col[lang]].startswith("http"):
+                continue
+            shot = SHOTS / f"dashboard-{SHOT_LANG[lang]}.png"
+            if not shot.exists():
+                print(f"warning: {shot.name} missing, {lang} listing has no screenshot")
+                continue
+            row[col[lang]] = f"{OUT_DIR.name}/{shot.name}"
+            shots_used.append(shot)
+            changed += 1
+        continue
+    if ftype != "Text":
+        continue
+    for lang in LANGS:
+        v = value_for(field, lang)
+        if v is None:
+            continue
+        if row[col[lang]] != v:
+            row[col[lang]] = v
+            changed += 1
+
+OUT_DIR.mkdir(exist_ok=True)
+for old in OUT_DIR.glob("*.png"):
+    old.unlink()
+for shot in shots_used:
+    shutil.copy2(shot, OUT_DIR / shot.name)
+with OUT.open("w", encoding="utf-8-sig", newline="") as f:
+    w = csv.writer(f, lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL)
+    w.writerows(rows)
+
+print(f"wrote {OUT_DIR.name}/: listing-import.csv ({len(rows) - 1} rows, {changed} cells updated) "
+      f"+ {len(shots_used)} screenshots")
+
+# Partner Center limits.
+LIMITS = {"Title": 256, "ShortDescription": 1000, "Description": 10000, "ReleaseNotes": 1500,
+          "Feature": 200, "DesktopScreenshotCaption": 200, "SearchTerm": 30}
+problems = []
+for lang in LANGS:
+    t = T[lang]
+    for k in ("Title", "ShortDescription", "Description", "ReleaseNotes"):
+        if len(t[k]) > LIMITS[k]:
+            problems.append(f"{lang} {k}: {len(t[k])} > {LIMITS[k]}")
+    for k, lim in (("Features", 200), ("Captions", 200), ("SearchTerms", 30)):
+        for i, s in enumerate(t[k], 1):
+            if len(s) > lim:
+                problems.append(f"{lang} {k}[{i}]: {len(s)} > {lim}: {s[:40]}")
+    if len(t["Features"]) > 20 or len(t["SearchTerms"]) > 7 or len(t["Captions"]) != 6:
+        problems.append(f"{lang}: count mismatch")
+print("limits:", "OK" if not problems else "\n  " + "\n  ".join(problems))

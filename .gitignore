@@ -61,3 +61,7 @@ e.log
 
 # --- Signing material (safety net; the repo no longer signs anything) ---
 signing/
+
+# Partner Center listing export (carries the submission id; the generated import lives in tools/store/import/)
+listingData-*.csv
+

@@ -145,6 +145,25 @@ ships only the installer and ZIPs.
    price range and the 15-day trial, and the notes must declare the external
    donation link.
 
+### Store listing text and screenshots
+
+The listing (description, features, what's new, captions, search terms) is
+kept in all eleven languages in
+[`tools/store/make_listing_csv.py`](../tools/store/make_listing_csv.py).
+It turns a Partner Center **Export listings** CSV into the
+`tools/store/import/` folder for **Import listings → Upload folder**: the
+CSV with every text field filled, the screenshot rows and IDs kept from the
+export, plus one dashboard screenshot from `tools/store/screenshots/` for
+each language that has none yet (the Store needs at least one per listing).
+Image cells must name the path with the root folder
+(`import/dashboard-de.png`); a bare file name makes the whole import fail.
+[`tools/store/capture-dashboard.ps1`](../tools/store/capture-dashboard.ps1)
+produces those screenshots from a debug build at the Store's 1366×768
+desktop minimum; it runs the app on a scratch settings folder through the
+debug-only `MEDIAFLYOUTS_SETTINGS_DIR` variable. The generated folder is
+committed as a fallback. The export itself is gitignored: its name carries
+the submission id and it changes every submission.
+
 ### Manifest rules the Store enforces
 
 - `Identity Name` / `Publisher` must equal the reserved values; the repo
