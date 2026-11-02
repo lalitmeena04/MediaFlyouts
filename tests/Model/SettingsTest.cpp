@@ -88,6 +88,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.filterList().isEmpty());
     EXPECT_FALSE(s.autoCheckUpdates());
     EXPECT_TRUE(s.skippedUpdateVersion().isEmpty());
+    EXPECT_TRUE(s.language().isEmpty()); // Empty follows the system language.
     EXPECT_FALSE(s.peripheralFlyoutEnabled());
     EXPECT_EQ(s.peripheralFlyoutDuration(), 3000);
     EXPECT_EQ(s.peripheralFlyoutPosition(), 4);
@@ -118,6 +119,25 @@ TEST_F(SettingsTest, SkippedUpdateVersionIsStoredAndRestorable) {
     }
     Settings reloaded;
     EXPECT_EQ(reloaded.skippedUpdateVersion(), QStringLiteral("v1.5.0"));
+}
+
+TEST_F(SettingsTest, LanguageIsStoredAndRestorable) {
+    {
+        Settings s;
+        QSignalSpy spy(&s, &Settings::changed);
+        s.setLanguage(QStringLiteral("pt_BR"));
+        s.setLanguage(QStringLiteral("pt_BR"));
+        EXPECT_EQ(spy.count(), 1);
+        EXPECT_EQ(s.language(), QStringLiteral("pt_BR"));
+    }
+    Settings reloaded;
+    EXPECT_EQ(reloaded.language(), QStringLiteral("pt_BR"));
+
+    // Empty goes back to following the system.
+    reloaded.setLanguage(QString());
+    EXPECT_TRUE(reloaded.language().isEmpty());
+    Settings again;
+    EXPECT_TRUE(again.language().isEmpty());
 }
 
 TEST_F(SettingsTest, PeripheralNameFallsBackToTheDetectedName) {
@@ -226,6 +246,7 @@ TEST_F(SettingsTest, ExportImportRoundTrip) {
         Settings s;
         s.setMediaFlyoutEnabled(false);
         s.setFlyoutDuration(7000);
+        s.setLanguage(QStringLiteral("ko"));
         EXPECT_TRUE(s.exportTo(QUrl::fromLocalFile(path)));
     }
     mftest::clearUserSettings();
@@ -234,6 +255,7 @@ TEST_F(SettingsTest, ExportImportRoundTrip) {
     EXPECT_TRUE(restored.importFrom(QUrl::fromLocalFile(path)));
     EXPECT_FALSE(restored.mediaFlyoutEnabled());
     EXPECT_EQ(restored.flyoutDuration(), 7000);
+    EXPECT_EQ(restored.language(), QStringLiteral("ko"));
     QFile::remove(path);
 }
 
@@ -247,6 +269,7 @@ TEST_F(SettingsTest, ResetToDefaultsDropsEveryValueButKeepsOnboardingDone) {
         s.addFilterEntry(QStringLiteral("chrome"));
         s.setPeripheralDisplayName(QStringLiteral("Mouse"), QStringLiteral("Desk mouse"));
         s.setTaskbarWidgetSide(1);
+        s.setLanguage(QStringLiteral("fr"));
     }
     Settings s;
     QSignalSpy spy(&s, &Settings::changed);
@@ -259,6 +282,8 @@ TEST_F(SettingsTest, ResetToDefaultsDropsEveryValueButKeepsOnboardingDone) {
     EXPECT_EQ(s.filterMode(), 0);
     EXPECT_TRUE(s.filterList().isEmpty());
     EXPECT_TRUE(s.peripheralNames().isEmpty());
+    // Back to following the system language.
+    EXPECT_TRUE(s.language().isEmpty());
     // The first-run side seeding runs again.
     EXPECT_TRUE(s.taskbarWidgetSide() == 0 || s.taskbarWidgetSide() == 2);
 

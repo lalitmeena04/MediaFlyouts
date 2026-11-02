@@ -77,7 +77,7 @@ FlyoutBase {
                 spacing: 3
 
                 Text {
-                    text: "Now playing"
+                    text: qsTr("Now playing")
                     color: root.accentColor
                     font.pixelSize: 11
                     font.bold: true
@@ -119,7 +119,7 @@ FlyoutBase {
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Now playing:"
+                    text: qsTr("Now playing:")
                     color: root.accentColor
                     font.pixelSize: 12
                     font.bold: true

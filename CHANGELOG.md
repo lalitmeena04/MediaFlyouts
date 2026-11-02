@@ -5,6 +5,21 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- **Localization.** The app is now available in English, Spanish, Simplified
+  Chinese, Japanese, German, French, Korean, Brazilian Portuguese, Hindi,
+  Arabic and Indonesian. It follows the Windows display language by default;
+  **Additional Settings → Language** (also in the first-run wizard) pins a
+  language and switches the whole UI, including the tray menu, without a
+  restart. Translations live in `i18n/*.ts`; see
+  `docs/developer/localization.md`.
+
+### Changed
+
+- Building now needs Qt 6.7 or newer (`qt_add_translations` with
+  `SOURCE_TARGETS`). CI already uses 6.8.
+
 ## [1.6.0] — 2026-10-30
 
 Backdrop-aware taskbar widget colors, a restore-defaults option, a new app

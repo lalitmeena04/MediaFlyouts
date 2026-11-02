@@ -114,6 +114,8 @@ class Settings : public QObject {
         Q_PROPERTY(QStringList filterList READ filterList NOTIFY changed)
         Q_PROPERTY(bool autoCheckUpdates READ autoCheckUpdates WRITE setAutoCheckUpdates NOTIFY changed)
         Q_PROPERTY(QString skippedUpdateVersion READ skippedUpdateVersion WRITE setSkippedUpdateVersion NOTIFY changed)
+        // UI language code such as "de" or "pt_BR". Empty follows the system language.
+        Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY changed)
 
     public:
         explicit Settings(QObject* parent = nullptr);
@@ -209,6 +211,7 @@ class Settings : public QObject {
         QStringList filterList() const;
         bool autoCheckUpdates() const;
         QString skippedUpdateVersion() const;
+        QString language() const;
         Q_INVOKABLE bool playerAllowed(const QString& player) const;
 
         void setMediaFlyoutEnabled(bool v);
@@ -288,6 +291,7 @@ class Settings : public QObject {
         void setFilterMode(int v);
         void setAutoCheckUpdates(bool v);
         void setSkippedUpdateVersion(const QString& v);
+        void setLanguage(const QString& v);
         Q_INVOKABLE void addFilterEntry(const QString& name);
         Q_INVOKABLE void removeFilterEntry(const QString& name);
 
@@ -380,4 +384,5 @@ class Settings : public QObject {
         QStringList m_filterList;
         bool m_autoCheckUpdates;
         QString m_skippedUpdateVersion;
+        QString m_language;
 };

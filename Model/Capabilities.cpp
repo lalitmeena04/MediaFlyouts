@@ -28,13 +28,13 @@ bool Capabilities::chargerAvailable() const {
 QStringList Capabilities::unavailableNames() const {
     QStringList names;
     if(!m_audioAvailable)
-        names << QStringLiteral("Audio devices");
+        names << tr("Audio devices");
     if(!m_mediaSessionAvailable)
-        names << QStringLiteral("Media sessions");
+        names << tr("Media sessions");
     if(!m_lockKeysAvailable)
-        names << QStringLiteral("Lock keys");
+        names << tr("Lock keys");
     if(!m_mediaKeysAvailable)
-        names << QStringLiteral("Media keys");
+        names << tr("Media keys");
     return names;
 }
 
@@ -46,7 +46,7 @@ QString Capabilities::statusSummary() const {
     const QStringList names = unavailableNames();
     if(names.isEmpty())
         return QStringLiteral("MediaFlyouts");
-    return QStringLiteral("MediaFlyouts\nUnavailable: %1").arg(names.join(QStringLiteral(", ")));
+    return tr("MediaFlyouts\nUnavailable: %1").arg(names.join(QStringLiteral(", ")));
 }
 
 void Capabilities::setAudioAvailable(bool available) {

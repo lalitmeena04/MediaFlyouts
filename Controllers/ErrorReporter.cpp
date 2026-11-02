@@ -210,7 +210,7 @@ void ErrorReporter::createReport() {
     const QString root = reportsDir();
     if(root.isEmpty()) {
         TRC_WARN("report: no writable folder among {}", reportRootCandidates().join(QStringLiteral(", ")).toStdString());
-        m_status = QStringLiteral("Couldn't find a writable folder for the report.");
+        m_status = tr("Couldn't find a writable folder for the report.");
         emit changed();
         return;
     }
@@ -219,7 +219,7 @@ void ErrorReporter::createReport() {
 
     const QStringList files = writeReport(folder, mf::logDir(), m_settings, m_capabilities);
     if(files.isEmpty()) {
-        m_status = QStringLiteral("Couldn't write the report. Check that %1 is writable.").arg(QDir::toNativeSeparators(root));
+        m_status = tr("Couldn't write the report. Check that %1 is writable.").arg(QDir::toNativeSeparators(root));
         emit changed();
         return;
     }
@@ -230,7 +230,7 @@ void ErrorReporter::createReport() {
     pruneReports(root, kReportsKept);
 
     m_lastReportPath = QDir::toNativeSeparators(result);
-    m_status = QStringLiteral("Report saved with %1 files.").arg(files.size());
+    m_status = tr("Report saved with %1 files.").arg(files.size());
     TRC_INFO("report: saved {}", result.toStdString());
     emit changed();
 }

@@ -43,8 +43,13 @@ add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Network Qml Quick Test Widgets)
-qt_standard_project_setup(REQUIRES 6.5)
+find_package(Qt6 6.7 REQUIRED COMPONENTS Core Gui LinguistTools Network Qml Quick Test Widgets)
+# Source strings are English. Translation files live in i18n/MediaFlyouts_<code>.ts.
+# The I18N_* arguments and the qt_add_translations() form below need Qt 6.7.
+set(MEDIAFLYOUTS_TRANSLATED_LANGUAGES es zh_CN ja de fr ko pt_BR hi ar id)
+qt_standard_project_setup(REQUIRES 6.5
+    I18N_SOURCE_LANGUAGE en
+    I18N_TRANSLATED_LANGUAGES ${MEDIAFLYOUTS_TRANSLATED_LANGUAGES})
 
 # File logging uses spdlog. Prefer system package. Else fetch pinned release.
 find_package(spdlog QUIET)
@@ -89,6 +94,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/JabraGnpProtocol.cpp
     Model/JabraGnpProtocol.h
     Model/InstallSource.h
+    Model/Localization.cpp
+    Model/Localization.h
     Model/PlaybackController.cpp
     Model/PlaybackController.h
     Model/PowerAlertPolicy.cpp
@@ -164,6 +171,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/ErrorReporter.h
     Controllers/AppRestarter.cpp
     Controllers/AppRestarter.h
+    Controllers/AppTranslator.cpp
+    Controllers/AppTranslator.h
     main.cpp
     MainControllerClass.cpp
     MainControllerClass.h
@@ -255,6 +264,19 @@ target_link_libraries(MediaFlyouts PRIVATE
     Qt6::Quick
     Qt6::Widgets
     mediaflyout_core
+)
+
+# Compiled .qm files are embedded under :/i18n in the core library, so the app
+# and the tests both see them. lupdate scans the app sources and QML files:
+#   cmake --build build --target update_translations
+qt_add_translations(
+    TARGETS mediaflyout_core
+    SOURCE_TARGETS MediaFlyouts mediaflyout_core
+    TS_FILE_BASE MediaFlyouts
+    TS_FILE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/i18n
+    RESOURCE_PREFIX "/i18n"
+    NO_GENERATE_PLURALS_TS_FILE
+    LUPDATE_OPTIONS -no-obsolete -locations none
 )
 
 if (WIN32)

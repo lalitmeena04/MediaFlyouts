@@ -95,7 +95,7 @@ TEST(QmlContractTest, WidgetHidesWiredDevicesUntilEnabled) {
     const QString widget = loadSource("Views/PeripheralsWidget.qml");
 
     expectContains(widget, QStringLiteral("settings.peripheralsWidgetWiredEnabled"));
-    expectContains(widget, QStringLiteral("\"label\": \"Wired\""));
+    expectContains(widget, QStringLiteral("\"label\": qsTr(\"Wired\")"));
 
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("settings.peripheralsWidgetWiredEnabled = value"));
@@ -121,7 +121,7 @@ TEST(QmlContractTest, DashboardHasTheRequestedPagesInOrder) {
 
     int previous = -1;
     for(const QString& page : pages) {
-        const int current = source.indexOf(QStringLiteral("\"name\": \"") + page + QStringLiteral("\""));
+        const int current = source.indexOf(QStringLiteral("\"name\": qsTr(\"") + page + QStringLiteral("\")"));
         EXPECT_GT(current, previous) << "Page is absent or out of order: " << page.toStdString();
         previous = current;
     }
@@ -211,11 +211,70 @@ TEST(QmlContractTest, AboutPageOffersErrorReportsAndTrayOpensIt) {
     expectContains(dashboard, QStringLiteral("errorReporter.openIssuePage()"));
     expectContains(dashboard, QStringLiteral("The issue page opens with a blank template."));
     expectContains(dashboard, QStringLiteral("Nothing is sent until you post the issue."));
-    expectContains(dashboard, QStringLiteral("function showPage(name)"));
+    expectContains(dashboard, QStringLiteral("function showPage(key)"));
 
     const QString app = loadSource("Views/App.qml");
     expectContains(app, QStringLiteral("function onReportBugRequested()"));
-    expectContains(app, QStringLiteral("dashboard.showPage(\"About\")"));
+    expectContains(app, QStringLiteral("dashboard.showPage(\"about\")"));
+}
+
+TEST(QmlContractTest, PagesAreLookedUpByStableKeyNotTranslatedName) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("if(pages[i].key === key)"));
+    expectContains(dashboard, QStringLiteral("\"key\": \"about\""));
+    expectContains(dashboard, QStringLiteral("\"key\": \"home\""));
+    // Page names are translated, so they are not stable identifiers.
+    expectContains(dashboard, QStringLiteral("\"name\": qsTr(\"About\")"));
+}
+
+TEST(QmlContractTest, LanguagePickerBindsToTranslatorAndSettings) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("id: languageCombo"));
+    expectContains(dashboard, QStringLiteral("i18n.languages.map(function(entry) { return entry.code })"));
+    expectContains(dashboard, QStringLiteral("entry.code === \"\" ? qsTr(\"System default\") : entry.name"));
+    expectContains(dashboard, QStringLiteral("languageCodes.indexOf(settings.language)"));
+    expectContains(dashboard, QStringLiteral("onActivated: settings.language = languageCodes[index]"));
+
+    const QString onboarding = loadSource("Views/OnboardingWindow.qml");
+    expectContains(onboarding, QStringLiteral("text: qsTr(\"Choose a language and theme\")"));
+    expectContains(onboarding, QStringLiteral("entry.code === \"\" ? qsTr(\"System default\") : entry.name"));
+    expectContains(onboarding, QStringLiteral("onActivated: settings.language = languageCodes[index]"));
+    // The picker sits on the first real step, before the overlay choices.
+    EXPECT_LT(onboarding.indexOf(QStringLiteral("settings.language = languageCodes[index]")),
+              onboarding.indexOf(QStringLiteral("visible: root.step === 2")));
+}
+
+TEST(QmlContractTest, TranslatedTextIsComposedWithArgNotConcatenation) {
+    // "qsTr("Version ") + x" cannot be reordered by a translator. Use qsTr("Version %1").arg(x).
+    static const QRegularExpression concat(
+        QStringLiteral("qsTr\\(\"(?:[^\"\\\\]|\\\\.)*\"\\)\\s*\\+|\\+\\s*qsTr\\("));
+    const QDir views(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/Views"));
+    for(const QString& file : views.entryList({QStringLiteral("*.qml")}, QDir::Files)) {
+        const QString source = loadSource(QByteArray("Views/" + file.toUtf8()).constData());
+        const QRegularExpressionMatch m = concat.match(source);
+        EXPECT_FALSE(m.hasMatch()) << file.toStdString() << ": " << m.captured(0).toStdString();
+    }
+}
+
+TEST(QmlContractTest, UserFacingTextIsWrappedInQsTr) {
+    // Plain string literals on text properties bypass the translator. Only the brand name may stay raw.
+    static const QRegularExpression rawText(QStringLiteral("^/s*(text|label|title|description|placeholderText|tooltip|"
+                                                           "unavailableNote|valueText)/s*:/s*\"([^\"]*)\""),
+                                            QRegularExpression::MultilineOption);
+    const QDir views(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/Views"));
+    const QStringList files = views.entryList({QStringLiteral("*.qml")}, QDir::Files);
+    ASSERT_FALSE(files.isEmpty());
+    for(const QString& file : files) {
+        const QString source = loadSource(QByteArray("Views/" + file.toUtf8()).constData());
+        auto it = rawText.globalMatch(source);
+        while(it.hasNext()) {
+            const QRegularExpressionMatch m = it.next();
+            const QString literal = m.captured(2);
+            const bool hasLetters = literal.contains(QRegularExpression(QStringLiteral("[A-Za-z]")));
+            EXPECT_TRUE(!hasLetters || literal == QStringLiteral("MediaFlyouts"))
+                << file.toStdString() << ": untranslated literal " << m.captured(0).trimmed().toStdString();
+        }
+    }
 }
 
 TEST(QmlContractTest, AboutPageAndTrayCanRestartTheAppWithAReport) {
@@ -372,7 +431,7 @@ TEST(QmlContractTest, GroupsPeripheralWidgetsByConnectionKind) {
         expectContains(source, QStringLiteral("Bluetooth"));
         expectContains(source, QStringLiteral("connectionKind === \"wireless\""));
         expectContains(source, QStringLiteral("connectionKind === \"bluetooth\""));
-        expectContains(source, QStringLiteral("\"label\": \"Wired\""));
+        expectContains(source, QStringLiteral("\"label\": qsTr(\"Wired\")"));
     }
 
     const QString widget = loadSource("Views/PeripheralsWidget.qml");
@@ -551,7 +610,7 @@ TEST(QmlContractTest, WidgetStackPagesMediaAndPeripheralSections) {
     expectContains(peripherals, QStringLiteral("if(!root.stacked && root.mediaWidget && root.mediaWidget.visible)"));
 
     const QString dashboard = loadSource("Views/Dashboard.qml");
-    expectContains(dashboard, QStringLiteral("model: [\"Side by side\", \"Stack\"]"));
+    expectContains(dashboard, QStringLiteral("model: [qsTr(\"Side by side\"), qsTr(\"Stack\")]"));
     expectContains(dashboard, QStringLiteral("onActivated: settings.taskbarWidgetLayout = index"));
 }
 
@@ -617,10 +676,10 @@ TEST(QmlContractTest, TaskbarWidgetButtonsHaveTooltips) {
 
     const QString widget = loadSource("Views/TaskbarWidget.qml");
     expectContains(widget, QStringLiteral("WidgetTooltip {"));
-    expectContains(widget, QStringLiteral("tooltip: \"Previous\""));
-    expectContains(widget, QStringLiteral("tooltip: \"Next\""));
-    expectContains(widget, QStringLiteral("tooltip: nowPlaying.isPlaying ? \"Pause\" : \"Play\""));
-    expectContains(widget, QStringLiteral("tooltip: root.showPlayAll ? \"Play all\" : \"Pause all\""));
+    expectContains(widget, QStringLiteral("tooltip: qsTr(\"Previous\")"));
+    expectContains(widget, QStringLiteral("tooltip: qsTr(\"Next\")"));
+    expectContains(widget, QStringLiteral("tooltip: nowPlaying.isPlaying ? qsTr(\"Pause\") : qsTr(\"Play\")"));
+    expectContains(widget, QStringLiteral("tooltip: root.showPlayAll ? qsTr(\"Play all\") : qsTr(\"Pause all\")"));
     EXPECT_EQ(widget.count(QStringLiteral("WidgetButton {")), 4);
     EXPECT_FALSE(widget.contains(QStringLiteral("IconLabel {")));
 }
@@ -798,8 +857,8 @@ TEST(QmlContractTest, TaskbarWidgetsUseThePaletteInsteadOfFixedColors) {
 
 TEST(QmlContractTest, DashboardOffersAConfirmedResetToDefaults) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
-    expectContains(dashboard, QStringLiteral("{ \"label\": \"Restore default settings\", \"page\": 9 }"));
-    expectContains(dashboard, QStringLiteral("text: \"Restore default settings…\""));
+    expectContains(dashboard, QStringLiteral("{ \"label\": qsTr(\"Restore default settings\"), \"page\": 9 }"));
+    expectContains(dashboard, QStringLiteral("text: qsTr(\"Restore default settings…\")"));
     expectContains(dashboard, QStringLiteral("onClicked: resetConfirm.open()"));
     expectContains(dashboard, QStringLiteral("id: resetConfirm"));
     expectContains(dashboard, QStringLiteral("modal: true"));

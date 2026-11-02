@@ -154,7 +154,7 @@ QtObject {
         }
 
         function onReportBugRequested() {
-            dashboard.showPage("About")
+            dashboard.showPage("about")
         }
 
         function onRestartRequested() {

@@ -254,12 +254,12 @@ void UpdateChecker::download() {
 
     const QString dir = downloadDir();
     if(dir.isEmpty()) {
-        failDownload(QStringLiteral("Couldn't find a folder for the download."));
+        failDownload(tr("Couldn't find a folder for the download."));
         return;
     }
     m_file.setFileName(QDir(dir).filePath(m_asset.name));
     if(!m_file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        failDownload(QStringLiteral("Couldn't create the download file."));
+        failDownload(tr("Couldn't create the download file."));
         return;
     }
     m_hash.reset();
@@ -305,7 +305,7 @@ void UpdateChecker::finishDownload() {
     m_file.close();
 
     if(m_writeFailed || !flushed) {
-        failDownload(QStringLiteral("Couldn't write the download file."));
+        failDownload(tr("Couldn't write the download file."));
         return;
     }
     if(reply->error() == QNetworkReply::OperationCanceledError) {
@@ -317,12 +317,12 @@ void UpdateChecker::finishDownload() {
     }
     if(reply->error() != QNetworkReply::NoError) {
         TRC_WARN("update: network error: {}", reply->errorString().toStdString());
-        failDownload(QStringLiteral("Download failed. Check your connection and try again."));
+        failDownload(tr("Download failed. Check your connection and try again."));
         return;
     }
     const QString sha256 = QString::fromLatin1(m_hash.result().toHex());
     if(!matchesAsset(m_asset, m_file.size(), sha256)) {
-        failDownload(QStringLiteral("The download didn't match the release. Try again."));
+        failDownload(tr("The download didn't match the release. Try again."));
         return;
     }
 
@@ -344,7 +344,7 @@ void UpdateChecker::install() {
         return;
     // The file can vanish between download and install. Never run anything else.
     if(!isDownloadedInstaller(m_downloadedFile, m_asset, downloadDir())) {
-        failDownload(QStringLiteral("The downloaded installer is missing or changed. Download it again."));
+        failDownload(tr("The downloaded installer is missing or changed. Download it again."));
         return;
     }
     // The setup installs for all users, so it needs elevation.
@@ -362,7 +362,7 @@ void UpdateChecker::check() {
     if(m_checking)
         return;
     m_checking = true;
-    m_status = QStringLiteral("Checking for updates…");
+    m_status = tr("Checking for updates…");
     emit changed();
 
     QNetworkRequest request{QUrl(releasesApiUrl())};
@@ -374,7 +374,7 @@ void UpdateChecker::check() {
 
         if(reply->error() != QNetworkReply::NoError) {
             TRC_WARN("update: check failed: {}", reply->errorString().toStdString());
-            m_status = QStringLiteral("Couldn't check for updates right now.");
+            m_status = tr("Couldn't check for updates right now.");
             emit changed();
             return;
         }
@@ -383,7 +383,7 @@ void UpdateChecker::check() {
         const QString tag = obj.value(QStringLiteral("tag_name")).toString();
         if(tag.isEmpty()) {
             TRC_WARN("update: release response had no tag_name");
-            m_status = QStringLiteral("No releases found.");
+            m_status = tr("No releases found.");
             emit changed();
             return;
         }
@@ -392,8 +392,8 @@ void UpdateChecker::check() {
         // Only follow a GitHub link. Anything else falls back to the releases index.
         m_releaseUrl = obj.value(QStringLiteral("html_url")).toString();
         m_available = isNewerVersion(m_current, tag);
-        m_status = m_available ? QStringLiteral("Update available: %1").arg(tag)
-                               : QStringLiteral("You're on the latest version.");
+        m_status = m_available ? tr("Update available: %1").arg(tag)
+                               : tr("You're on the latest version.");
         if(!m_downloading) {
             m_asset = pickInstallerAsset(obj.value(QStringLiteral("assets")).toArray());
             resetDownload();

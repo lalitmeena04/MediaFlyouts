@@ -69,7 +69,7 @@ FlyoutBase {
 
                 Text {
                     width: 176
-                    text: root.plugged ? "Charger connected" : "Charger disconnected"
+                    text: root.plugged ? qsTr("Charger connected") : qsTr("Charger disconnected")
                     color: theme.textPrimary
                     font.pixelSize: 13
                     font.bold: true
@@ -77,7 +77,7 @@ FlyoutBase {
                 }
                 Text {
                     width: 176
-                    text: root.plugged ? "Plugged in" : "On battery"
+                    text: root.plugged ? qsTr("Plugged in") : qsTr("On battery")
                     color: theme.textMuted
                     font.pixelSize: 10
                     elide: Text.ElideRight

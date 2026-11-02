@@ -141,6 +141,7 @@ void Settings::reload() {
     m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
     m_autoCheckUpdates = m_store.value(QStringLiteral("autoCheckUpdates"), false).toBool();
     m_skippedUpdateVersion = m_store.value(QStringLiteral("skippedUpdateVersion")).toString();
+    m_language = m_store.value(QStringLiteral("language")).toString();
 }
 
 bool Settings::exportTo(const QUrl& file) const {
@@ -356,6 +357,9 @@ bool Settings::autoCheckUpdates() const {
 }
 QString Settings::skippedUpdateVersion() const {
     return m_skippedUpdateVersion;
+}
+QString Settings::language() const {
+    return m_language;
 }
 bool Settings::playerAllowed(const QString& player) const {
     if(m_filterMode == 0)
@@ -650,6 +654,14 @@ void Settings::setSkippedUpdateVersion(const QString& v) {
         return;
     m_skippedUpdateVersion = v;
     m_store.setValue(QStringLiteral("skippedUpdateVersion"), v);
+    emit changed();
+}
+void Settings::setLanguage(const QString& v) {
+    if(m_language == v)
+        return;
+    TRC_INFO("settings: language {} -> {}", m_language.toStdString(), v.toStdString());
+    m_language = v;
+    m_store.setValue(QStringLiteral("language"), v);
     emit changed();
 }
 void Settings::addFilterEntry(const QString& name) {

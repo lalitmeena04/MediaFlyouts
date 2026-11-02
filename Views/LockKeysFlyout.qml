@@ -74,7 +74,7 @@ FlyoutBase {
                         anchors.verticalCenter: parent.verticalCenter
                     }
                     Text {
-                        text: lockKeys.on ? "On" : "Off"
+                        text: lockKeys.on ? qsTr("On") : qsTr("Off")
                         color: theme.textSecondary
                         font.pixelSize: 12
                     }

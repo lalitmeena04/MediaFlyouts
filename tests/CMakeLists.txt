@@ -10,6 +10,10 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/ErrorReporter.h
     ${CMAKE_SOURCE_DIR}/Controllers/AppRestarter.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/AppRestarter.h
+    ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.h
+    ${CMAKE_SOURCE_DIR}/Controllers/TrayController.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/TrayController.h
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.h
     ${CMAKE_SOURCE_DIR}/Model/Settings.cpp
@@ -20,6 +24,7 @@ target_link_libraries(mediaflyout_testlib PUBLIC
     Qt6::Gui
     Qt6::Network
     Qt6::Quick
+    Qt6::Widgets
 )
 if(WIN32)
     # UpdateChecker calls ShellExecuteEx. PUBLIC so every executable that
@@ -47,10 +52,12 @@ FetchContent_MakeAvailable(googletest)
 add_executable(mediaflyout_gtest
     Controllers/ErrorReporterTest.cpp
     Controllers/AppRestarterTest.cpp
+    Controllers/AppTranslatorTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
     gtest_main.cpp
+    I18n/TranslationFilesTest.cpp
     Model/AlbumArtProviderTest.cpp
     Model/BackdropContrastTest.cpp
     Model/BatteryAlertPolicyTest.cpp
@@ -63,6 +70,7 @@ add_executable(mediaflyout_gtest
     Model/HidppProtocolTest.cpp
     Model/InstallSourceTest.cpp
     Model/JabraGnpProtocolTest.cpp
+    Model/LocalizationTest.cpp
     Model/PlaybackControllerTest.cpp
     Model/PowerAlertPolicyTest.cpp
     Model/RazerProtocolTest.cpp
@@ -145,6 +153,7 @@ endif()
 # --- Qt Test: one executable per class (each file has its own QTEST_GUILESS_MAIN) ---
 set(qt_test_sources
     Controllers/NowPlayingQtTest.cpp
+    Controllers/TrayControllerQtTest.cpp
     Model/AlbumArtProviderQtTest.cpp
     Model/FlyoutPositionerQtTest.cpp
     Model/PlaybackControllerQtTest.cpp

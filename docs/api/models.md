@@ -15,9 +15,22 @@ exposed to QML as the `settings` context property.
 - `playerAllowed(name)`, `filterMode`, `filterList`, `addFilterEntry` /
   `removeFilterEntry` — app filtering.
 - `configDir()` — the settings folder (for "Open Config Folder").
+- `language` — UI language code (`"de"`, `"pt_BR"`, …). Empty follows the
+  Windows display language. `AppTranslator` applies it.
 - Most defaults are literals in `reload()`; `taskbarWidgetSide` is the exception
   — on first run it is seeded from the system taskbar alignment and written to
   the store, so a later system change never moves a widget the user has placed.
+
+## Localization (`namespace mf`)
+
+The shipped language list and the pure resolution logic, with no Qt GUI
+dependency. `supportedLanguages()` returns `{code, nativeName}` entries in
+picker order (English first). `matchLanguage("pt-BR")` normalises separators,
+case and script tags and falls back to the base language (`de-AT` → `de`,
+`pt-PT` → `pt_BR`). `resolveLanguage(requested, systemUiLanguages)` prefers an
+explicit request, then the first system language that matches, then English.
+`translationFileName(code)` and `isRightToLeft(code)` round it out. See
+[localization.md](../developer/localization.md).
 
 ## TrackInfo (`namespace mf`)
 

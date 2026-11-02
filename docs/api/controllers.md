@@ -15,7 +15,20 @@ reliable during rapid switching.
 
 ### TrayController
 Owns the `QSystemTrayIcon` and its dark, Fluent-style context menu; emits intents
-(open dashboard, show flyout, open mixer) and `notify()` toasts.
+(open dashboard, show flyout, open mixer) and `notify()` toasts. Menu text is
+set through `tr()` in `retranslate()`, which `AppTranslator::languageChanged`
+triggers after a language switch.
+
+### AppTranslator
+Runtime side of localization (`i18n` context property). `apply(code)` resolves
+the request against `QLocale::system().uiLanguages()` with
+`mf::resolveLanguage`, installs `:/i18n/MediaFlyouts_<code>.qm` plus Qt's own
+`qtbase_<code>` when deployed, sets the default `QLocale`, calls
+`QQmlEngine::retranslate()` and emits `languageChanged()`. Repeated calls with
+the same request are no-ops, so it can be driven straight from
+`Settings::changed`. `languages` lists picker entries (`code`, native `name`);
+the first entry has an empty code and means "follow the system".
+`rightToLeft` is true for Arabic.
 
 ### ThemeController
 Computes the theme/accent palette (`theme` context property) from `Settings` and

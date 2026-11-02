@@ -138,6 +138,14 @@ visualizer. This document describes the features that ship in the app.
   color.
 - Optional accent tint derived from the current album art.
 
+## Languages
+
+- English, Spanish, Simplified Chinese, Japanese, German, French, Korean,
+  Brazilian Portuguese, Hindi, Arabic and Indonesian.
+- Follows the Windows display language by default. **Additional Settings →
+  Language** (also offered in the first-run wizard) pins a language; the
+  whole UI including the tray menu switches at once, no restart needed.
+
 ## App filtering
 
 - Blacklist or whitelist mode to control which players may trigger flyouts,
