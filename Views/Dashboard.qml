@@ -760,6 +760,11 @@ Window {
                             }
                         }
 
+                        UpgradeCard {
+                            width: parent.width
+                            ownerWindow: dash
+                        }
+
                         Text {
                             text: qsTr("At a glance")
                             color: theme.textPrimary
@@ -1146,6 +1151,7 @@ Window {
                         model: [qsTr("Now playing card"), qsTr("Compact pill")]
                         currentIndex: settings.nextUpStyle
                         onActivated: settings.nextUpStyle = index
+                        locked: !entitlement.isUnlocked("nowPlayingStyles")
                     }
                 }
 
@@ -1176,6 +1182,7 @@ Window {
                         description: qsTr("Show a button on the volume flyout to expand a per-app volume mixer.")
                         value: settings.volumeFlyoutMixerEnabled
                         onToggled: settings.volumeFlyoutMixerEnabled = value
+                        locked: !entitlement.isUnlocked("perAppMixer")
                     }
                     SettingCombo {
                         width: parent.width
@@ -1282,6 +1289,7 @@ Window {
                         description: qsTr("Show previous / play-pause / next buttons on the widget.")
                         value: settings.taskbarWidgetControlsEnabled
                         onToggled: settings.taskbarWidgetControlsEnabled = value
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingRow {
                         width: parent.width
@@ -1289,6 +1297,7 @@ Window {
                         description: qsTr("Show a button that pauses every playing media source at once.")
                         value: settings.taskbarWidgetPauseAllEnabled
                         onToggled: settings.taskbarWidgetPauseAllEnabled = value
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingRow {
                         visible: settings.taskbarWidgetPauseAllEnabled
@@ -1298,6 +1307,7 @@ Window {
                         description: qsTr("When every source is paused, the same button becomes Play all and resumes them. When off, the button hides until something plays again.")
                         value: settings.taskbarWidgetPlayAllEnabled
                         onToggled: settings.taskbarWidgetPlayAllEnabled = value
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingCombo {
                         width: parent.width
@@ -1316,6 +1326,7 @@ Window {
                         model: [qsTr("Side by side"), qsTr("Stack")]
                         currentIndex: settings.taskbarWidgetLayout
                         onActivated: settings.taskbarWidgetLayout = index
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingRow {
                         width: parent.width
@@ -1323,6 +1334,7 @@ Window {
                         description: qsTr("Dim the album art with a pause glyph when playback is paused.")
                         value: settings.taskbarWidgetShowPauseOverlay
                         onToggled: settings.taskbarWidgetShowPauseOverlay = value
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingRow {
                         width: parent.width
@@ -1330,6 +1342,7 @@ Window {
                         description: qsTr("Marquee-scroll the track title when it is too long to fit.")
                         value: settings.taskbarWidgetScrollingEnabled
                         onToggled: settings.taskbarWidgetScrollingEnabled = value
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingRow {
                         width: parent.width
@@ -1337,6 +1350,7 @@ Window {
                         description: qsTr("Read the taskbar next to the widgets and switch between light and dark text. Keeps the widgets readable over a transparent taskbar or a live wallpaper.")
                         value: settings.taskbarWidgetAdaptiveColors
                         onToggled: settings.taskbarWidgetAdaptiveColors = value
+                        locked: !entitlement.isUnlocked("taskbarWidgetOptions")
                     }
                     SettingRow {
                         width: parent.width
@@ -1346,6 +1360,7 @@ Window {
                         unavailableNote: qsTr("Unavailable: no audio output device was detected.")
                         value: settings.taskbarVisualizerEnabled
                         onToggled: settings.taskbarVisualizerEnabled = value
+                        locked: !entitlement.isUnlocked("visualizer")
                     }
                     SettingCombo {
                         visible: settings.taskbarVisualizerEnabled
@@ -1356,6 +1371,7 @@ Window {
                         model: [qsTr("Bars"), qsTr("Radial"), qsTr("Waveform"), qsTr("Particles")]
                         currentIndex: settings.visualizerStyle
                         onActivated: settings.visualizerStyle = index
+                        locked: !entitlement.isUnlocked("visualizer")
                     }
                     SettingRow {
                         visible: settings.taskbarVisualizerEnabled && settings.visualizerStyle === 0
@@ -1365,6 +1381,7 @@ Window {
                         description: qsTr("Grow the bars symmetrically from the middle instead of the bottom.")
                         value: settings.taskbarVisualizerCentered
                         onToggled: settings.taskbarVisualizerCentered = value
+                        locked: !entitlement.isUnlocked("visualizer")
                     }
                     SettingCombo {
                         width: parent.width
@@ -1409,6 +1426,7 @@ Window {
                         description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
                         value: settings.peripheralsWidgetEnabled
                         onToggled: settings.peripheralsWidgetEnabled = value
+                        locked: !entitlement.isUnlocked("peripheralBattery")
                     }
                     SettingRow {
                         visible: settings.peripheralsWidgetEnabled
@@ -1514,6 +1532,7 @@ Window {
                         description: qsTr("Show a flyout when a peripheral connects, disconnects or runs low on battery.")
                         value: settings.peripheralFlyoutEnabled
                         onToggled: settings.peripheralFlyoutEnabled = value
+                        locked: !entitlement.isUnlocked("peripheralBattery")
                     }
                     SettingRow {
                         width: parent.width
@@ -1556,6 +1575,7 @@ Window {
                         description: qsTr("Also show a tray notification for a low battery, so it isn't missed.")
                         value: settings.peripheralLowBatteryToast
                         onToggled: settings.peripheralLowBatteryToast = value
+                        locked: !entitlement.isUnlocked("peripheralBattery")
                     }
                     SettingRow {
                         width: parent.width

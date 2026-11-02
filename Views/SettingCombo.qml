@@ -7,10 +7,15 @@ Item {
     property string description: ""
     property alias model: combo.model
     property int currentIndex: 0
+    property bool locked: false
     signal activated(int index)
 
+    readonly property string detail: root.locked ? qsTr("Pro feature. Get Pro on the Home page to use it.") : root.description
+
     width: parent ? parent.width : 400
-    height: description.length > 0 ? 58 : 44
+    height: detail.length > 0 ? 58 : 44
+    enabled: !root.locked
+    opacity: root.locked ? 0.5 : 1.0
 
     Column {
         anchors.left: parent.left
@@ -18,15 +23,22 @@ Item {
         width: parent.width - combo.width - 24
         spacing: 3
 
-        Text {
-            text: root.label
-            color: theme.textPrimary
-            font.pixelSize: 14
+        Row {
+            spacing: 8
+            Text {
+                text: root.label
+                color: theme.textPrimary
+                font.pixelSize: 14
+            }
+            ProBadge {
+                visible: root.locked
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
         Text {
-            visible: root.description.length > 0
+            visible: root.detail.length > 0
             width: parent.width
-            text: root.description
+            text: root.detail
             color: theme.textTertiary
             font.pixelSize: 11
             wrapMode: Text.WordWrap

@@ -5,7 +5,7 @@ import MediaFlyouts
 DockableWidget {
     id: root
     logName: "PeripheralsWidget"
-    pollActive: settings.peripheralsWidgetEnabled
+    pollActive: pro.peripheralsWidgetEnabled
     property var mediaWidget: null
     property var stack: null
     readonly property bool stacked: root.stack !== null && root.stack.enabled
@@ -89,7 +89,7 @@ DockableWidget {
     width: root.stacked ? root.stack.frameWidth : root.naturalWidth
     height: root.stacked ? root.stack.frameHeight : root.naturalHeight
 
-    readonly property bool eligible: settings.onboardingCompleted && settings.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
+    readonly property bool eligible: settings.onboardingCompleted && pro.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
     readonly property bool pageActive: !root.stacked || root.activeSection !== ""
     property bool pageShown: root.pageActive
     visible: root.eligible && root.pageShown
@@ -136,7 +136,7 @@ DockableWidget {
     onVisibleChanged: {
         log.debug("PeripheralsWidget.visible=" + visible
             + " onboardingCompleted=" + settings.onboardingCompleted
-            + " enabled=" + settings.peripheralsWidgetEnabled
+            + " enabled=" + pro.peripheralsWidgetEnabled
             + " deviceCount=" + devices.length
             + " blocked=" + root.blocked
             + " monitor=" + settings.taskbarWidgetMonitor)

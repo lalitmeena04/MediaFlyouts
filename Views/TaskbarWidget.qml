@@ -12,10 +12,10 @@ DockableWidget {
     logName: "TaskbarWidget"
     pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
 
-    readonly property bool pauseAllVisible: settings.taskbarWidgetPauseAllEnabled
-    readonly property bool showPlayAll: settings.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll
+    readonly property bool pauseAllVisible: pro.taskbarWidgetPauseAllEnabled
+    readonly property bool showPlayAll: pro.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll
     readonly property bool pauseAllButtonShown: root.pauseAllVisible
-                && (settings.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)
+                && (pro.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)
 
     property var stack: null
     readonly property bool stacked: root.stack !== null && root.stack.enabled
@@ -73,7 +73,7 @@ DockableWidget {
 
     signal activated()
 
-    readonly property bool visualizerLive: root.visible && settings.taskbarVisualizerEnabled
+    readonly property bool visualizerLive: root.visible && pro.visualizerEnabled
     onVisualizerLiveChanged: root.visualizerLive ? audioCapture.start() : audioCapture.stop()
 
     Component.onCompleted: {
@@ -139,7 +139,7 @@ DockableWidget {
 
             TaskbarVisualizer {
                 id: visualizer
-                visible: settings.taskbarVisualizerEnabled
+                visible: pro.visualizerEnabled
                 accent: root.accent
                 anchors.fill: parent
                 anchors.margins: 3
@@ -202,7 +202,7 @@ DockableWidget {
                     Rectangle {
                         anchors.fill: parent
                         radius: 5
-                        visible: settings.taskbarWidgetShowPauseOverlay && nowPlaying.hasMedia && !nowPlaying.isPlaying
+                        visible: pro.taskbarWidgetShowPauseOverlay && nowPlaying.hasMedia && !nowPlaying.isPlaying
                         color: "#99000000"
                         Text {
                             anchors.centerIn: parent
@@ -237,7 +237,7 @@ DockableWidget {
                             color: root.fgPrimary
                             Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                             font.pixelSize: 12
-                            property bool overflow: settings.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
+                            property bool overflow: pro.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
                             width: overflow ? titleMetrics.width : titleClip.width
                             elide: overflow ? Text.ElideNone : Text.ElideRight
                             onOverflowChanged: if(!overflow) x = 0
@@ -265,7 +265,7 @@ DockableWidget {
 
                 Row {
                     id: controlsRow
-                    visible: settings.taskbarWidgetControlsEnabled
+                    visible: pro.taskbarWidgetControlsEnabled
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 6
 

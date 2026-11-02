@@ -147,6 +147,10 @@ QStringList EntitlementController::tipAddOnStoreIds() const {
     return m_config.tipAddOnStoreIds;
 }
 
+QString EntitlementController::proAddOnStoreId() const {
+    return m_config.proAddOnStoreId;
+}
+
 QStringList EntitlementController::featureIds() const {
     return mf::allFeatureIds();
 }

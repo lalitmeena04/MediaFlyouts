@@ -1510,6 +1510,27 @@ Unavailable: %1</source>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>ميزة Pro. احصل على Pro من الصفحة الرئيسية لاستخدامها.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>ميزة Pro. احصل على Pro من الصفحة الرئيسية لاستخدامها.</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1712,57 @@ Unavailable: %1</source>
     <message>
         <source>Skip this version</source>
         <translation>تخطي هذا الإصدار</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>تجربة Pro: متبقي %1 يوم</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>انتهت فترة تجربة Pro</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>جارٍ فتح Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>احصل على Pro مقابل %1</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>احصل على Pro</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>يُباع Pro عبر إصدار Microsoft Store من MediaFlyouts.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>شكرًا لك! تم تفعيل Pro.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>أنت تملك Pro بالفعل. جارٍ استعادة عملية الشراء…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>لا يوجد اتصال بـ Microsoft Store. تحقق من الشبكة وحاول مرة أخرى.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>عمليات الشراء غير متاحة في هذا الإصدار.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>تعذر على Microsoft Store إتمام عملية الشراء. حاول مرة أخرى لاحقًا.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>يفتح Pro مُصوِّر الصوت، وخلاط الصوت لكل تطبيق، وبطارية الأجهزة الطرفية، وأنماط قيد التشغيل، وخيارات أداة الوسائط.</translation>
     </message>
 </context>
 <context>

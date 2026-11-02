@@ -201,6 +201,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/AppTranslator.h
     Controllers/EntitlementController.cpp
     Controllers/EntitlementController.h
+    Controllers/ProGate.cpp
+    Controllers/ProGate.h
     Controllers/StoreGateway.h
     main.cpp
     MainControllerClass.cpp
@@ -256,6 +258,7 @@ qt_add_qml_module(MediaFlyouts
         Views/PeripheralFlyout.qml
         Views/PeripheralRow.qml
         Views/PeripheralsWidget.qml
+        Views/ProBadge.qml
         Views/RoundedArt.qml
         Views/ScrubArea.qml
         Views/SettingCombo.qml
@@ -265,6 +268,7 @@ qt_add_qml_module(MediaFlyouts
         Views/TaskbarVisualizer.qml
         Views/TaskbarWidget.qml
         Views/UpdateDialog.qml
+        Views/UpgradeCard.qml
         Views/VolumeFlyout.qml
         Views/VolumeMixerWindow.qml
         Views/WidgetButton.qml

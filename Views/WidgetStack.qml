@@ -6,7 +6,7 @@ QtObject {
     property var mediaWidget: null
     property var peripheralsWidget: null
 
-    readonly property bool enabled: settings.taskbarWidgetLayout === 1
+    readonly property bool enabled: pro.taskbarWidgetLayout === 1
 
     readonly property string mediaPage: "media"
 

@@ -1510,6 +1510,27 @@ Unavailable: %1</source>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>专业版功能。请在主页获取专业版后使用。</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>专业版功能。请在主页获取专业版后使用。</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1712,57 @@ Unavailable: %1</source>
     <message>
         <source>Skip this version</source>
         <translation>跳过此版本</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>专业版试用：剩余 %1 天</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>您的专业版试用已结束</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>正在打开 Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>以 %1 获取专业版</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>获取专业版</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>专业版通过 Microsoft Store 版本的 MediaFlyouts 销售。</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>感谢支持！专业版已解锁。</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>您已拥有专业版。正在恢复购买…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>无法连接到 Microsoft Store。请检查网络后重试。</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>此版本不支持购买。</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store 无法完成购买。请稍后重试。</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>专业版可解锁音频可视化、按应用混音器、外设电量、正在播放样式以及媒体小组件选项。</translation>
     </message>
 </context>
 <context>

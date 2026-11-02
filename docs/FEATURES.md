@@ -159,6 +159,20 @@ visualizer. This document describes the features that ship in the app.
   keys, media keys) that did not answer, and the related settings are
   disabled. The tray icon tooltip shows the same summary.
 
+## MediaFlyouts Pro (Microsoft Store build)
+
+- The Store app is free. Five features are **Pro**: the audio visualizer, the
+  per-app mixer (flyout expansion and the mixer window), peripheral battery
+  (widget, flyout and low-battery notification), Now Playing styles, and the
+  media widget options (transport controls, pause/play all, layout, pause
+  overlay, title scrolling, adaptive colors).
+- New users get a **15-day trial** of everything, anchored to the date the
+  Store account acquired the app. When it ends the Pro features switch off
+  silently; their toggles stay visible but greyed with a PRO badge, and the
+  home page shows an upgrade card. Buying Pro restores every stored choice.
+- Everyone who bought the app while it was paid keeps Pro for good.
+- The installer and portable builds are not gated.
+
 ## System tray & single instance
 
 - Tray icon with a dark, Fluent-style context menu (Settings, Show Media

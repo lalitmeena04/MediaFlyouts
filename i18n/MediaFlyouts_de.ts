@@ -1510,6 +1510,27 @@ Nicht verfügbar: %1</translation>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1712,57 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Skip this version</source>
         <translation>Diese Version überspringen</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Pro-Testversion: noch %1 Tage</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Deine Pro-Testversion ist abgelaufen</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Microsoft Store wird geöffnet…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>Pro für %1 holen</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Pro holen</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro wird über die Microsoft-Store-Version von MediaFlyouts verkauft.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>Danke! Pro ist freigeschaltet.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>Du besitzt Pro bereits. Kauf wird wiederhergestellt…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Keine Verbindung zum Microsoft Store. Prüfe dein Netzwerk und versuche es erneut.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>Käufe sind in dieser Version nicht verfügbar.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Der Microsoft Store konnte den Kauf nicht abschließen. Versuche es später erneut.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro schaltet den Audio-Visualizer, den App-Mixer, den Peripherie-Akkustand, die Now-Playing-Stile und die Optionen des Medien-Widgets frei.</translation>
     </message>
 </context>
 <context>

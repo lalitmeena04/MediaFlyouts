@@ -39,6 +39,8 @@ FlyoutBase {
     }
 
     function toggleMixer() {
+        if(!pro.mixerEnabled && !root.expanded)
+            return
         root.expanded = !root.expanded
         if(root.expanded) {
             volumeMixer.refresh()
@@ -102,7 +104,7 @@ FlyoutBase {
 
                 Rectangle {
                     id: track
-                    width: parent.width - 22 - 44 - (settings.volumeFlyoutMixerEnabled ? 32 : 0) - 24
+                    width: parent.width - 22 - 44 - (pro.mixerEnabled ? 32 : 0) - 24
                     height: 6
                     radius: 3
                     color: theme.track
@@ -142,7 +144,7 @@ FlyoutBase {
                 }
 
                 Text {
-                    visible: settings.volumeFlyoutMixerEnabled
+                    visible: pro.mixerEnabled
                     text: root.expanded ? "\u25B4" : "\u25BE"
                     color: chevronArea.containsMouse ? theme.textPrimary : theme.textTertiary
                     font.pixelSize: 16

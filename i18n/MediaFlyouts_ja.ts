@@ -1510,6 +1510,27 @@ Unavailable: %1</source>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro 機能です。ホームページで Pro を入手するとご利用いただけます。</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro 機能です。ホームページで Pro を入手するとご利用いただけます。</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1712,57 @@ Unavailable: %1</source>
     <message>
         <source>Skip this version</source>
         <translation>このバージョンをスキップ</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Pro 試用版：残り %1 日</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Pro の試用期間が終了しました</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Microsoft Store を開いています…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>%1 で Pro を入手</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Pro を入手</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro は Microsoft Store 版の MediaFlyouts で販売しています。</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>ありがとうございます！Pro が有効になりました。</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>すでに Pro をお持ちです。購入内容を復元しています…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Microsoft Store に接続できません。ネットワークを確認して再試行してください。</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>このビルドでは購入できません。</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store で購入を完了できませんでした。後でもう一度お試しください。</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro では、オーディオビジュアライザー、アプリ別ミキサー、周辺機器のバッテリー、再生中スタイル、メディアウィジェットのオプションが利用できます。</translation>
     </message>
 </context>
 <context>

@@ -47,6 +47,8 @@ Qt objects that wire the model to Windows and to QML:
 - **EntitlementController** — the Pro paywall as seen by QML (`entitlement`);
   resolves the tier from install kind, Store answer and cache, drives purchases
   through the `StoreGateway` interface.
+- **ProGate** — effective values of the gated settings (`pro`): stored value
+  when unlocked, free-tier default when locked.
 - Windows-only: **VolumeController**, **VolumeMixer**, **AudioCapture**,
   **AccentWatcher**, **WindowEffects** (dark title bar), **LockKeysController**,
   **MediaKeyController**, **FullscreenDetector**, **NativeFlyoutSuppressor**,

@@ -14,6 +14,8 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.h
     ${CMAKE_SOURCE_DIR}/Controllers/EntitlementController.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/EntitlementController.h
+    ${CMAKE_SOURCE_DIR}/Controllers/ProGate.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/ProGate.h
     ${CMAKE_SOURCE_DIR}/Controllers/StoreGateway.h
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.h
@@ -58,6 +60,7 @@ add_executable(mediaflyout_gtest
     Controllers/AppTranslatorTest.cpp
     Controllers/EntitlementControllerTest.cpp
     Controllers/NowPlayingTest.cpp
+    Controllers/ProGateTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
     gtest_main.cpp

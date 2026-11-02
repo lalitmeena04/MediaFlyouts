@@ -140,6 +140,17 @@ flips without a restart.
   `MEDIAFLYOUTS_STORE_CUTOVER_UTC`, `MEDIAFLYOUTS_TRIAL_DAYS`,
   `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`; see the build guide).
 
+### ProGate
+The `pro` context property: the *effective* value of every gated setting.
+Reads `Settings` and `EntitlementController` and answers the stored value when
+the feature is unlocked, the free-tier default when it is locked
+(`visualizerEnabled`, `mixerEnabled`, `mixerWindowAllowed`,
+`peripheralsWidgetEnabled`, `peripheralFlyoutEnabled`,
+`peripheralLowBatteryToast`, `nextUpStyle`, `taskbarWidget*`). Emits
+`changed` on either source. Flyouts and widgets bind to it; the stored
+settings are never modified, so a purchase brings the user's choices back.
+`MainControllerClass` also consults it for the low-battery tray toast.
+
 ## Windows-only
 
 - **StoreLicensing** — the `StoreGateway` for packaged builds, over

@@ -1510,6 +1510,27 @@ Unavailable: %1</source>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro 기능입니다. 홈 페이지에서 Pro를 구매하면 사용할 수 있습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro 기능입니다. 홈 페이지에서 Pro를 구매하면 사용할 수 있습니다.</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1712,57 @@ Unavailable: %1</source>
     <message>
         <source>Skip this version</source>
         <translation>이 버전 건너뛰기</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Pro 체험판: %1일 남음</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Pro 체험 기간이 종료되었습니다</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Microsoft Store를 여는 중…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>%1에 Pro 구매</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Pro 구매</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro는 Microsoft Store 버전의 MediaFlyouts에서 판매됩니다.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>감사합니다! Pro가 잠금 해제되었습니다.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>이미 Pro를 보유하고 있습니다. 구매 내역을 복원하는 중…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Microsoft Store에 연결할 수 없습니다. 네트워크를 확인한 후 다시 시도하세요.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>이 빌드에서는 구매할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store에서 구매를 완료하지 못했습니다. 나중에 다시 시도하세요.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro는 오디오 시각화, 앱별 믹서, 주변기기 배터리, 지금 재생 중 스타일, 미디어 위젯 옵션을 잠금 해제합니다.</translation>
     </message>
 </context>
 <context>

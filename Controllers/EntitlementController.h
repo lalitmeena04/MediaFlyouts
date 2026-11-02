@@ -33,6 +33,7 @@ class EntitlementController : public QObject {
         Q_PROPERTY(bool refreshing READ refreshing NOTIFY changed)
         Q_PROPERTY(QString lastPurchaseStatus READ lastPurchaseStatus NOTIFY changed)
         Q_PROPERTY(QStringList tipAddOnStoreIds READ tipAddOnStoreIds CONSTANT)
+        Q_PROPERTY(QString proAddOnStoreId READ proAddOnStoreId CONSTANT)
         Q_PROPERTY(QStringList featureIds READ featureIds CONSTANT)
 
     public:
@@ -68,6 +69,7 @@ class EntitlementController : public QObject {
         bool refreshing() const;
         QString lastPurchaseStatus() const;
         QStringList tipAddOnStoreIds() const;
+        QString proAddOnStoreId() const;
         QStringList featureIds() const;
 
         // Unknown ids read as unlocked. A typo must not lock a feature.

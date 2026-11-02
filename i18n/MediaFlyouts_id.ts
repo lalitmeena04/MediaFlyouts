@@ -1510,6 +1510,27 @@ Tidak tersedia: %1</translation>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1712,57 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Skip this version</source>
         <translation>Lewati versi ini</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Uji coba Pro: tersisa %1 hari</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Uji coba Pro Anda telah berakhir</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Membuka Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>Dapatkan Pro seharga %1</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Dapatkan Pro</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro dijual melalui MediaFlyouts versi Microsoft Store.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>Terima kasih! Pro telah terbuka.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>Anda sudah memiliki Pro. Memulihkan pembelian Anda…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Tidak ada koneksi ke Microsoft Store. Periksa jaringan Anda dan coba lagi.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>Pembelian tidak tersedia di versi ini.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store tidak dapat menyelesaikan pembelian. Coba lagi nanti.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro membuka visualizer audio, mixer per aplikasi, baterai periferal, gaya Now Playing, dan opsi widget media.</translation>
     </message>
 </context>
 <context>

@@ -20,6 +20,7 @@
 #include "MonitorMapper.h"
 #include "NowPlaying.h"
 #include "ProBuildConfig.h"
+#include "ProGate.h"
 #include "QmlLogger.h"
 #include "Settings.h"
 #include "SingleInstance.h"
@@ -125,6 +126,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_restarter = std::make_unique<AppRestarter>(m_errorReporter.get());
     m_entitlement = std::make_unique<EntitlementController>(mf::detectInstallKind(), mf::proBuildConfig(),
                                                             std::make_unique<mf::EntitlementStore>());
+    m_proGate = std::make_unique<ProGate>(m_settings.get(), m_entitlement.get());
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_translator->setEngine(m_engine.get());
@@ -225,7 +227,7 @@ void MainControllerClass::buildPlatformSubsystems() {
 
     QObject::connect(m_peripheralAlerts.get(), &PeripheralAlerts::lowBattery, m_tray.get(),
                      [this](const QString& device, int percent, bool veryLow) {
-                         if(!m_settings->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())
+                         if(!m_proGate->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())
                              return;
                          if(!m_settings->peripheralSelected(device))
                              return;
@@ -251,6 +253,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("settings", m_settings.get());
     ctx->setContextProperty("capabilities", m_capabilities.get());
     ctx->setContextProperty("entitlement", m_entitlement.get());
+    ctx->setContextProperty("pro", m_proGate.get());
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("errorReporter", m_errorReporter.get());
