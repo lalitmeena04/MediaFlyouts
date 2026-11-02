@@ -151,6 +151,14 @@ Unavailable: %1</source>
         <translation>言語、テーマ、アクセント、自動起動、トレイ、設定のバックアップ。</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>サポート</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>寄付やチップで感謝を伝えましょう。</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>情報</translation>
     </message>
@@ -385,6 +393,14 @@ Unavailable: %1</source>
     <message>
         <source>Restore default settings</source>
         <translation>既定の設定に戻す</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>寄付</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>チップ</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1528,6 +1544,89 @@ Unavailable: %1</source>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Pro 機能です。ホームページで Pro を入手するとご利用いただけます。</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>チップをありがとうございます！</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>チップを完了できませんでした。後でもう一度お試しください。</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>MediaFlyouts を支援する</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts は一人の開発者が作っています。タスクバーに置く価値があると感じたら、寄付が開発の継続を支えます。寄付は任意で、機能の解除はありません。</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft はこれらの寄付の募集者でも後援者でもありません。</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>寄付ページを開く</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>お好きな UPI アプリでスキャン</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>UPI ID をコピー</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>コピーしました</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>銀行振込（NEFT / IMPS）</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>口座名義</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>銀行</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>口座番号</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>コピー</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Microsoft Store からチップを送る</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>チップは Microsoft Store での一回限りの購入です。決済は Microsoft が処理します。</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>%1 のチップ</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>チップ</translation>
     </message>
 </context>
 <context>

@@ -20,6 +20,7 @@
 using winrt::Windows::Foundation::AsyncStatus;
 using winrt::Windows::Foundation::IAsyncOperation;
 using winrt::Windows::Services::Store::StoreAppLicense;
+using winrt::Windows::Services::Store::StoreConsumableResult;
 using winrt::Windows::Services::Store::StoreContext;
 using winrt::Windows::Services::Store::StoreLicense;
 using winrt::Windows::Services::Store::StoreProduct;
@@ -56,9 +57,13 @@ QString hresultText(const winrt::hresult_error& e) {
 
 } // namespace
 
-StoreLicensing::StoreLicensing(const QString& proAddOnStoreId, QObject* parent)
+StoreLicensing::StoreLicensing(const QString& proAddOnStoreId, const QStringList& consumableStoreIds, QObject* parent)
     : StoreGateway(parent), m_proAddOnStoreId(proAddOnStoreId.trimmed()) {
-    TRC_INFO("store: packaged={} addOn='{}'", mf::isPackagedProcess(), m_proAddOnStoreId.toStdString());
+    for(const QString& id : consumableStoreIds)
+        if(!id.trimmed().isEmpty())
+            m_consumableStoreIds << id.trimmed();
+    TRC_INFO("store: packaged={} addOn='{}' consumables={}", mf::isPackagedProcess(),
+             m_proAddOnStoreId.toStdString(), m_consumableStoreIds.size());
 }
 
 StoreLicensing::~StoreLicensing() {
@@ -78,6 +83,10 @@ void StoreLicensing::setWindow(QWindow* window) {
 
 QString StoreLicensing::proAddOnStoreId() const {
     return m_proAddOnStoreId;
+}
+
+QStringList StoreLicensing::consumableStoreIds() const {
+    return m_consumableStoreIds;
 }
 
 QString StoreLicensing::statusIdFor(StorePurchaseStatus status, bool* ok) {
@@ -190,7 +199,7 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
                  toQString(e.message()).toStdString());
     }
 
-    if(m_proAddOnStoreId.isEmpty())
+    if(m_proAddOnStoreId.isEmpty() && m_consumableStoreIds.isEmpty())
         return s;
     try {
         const StoreProductQueryResult result =
@@ -198,10 +207,12 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
         for(const auto& kv : result.Products()) {
             const QString key = toQString(kv.Key());
             const StoreProduct product = kv.Value();
-            TRC_DEBUG("store: add-on product {} price={} owned={}", key.toStdString(),
-                      toQString(product.Price().FormattedPrice()).toStdString(), product.IsInUserCollection());
+            const QString price = toQString(product.Price().FormattedPrice());
+            TRC_DEBUG("store: add-on product {} price={} owned={}", key.toStdString(), price.toStdString(),
+                      product.IsInUserCollection());
+            s.addOnPrices.insert(key, price);
             if(licenseKeyMatches(key, m_proAddOnStoreId)) {
-                s.proPrice = toQString(product.Price().FormattedPrice());
+                s.proPrice = price;
                 if(product.IsInUserCollection())
                     s.addOnLicensed = true;
             }
@@ -298,6 +309,8 @@ void StoreLicensing::purchase(const QString& storeId) {
                 this,
                 [this, id, ok, statusId] {
                     m_purchasing = false;
+                    if(ok && statusId == mf::purchase::kSucceeded && m_consumableStoreIds.contains(id))
+                        fulfillConsumable(m_context, id);
                     emit purchaseFinished(id, ok, statusId);
                 },
                 Qt::QueuedConnection);
@@ -307,5 +320,32 @@ void StoreLicensing::purchase(const QString& storeId) {
         TRC_WARN("store: RequestPurchaseAsync threw ({}): {}", hresultText(e).toStdString(),
                  toQString(e.message()).toStdString());
         emit purchaseFinished(id, false, mf::purchase::kServerError);
+    }
+}
+
+void StoreLicensing::fulfillConsumable(StoreContext ctx, const QString& storeId) {
+    if(!ctx)
+        return;
+    try {
+        const winrt::guid tracking = winrt::Windows::Foundation::GuidHelper::CreateNewGuid();
+        auto op = ctx.ReportConsumableFulfillmentAsync(winrt::hstring(storeId.toStdWString()), 1, tracking);
+        op.Completed([storeId](const IAsyncOperation<StoreConsumableResult>& sender, AsyncStatus status) {
+            try {
+                if(status == AsyncStatus::Completed) {
+                    const StoreConsumableResult result = sender.GetResults();
+                    TRC_INFO("store: consumable {} fulfilled status={} balance={}", storeId.toStdString(),
+                             static_cast<int>(result.Status()), result.BalanceRemaining());
+                } else {
+                    TRC_WARN("store: consumable {} fulfilment async status {}", storeId.toStdString(),
+                             static_cast<int>(status));
+                }
+            } catch(const winrt::hresult_error& e) {
+                TRC_WARN("store: consumable {} fulfilment failed ({}): {}", storeId.toStdString(),
+                         hresultText(e).toStdString(), toQString(e.message()).toStdString());
+            }
+        });
+    } catch(const winrt::hresult_error& e) {
+        TRC_WARN("store: ReportConsumableFulfillmentAsync threw ({}): {}", hresultText(e).toStdString(),
+                 toQString(e.message()).toStdString());
     }
 }

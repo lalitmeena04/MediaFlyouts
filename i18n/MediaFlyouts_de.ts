@@ -151,6 +151,14 @@ Nicht verfügbar: %1</translation>
         <translation>Sprache, Design, Akzent, Autostart, Infobereich und Sicherung der Einstellungen.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>Unterstützen</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>Sag Danke mit einer Spende oder einem Trinkgeld.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>Info</translation>
     </message>
@@ -385,6 +393,14 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Restore default settings</source>
         <translation>Standardeinstellungen wiederherstellen</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Spenden</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Trinkgeld</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1528,6 +1544,89 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>Danke für das Trinkgeld!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>Das Trinkgeld konnte nicht abgeschlossen werden. Versuche es später erneut.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>MediaFlyouts unterstützen</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts wird von einer einzelnen Person entwickelt. Wenn es sich einen Platz in deiner Taskleiste verdient hat, hilft eine Spende, es am Leben zu halten. Spenden sind freiwillig und schalten nichts frei.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft ist weder Sammler noch Sponsor dieser Spenden.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>Spendenseite öffnen</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>Mit einer beliebigen UPI-App scannen</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>UPI-ID kopieren</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Kopiert</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>Banküberweisung (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>Kontoinhaber</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>Bank</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>Kontonummer</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Kopieren</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Trinkgeld über den Microsoft Store geben</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>Trinkgelder sind einmalige Käufe im Microsoft Store. Die Zahlung wickelt Microsoft ab.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>%1 Trinkgeld</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Trinkgeld</translation>
     </message>
 </context>
 <context>

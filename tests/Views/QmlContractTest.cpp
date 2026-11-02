@@ -1008,3 +1008,23 @@ TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
     expectContains(dashboard, QStringLiteral("UpgradeCard {"));
     expectContains(dashboard, QStringLiteral("ownerWindow: dash"));
 }
+
+TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
+    const QString page = loadSource("Views/SupportPage.qml");
+    expectContains(page, QStringLiteral("visible: donate.showDirect"));
+    expectContains(page, QStringLiteral("visible: donate.showStoreTips"));
+    expectContains(page, QStringLiteral("visible: donate.hasPage"));
+    expectContains(page, QStringLiteral("source: donate.upiQrSource"));
+    expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
+    expectContains(page, QStringLiteral("page.copy(donate.upiId)"));
+    expectContains(page, QStringLiteral("model: entitlement.tipAddOnStoreIds"));
+    expectContains(page, QStringLiteral("entitlement.purchaseAddOn(modelData, page.ownerWindow)"));
+    expectContains(page, QStringLiteral("Microsoft is not the fundraiser or sponsor"));
+    expectContains(page, QStringLiteral("Donations are voluntary and unlock nothing."));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("\"key\": \"support\""));
+    expectContains(dashboard, QStringLiteral("SupportPage {"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 10 && donate.available"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 11"));
+}

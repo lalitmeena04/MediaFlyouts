@@ -72,6 +72,7 @@ Window {
         { "icon": Fluent.keyboard,  "key": "lockKeys",    "name": qsTr("Lock Keys"),    "desc": qsTr("Caps / Num / Scroll lock indicator flyouts.") },
         { "icon": Fluent.filter,    "key": "filtering",   "name": qsTr("App Filtering"), "desc": qsTr("Choose which media apps are allowed to show flyouts.") },
         { "icon": Fluent.settings,  "key": "additional",  "name": qsTr("Additional Settings"), "desc": qsTr("Language, theme, accent, startup, tray and settings backup.") },
+        { "icon": Fluent.flash,     "key": "support",     "name": qsTr("Support"),      "desc": qsTr("Say thanks with a donation or a tip.") },
         { "icon": Fluent.info,      "key": "about",       "name": qsTr("About"),        "desc": qsTr("App info, updates and error reports.") }
     ]
 
@@ -107,8 +108,9 @@ Window {
         { "label": qsTr("Launch on startup"), "page": 9 }, { "label": qsTr("Hide tray icon"), "page": 9 },
         { "label": qsTr("Export settings"), "page": 9 }, { "label": qsTr("Import settings"), "page": 9 },
         { "label": qsTr("Restore default settings"), "page": 9 },
-        { "label": qsTr("Check for updates"), "page": 10 }, { "label": qsTr("Version"), "page": 10 },
-        { "label": qsTr("Report a problem"), "page": 10 }, { "label": qsTr("Error report"), "page": 10 }
+        { "label": qsTr("Donate"), "page": 10 }, { "label": qsTr("Tip"), "page": 10 },
+        { "label": qsTr("Check for updates"), "page": 11 }, { "label": qsTr("Version"), "page": 11 },
+        { "label": qsTr("Report a problem"), "page": 11 }, { "label": qsTr("Error report"), "page": 11 }
     ]
 
     readonly property var searchResults: {
@@ -1899,8 +1901,14 @@ Window {
                     }
                 }
 
+                SupportPage {
+                    visible: dash.currentIndex === 10 && donate.available
+                    width: parent.width
+                    ownerWindow: dash
+                }
+
                 Column {
-                    visible: dash.currentIndex === 10
+                    visible: dash.currentIndex === 11
                     width: parent.width
                     spacing: 12
 

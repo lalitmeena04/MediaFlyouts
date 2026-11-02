@@ -56,6 +56,23 @@ else()
     message(STATUS "MediaFlyouts Pro gating: cutover ${MEDIAFLYOUTS_STORE_CUTOVER_UTC}, trial ${MEDIAFLYOUTS_TRIAL_DAYS} days, add-on '${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}'")
 endif()
 
+# --- Donations. Public payee details, stamped at build time so the source stays free of them.
+set(MEDIAFLYOUTS_DONATE_URL "https://lalitmeena04.github.io/MediaFlyouts-Releases/donate/" CACHE STRING "Donation web page")
+set(MEDIAFLYOUTS_DONATE_UPI_ID "" CACHE STRING "UPI VPA, e.g. name@bank")
+set(MEDIAFLYOUTS_DONATE_PAYEE_NAME "" CACHE STRING "Payee name as UPI apps display it")
+set(MEDIAFLYOUTS_DONATE_BANK_NAME "" CACHE STRING "Bank name for NEFT")
+set(MEDIAFLYOUTS_DONATE_BANK_ACCOUNT "" CACHE STRING "Account number for NEFT")
+set(MEDIAFLYOUTS_DONATE_BANK_IFSC "" CACHE STRING "IFSC for NEFT")
+set(MEDIAFLYOUTS_DONATE_BANK_HOLDER "" CACHE STRING "Account holder name for NEFT")
+add_compile_definitions(
+    MEDIAFLYOUTS_DONATE_URL="${MEDIAFLYOUTS_DONATE_URL}"
+    MEDIAFLYOUTS_DONATE_UPI_ID="${MEDIAFLYOUTS_DONATE_UPI_ID}"
+    MEDIAFLYOUTS_DONATE_PAYEE_NAME="${MEDIAFLYOUTS_DONATE_PAYEE_NAME}"
+    MEDIAFLYOUTS_DONATE_BANK_NAME="${MEDIAFLYOUTS_DONATE_BANK_NAME}"
+    MEDIAFLYOUTS_DONATE_BANK_ACCOUNT="${MEDIAFLYOUTS_DONATE_BANK_ACCOUNT}"
+    MEDIAFLYOUTS_DONATE_BANK_IFSC="${MEDIAFLYOUTS_DONATE_BANK_IFSC}"
+    MEDIAFLYOUTS_DONATE_BANK_HOLDER="${MEDIAFLYOUTS_DONATE_BANK_HOLDER}")
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -79,6 +96,19 @@ if(NOT spdlog_FOUND)
     FetchContent_MakeAvailable(spdlog)
 endif()
 
+# QR codes for the donation page: Nayuki's qrcodegen (MIT). One source file, no CMake project.
+include(FetchContent)
+FetchContent_Declare(qrcodegen
+    GIT_REPOSITORY https://github.com/nayuki/QR-Code-generator.git
+    GIT_TAG v1.8.0
+    GIT_SHALLOW TRUE
+    SOURCE_SUBDIR none
+)
+FetchContent_MakeAvailable(qrcodegen)
+add_library(qrcodegen STATIC ${qrcodegen_SOURCE_DIR}/cpp/qrcodegen.cpp)
+target_include_directories(qrcodegen SYSTEM PUBLIC ${qrcodegen_SOURCE_DIR}/cpp)
+set_target_properties(qrcodegen PROPERTIES CXX_STANDARD 17 AUTOMOC OFF)
+
 option(MEDIAFLYOUTS_BUILD_TESTS "Build the unit tests" ON)
 if(MEDIAFLYOUTS_BUILD_TESTS)
     enable_testing()
@@ -96,6 +126,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/BatteryUtils.h
     Model/Capabilities.cpp
     Model/Capabilities.h
+    Model/Donation.cpp
+    Model/Donation.h
     Model/DualSenseProtocol.cpp
     Model/DualSenseProtocol.h
     Model/Entitlement.cpp
@@ -199,6 +231,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/AppRestarter.h
     Controllers/AppTranslator.cpp
     Controllers/AppTranslator.h
+    Controllers/DonationController.cpp
+    Controllers/DonationController.h
     Controllers/EntitlementController.cpp
     Controllers/EntitlementController.h
     Controllers/ProGate.cpp
@@ -209,6 +243,8 @@ qt_add_executable(MediaFlyouts WIN32
     MainControllerClass.h
     Model/AlbumArtProvider.cpp
     Model/AlbumArtProvider.h
+    Model/QrCode.cpp
+    Model/QrCode.h
     Model/Settings.cpp
     Model/Settings.h
 )
@@ -265,6 +301,7 @@ qt_add_qml_module(MediaFlyouts
         Views/SettingRow.qml
         Views/SettingSlider.qml
         Views/SlideFade.qml
+        Views/SupportPage.qml
         Views/TaskbarVisualizer.qml
         Views/TaskbarWidget.qml
         Views/UpdateDialog.qml
@@ -297,6 +334,7 @@ target_link_libraries(MediaFlyouts PRIVATE
     Qt6::Quick
     Qt6::Widgets
     mediaflyout_core
+    qrcodegen
 )
 
 # Compiled .qm files are embedded under :/i18n in the core library, so the app

@@ -3,6 +3,7 @@
 #include <QDateTime>
 #include <QObject>
 #include <QString>
+#include <QVariantMap>
 
 class QWindow;
 
@@ -14,12 +15,13 @@ struct StoreSnapshot {
     bool addOnLicensed = false;
     QDateTime acquired;
     QString proPrice;
+    QVariantMap addOnPrices; // store id -> formatted price
     QString error;
 
     bool operator==(const StoreSnapshot& o) const {
         return available == o.available && appLicenseActive == o.appLicenseActive
                && appLicenseTrial == o.appLicenseTrial && addOnLicensed == o.addOnLicensed && acquired == o.acquired
-               && proPrice == o.proPrice && error == o.error;
+               && proPrice == o.proPrice && addOnPrices == o.addOnPrices && error == o.error;
     }
     bool operator!=(const StoreSnapshot& o) const { return !(*this == o); }
 };

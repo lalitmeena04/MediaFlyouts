@@ -62,6 +62,11 @@ properties and QML binds to their properties/signals.
   && !entitlement.isPro`. Shows the trial days left or "trial ended", the
   localized price, and maps `purchaseFinished` status ids to text. The whole
   card is clickable and calls `entitlement.purchase(ownerWindow)`.
+- **SupportPage.qml** — the Dashboard **Support** page. Shows the donation
+  page link, and depending on `donate.showDirect` / `donate.showStoreTips`
+  either the UPI QR + NEFT details with Copy buttons, or the Store tip
+  buttons (`entitlement.purchaseAddOn`). States that Microsoft is not the
+  fundraiser and that donations unlock nothing.
 - **FlyoutBase.qml** — shared frameless flyout window chrome, positioning,
   animations and auto-hide methods (`present()`, `hideFlyout()`,
   `stopAutoHide()`, `restartAutoHide()`, `afterHide()`).
@@ -77,7 +82,7 @@ result to the available screen.
 
 `nowPlaying`, `settings`, `theme`, `placement`, `tray`, `updateChecker`,
 `errorReporter`, `restarter`, `instance`, `capabilities`, `entitlement`, `pro`,
-`monitors`, and (on Windows) `volumeController`,
+`donate`, `monitors`, and (on Windows) `volumeController`,
 `volumeMixer`, `audioCapture`, `taskbar`, `fullscreen`, `lockKeys`,
 `windowEffects`. QML reads these directly, e.g. `nowPlaying.title`,
 `settings.visualizerStyle`, `theme.accent`, `audioCapture.bands`.

@@ -131,6 +131,10 @@ QString EntitlementController::price() const {
     return m_snapshot.proPrice;
 }
 
+QVariantMap EntitlementController::addOnPrices() const {
+    return m_snapshot.addOnPrices;
+}
+
 bool EntitlementController::purchasing() const {
     return m_purchasing;
 }

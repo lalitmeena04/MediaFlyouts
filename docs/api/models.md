@@ -149,6 +149,22 @@ trial days on bad input, de-duplicates tip ids. A bad or empty cutover leaves
 gating off. `proBuildConfig()` returns the parsed build values and logs them
 once.
 
+## Donation (`namespace mf`)
+
+`DonationConfig` holds the public payee details compiled in
+(`MEDIAFLYOUTS_DONATE_*`): page URL (http(s) only), UPI VPA (must contain
+`@`), payee name, and the NEFT fields (bank, account, IFSC upper-cased,
+holder). `donationLayoutFor(kind)` is the policy rule: `StoreLink` for Store
+installs, `Direct` otherwise. `upiPaymentUri(vpa, payee, note)` builds the
+`upi://pay?pa=…&pn=…&cu=INR&tn=…` deep link with the `@` kept literal.
+
+## QrCode
+
+`mf::renderQrCode(text, modulePx, quiet)` draws a QR code (qrcodegen, MIT,
+fetched by CMake) into a `QImage`; null for empty or oversized text.
+`QrImageProvider` serves it as `image://qr/<base64url text>`, scaling by
+whole modules so edges stay crisp at the requested `sourceSize`.
+
 ## Peripheral battery helpers
 
 Pure, unit-tested logic shared by the battery providers, so the protocol and

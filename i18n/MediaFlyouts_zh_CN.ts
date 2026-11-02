@@ -151,6 +151,14 @@ Unavailable: %1</source>
         <translation>语言、主题、强调色、开机启动、托盘和设置备份。</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>支持</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>通过捐赠或打赏表达感谢。</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -385,6 +393,14 @@ Unavailable: %1</source>
     <message>
         <source>Restore default settings</source>
         <translation>恢复默认设置</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>捐赠</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>打赏</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1528,6 +1544,89 @@ Unavailable: %1</source>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>专业版功能。请在主页获取专业版后使用。</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>感谢您的打赏！</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>无法完成打赏。请稍后重试。</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>支持 MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts 由一位开发者独立打造。如果它在您的任务栏上占有一席之地，捐赠可以帮助它持续发展。捐赠是自愿的，不会解锁任何功能。</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft 不是这些捐赠的募集方或赞助方。</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>打开捐赠页面</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>使用任意 UPI 应用扫描</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>复制 UPI ID</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>已复制</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>银行转账（NEFT / IMPS）</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>账户持有人</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>银行</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>账号</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>通过 Microsoft Store 打赏</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>打赏是 Microsoft Store 的一次性购买。付款由 Microsoft 处理。</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>打赏 %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>打赏</translation>
     </message>
 </context>
 <context>

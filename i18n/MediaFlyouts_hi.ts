@@ -151,6 +151,14 @@ Unavailable: %1</source>
         <translation>भाषा, थीम, एक्सेंट, स्टार्टअप, ट्रे और सेटिंग्स बैकअप।</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>सहयोग</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>दान या टिप देकर धन्यवाद कहें।</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>परिचय</translation>
     </message>
@@ -385,6 +393,14 @@ Unavailable: %1</source>
     <message>
         <source>Restore default settings</source>
         <translation>डिफ़ॉल्ट सेटिंग्स बहाल करें</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>दान करें</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>टिप</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1528,6 +1544,89 @@ Unavailable: %1</source>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Pro सुविधा। इसे उपयोग करने के लिए होम पेज से Pro प्राप्त करें।</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>टिप के लिए धन्यवाद!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>टिप पूरी नहीं हो सकी। बाद में पुनः प्रयास करें।</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>MediaFlyouts का सहयोग करें</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts एक अकेले डेवलपर ने बनाया है। अगर इसने आपके टास्कबार पर जगह बनाई है, तो दान इसे जारी रखने में मदद करता है। दान स्वैच्छिक है और इससे कुछ भी अनलॉक नहीं होता।</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft इन दानों का संग्रहकर्ता या प्रायोजक नहीं है।</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>दान पृष्ठ खोलें</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>किसी भी UPI ऐप से स्कैन करें</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>UPI ID कॉपी करें</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>कॉपी हो गया</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>बैंक ट्रांसफर (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>खाताधारक</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>बैंक</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>खाता संख्या</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>कॉपी करें</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Microsoft Store के माध्यम से टिप दें</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>टिप Microsoft Store की एकमुश्त खरीदारी है। भुगतान Microsoft संभालता है।</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>%1 टिप</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>टिप</translation>
     </message>
 </context>
 <context>

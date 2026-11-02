@@ -173,6 +173,16 @@ visualizer. This document describes the features that ship in the app.
 - Everyone who bought the app while it was paid keeps Pro for good.
 - The installer and portable builds are not gated.
 
+## Support page (donations)
+
+- A **Support** page in the Dashboard. Donations are voluntary and unlock
+  nothing; Microsoft is not the fundraiser or sponsor.
+- Every build links to the donation web page.
+- Installer and portable builds also show a UPI QR code and ID and the NEFT /
+  IMPS bank details, each with a Copy button.
+- The Store build offers one-time **tip** add-ons bought through the
+  Microsoft Store instead.
+
 ## System tray & single instance
 
 - Tray icon with a dark, Fluent-style context menu (Settings, Show Media

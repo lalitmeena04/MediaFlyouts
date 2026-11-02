@@ -11,6 +11,8 @@
 #include "AppRestarter.h"
 #include "AppTranslator.h"
 #include "Capabilities.h"
+#include "Donation.h"
+#include "DonationController.h"
 #include "EntitlementController.h"
 #include "EntitlementStore.h"
 #include "ErrorReporter.h"
@@ -22,6 +24,7 @@
 #include "ProBuildConfig.h"
 #include "ProGate.h"
 #include "QmlLogger.h"
+#include "QrCode.h"
 #include "Settings.h"
 #include "SingleInstance.h"
 #include "SwipeDetector.h"
@@ -127,6 +130,8 @@ void MainControllerClass::buildCoreSubsystems() {
     m_entitlement = std::make_unique<EntitlementController>(mf::detectInstallKind(), mf::proBuildConfig(),
                                                             std::make_unique<mf::EntitlementStore>());
     m_proGate = std::make_unique<ProGate>(m_settings.get(), m_entitlement.get());
+    m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind(),
+                                                      !mf::proBuildConfig().tipAddOnStoreIds.isEmpty());
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_translator->setEngine(m_engine.get());
@@ -134,6 +139,7 @@ void MainControllerClass::buildCoreSubsystems() {
 
     m_artProvider = new AlbumArtProvider();
     m_engine->addImageProvider(QStringLiteral("albumart"), m_artProvider);
+    m_engine->addImageProvider(QStringLiteral("qr"), new QrImageProvider());
     m_nowPlaying->setArtProvider(m_artProvider);
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
@@ -146,7 +152,8 @@ void MainControllerClass::buildCoreSubsystems() {
 
 #ifdef Q_OS_WIN
 void MainControllerClass::buildPlatformSubsystems() {
-    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId);
+    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId,
+                                                        mf::proBuildConfig().tipAddOnStoreIds);
     m_entitlement->setGateway(m_storeLicensing.get());
 
     m_provider = std::make_unique<WinMediaProvider>();
@@ -254,6 +261,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("capabilities", m_capabilities.get());
     ctx->setContextProperty("entitlement", m_entitlement.get());
     ctx->setContextProperty("pro", m_proGate.get());
+    ctx->setContextProperty("donate", m_donation.get());
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("errorReporter", m_errorReporter.get());

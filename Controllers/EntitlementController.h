@@ -9,6 +9,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
+#include <QVariantMap>
 
 #include "Entitlement.h"
 #include "EntitlementStore.h"
@@ -29,6 +30,7 @@ class EntitlementController : public QObject {
         Q_PROPERTY(bool storeAvailable READ storeAvailable NOTIFY changed)
         Q_PROPERTY(bool canPurchase READ canPurchase NOTIFY changed)
         Q_PROPERTY(QString price READ price NOTIFY changed)
+        Q_PROPERTY(QVariantMap addOnPrices READ addOnPrices NOTIFY changed)
         Q_PROPERTY(bool purchasing READ purchasing NOTIFY changed)
         Q_PROPERTY(bool refreshing READ refreshing NOTIFY changed)
         Q_PROPERTY(QString lastPurchaseStatus READ lastPurchaseStatus NOTIFY changed)
@@ -65,6 +67,7 @@ class EntitlementController : public QObject {
         bool storeAvailable() const;
         bool canPurchase() const;
         QString price() const;
+        QVariantMap addOnPrices() const;
         bool purchasing() const;
         bool refreshing() const;
         QString lastPurchaseStatus() const;

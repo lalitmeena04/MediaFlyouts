@@ -87,6 +87,23 @@ without a cutover is visible in the log. A bad cutover string also reads as
 `MEDIAFLYOUTS_ENTITLEMENT=free|trial|pro` in the environment to test the
 gated UI without a Store.
 
+### Donation details
+
+The **Support** page shows payee details that are stamped at build time, so
+the source tree never carries them. All are optional CMake cache variables;
+only the page URL has a default.
+
+| Variable | Meaning |
+|---|---|
+| `MEDIAFLYOUTS_DONATE_URL` | Donation web page (default: the GitHub Pages `/donate/` page of MediaFlyouts-Releases). http(s) only. |
+| `MEDIAFLYOUTS_DONATE_UPI_ID` | UPI VPA such as `name@bank`. Shown as a QR and text in installer/portable builds. |
+| `MEDIAFLYOUTS_DONATE_PAYEE_NAME` | Payee name as UPI apps display it. |
+| `MEDIAFLYOUTS_DONATE_BANK_NAME`, `…_BANK_ACCOUNT`, `…_BANK_IFSC`, `…_BANK_HOLDER` | NEFT / IMPS details. Account and IFSC are both required for the block to show. |
+
+The Store build never shows UPI or bank details in-app (Store policy
+§10.8.2); it shows the page link and, when `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`
+is set, the consumable tip add-ons.
+
 ## Release artifacts
 
 The GitHub release consists of three artifacts (see the

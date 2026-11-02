@@ -151,6 +151,14 @@ Unavailable: %1</source>
         <translation>اللغة والسمة ولون التمييز وبدء التشغيل وعلبة النظام والنسخ الاحتياطي للإعدادات.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>الدعم</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>قل شكرًا بتبرع أو إكرامية.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>حول</translation>
     </message>
@@ -385,6 +393,14 @@ Unavailable: %1</source>
     <message>
         <source>Restore default settings</source>
         <translation>استعادة الإعدادات الافتراضية</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>تبرع</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>إكرامية</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1528,6 +1544,89 @@ Unavailable: %1</source>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>ميزة Pro. احصل على Pro من الصفحة الرئيسية لاستخدامها.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>شكرًا على الإكرامية!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>تعذر إتمام الإكرامية. حاول مرة أخرى لاحقًا.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>ادعم MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>طُوِّر MediaFlyouts على يد مطور واحد. إذا استحق مكانًا على شريط المهام لديك، فإن التبرع يساعد على استمراره. التبرعات طوعية ولا تفتح أي ميزات.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft ليست الجهة الجامعة لهذه التبرعات ولا الراعية لها.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>فتح صفحة التبرع</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>امسح بأي تطبيق UPI</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>نسخ معرّف UPI</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>تم النسخ</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>تحويل مصرفي (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>صاحب الحساب</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>البنك</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>رقم الحساب</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>نسخ</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>اترك إكرامية عبر Microsoft Store</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>الإكراميات عمليات شراء لمرة واحدة عبر Microsoft Store. وتتولى Microsoft معالجة الدفع.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>إكرامية %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>إكرامية</translation>
     </message>
 </context>
 <context>

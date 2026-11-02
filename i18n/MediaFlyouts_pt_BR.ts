@@ -151,6 +151,14 @@ Indisponível: %1</translation>
         <translation>Idioma, tema, cor de destaque, inicialização, bandeja e backup das configurações.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>Apoiar</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>Agradeça com uma doação ou uma gorjeta.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>Sobre</translation>
     </message>
@@ -385,6 +393,14 @@ Indisponível: %1</translation>
     <message>
         <source>Restore default settings</source>
         <translation>Restaurar configurações padrão</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Doar</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Gorjeta</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1528,6 +1544,89 @@ Indisponível: %1</translation>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Recurso Pro. Obtenha o Pro na página inicial para usá-lo.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>Obrigado pela gorjeta!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>Não foi possível concluir a gorjeta. Tente novamente mais tarde.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>Apoie o MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>O MediaFlyouts é feito por um único desenvolvedor. Se ele conquistou um lugar na sua barra de tarefas, uma doação ajuda a mantê-lo. Doações são voluntárias e não desbloqueiam nada.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>A Microsoft não é a arrecadadora nem a patrocinadora dessas doações.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>Abrir página de doação</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>Escaneie com qualquer app UPI</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>Copiar ID UPI</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Copiado</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>Transferência bancária (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>Titular da conta</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>Banco</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>Número da conta</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Deixe uma gorjeta pela Microsoft Store</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>Gorjetas são compras únicas na Microsoft Store. A Microsoft processa o pagamento.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>Gorjeta de %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Gorjeta</translation>
     </message>
 </context>
 <context>

@@ -151,6 +151,17 @@ the feature is unlocked, the free-tier default when it is locked
 settings are never modified, so a purchase brings the user's choices back.
 `MainControllerClass` also consults it for the low-battery tray toast.
 
+### DonationController
+The `donate` context property behind the Dashboard **Support** page. Built
+from `mf::donationConfig()` (payee details stamped at build time) and the
+install kind. `showDirect` (UPI QR + NEFT details) is true only for
+installer/portable builds; the Store build gets `showStoreTips` (consumable
+tip add-ons bought through `entitlement.purchaseAddOn`) and the page link,
+which satisfies Store policy §10.8.2. `upiUri` is the `upi://pay` deep link,
+`upiQrSource` the `image://qr/<base64url>` URL served by `QrImageProvider`.
+`openPage()` opens the donation web page, `copyToClipboard(text)` backs the
+Copy buttons. Donations unlock nothing.
+
 ## Windows-only
 
 - **StoreLicensing** — the `StoreGateway` for packaged builds, over
@@ -160,7 +171,9 @@ settings are never modified, so a purchase brings the user's choices back.
   a multi-threaded WinRT apartment, then answers with one `StoreSnapshot`.
   `purchase(id)` initializes the context with the owner HWND
   (`IInitializeWithWindow`) and runs `RequestPurchaseAsync` on the UI thread
-  with a `Completed` handler. `OfflineLicensesChanged` is forwarded as
+  with a `Completed` handler; a successful consumable (tip) purchase is then
+  reported with `ReportConsumableFulfillmentAsync` so it can be bought again.
+  `OfflineLicensesChanged` is forwarded as
   `licensesChanged`. Unpackaged processes report `supported() == false` and
   answer every call with an unavailable snapshot. Every HRESULT is logged.
 - **VolumeController** — master volume/mute via `IAudioEndpointVolume`; follows
