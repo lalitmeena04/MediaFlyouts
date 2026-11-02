@@ -9,7 +9,7 @@ Window {
     height: 280
     minimumWidth: 420
     minimumHeight: 260
-    title: "Update available"
+    title: qsTr("Update available")
     color: theme.window
     flags: Qt.Dialog
     visible: false
@@ -45,23 +45,23 @@ Window {
             updateChecker.download()
     }
 
-    readonly property string primaryText: root.storeInstall ? "Open Microsoft Store"
-                                        : !updateChecker.installerAvailable ? "Open download page"
-                                        : updateChecker.downloaded ? "Install"
-                                        : updateChecker.downloading ? "Downloading…"
-                                        : "Download & install"
+    readonly property string primaryText: root.storeInstall ? qsTr("Open Microsoft Store")
+                                        : !updateChecker.installerAvailable ? qsTr("Open download page")
+                                        : updateChecker.downloaded ? qsTr("Install")
+                                        : updateChecker.downloading ? qsTr("Downloading…")
+                                        : qsTr("Download & install")
 
     readonly property string routeText: root.storeInstall
-                                        ? "This copy came from the Microsoft Store. The Store delivers the update; open it to install now."
+                                        ? qsTr("This copy came from the Microsoft Store. The Store delivers the update; open it to install now.")
                                         : root.portableInstall
-                                        ? "You run the portable version. Download the new ZIP from the release page and replace the app folder."
+                                        ? qsTr("You run the portable version. Download the new ZIP from the release page and replace the app folder.")
                                         : !updateChecker.installerAvailable
-                                        ? "This release has no installer file. Get it from the release page instead."
+                                        ? qsTr("This release has no installer file. Get it from the release page instead.")
                                         : ""
 
     readonly property string progressText: updateChecker.downloadError !== "" ? updateChecker.downloadError
-                                         : updateChecker.downloaded ? "Download complete. Click Install to continue."
-                                         : updateChecker.downloading ? "Downloading… " + Math.round(updateChecker.downloadProgress * 100) + "%"
+                                         : updateChecker.downloaded ? qsTr("Download complete. Click Install to continue.")
+                                         : updateChecker.downloading ? qsTr("Downloading… %1%").arg(Math.round(updateChecker.downloadProgress * 100))
                                          : ""
 
     onClosing: if(updateChecker.downloading) updateChecker.cancelDownload()
@@ -85,7 +85,7 @@ Window {
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "MediaFlyouts " + updateChecker.latestVersion + " is available"
+                    text: qsTr("MediaFlyouts %1 is available").arg(updateChecker.latestVersion)
                     color: theme.textPrimary
                     font.pixelSize: 17
                     font.bold: true
@@ -96,8 +96,8 @@ Window {
                 width: parent.width
                 wrapMode: Text.WordWrap
                 text: updateChecker.installerAvailable
-                      ? "You have version " + updateChecker.currentVersion + ". The installer runs after the download. Your settings are kept."
-                      : "You have version " + updateChecker.currentVersion + ". Your settings are kept."
+                      ? qsTr("You have version %1. The installer runs after the download. Your settings are kept.").arg(updateChecker.currentVersion)
+                      : qsTr("You have version %1. Your settings are kept.").arg(updateChecker.currentVersion)
                 color: theme.textSecondary
                 font.pixelSize: 13
             }
@@ -142,7 +142,7 @@ Window {
             anchors.right: parent.right
             spacing: 8
             Button {
-                text: "Skip this version"
+                text: qsTr("Skip this version")
                 enabled: !updateChecker.downloading
                 onClicked: root.skip()
             }

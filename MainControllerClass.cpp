@@ -9,6 +9,7 @@
 #include "AlbumArtProvider.h"
 #include "AppIcon.h"
 #include "AppRestarter.h"
+#include "AppTranslator.h"
 #include "Capabilities.h"
 #include "ErrorReporter.h"
 #include "FlyoutPlacement.h"
@@ -99,6 +100,11 @@ void MainControllerClass::loadIconFont() {
 void MainControllerClass::buildCoreSubsystems() {
     m_nowPlaying = std::make_unique<NowPlaying>();
     m_settings = std::make_unique<Settings>();
+    // Translations go in before any UI text is built.
+    m_translator = std::make_unique<AppTranslator>();
+    m_translator->apply(m_settings->language());
+    QObject::connect(m_settings.get(), &Settings::changed, m_translator.get(),
+                     [this] { m_translator->apply(m_settings->language()); });
     m_monitors = std::make_unique<MonitorMapper>();
     m_monitors->count();
     m_placement = std::make_unique<FlyoutPlacement>(m_settings.get(), m_monitors.get());
@@ -112,6 +118,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_restarter = std::make_unique<AppRestarter>(m_errorReporter.get());
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
+    m_translator->setEngine(m_engine.get());
     m_qmlLog = std::make_unique<QmlLogger>();
 
     m_artProvider = new AlbumArtProvider();
@@ -120,6 +127,7 @@ void MainControllerClass::buildCoreSubsystems() {
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
     m_tray->trackCapabilities(m_capabilities.get());
+    QObject::connect(m_translator.get(), &AppTranslator::languageChanged, m_tray.get(), &TrayController::retranslate);
     // The shell does not always re-query the icon after a DPI change.
     QObject::connect(m_monitors.get(), &MonitorMapper::changed, m_tray.get(), &TrayController::refreshIcon);
     QObject::connect(m_updateChecker.get(), &UpdateChecker::installStarted, &m_app, &QApplication::quit);
@@ -209,9 +217,9 @@ void MainControllerClass::buildPlatformSubsystems() {
                              return;
                          if(!m_settings->peripheralSelected(device))
                              return;
-                         m_tray->notify(veryLow ? QStringLiteral("Peripheral battery very low")
-                                                : QStringLiteral("Peripheral battery low"),
-                                        QStringLiteral("%1 is at %2%")
+                         m_tray->notify(veryLow ? TrayController::tr("Peripheral battery very low")
+                                                : TrayController::tr("Peripheral battery low"),
+                                        TrayController::tr("%1 is at %2%")
                                             .arg(m_settings->peripheralDisplayName(device))
                                             .arg(percent));
                      });
@@ -239,6 +247,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("monitors", m_monitors.get());
     ctx->setContextProperty("instance", m_instance.get());
     ctx->setContextProperty("tray", m_tray.get());
+    ctx->setContextProperty("i18n", m_translator.get());
 #ifdef Q_OS_WIN
     ctx->setContextProperty("volumeController", m_volumeController.get());
     ctx->setContextProperty("fullscreen", m_fullscreen.get());

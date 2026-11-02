@@ -186,8 +186,7 @@ function Get-QtPath ([string]$supplied) {
         $env:QT_DIR, $env:QT_PATH, $env:Qt6_DIR, $env:QTDIR,
         "C:\Qt\6.11.2\msvc2022_64", "C:\Qt\6.11.0\msvc2022_64",
         "C:\Qt\6.9.1\msvc2022_64",  "C:\Qt\6.8.2\msvc2022_64",
-        "C:\Qt\6.8.0\msvc2022_64",  "C:\Qt\6.7.3\msvc2022_64",
-        "C:\Qt\6.5.3\msvc2019_64"
+        "C:\Qt\6.8.0\msvc2022_64",  "C:\Qt\6.7.3\msvc2022_64"
     )
     foreach ($c in $candidates) {
         if (-not [string]::IsNullOrEmpty($c) -and (Test-Path "$c\bin\windeployqt.exe")) { return $c }

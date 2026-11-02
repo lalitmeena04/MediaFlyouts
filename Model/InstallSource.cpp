@@ -94,12 +94,12 @@ QString installKindId(InstallKind kind) {
 
 QString installKindLabel(InstallKind kind) {
     switch(kind) {
-        case InstallKind::Store: return QStringLiteral("Microsoft Store");
-        case InstallKind::Installer: return QStringLiteral("Installer");
-        case InstallKind::Portable: return QStringLiteral("Portable");
+        case InstallKind::Store: return QCoreApplication::translate("InstallSource", "Microsoft Store");
+        case InstallKind::Installer: return QCoreApplication::translate("InstallSource", "Installer");
+        case InstallKind::Portable: return QCoreApplication::translate("InstallSource", "Portable");
         case InstallKind::Unknown: break;
     }
-    return QStringLiteral("Unknown");
+    return QCoreApplication::translate("InstallSource", "Unknown");
 }
 
 QString storeUpdatesUrl() {

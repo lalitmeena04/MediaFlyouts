@@ -18,6 +18,8 @@ Portable, dependency-light C++ (only `Qt6::Core`) that is unit-tested in
 isolation:
 
 - **Settings** — persisted app settings (`QSettings`), exposed to QML.
+- **Localization** — the shipped language list and the pure
+  settings-plus-system → language-code resolution (`mf::resolveLanguage`).
 - **TrackInfo / PlaybackController** — track model + transport abstraction
   (`IPlaybackController`) so playback logic is mockable.
 - **Fft** — radix-2 FFT and frequency-band mapping for the visualizer.
@@ -32,6 +34,9 @@ Qt objects that wire the model to Windows and to QML:
 
 - **NowPlaying** — QML-facing now-playing model; forwards transport commands.
 - **TrayController** — tray icon + context menu.
+- **AppTranslator** — loads the app and Qt `.qm` files for the chosen language
+  and swaps them at run time (`i18n` context property; see
+  [localization.md](localization.md)).
 - **ThemeController** — theme/accent palette exposed to QML.
 - **FlyoutPlacement** — screen placement from settings.
 - **SingleInstance** — single-instance guard (surfaces the dashboard on relaunch

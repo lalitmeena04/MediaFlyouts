@@ -9,7 +9,7 @@ Window {
     height: 520
     minimumWidth: 360
     minimumHeight: 300
-    title: "Volume Mixer"
+    title: qsTr("Volume Mixer")
     color: theme.window
     visible: false
 
@@ -43,7 +43,7 @@ Window {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 20
-        text: "Applications"
+        text: qsTr("Applications")
         color: theme.textPrimary
         font.pixelSize: 20
         font.bold: true
@@ -56,7 +56,7 @@ Window {
         anchors.left: parent.left
         anchors.margins: 20
         anchors.topMargin: 12
-        text: "No apps are playing audio right now."
+        text: qsTr("No apps are playing audio right now.")
         color: theme.textMuted
         font.pixelSize: 13
     }

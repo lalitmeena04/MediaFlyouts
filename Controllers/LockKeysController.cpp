@@ -63,19 +63,19 @@ int LockKeysController::keyType() const {
 void LockKeysController::handleToggle(int vk) {
     switch(vk) {
     case VK_CAPITAL:
-        m_keyName = QStringLiteral("Caps Lock");
+        m_keyName = tr("Caps Lock");
         m_keyType = 0;
         break;
     case VK_NUMLOCK:
-        m_keyName = QStringLiteral("Num Lock");
+        m_keyName = tr("Num Lock");
         m_keyType = 1;
         break;
     case VK_SCROLL:
-        m_keyName = QStringLiteral("Scroll Lock");
+        m_keyName = tr("Scroll Lock");
         m_keyType = 2;
         break;
     case VK_INSERT:
-        m_keyName = QStringLiteral("Insert");
+        m_keyName = tr("Insert");
         m_keyType = 3;
         break;
     default:

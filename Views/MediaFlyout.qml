@@ -117,7 +117,7 @@ FlyoutBase {
 
                 Text {
                     width: parent.width
-                    text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
+                    text: nowPlaying.hasMedia ? nowPlaying.title : qsTr("Nothing playing")
                     color: theme.textPrimary
                     font.pixelSize: root.compact ? 14 : 16
                     font.bold: true
@@ -127,7 +127,7 @@ FlyoutBase {
 
                 Text {
                     width: parent.width
-                    text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media to see it here"
+                    text: nowPlaying.hasMedia ? nowPlaying.artist : qsTr("Start media to see it here")
                     color: theme.textSecondary
                     font.pixelSize: root.compact ? 12 : 13
                     elide: Text.ElideRight

@@ -174,7 +174,7 @@ FlyoutBase {
 
                 Text {
                     visible: volumeMixer.sessions.length === 0
-                    text: "No apps are playing audio."
+                    text: qsTr("No apps are playing audio.")
                     color: theme.textMuted
                     font.pixelSize: 12
                 }

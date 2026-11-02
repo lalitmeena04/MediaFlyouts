@@ -64,7 +64,7 @@ Item {
         Text {
             visible: row.description.length > 0
             width: parent.width
-            text: row.renamed ? row.description + "  \u00B7  Detected as " + row.deviceName : row.description
+            text: row.renamed ? qsTr("%1  \u00B7  Detected as %2").arg(row.description).arg(row.deviceName) : row.description
             color: theme.textTertiary
             font.pixelSize: 11
             elide: Text.ElideRight
@@ -103,7 +103,7 @@ Item {
                 nameField.selectAll()
             }
             InfoTooltip {
-                text: row.renamed ? "Rename. Clear the box to restore \"" + row.deviceName + "\"." : "Rename this device"
+                text: row.renamed ? qsTr("Rename. Clear the box to restore \"%1\".").arg(row.deviceName) : qsTr("Rename this device")
                 hovered: renameMouse.containsMouse
             }
         }

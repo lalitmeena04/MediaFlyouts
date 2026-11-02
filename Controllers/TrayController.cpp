@@ -56,22 +56,18 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
         "QMenu::icon { padding-left: 10px; }"
         "QMenu::separator { height: 1px; background: #3d3d3d; margin: 6px 10px; }"));
 
-    QAction* dashAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF6B3)), QStringLiteral("Settings"));
-    QAction* flyoutAction =
-        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF610)), QStringLiteral("Show Media Flyout"));
-    QAction* mixerAction =
-        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xEB4C)), QStringLiteral("Volume Mixer"));
+    QAction* dashAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF6B3)), QString());
+    QAction* flyoutAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF610)), QString());
+    QAction* mixerAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xEB4C)), QString());
     m_menu->addSeparator();
-    QAction* repoAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF1FB)), QStringLiteral("Repository"));
-    QAction* bugAction =
-        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xE21B)), QStringLiteral("Report a Bug"));
-    QAction* configAction =
-        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF41D)), QStringLiteral("Open Config Folder"));
+    QAction* repoAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF1FB)), QString());
+    QAction* bugAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xE21B)), QString());
+    QAction* configAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF41D)), QString());
     m_menu->addSeparator();
-    QAction* restartAction =
-        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF13E)), QStringLiteral("Restart MediaFlyouts"));
-    QAction* quitAction =
-        m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF619)), QStringLiteral("Quit MediaFlyouts"));
+    QAction* restartAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF13E)), QString());
+    QAction* quitAction = m_menu->addAction(renderGlyphIcon(m_iconFamily, QChar(0xF619)), QString());
+    m_actions = {dashAction, flyoutAction, mixerAction, repoAction, bugAction, configAction, restartAction, quitAction};
+    retranslate();
 
     connect(dashAction, &QAction::triggered, this, &TrayController::openDashboardRequested);
     connect(flyoutAction, &QAction::triggered, this, &TrayController::showFlyoutRequested);
@@ -124,6 +120,21 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
 void TrayController::applyVisibility() {
     if(m_tray)
         m_tray->setVisible(!(m_settings && m_settings->trayIconHidden()));
+}
+
+void TrayController::retranslate() {
+    // Same order as m_actions in the constructor.
+    const QStringList texts = {
+        tr("Settings"),     tr("Show Media Flyout"),  tr("Volume Mixer"),         tr("Repository"),
+        tr("Report a Bug"), tr("Open Config Folder"), tr("Restart MediaFlyouts"), tr("Quit MediaFlyouts")};
+    if(texts.size() != m_actions.size()) {
+        TRC_WARN("tray: action/text count mismatch {} vs {}", m_actions.size(), texts.size());
+        return;
+    }
+    for(int i = 0; i < m_actions.size(); ++i)
+        m_actions[i]->setText(texts[i]);
+    applyToolTip();
+    TRC_DEBUG("tray: menu retranslated");
 }
 
 void TrayController::trackCapabilities(Capabilities* capabilities) {

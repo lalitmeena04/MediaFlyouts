@@ -1,8 +1,10 @@
 #pragma once
 
+#include <QList>
 #include <QObject>
 #include <QString>
 
+class QAction;
 class QSystemTrayIcon;
 class QMenu;
 class QTimer;
@@ -22,6 +24,8 @@ class TrayController : public QObject {
 
     public slots:
         void refreshIcon();
+        // Re-applies menu and tooltip text after a language switch.
+        void retranslate();
 
     signals:
         void openDashboardRequested();
@@ -40,4 +44,5 @@ class TrayController : public QObject {
         Settings* m_settings = nullptr;
         Capabilities* m_capabilities = nullptr;
         QTimer* m_singleClickTimer = nullptr;
+        QList<QAction*> m_actions;
 };

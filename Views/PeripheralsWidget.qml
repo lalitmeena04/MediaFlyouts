@@ -33,9 +33,9 @@ DockableWidget {
         return device.connectionKind === "usb"
     })
     readonly property var deviceSections: [
-        { "label": "2.4 GHz", "devices": dongleDevices },
-        { "label": "Bluetooth", "devices": bluetoothDevices },
-        { "label": "Wired", "devices": wiredDevices }
+        { "label": qsTr("2.4 GHz"), "devices": dongleDevices },
+        { "label": qsTr("Bluetooth"), "devices": bluetoothDevices },
+        { "label": qsTr("Wired"), "devices": wiredDevices }
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property string activeSection: root.stacked ? root.stack.activeSection : ""
     property string displayedSection: ""
@@ -247,7 +247,7 @@ DockableWidget {
                                                 if(hovered) {
                                                     var tipText = settings.peripheralNames[modelData.name] || modelData.name
                                                     if(DeviceIcons.hasBattery(modelData.connectionKind, modelData.percent)) {
-                                                        tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : " \u2014 battery unknown"
+                                                        tipText += modelData.percent >= 0 ? " \u2014 " + modelData.percent + "%" : qsTr(" \u2014 battery unknown")
                                                         if(modelData.charging)
                                                             tipText += " \u26A1"
                                                     }

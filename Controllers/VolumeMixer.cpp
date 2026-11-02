@@ -179,7 +179,7 @@ void VolumeMixer::refresh() {
         QString iconUri;
         if(control2) {
             if(control2->IsSystemSoundsSession() == S_OK) {
-                name = QStringLiteral("System sounds");
+                name = tr("System sounds");
             } else {
                 DWORD pid = 0;
                 control2->GetProcessId(&pid);

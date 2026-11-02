@@ -275,7 +275,7 @@ DockableWidget {
                         idleColor: root.fgControl
                         hoverColor: root.fgPrimary
                         tip: widgetTip
-                        tooltip: "Previous"
+                        tooltip: qsTr("Previous")
                         onClicked: nowPlaying.previous()
                     }
                     WidgetButton {
@@ -284,7 +284,7 @@ DockableWidget {
                         idleColor: root.fgPrimary
                         hoverColor: root.fgPrimary
                         tip: widgetTip
-                        tooltip: nowPlaying.isPlaying ? "Pause" : "Play"
+                        tooltip: nowPlaying.isPlaying ? qsTr("Pause") : qsTr("Play")
                         onClicked: nowPlaying.playPause()
                     }
                     WidgetButton {
@@ -293,7 +293,7 @@ DockableWidget {
                         idleColor: root.fgControl
                         hoverColor: root.fgPrimary
                         tip: widgetTip
-                        tooltip: "Next"
+                        tooltip: qsTr("Next")
                         onClicked: nowPlaying.next()
                     }
                 }
@@ -314,7 +314,7 @@ DockableWidget {
                 idleColor: root.fgControl
                 hoverColor: root.fgPrimary
                 tip: widgetTip
-                tooltip: root.showPlayAll ? "Play all" : "Pause all"
+                tooltip: root.showPlayAll ? qsTr("Play all") : qsTr("Pause all")
                 onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()
             }
         }

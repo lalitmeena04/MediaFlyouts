@@ -19,6 +19,7 @@ class ThemeController;
 class UpdateChecker;
 class ErrorReporter;
 class AppRestarter;
+class AppTranslator;
 class Capabilities;
 class QmlLogger;
 class AlbumArtProvider;
@@ -66,6 +67,7 @@ class MainControllerClass {
         std::unique_ptr<SingleInstance> m_instance;
         std::unique_ptr<NowPlaying> m_nowPlaying;
         std::unique_ptr<Settings> m_settings;
+        std::unique_ptr<AppTranslator> m_translator;
         std::unique_ptr<MonitorMapper> m_monitors;
         std::unique_ptr<FlyoutPlacement> m_placement;
         std::unique_ptr<WindowScaleRefresher> m_scaleRefresher;

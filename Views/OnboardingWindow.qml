@@ -9,7 +9,7 @@ Window {
     height: 460
     minimumWidth: 460
     minimumHeight: 430
-    title: "Welcome to MediaFlyouts"
+    title: qsTr("Welcome to MediaFlyouts")
     color: theme.window
     flags: Qt.Dialog
     visible: false
@@ -62,14 +62,14 @@ Window {
                 Text {
                     width: parent.width
                     wrapMode: Text.WordWrap
-                    text: "MediaFlyouts shows sleek Fluent-style overlays for your media, volume and lock keys — plus a taskbar widget and per-app volume mixer."
+                    text: qsTr("MediaFlyouts shows sleek Fluent-style overlays for your media, volume and lock keys — plus a taskbar widget and per-app volume mixer.")
                     color: theme.textSecondary
                     font.pixelSize: 15
                 }
                 Text {
                     width: parent.width
                     wrapMode: Text.WordWrap
-                    text: "Let's set up a few things. You can change everything later from the dashboard."
+                    text: qsTr("Let's set up a few things. You can change everything later from the dashboard.")
                     color: theme.textTertiary
                     font.pixelSize: 13
                 }
@@ -80,16 +80,27 @@ Window {
                 width: parent.width
                 spacing: 14
                 Text {
-                    text: "Choose a theme"
+                    text: qsTr("Choose a language and theme")
                     color: theme.textPrimary
                     font.pixelSize: 17
                     font.bold: true
                 }
                 SettingCombo {
                     width: parent.width
-                    label: "Theme"
-                    description: "Match the system, or force light or dark."
-                    model: ["Use system setting", "Light", "Dark"]
+                    label: qsTr("Language")
+                    description: qsTr("Follow the system language, or pick one.")
+                    readonly property var languageCodes: i18n.languages.map(function(entry) { return entry.code })
+                    model: i18n.languages.map(function(entry) {
+                        return entry.code === "" ? qsTr("System default") : entry.name
+                    })
+                    currentIndex: Math.max(0, languageCodes.indexOf(settings.language))
+                    onActivated: settings.language = languageCodes[index]
+                }
+                SettingCombo {
+                    width: parent.width
+                    label: qsTr("Theme")
+                    description: qsTr("Match the system, or force light or dark.")
+                    model: [qsTr("Use system setting"), qsTr("Light"), qsTr("Dark")]
                     currentIndex: settings.appTheme
                     onActivated: settings.appTheme = index
                 }
@@ -100,35 +111,35 @@ Window {
                 width: parent.width
                 spacing: 6
                 Text {
-                    text: "Pick your overlays"
+                    text: qsTr("Pick your overlays")
                     color: theme.textPrimary
                     font.pixelSize: 17
                     font.bold: true
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Media flyout"
-                    description: "Show now-playing info on media keys."
+                    label: qsTr("Media flyout")
+                    description: qsTr("Show now-playing info on media keys.")
                     available: capabilities.mediaSessionAvailable
-                    unavailableNote: "Unavailable: no system media session was detected."
+                    unavailableNote: qsTr("Unavailable: no system media session was detected.")
                     value: settings.mediaFlyoutEnabled
                     onToggled: settings.mediaFlyoutEnabled = value
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Volume flyout"
-                    description: "Replace the native volume popup."
+                    label: qsTr("Volume flyout")
+                    description: qsTr("Replace the native volume popup.")
                     available: capabilities.audioAvailable
-                    unavailableNote: "Unavailable: no audio output device was detected."
+                    unavailableNote: qsTr("Unavailable: no audio output device was detected.")
                     value: settings.volumeFlyoutEnabled
                     onToggled: settings.volumeFlyoutEnabled = value
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Lock keys flyout"
-                    description: "Show Caps / Num / Scroll indicators."
+                    label: qsTr("Lock keys flyout")
+                    description: qsTr("Show Caps / Num / Scroll indicators.")
                     available: capabilities.lockKeysAvailable
-                    unavailableNote: "Unavailable: the keyboard hook could not be installed."
+                    unavailableNote: qsTr("Unavailable: the keyboard hook could not be installed.")
                     value: settings.lockKeysEnabled
                     onToggled: settings.lockKeysEnabled = value
                 }
@@ -139,31 +150,31 @@ Window {
                 width: parent.width
                 spacing: 6
                 Text {
-                    text: "Peripherals and power"
+                    text: qsTr("Peripherals and power")
                     color: theme.textPrimary
                     font.pixelSize: 17
                     font.bold: true
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Peripheral flyout"
-                    description: "Show a flyout when a wireless device connects, disconnects or runs low on battery."
+                    label: qsTr("Peripheral flyout")
+                    description: qsTr("Show a flyout when a wireless device connects, disconnects or runs low on battery.")
                     value: settings.peripheralFlyoutEnabled
                     onToggled: settings.peripheralFlyoutEnabled = value
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Peripherals widget"
-                    description: "Dock a battery widget for your wireless devices on the taskbar."
+                    label: qsTr("Peripherals widget")
+                    description: qsTr("Dock a battery widget for your wireless devices on the taskbar.")
                     value: settings.peripheralsWidgetEnabled
                     onToggled: settings.peripheralsWidgetEnabled = value
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Charger flyout"
-                    description: "Show a flyout when the charger is plugged in or unplugged."
+                    label: qsTr("Charger flyout")
+                    description: qsTr("Show a flyout when the charger is plugged in or unplugged.")
                     available: capabilities.chargerAvailable
-                    unavailableNote: "Unavailable: this PC has no battery, so it never changes power source."
+                    unavailableNote: qsTr("Unavailable: this PC has no battery, so it never changes power source.")
                     value: settings.chargerFlyoutEnabled
                     onToggled: settings.chargerFlyoutEnabled = value
                 }
@@ -174,29 +185,29 @@ Window {
                 width: parent.width
                 spacing: 6
                 Text {
-                    text: "Almost done"
+                    text: qsTr("Almost done")
                     color: theme.textPrimary
                     font.pixelSize: 17
                     font.bold: true
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Launch on startup"
-                    description: "Start MediaFlyouts automatically when you sign in."
+                    label: qsTr("Launch on startup")
+                    description: qsTr("Start MediaFlyouts automatically when you sign in.")
                     value: settings.launchOnStartup
                     onToggled: settings.launchOnStartup = value
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Taskbar widget"
-                    description: "Dock a compact now-playing widget on the taskbar."
+                    label: qsTr("Taskbar widget")
+                    description: qsTr("Dock a compact now-playing widget on the taskbar.")
                     value: settings.taskbarWidgetEnabled
                     onToggled: settings.taskbarWidgetEnabled = value
                 }
                 SettingRow {
                     width: parent.width
-                    label: "Check for updates on launch"
-                    description: "Look for a newer release shortly after startup. Updates install from inside the app."
+                    label: qsTr("Check for updates on launch")
+                    description: qsTr("Look for a newer release shortly after startup. Updates install from inside the app.")
                     value: settings.autoCheckUpdates
                     onToggled: settings.autoCheckUpdates = value
                 }
@@ -231,7 +242,7 @@ Window {
                 Button {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Back"
+                    text: qsTr("Back")
                     visible: root.step > 0
                     onClicked: root.step--
                 }
@@ -239,7 +250,7 @@ Window {
                     id: nextBtn
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    text: root.step === root.stepCount - 1 ? "Get started" : "Next"
+                    text: root.step === root.stepCount - 1 ? qsTr("Get started") : qsTr("Next")
                     onClicked: root.step === root.stepCount - 1 ? root.finish() : root.step++
                 }
             }

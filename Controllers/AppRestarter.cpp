@@ -95,12 +95,12 @@ void AppRestarter::restart() {
     qint64 newPid = 0;
     if(!QProcess::startDetached(exe, args, QDir::currentPath(), &newPid)) {
         TRC_WARN("restart: cannot start {}", exe.toStdString());
-        m_status = QStringLiteral("Couldn't start a new instance. The app keeps running.");
+        m_status = tr("Couldn't start a new instance. The app keeps running.");
         emit changed();
         return;
     }
     TRC_INFO("restart: started pid {}; quitting", newPid);
-    m_status = QStringLiteral("Restarting...");
+    m_status = tr("Restarting...");
     emit changed();
     mf::flushLogging();
     // Leave the caller's signal handler before tearing down.

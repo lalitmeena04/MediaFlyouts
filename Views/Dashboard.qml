@@ -26,9 +26,10 @@ Window {
 
     property int currentIndex: 0
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
-    function showPage(name) {
+    // Pages are found by their stable key, not their translated name.
+    function showPage(key) {
         for(var i = 0; i < pages.length; i++) {
-            if(pages[i].name === name) {
+            if(pages[i].key === key) {
                 currentIndex = i
                 break
             }
@@ -50,63 +51,64 @@ Window {
         })
     }
     readonly property var peripheralSections: [
-        { "label": "2.4 GHz", "devices": shownDevices.filter(function(device) {
+        { "label": qsTr("2.4 GHz"), "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "wireless"
         }) },
-        { "label": "Bluetooth", "devices": shownDevices.filter(function(device) {
+        { "label": qsTr("Bluetooth"), "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "bluetooth" || device.connectionKind === "ble"
         }) },
-        { "label": "Wired", "devices": shownDevices.filter(function(device) {
+        { "label": qsTr("Wired"), "devices": shownDevices.filter(function(device) {
             return device.connectionKind === "usb"
         }) }
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
-        { "icon": Fluent.home,      "name": "Home",         "desc": "Overview of MediaFlyouts and what's currently playing." },
-        { "icon": Fluent.play,      "name": "Media Flyout", "desc": "Configure the now-playing flyout that appears on media keys." },
-        { "icon": Fluent.plugConnected, "name": "Peripheral Flyout", "desc": "Announce peripherals as they connect, disconnect or run low on battery." },
-        { "icon": Fluent.charge, "name": "Charger Flyout", "desc": "Announce the charger as it is plugged in or unplugged." },
-        { "icon": Fluent.musicNote, "name": "Media Widget", "desc": "A compact now-playing widget docked on the taskbar." },
-        { "icon": Fluent.usbStick,  "name": "Peripheral Widget", "desc": "Battery rings for your wireless peripherals, docked on the taskbar." },
-        { "icon": Fluent.speaker2,  "name": "Volume",       "desc": "Configure the volume flyout and native OSD override." },
-        { "icon": Fluent.keyboard,  "name": "Lock Keys",    "desc": "Caps / Num / Scroll lock indicator flyouts." },
-        { "icon": Fluent.filter,    "name": "App Filtering", "desc": "Choose which media apps are allowed to show flyouts." },
-        { "icon": Fluent.settings,  "name": "Additional Settings", "desc": "Theme, accent, startup, tray and settings backup." },
-        { "icon": Fluent.info,      "name": "About",        "desc": "App info, updates and error reports." }
+        { "icon": Fluent.home,      "key": "home",        "name": qsTr("Home"),         "desc": qsTr("Overview of MediaFlyouts and what's currently playing.") },
+        { "icon": Fluent.play,      "key": "media",       "name": qsTr("Media Flyout"), "desc": qsTr("Configure the now-playing flyout that appears on media keys.") },
+        { "icon": Fluent.plugConnected, "key": "peripheralFlyout", "name": qsTr("Peripheral Flyout"), "desc": qsTr("Announce peripherals as they connect, disconnect or run low on battery.") },
+        { "icon": Fluent.charge, "key": "charger", "name": qsTr("Charger Flyout"), "desc": qsTr("Announce the charger as it is plugged in or unplugged.") },
+        { "icon": Fluent.musicNote, "key": "mediaWidget", "name": qsTr("Media Widget"), "desc": qsTr("A compact now-playing widget docked on the taskbar.") },
+        { "icon": Fluent.usbStick,  "key": "peripheralWidget", "name": qsTr("Peripheral Widget"), "desc": qsTr("Battery rings for your wireless peripherals, docked on the taskbar.") },
+        { "icon": Fluent.speaker2,  "key": "volume",      "name": qsTr("Volume"),       "desc": qsTr("Configure the volume flyout and native OSD override.") },
+        { "icon": Fluent.keyboard,  "key": "lockKeys",    "name": qsTr("Lock Keys"),    "desc": qsTr("Caps / Num / Scroll lock indicator flyouts.") },
+        { "icon": Fluent.filter,    "key": "filtering",   "name": qsTr("App Filtering"), "desc": qsTr("Choose which media apps are allowed to show flyouts.") },
+        { "icon": Fluent.settings,  "key": "additional",  "name": qsTr("Additional Settings"), "desc": qsTr("Language, theme, accent, startup, tray and settings backup.") },
+        { "icon": Fluent.info,      "key": "about",       "name": qsTr("About"),        "desc": qsTr("App info, updates and error reports.") }
     ]
 
     readonly property var searchIndex: [
-        { "label": "Seekbar", "page": 1 }, { "label": "Interactive seekbar", "page": 1 },
-        { "label": "Compact layout", "page": 1 }, { "label": "Center title and artist", "page": 1 },
-        { "label": "Always display", "page": 1 }, { "label": "Show player name", "page": 1 },
-        { "label": "Accent from album art", "page": 1 }, { "label": "Apply accent app-wide", "page": 1 }, { "label": "Repeat button", "page": 1 },
-        { "label": "Shuffle button", "page": 1 }, { "label": "Now Playing flyout", "page": 1 },
-        { "label": "Hide during fullscreen", "page": 1 }, { "label": "Flyout position", "page": 1 },
-        { "label": "Monitor", "page": 1 }, { "label": "Flyout duration", "page": 1 },
-        { "label": "Animation speed", "page": 1 }, { "label": "Animation easing", "page": 1 },
-        { "label": "Volume flyout", "page": 6 }, { "label": "Override native OSD", "page": 6 },
-        { "label": "Volume flyout duration", "page": 6 }, { "label": "Lock keys flyout", "page": 7 },
-        { "label": "Caps lock", "page": 7 }, { "label": "Num lock", "page": 7 },
-        { "label": "Scroll lock", "page": 7 }, { "label": "Insert key", "page": 7 },
-        { "label": "Bold indicator text", "page": 7 }, { "label": "Lock keys duration", "page": 7 },
-        { "label": "Media widget", "page": 4 }, { "label": "Widget controls", "page": 4 },
-        { "label": "Widget alignment", "page": 4 }, { "label": "Widget offset", "page": 4 },
-        { "label": "Widget layout", "page": 4 }, { "label": "Stack", "page": 4 },
-        { "label": "Pause overlay", "page": 4 }, { "label": "Scroll long titles", "page": 4 },
-        { "label": "Audio visualizer", "page": 4 },
-        { "label": "Peripheral flyout", "page": 2 }, { "label": "Low battery warning", "page": 2 },
-        { "label": "Wired devices", "page": 2 },
-        { "label": "Charger flyout", "page": 3 }, { "label": "On plug in", "page": 3 },
-        { "label": "On unplug", "page": 3 }, { "label": "Charger flyout duration", "page": 3 },
-        { "label": "Peripherals widget", "page": 5 }, { "label": "Battery rings", "page": 5 },
-        { "label": "Wired devices in widget", "page": 5 },
-        { "label": "Blacklist", "page": 8 },
-        { "label": "Whitelist", "page": 8 }, { "label": "Filter mode", "page": 8 },
-        { "label": "Theme", "page": 9 }, { "label": "Accent color", "page": 9 },
-        { "label": "Launch on startup", "page": 9 }, { "label": "Hide tray icon", "page": 9 },
-        { "label": "Export settings", "page": 9 }, { "label": "Import settings", "page": 9 },
-        { "label": "Restore default settings", "page": 9 },
-        { "label": "Check for updates", "page": 10 }, { "label": "Version", "page": 10 },
-        { "label": "Report a problem", "page": 10 }, { "label": "Error report", "page": 10 }
+        { "label": qsTr("Seekbar"), "page": 1 }, { "label": qsTr("Interactive seekbar"), "page": 1 },
+        { "label": qsTr("Compact layout"), "page": 1 }, { "label": qsTr("Center title and artist"), "page": 1 },
+        { "label": qsTr("Always display"), "page": 1 }, { "label": qsTr("Show player name"), "page": 1 },
+        { "label": qsTr("Accent from album art"), "page": 1 }, { "label": qsTr("Apply accent app-wide"), "page": 1 }, { "label": qsTr("Repeat button"), "page": 1 },
+        { "label": qsTr("Shuffle button"), "page": 1 }, { "label": qsTr("Now Playing flyout"), "page": 1 },
+        { "label": qsTr("Hide during fullscreen"), "page": 1 }, { "label": qsTr("Flyout position"), "page": 1 },
+        { "label": qsTr("Monitor"), "page": 1 }, { "label": qsTr("Flyout duration"), "page": 1 },
+        { "label": qsTr("Animation speed"), "page": 1 }, { "label": qsTr("Animation easing"), "page": 1 },
+        { "label": qsTr("Volume flyout"), "page": 6 }, { "label": qsTr("Override native OSD"), "page": 6 },
+        { "label": qsTr("Volume flyout duration"), "page": 6 }, { "label": qsTr("Lock keys flyout"), "page": 7 },
+        { "label": qsTr("Caps lock"), "page": 7 }, { "label": qsTr("Num lock"), "page": 7 },
+        { "label": qsTr("Scroll lock"), "page": 7 }, { "label": qsTr("Insert key"), "page": 7 },
+        { "label": qsTr("Bold indicator text"), "page": 7 }, { "label": qsTr("Lock keys duration"), "page": 7 },
+        { "label": qsTr("Media widget"), "page": 4 }, { "label": qsTr("Widget controls"), "page": 4 },
+        { "label": qsTr("Widget alignment"), "page": 4 }, { "label": qsTr("Widget offset"), "page": 4 },
+        { "label": qsTr("Widget layout"), "page": 4 }, { "label": qsTr("Stack"), "page": 4 },
+        { "label": qsTr("Pause overlay"), "page": 4 }, { "label": qsTr("Scroll long titles"), "page": 4 },
+        { "label": qsTr("Audio visualizer"), "page": 4 },
+        { "label": qsTr("Peripheral flyout"), "page": 2 }, { "label": qsTr("Low battery warning"), "page": 2 },
+        { "label": qsTr("Wired devices"), "page": 2 },
+        { "label": qsTr("Charger flyout"), "page": 3 }, { "label": qsTr("On plug in"), "page": 3 },
+        { "label": qsTr("On unplug"), "page": 3 }, { "label": qsTr("Charger flyout duration"), "page": 3 },
+        { "label": qsTr("Peripherals widget"), "page": 5 }, { "label": qsTr("Battery rings"), "page": 5 },
+        { "label": qsTr("Wired devices in widget"), "page": 5 },
+        { "label": qsTr("Blacklist"), "page": 8 },
+        { "label": qsTr("Whitelist"), "page": 8 }, { "label": qsTr("Filter mode"), "page": 8 },
+        { "label": qsTr("Language"), "page": 9 },
+        { "label": qsTr("Theme"), "page": 9 }, { "label": qsTr("Accent color"), "page": 9 },
+        { "label": qsTr("Launch on startup"), "page": 9 }, { "label": qsTr("Hide tray icon"), "page": 9 },
+        { "label": qsTr("Export settings"), "page": 9 }, { "label": qsTr("Import settings"), "page": 9 },
+        { "label": qsTr("Restore default settings"), "page": 9 },
+        { "label": qsTr("Check for updates"), "page": 10 }, { "label": qsTr("Version"), "page": 10 },
+        { "label": qsTr("Report a problem"), "page": 10 }, { "label": qsTr("Error report"), "page": 10 }
     ]
 
     readonly property var searchResults: {
@@ -172,7 +174,7 @@ Window {
                     anchors.top: sidebarHeader.bottom
                     anchors.topMargin: 8
                     width: parent.width
-                    placeholderText: "Search settings…"
+                    placeholderText: qsTr("Search settings…")
                     color: theme.textPrimary
                     placeholderTextColor: theme.textMuted
                     background: Rectangle {
@@ -214,7 +216,7 @@ Window {
                             }
                         }
                         InfoTooltip {
-                            text: "Search settings"
+                            text: qsTr("Search settings")
                             hovered: sidebar.collapsed && sidebarSearchMouse.containsMouse
                         }
                     }                }
@@ -272,7 +274,7 @@ Window {
                         }
                         Text {
                             visible: dash.searchResults.length === 0
-                            text: "No matching settings."
+                            text: qsTr("No matching settings.")
                             color: theme.textMuted
                             font.pixelSize: 12
                             leftPadding: 12
@@ -369,7 +371,7 @@ Window {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     InfoTooltip {
-                        text: "Expand"
+                        text: qsTr("Expand")
                         hovered: sidebar.collapsed && collapseMouse.containsMouse
                     }
                     onClicked: {
@@ -410,7 +412,7 @@ Window {
             TextField {
                 id: popupSearchField
                 width: parent.width
-                placeholderText: "Search settings…"
+                placeholderText: qsTr("Search settings…")
                 color: theme.textPrimary
                 placeholderTextColor: theme.textMuted
                 background: Rectangle {
@@ -465,7 +467,7 @@ Window {
                     }
                     Text {
                         visible: dash.searchResults.length === 0
-                        text: "No matching settings."
+                        text: qsTr("No matching settings.")
                         color: theme.textMuted
                         font.pixelSize: 12
                         leftPadding: 12
@@ -548,9 +550,8 @@ Window {
 
                     Text {
                         width: parent.width - 28
-                        text: "Some features are unavailable because Windows did not provide: "
-                              + capabilities.unavailableNames.join(", ")
-                              + ". Related settings are disabled."
+                        text: qsTr("Some features are unavailable because Windows did not provide: %1. Related settings are disabled.")
+                              .arg(capabilities.unavailableNames.join(", "))
                         color: theme.textPrimary
                         font.pixelSize: 13
                         wrapMode: Text.WordWrap
@@ -648,7 +649,7 @@ Window {
 
                                     Text {
                                         width: parent.width
-                                        text: nowPlaying.hasMedia ? nowPlaying.title : "Nothing playing"
+                                        text: nowPlaying.hasMedia ? nowPlaying.title : qsTr("Nothing playing")
                                         color: theme.textPrimary
                                         font.pixelSize: 20
                                         font.bold: true
@@ -656,7 +657,7 @@ Window {
                                     }
                                     Text {
                                         width: parent.width
-                                        text: nowPlaying.hasMedia ? nowPlaying.artist : "Start media in any app to control it here"
+                                        text: nowPlaying.hasMedia ? nowPlaying.artist : qsTr("Start media in any app to control it here")
                                         color: theme.textSecondary
                                         font.pixelSize: 14
                                         elide: Text.ElideRight
@@ -760,7 +761,7 @@ Window {
                         }
 
                         Text {
-                            text: "At a glance"
+                            text: qsTr("At a glance")
                             color: theme.textPrimary
                             font.pixelSize: 16
                             font.bold: true
@@ -773,13 +774,13 @@ Window {
 
                             Repeater {
                                 model: [
-                                    { "name": "Media flyout", "icon": Fluent.play, "key": "media", "page": 1 },
-                                    { "name": "Volume flyout", "icon": Fluent.speaker2, "key": "volume", "page": 6 },
-                                    { "name": "Lock keys", "icon": Fluent.keyboard, "key": "lock", "page": 7 },
-                                    { "name": "Media widget", "icon": Fluent.musicNote, "key": "widget", "page": 4 },
-                                    { "name": "Now Playing", "icon": Fluent.next, "key": "nextup", "page": 1 },
-                                    { "name": "Native OSD override", "icon": Fluent.speaker2, "key": "osd", "page": 6 },
-                                    { "name": "Charger flyout", "icon": Fluent.charge, "key": "charger", "page": 3 }
+                                    { "name": qsTr("Media flyout"), "icon": Fluent.play, "key": "media", "page": 1 },
+                                    { "name": qsTr("Volume flyout"), "icon": Fluent.speaker2, "key": "volume", "page": 6 },
+                                    { "name": qsTr("Lock keys"), "icon": Fluent.keyboard, "key": "lock", "page": 7 },
+                                    { "name": qsTr("Media widget"), "icon": Fluent.musicNote, "key": "widget", "page": 4 },
+                                    { "name": qsTr("Now Playing"), "icon": Fluent.next, "key": "nextup", "page": 1 },
+                                    { "name": qsTr("Native OSD override"), "icon": Fluent.speaker2, "key": "osd", "page": 6 },
+                                    { "name": qsTr("Charger flyout"), "icon": Fluent.charge, "key": "charger", "page": 3 }
                                 ]
                                 delegate: Rectangle {
                                     required property var modelData
@@ -812,7 +813,7 @@ Window {
                                                 elide: Text.ElideRight
                                             }
                                             Text {
-                                                text: homePage.featureOn(modelData.key) ? "On" : "Off"
+                                                text: homePage.featureOn(modelData.key) ? qsTr("On") : qsTr("Off")
                                                 color: homePage.featureOn(modelData.key) ? "#6FCF7F" : theme.textMuted
                                                 font.pixelSize: 11
                                             }
@@ -831,7 +832,7 @@ Window {
 
                         Text {
                             visible: dash.peripheralSections.length > 0
-                            text: "Peripherals"
+                            text: qsTr("Peripherals")
                             color: theme.textPrimary
                             font.pixelSize: 16
                             font.bold: true
@@ -939,7 +940,7 @@ Window {
                                                     }
                                                     Text {
                                                         anchors.horizontalCenter: parent.horizontalCenter
-                                                        text: modelData.percent >= 0 ? modelData.percent + "%" : "Unknown"
+                                                        text: modelData.percent >= 0 ? modelData.percent + "%" : qsTr("Unknown")
                                                         color: theme.textPrimary
                                                         font.pixelSize: 9
                                                     }
@@ -965,7 +966,7 @@ Window {
                         Text {
                             width: parent.width
                             wrapMode: Text.WordWrap
-                            text: "Tip: press a media or volume key, or click the tray icon, to preview the flyouts."
+                            text: qsTr("Tip: press a media or volume key, or click the tray icon, to preview the flyouts.")
                             color: theme.textMuted
                             font.pixelSize: 12
                             topPadding: 4
@@ -979,17 +980,17 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Media flyout"
-                        description: "Show the now-playing flyout on media key presses."
+                        label: qsTr("Media flyout")
+                        description: qsTr("Show the now-playing flyout on media key presses.")
                         available: capabilities.mediaSessionAvailable
-                        unavailableNote: "Unavailable: no system media session was detected on this PC."
+                        unavailableNote: qsTr("Unavailable: no system media session was detected on this PC.")
                         value: settings.mediaFlyoutEnabled
                         onToggled: settings.mediaFlyoutEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Seekbar"
-                        description: "Show the progress bar and elapsed / total time."
+                        label: qsTr("Seekbar")
+                        description: qsTr("Show the progress bar and elapsed / total time.")
                         value: settings.seekbarEnabled
                         onToggled: settings.seekbarEnabled = value
                     }
@@ -997,43 +998,43 @@ Window {
                         visible: settings.seekbarEnabled
                         x: 16
                         width: parent.width - 16
-                        label: "Interactive seekbar"
-                        description: "Allow clicking and dragging the seekbar to seek."
+                        label: qsTr("Interactive seekbar")
+                        description: qsTr("Allow clicking and dragging the seekbar to seek.")
                         value: settings.seekbarInteractive
                         onToggled: settings.seekbarInteractive = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Compact layout"
-                        description: "Use a smaller, denser media flyout."
+                        label: qsTr("Compact layout")
+                        description: qsTr("Use a smaller, denser media flyout.")
                         value: settings.compactLayout
                         onToggled: settings.compactLayout = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Center title and artist"
-                        description: "Center-align the track title and artist text."
+                        label: qsTr("Center title and artist")
+                        description: qsTr("Center-align the track title and artist text.")
                         value: settings.centerTitleArtist
                         onToggled: settings.centerTitleArtist = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Always display"
-                        description: "Keep the media flyout on screen instead of auto-hiding."
+                        label: qsTr("Always display")
+                        description: qsTr("Keep the media flyout on screen instead of auto-hiding.")
                         value: settings.mediaFlyoutAlwaysDisplay
                         onToggled: settings.mediaFlyoutAlwaysDisplay = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Show player name"
-                        description: "Show the name of the app playing the media."
+                        label: qsTr("Show player name")
+                        description: qsTr("Show the name of the app playing the media.")
                         value: settings.playerInfoEnabled
                         onToggled: settings.playerInfoEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Accent from album art"
-                        description: "Tint the flyout accents using the current album art's dominant color."
+                        label: qsTr("Accent from album art")
+                        description: qsTr("Tint the flyout accents using the current album art's dominant color.")
                         value: settings.accentFromArt
                         onToggled: settings.accentFromArt = value
                     }
@@ -1041,108 +1042,108 @@ Window {
                         visible: settings.accentFromArt
                         x: 16
                         width: parent.width - 16
-                        label: "Apply accent app-wide"
-                        description: "Also tint the dashboard and other windows, not just the flyouts."
+                        label: qsTr("Apply accent app-wide")
+                        description: qsTr("Also tint the dashboard and other windows, not just the flyouts.")
                         value: settings.accentFromArtAppWide
                         onToggled: settings.accentFromArtAppWide = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Repeat button"
-                        description: "Show a repeat control on the media flyout."
+                        label: qsTr("Repeat button")
+                        description: qsTr("Show a repeat control on the media flyout.")
                         value: settings.repeatEnabled
                         onToggled: settings.repeatEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Shuffle button"
-                        description: "Show a shuffle control on the media flyout."
+                        label: qsTr("Shuffle button")
+                        description: qsTr("Show a shuffle control on the media flyout.")
                         value: settings.shuffleEnabled
                         onToggled: settings.shuffleEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Now Playing flyout"
-                        description: "Show a compact card with the next track when one auto-advances."
+                        label: qsTr("Now Playing flyout")
+                        description: qsTr("Show a compact card with the next track when one auto-advances.")
                         available: capabilities.mediaSessionAvailable
-                        unavailableNote: "Unavailable: no system media session was detected on this PC."
+                        unavailableNote: qsTr("Unavailable: no system media session was detected on this PC.")
                         value: settings.nextUpEnabled
                         onToggled: settings.nextUpEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Hide during fullscreen"
-                        description: "Suppress flyouts while a fullscreen video game is in the foreground."
+                        label: qsTr("Hide during fullscreen")
+                        description: qsTr("Suppress flyouts while a fullscreen video game is in the foreground.")
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Swipe to dismiss"
-                        description: "Drag a flyout quickly in any direction, with the mouse or a finger, to close it."
+                        label: qsTr("Swipe to dismiss")
+                        description: qsTr("Drag a flyout quickly in any direction, with the mouse or a finger, to close it.")
                         value: settings.flyoutSwipeDismissEnabled
                         onToggled: settings.flyoutSwipeDismissEnabled = value
                     }
 
                     SettingCombo {
                         width: parent.width
-                        label: "Flyout position"
-                        description: "Which side of the monitor flyouts appear on, or docked above the taskbar widget."
-                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        label: qsTr("Flyout position")
+                        description: qsTr("Which side of the monitor flyouts appear on, or docked above the taskbar widget.")
+                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
                         currentIndex: settings.flyoutPosition
                         onActivated: settings.flyoutPosition = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Monitor"
-                        description: "Which display flyouts are shown on."
+                        label: qsTr("Monitor")
+                        description: qsTr("Which display flyouts are shown on.")
                         model: monitors.names
                         currentIndex: settings.flyoutMonitor
                         onActivated: settings.flyoutMonitor = index
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Flyout duration"
-                        description: "How long the media flyout stays on screen."
+                        label: qsTr("Flyout duration")
+                        description: qsTr("How long the media flyout stays on screen.")
                         from: 1000
                         to: 10000
                         stepSize: 500
                         value: settings.flyoutDuration
-                        valueText: (settings.flyoutDuration / 1000).toFixed(1) + " s"
+                        valueText: qsTr("%1 s").arg((settings.flyoutDuration / 1000).toFixed(1))
                         onMoved: settings.flyoutDuration = Math.round(value)
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Animation speed"
-                        description: "Flyout fade-in / fade-out speed."
-                        model: ["Off", "0.5x", "1x", "1.5x", "2x", "3x"]
+                        label: qsTr("Animation speed")
+                        description: qsTr("Flyout fade-in / fade-out speed.")
+                        model: [qsTr("Off"), "0.5x", "1x", "1.5x", "2x", "3x"]
                         currentIndex: settings.flyoutAnimationSpeed
                         onActivated: settings.flyoutAnimationSpeed = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Animation easing"
-                        description: "The easing curve used for flyout animations."
-                        model: ["Linear", "Sine", "Quadratic", "Cubic"]
+                        label: qsTr("Animation easing")
+                        description: qsTr("The easing curve used for flyout animations.")
+                        model: [qsTr("Linear"), qsTr("Sine"), qsTr("Quadratic"), qsTr("Cubic")]
                         currentIndex: settings.flyoutAnimationEasingStyle
                         onActivated: settings.flyoutAnimationEasingStyle = index
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Now Playing duration"
-                        description: "How long the now playing flyout stays on screen."
+                        label: qsTr("Now Playing duration")
+                        description: qsTr("How long the now playing flyout stays on screen.")
                         from: 1000
                         to: 10000
                         stepSize: 500
                         value: settings.nextUpDuration
-                        valueText: (settings.nextUpDuration / 1000).toFixed(1) + " s"
+                        valueText: qsTr("%1 s").arg((settings.nextUpDuration / 1000).toFixed(1))
                         onMoved: settings.nextUpDuration = Math.round(value)
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Now Playing style"
-                        description: "How the now playing flyout is laid out."
-                        model: ["Now playing card", "Compact pill"]
+                        label: qsTr("Now Playing style")
+                        description: qsTr("How the now playing flyout is laid out.")
+                        model: [qsTr("Now playing card"), qsTr("Compact pill")]
                         currentIndex: settings.nextUpStyle
                         onActivated: settings.nextUpStyle = index
                     }
@@ -1155,52 +1156,52 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Volume flyout"
-                        description: "Show the volume flyout on volume key presses."
+                        label: qsTr("Volume flyout")
+                        description: qsTr("Show the volume flyout on volume key presses.")
                         available: capabilities.audioAvailable
-                        unavailableNote: "Unavailable: no audio output device was detected."
+                        unavailableNote: qsTr("Unavailable: no audio output device was detected.")
                         value: settings.volumeFlyoutEnabled
                         onToggled: settings.volumeFlyoutEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Override native volume OSD"
-                        description: "Replace the built-in Windows volume overlay with this one."
+                        label: qsTr("Override native volume OSD")
+                        description: qsTr("Replace the built-in Windows volume overlay with this one.")
                         value: settings.overrideNativeOsd
                         onToggled: settings.overrideNativeOsd = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "App mixer in volume flyout"
-                        description: "Show a button on the volume flyout to expand a per-app volume mixer."
+                        label: qsTr("App mixer in volume flyout")
+                        description: qsTr("Show a button on the volume flyout to expand a per-app volume mixer.")
                         value: settings.volumeFlyoutMixerEnabled
                         onToggled: settings.volumeFlyoutMixerEnabled = value
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Volume flyout position"
-                        description: "Place the volume flyout independently of the media flyout."
-                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        label: qsTr("Volume flyout position")
+                        description: qsTr("Place the volume flyout independently of the media flyout.")
+                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
                         currentIndex: settings.volumeFlyoutPosition
                         onActivated: settings.volumeFlyoutPosition = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Volume flyout monitor"
-                        description: "Which display the volume flyout is shown on."
+                        label: qsTr("Volume flyout monitor")
+                        description: qsTr("Which display the volume flyout is shown on.")
                         model: monitors.names
                         currentIndex: settings.volumeFlyoutMonitor
                         onActivated: settings.volumeFlyoutMonitor = index
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Volume flyout duration"
-                        description: "How long the volume flyout stays on screen."
+                        label: qsTr("Volume flyout duration")
+                        description: qsTr("How long the volume flyout stays on screen.")
                         from: 1000
                         to: 10000
                         stepSize: 500
                         value: settings.volumeFlyoutDuration
-                        valueText: (settings.volumeFlyoutDuration / 1000).toFixed(1) + " s"
+                        valueText: qsTr("%1 s").arg((settings.volumeFlyoutDuration / 1000).toFixed(1))
                         onMoved: settings.volumeFlyoutDuration = Math.round(value)
                     }
                 }
@@ -1212,53 +1213,53 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Lock key indicators"
-                        description: "Show a flyout when Caps, Num, or Scroll lock is toggled."
+                        label: qsTr("Lock key indicators")
+                        description: qsTr("Show a flyout when Caps, Num, or Scroll lock is toggled.")
                         available: capabilities.lockKeysAvailable
-                        unavailableNote: "Unavailable: the keyboard hook could not be installed."
+                        unavailableNote: qsTr("Unavailable: the keyboard hook could not be installed.")
                         value: settings.lockKeysEnabled
                         onToggled: settings.lockKeysEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Caps Lock"
+                        label: qsTr("Caps Lock")
                         value: settings.lockKeysCapsEnabled
                         onToggled: settings.lockKeysCapsEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Num Lock"
+                        label: qsTr("Num Lock")
                         value: settings.lockKeysNumEnabled
                         onToggled: settings.lockKeysNumEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Scroll Lock"
+                        label: qsTr("Scroll Lock")
                         value: settings.lockKeysScrollEnabled
                         onToggled: settings.lockKeysScrollEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Insert"
+                        label: qsTr("Insert")
                         value: settings.lockKeysInsertEnabled
                         onToggled: settings.lockKeysInsertEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Bold text"
-                        description: "Use a bold font for the key name."
+                        label: qsTr("Bold text")
+                        description: qsTr("Use a bold font for the key name.")
                         value: settings.lockKeysBoldUi
                         onToggled: settings.lockKeysBoldUi = value
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Duration"
-                        description: "How long the lock keys flyout stays on screen."
+                        label: qsTr("Duration")
+                        description: qsTr("How long the lock keys flyout stays on screen.")
                         from: 1000
                         to: 10000
                         stepSize: 500
                         value: settings.lockKeysDuration
-                        valueText: (settings.lockKeysDuration / 1000).toFixed(1) + " s"
+                        valueText: qsTr("%1 s").arg((settings.lockKeysDuration / 1000).toFixed(1))
                         onMoved: settings.lockKeysDuration = Math.round(value)
                     }
                 }
@@ -1270,22 +1271,22 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Taskbar widget"
-                        description: "Dock a compact now-playing widget on the taskbar near the tray."
+                        label: qsTr("Taskbar widget")
+                        description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
                         value: settings.taskbarWidgetEnabled
                         onToggled: settings.taskbarWidgetEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Widget transport controls"
-                        description: "Show previous / play-pause / next buttons on the widget."
+                        label: qsTr("Widget transport controls")
+                        description: qsTr("Show previous / play-pause / next buttons on the widget.")
                         value: settings.taskbarWidgetControlsEnabled
                         onToggled: settings.taskbarWidgetControlsEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Pause all button"
-                        description: "Show a button that pauses every playing media source at once."
+                        label: qsTr("Pause all button")
+                        description: qsTr("Show a button that pauses every playing media source at once.")
                         value: settings.taskbarWidgetPauseAllEnabled
                         onToggled: settings.taskbarWidgetPauseAllEnabled = value
                     }
@@ -1293,56 +1294,56 @@ Window {
                         visible: settings.taskbarWidgetPauseAllEnabled
                         x: 16
                         width: parent.width - 16
-                        label: "Play all after pausing"
-                        description: "When every source is paused, the same button becomes Play all and resumes them. When off, the button hides until something plays again."
+                        label: qsTr("Play all after pausing")
+                        description: qsTr("When every source is paused, the same button becomes Play all and resumes them. When off, the button hides until something plays again.")
                         value: settings.taskbarWidgetPlayAllEnabled
                         onToggled: settings.taskbarWidgetPlayAllEnabled = value
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Widget side"
-                        description: "Which part of the taskbar the widget docks to."
-                        model: ["Left", "Center", "Right"]
+                        label: qsTr("Widget side")
+                        description: qsTr("Which part of the taskbar the widget docks to.")
+                        model: [qsTr("Left"), qsTr("Center"), qsTr("Right")]
                         currentIndex: settings.taskbarWidgetSide
                         onActivated: settings.taskbarWidgetSide = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Widget layout"
+                        label: qsTr("Widget layout")
                         description: settings.taskbarWidgetLayout === 1
-                            ? "Media and peripheral widgets share one slot. Scroll over the widget to page between media, 2.4 GHz, Bluetooth and wired devices."
-                            : "Media and peripheral widgets sit next to each other on the taskbar."
-                        model: ["Side by side", "Stack"]
+                            ? qsTr("Media and peripheral widgets share one slot. Scroll over the widget to page between media, 2.4 GHz, Bluetooth and wired devices.")
+                            : qsTr("Media and peripheral widgets sit next to each other on the taskbar.")
+                        model: [qsTr("Side by side"), qsTr("Stack")]
                         currentIndex: settings.taskbarWidgetLayout
                         onActivated: settings.taskbarWidgetLayout = index
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Pause overlay"
-                        description: "Dim the album art with a pause glyph when playback is paused."
+                        label: qsTr("Pause overlay")
+                        description: qsTr("Dim the album art with a pause glyph when playback is paused.")
                         value: settings.taskbarWidgetShowPauseOverlay
                         onToggled: settings.taskbarWidgetShowPauseOverlay = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Scroll long titles"
-                        description: "Marquee-scroll the track title when it is too long to fit."
+                        label: qsTr("Scroll long titles")
+                        description: qsTr("Marquee-scroll the track title when it is too long to fit.")
                         value: settings.taskbarWidgetScrollingEnabled
                         onToggled: settings.taskbarWidgetScrollingEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Adapt colors to the taskbar"
-                        description: "Read the taskbar next to the widgets and switch between light and dark text. Keeps the widgets readable over a transparent taskbar or a live wallpaper."
+                        label: qsTr("Adapt colors to the taskbar")
+                        description: qsTr("Read the taskbar next to the widgets and switch between light and dark text. Keeps the widgets readable over a transparent taskbar or a live wallpaper.")
                         value: settings.taskbarWidgetAdaptiveColors
                         onToggled: settings.taskbarWidgetAdaptiveColors = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Audio visualizer"
-                        description: "Show a live spectrum of the system audio behind the widget."
+                        label: qsTr("Audio visualizer")
+                        description: qsTr("Show a live spectrum of the system audio behind the widget.")
                         available: capabilities.audioAvailable
-                        unavailableNote: "Unavailable: no audio output device was detected."
+                        unavailableNote: qsTr("Unavailable: no audio output device was detected.")
                         value: settings.taskbarVisualizerEnabled
                         onToggled: settings.taskbarVisualizerEnabled = value
                     }
@@ -1350,9 +1351,9 @@ Window {
                         visible: settings.taskbarVisualizerEnabled
                         x: 16
                         width: parent.width - 16
-                        label: "Visualizer style"
-                        description: "How the audio is drawn behind the widget."
-                        model: ["Bars", "Radial", "Waveform", "Particles"]
+                        label: qsTr("Visualizer style")
+                        description: qsTr("How the audio is drawn behind the widget.")
+                        model: [qsTr("Bars"), qsTr("Radial"), qsTr("Waveform"), qsTr("Particles")]
                         currentIndex: settings.visualizerStyle
                         onActivated: settings.visualizerStyle = index
                     }
@@ -1360,37 +1361,37 @@ Window {
                         visible: settings.taskbarVisualizerEnabled && settings.visualizerStyle === 0
                         x: 16
                         width: parent.width - 16
-                        label: "Mirror the equalizer"
-                        description: "Grow the bars symmetrically from the middle instead of the bottom."
+                        label: qsTr("Mirror the equalizer")
+                        description: qsTr("Grow the bars symmetrically from the middle instead of the bottom.")
                         value: settings.taskbarVisualizerCentered
                         onToggled: settings.taskbarVisualizerCentered = value
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Widget monitor"
-                        description: "Which display's taskbar the widget docks to."
+                        label: qsTr("Widget monitor")
+                        description: qsTr("Which display's taskbar the widget docks to.")
                         model: monitors.names
                         currentIndex: settings.taskbarWidgetMonitor
                         onActivated: settings.taskbarWidgetMonitor = index
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Widget offset"
+                        label: qsTr("Widget offset")
                         description: settings.taskbarWidgetSide === 1
-                            ? "Shift the centered widget left or right along the taskbar."
-                            : "Fine-tune the widget's horizontal position on the taskbar."
+                            ? qsTr("Shift the centered widget left or right along the taskbar.")
+                            : qsTr("Fine-tune the widget's horizontal position on the taskbar.")
                         from: settings.taskbarWidgetSide === 1 ? -600 : 0
                         to: 600
                         stepSize: 10
                         value: settings.taskbarWidgetOffset
-                        valueText: settings.taskbarWidgetOffset + " px"
+                        valueText: qsTr("%1 px").arg(settings.taskbarWidgetOffset)
                         onMoved: settings.taskbarWidgetOffset = Math.round(value)
                     }
 
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Battery rings for your peripherals are configured on the Peripheral Widget page."
+                        text: qsTr("Battery rings for your peripherals are configured on the Peripheral Widget page.")
                         color: theme.textMuted
                         font.pixelSize: 12
                         topPadding: 8
@@ -1404,16 +1405,16 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Peripherals widget"
-                        description: "Dock a battery widget for selected wireless peripherals on the taskbar."
+                        label: qsTr("Peripherals widget")
+                        description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
                         value: settings.peripheralsWidgetEnabled
                         onToggled: settings.peripheralsWidgetEnabled = value
                     }
                     SettingRow {
                         visible: settings.peripheralsWidgetEnabled
                         width: parent.width
-                        label: "Match app accent"
-                        description: "Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level."
+                        label: qsTr("Match app accent")
+                        description: qsTr("Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level.")
                         value: settings.batteryRingUseAccent
                         onToggled: settings.batteryRingUseAccent = value
                     }
@@ -1422,7 +1423,7 @@ Window {
                         visible: settings.peripheralsWidgetEnabled
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Choose which detected peripherals MediaFlyouts should show. Hidden devices are left out of the widget, the home page and the flyouts:"
+                        text: qsTr("Choose which detected peripherals MediaFlyouts should show. Hidden devices are left out of the widget, the home page and the flyouts:")
                         color: theme.textSecondary
                         font.pixelSize: 12
                         topPadding: 4
@@ -1431,7 +1432,7 @@ Window {
                         visible: settings.peripheralsWidgetEnabled && dash.wirelessDevices.length === 0
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "No peripherals are currently connected."
+                        text: qsTr("No peripherals are currently connected.")
                         color: theme.textMuted
                         font.pixelSize: 12
                     }
@@ -1442,14 +1443,14 @@ Window {
                             width: parent.width
                             deviceName: modelData.name
                             description: {
-                                var text = modelData.percent >= 0 ? "Currently at " + modelData.percent + "%" : "Battery level unknown"
+                                var text = modelData.percent >= 0 ? qsTr("Currently at %1%").arg(modelData.percent) : qsTr("Battery level unknown")
                                 var parts = []
                                 for(var i = 0; i < modelData.components.length; i++)
                                     parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
                                 if(parts.length > 1)
                                     text += " (" + parts.join(", ") + ")"
                                 var link = DeviceIcons.transport(modelData.connectionKind)
-                                return link ? text + ", over " + link + "." : text + "."
+                                return link ? qsTr("%1, over %2.").arg(text).arg(link) : text + "."
                             }
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
@@ -1465,8 +1466,8 @@ Window {
                     SettingRow {
                         visible: settings.peripheralsWidgetEnabled
                         width: parent.width
-                        label: "Wired devices"
-                        description: "List plugged-in USB peripherals."
+                        label: qsTr("Wired devices")
+                        description: qsTr("List plugged-in USB peripherals.")
                         value: settings.peripheralsWidgetWiredEnabled
                         onToggled: settings.peripheralsWidgetWiredEnabled = value
                     }
@@ -1475,7 +1476,7 @@ Window {
                                  && dash.wiredDevices.length === 0
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "No wired peripherals are currently plugged in."
+                        text: qsTr("No wired peripherals are currently plugged in.")
                         color: theme.textMuted
                         font.pixelSize: 12
                     }
@@ -1486,7 +1487,7 @@ Window {
                             required property var modelData
                             width: parent.width
                             deviceName: modelData.name
-                            description: "Plugged in over USB."
+                            description: qsTr("Plugged in over USB.")
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
                         }
@@ -1495,7 +1496,7 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page."
+                        text: qsTr("Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.")
                         color: theme.textMuted
                         font.pixelSize: 12
                         topPadding: 8
@@ -1509,85 +1510,85 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Peripheral flyout"
-                        description: "Show a flyout when a peripheral connects, disconnects or runs low on battery."
+                        label: qsTr("Peripheral flyout")
+                        description: qsTr("Show a flyout when a peripheral connects, disconnects or runs low on battery.")
                         value: settings.peripheralFlyoutEnabled
                         onToggled: settings.peripheralFlyoutEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "On connect"
-                        description: "Announce a peripheral when it connects."
+                        label: qsTr("On connect")
+                        description: qsTr("Announce a peripheral when it connects.")
                         value: settings.peripheralFlyoutOnConnect
                         onToggled: settings.peripheralFlyoutOnConnect = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "On disconnect"
-                        description: "Announce a peripheral when it disconnects."
+                        label: qsTr("On disconnect")
+                        description: qsTr("Announce a peripheral when it disconnects.")
                         value: settings.peripheralFlyoutOnDisconnect
                         onToggled: settings.peripheralFlyoutOnDisconnect = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "On low battery"
-                        description: "Warn once when a battery drops below 20%, and again below 10%."
+                        label: qsTr("On low battery")
+                        description: qsTr("Warn once when a battery drops below 20%, and again below 10%.")
                         value: settings.peripheralFlyoutOnLowBattery
                         onToggled: settings.peripheralFlyoutOnLowBattery = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "On charging"
-                        description: "Announce when a peripheral starts or stops charging."
+                        label: qsTr("On charging")
+                        description: qsTr("Announce when a peripheral starts or stops charging.")
                         value: settings.peripheralFlyoutOnCharging
                         onToggled: settings.peripheralFlyoutOnCharging = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Wired devices"
-                        description: "Announce USB peripherals as they are plugged in or removed."
+                        label: qsTr("Wired devices")
+                        description: qsTr("Announce USB peripherals as they are plugged in or removed.")
                         value: settings.peripheralFlyoutOnWired
                         onToggled: settings.peripheralFlyoutOnWired = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Low battery notification"
-                        description: "Also show a tray notification for a low battery, so it isn't missed."
+                        label: qsTr("Low battery notification")
+                        description: qsTr("Also show a tray notification for a low battery, so it isn't missed.")
                         value: settings.peripheralLowBatteryToast
                         onToggled: settings.peripheralLowBatteryToast = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Hide during fullscreen"
-                        description: "Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts."
+                        label: qsTr("Hide during fullscreen")
+                        description: qsTr("Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.")
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Peripheral flyout position"
-                        description: "Place the peripheral flyout independently of the other flyouts."
-                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        label: qsTr("Peripheral flyout position")
+                        description: qsTr("Place the peripheral flyout independently of the other flyouts.")
+                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
                         currentIndex: settings.peripheralFlyoutPosition
                         onActivated: settings.peripheralFlyoutPosition = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Peripheral flyout monitor"
-                        description: "Which display the peripheral flyout is shown on."
+                        label: qsTr("Peripheral flyout monitor")
+                        description: qsTr("Which display the peripheral flyout is shown on.")
                         model: monitors.names
                         currentIndex: settings.peripheralFlyoutMonitor
                         onActivated: settings.peripheralFlyoutMonitor = index
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Peripheral flyout duration"
-                        description: "How long the peripheral flyout stays on screen."
+                        label: qsTr("Peripheral flyout duration")
+                        description: qsTr("How long the peripheral flyout stays on screen.")
                         from: 1000
                         to: 10000
                         stepSize: 500
                         value: settings.peripheralFlyoutDuration
-                        valueText: (settings.peripheralFlyoutDuration / 1000).toFixed(1) + " s"
+                        valueText: qsTr("%1 s").arg((settings.peripheralFlyoutDuration / 1000).toFixed(1))
                         onMoved: settings.peripheralFlyoutDuration = Math.round(value)
                     }
                 }
@@ -1599,61 +1600,61 @@ Window {
 
                     SettingRow {
                         width: parent.width
-                        label: "Charger flyout"
-                        description: "Show a flyout when the charger is plugged in or unplugged."
+                        label: qsTr("Charger flyout")
+                        description: qsTr("Show a flyout when the charger is plugged in or unplugged.")
                         available: capabilities.chargerAvailable
-                        unavailableNote: "Unavailable: this PC has no battery, so it never changes power source."
+                        unavailableNote: qsTr("Unavailable: this PC has no battery, so it never changes power source.")
                         value: settings.chargerFlyoutEnabled
                         onToggled: settings.chargerFlyoutEnabled = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "On plug in"
-                        description: "Announce when the charger is connected."
+                        label: qsTr("On plug in")
+                        description: qsTr("Announce when the charger is connected.")
                         available: capabilities.chargerAvailable
                         value: settings.chargerFlyoutOnPlug
                         onToggled: settings.chargerFlyoutOnPlug = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "On unplug"
-                        description: "Announce when the charger is disconnected."
+                        label: qsTr("On unplug")
+                        description: qsTr("Announce when the charger is disconnected.")
                         available: capabilities.chargerAvailable
                         value: settings.chargerFlyoutOnUnplug
                         onToggled: settings.chargerFlyoutOnUnplug = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Hide during fullscreen"
-                        description: "Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts."
+                        label: qsTr("Hide during fullscreen")
+                        description: qsTr("Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.")
                         value: settings.disableOnFullscreen
                         onToggled: settings.disableOnFullscreen = value
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Charger flyout position"
-                        description: "Place the charger flyout independently of the other flyouts."
-                        model: ["Top left", "Top center", "Top right", "Bottom left", "Bottom center", "Bottom right", "Above taskbar widget"]
+                        label: qsTr("Charger flyout position")
+                        description: qsTr("Place the charger flyout independently of the other flyouts.")
+                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
                         currentIndex: settings.chargerFlyoutPosition
                         onActivated: settings.chargerFlyoutPosition = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Charger flyout monitor"
-                        description: "Which display the charger flyout is shown on."
+                        label: qsTr("Charger flyout monitor")
+                        description: qsTr("Which display the charger flyout is shown on.")
                         model: monitors.names
                         currentIndex: settings.chargerFlyoutMonitor
                         onActivated: settings.chargerFlyoutMonitor = index
                     }
                     SettingSlider {
                         width: parent.width
-                        label: "Charger flyout duration"
-                        description: "How long the charger flyout stays on screen."
+                        label: qsTr("Charger flyout duration")
+                        description: qsTr("How long the charger flyout stays on screen.")
                         from: 1000
                         to: 10000
                         stepSize: 500
                         value: settings.chargerFlyoutDuration
-                        valueText: (settings.chargerFlyoutDuration / 1000).toFixed(1) + " s"
+                        valueText: qsTr("%1 s").arg((settings.chargerFlyoutDuration / 1000).toFixed(1))
                         onMoved: settings.chargerFlyoutDuration = Math.round(value)
                     }
                 }
@@ -1665,9 +1666,9 @@ Window {
 
                     SettingCombo {
                         width: parent.width
-                        label: "Filter mode"
-                        description: "Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps."
-                        model: ["Off", "Blacklist (hide these)", "Whitelist (show only these)"]
+                        label: qsTr("Filter mode")
+                        description: qsTr("Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.")
+                        model: [qsTr("Off"), qsTr("Blacklist (hide these)"), qsTr("Whitelist (show only these)")]
                         currentIndex: settings.filterMode
                         onActivated: settings.filterMode = index
                     }
@@ -1681,8 +1682,8 @@ Window {
                             id: filterInput
                             width: parent.width - addBtn.width - 8
                             placeholderText: nowPlaying.playerName.length > 0
-                                ? "App name (e.g. " + nowPlaying.playerName + ")"
-                                : "App name (e.g. Spotify, chrome)"
+                                ? qsTr("App name (e.g. %1)").arg(nowPlaying.playerName)
+                                : qsTr("App name (e.g. Spotify, chrome)")
                             color: theme.textPrimary
                             placeholderTextColor: theme.textMuted
                             background: Rectangle {
@@ -1694,7 +1695,7 @@ Window {
                         }
                         Button {
                             id: addBtn
-                            text: "Add"
+                            text: qsTr("Add")
                             onClicked: { settings.addFilterEntry(filterInput.text); filterInput.text = "" }
                         }
                     }
@@ -1702,7 +1703,7 @@ Window {
                     Text {
                         visible: settings.filterMode !== 0 && nowPlaying.playerName.length > 0
                         width: parent.width
-                        text: "Now playing app: " + nowPlaying.playerName
+                        text: qsTr("Now playing app: %1").arg(nowPlaying.playerName)
                         color: theme.textMuted
                         font.pixelSize: 12
                     }
@@ -1714,7 +1715,7 @@ Window {
 
                         Text {
                             visible: settings.filterList.length === 0
-                            text: "No apps added yet."
+                            text: qsTr("No apps added yet.")
                             color: theme.textMuted
                             font.pixelSize: 12
                         }
@@ -1764,18 +1765,31 @@ Window {
                     spacing: 12
 
                     SettingCombo {
+                        id: languageCombo
                         width: parent.width
-                        label: "Theme"
-                        description: "Match the system theme, or force light or dark."
-                        model: ["Use system setting", "Light", "Dark"]
+                        label: qsTr("Language")
+                        description: qsTr("Pick the language for flyouts, widgets and this dashboard.")
+                        // Codes stay fixed. Only the first label is translated: it names the system default.
+                        readonly property var languageCodes: i18n.languages.map(function(entry) { return entry.code })
+                        model: i18n.languages.map(function(entry) {
+                            return entry.code === "" ? qsTr("System default") : entry.name
+                        })
+                        currentIndex: Math.max(0, languageCodes.indexOf(settings.language))
+                        onActivated: settings.language = languageCodes[index]
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: qsTr("Theme")
+                        description: qsTr("Match the system theme, or force light or dark.")
+                        model: [qsTr("Use system setting"), qsTr("Light"), qsTr("Dark")]
                         currentIndex: settings.appTheme
                         onActivated: settings.appTheme = index
                     }
                     SettingCombo {
                         width: parent.width
-                        label: "Accent color"
-                        description: "Use the built-in accent, match the Windows accent, or pick a custom color."
-                        model: ["Default", "Match system", "Custom"]
+                        label: qsTr("Accent color")
+                        description: qsTr("Use the built-in accent, match the Windows accent, or pick a custom color.")
+                        model: [qsTr("Default"), qsTr("Match system"), qsTr("Custom")]
                         currentIndex: settings.accentMode
                         onActivated: settings.accentMode = index
                     }
@@ -1793,7 +1807,7 @@ Window {
                             anchors.verticalCenter: parent.verticalCenter
                         }
                         Button {
-                            text: "Choose color…"
+                            text: qsTr("Choose color…")
                             anchors.verticalCenter: parent.verticalCenter
                             onClicked: {
                                 accentDialog.selectedColor = theme.accent
@@ -1803,22 +1817,22 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Launch on startup"
-                        description: "Start MediaFlyouts automatically when you sign in."
+                        label: qsTr("Launch on startup")
+                        description: qsTr("Start MediaFlyouts automatically when you sign in.")
                         value: settings.launchOnStartup
                         onToggled: settings.launchOnStartup = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Tray left-click shows media flyout"
-                        description: "Left-clicking the tray icon shows the media flyout instead of the dashboard."
+                        label: qsTr("Tray left-click shows media flyout")
+                        description: qsTr("Left-clicking the tray icon shows the media flyout instead of the dashboard.")
                         value: settings.trayLeftClickShowsFlyout
                         onToggled: settings.trayLeftClickShowsFlyout = value
                     }
                     SettingRow {
                         width: parent.width
-                        label: "Hide tray icon"
-                        description: "Hide the notification-area icon (re-launch the app to reopen the dashboard)."
+                        label: qsTr("Hide tray icon")
+                        description: qsTr("Hide the notification-area icon (re-launch the app to reopen the dashboard).")
                         value: settings.trayIconHidden
                         onToggled: settings.trayIconHidden = value
                     }
@@ -1827,17 +1841,17 @@ Window {
                         spacing: 12
                         topPadding: 8
                         Button {
-                            text: "Export settings…"
+                            text: qsTr("Export settings…")
                             onClicked: exportDialog.open()
                         }
                         Button {
-                            text: "Import settings…"
+                            text: qsTr("Import settings…")
                             onClicked: importDialog.open()
                         }
                     }
 
                     Text {
-                        text: "Restore defaults"
+                        text: qsTr("Restore defaults")
                         color: theme.textPrimary
                         font.pixelSize: 15
                         font.bold: true
@@ -1846,14 +1860,14 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Puts every setting back to its factory value, including flyout positions, widget options, player filters and peripheral names. Export your settings first if you may want them back. The first-run wizard does not show again."
+                        text: qsTr("Puts every setting back to its factory value, including flyout positions, widget options, player filters and peripheral names. Export your settings first if you may want them back. The first-run wizard does not show again.")
                         color: theme.textSecondary
                         font.pixelSize: 13
                     }
                     Row {
                         spacing: 12
                         Button {
-                            text: "Restore default settings…"
+                            text: qsTr("Restore default settings…")
                             onClicked: resetConfirm.open()
                         }
                         Text {
@@ -1886,7 +1900,7 @@ Window {
                                 font.bold: true
                             }
                             Text {
-                                text: "Version " + updateChecker.currentVersion + " · " + updateChecker.installKindLabel
+                                text: qsTr("Version %1").arg(updateChecker.currentVersion) + " · " + updateChecker.installKindLabel
                                 color: theme.textMuted
                                 font.pixelSize: 12
                             }
@@ -1896,7 +1910,7 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Fluent-style media, volume, lock-key and peripheral overlays for Windows, built with Qt 6."
+                        text: qsTr("Fluent-style media, volume, lock-key and peripheral overlays for Windows, built with Qt 6.")
                         color: theme.textSecondary
                         font.pixelSize: 13
                         topPadding: 4
@@ -1906,7 +1920,7 @@ Window {
                         spacing: 12
                         topPadding: 8
                         Button {
-                            text: "Check for updates"
+                            text: qsTr("Check for updates")
                             enabled: !updateChecker.checking
                             onClicked: {
                                 settings.skippedUpdateVersion = ""
@@ -1915,7 +1929,7 @@ Window {
                         }
                         Button {
                             visible: updateChecker.updateAvailable
-                            text: "Get " + updateChecker.latestVersion
+                            text: qsTr("Get %1").arg(updateChecker.latestVersion)
                             onClicked: updateChecker.notifyUpdate()
                         }
                         Text {
@@ -1931,24 +1945,24 @@ Window {
                         width: parent.width
                         wrapMode: Text.WordWrap
                         text: updateChecker.installKind === "store"
-                              ? "This copy updates through the Microsoft Store."
+                              ? qsTr("This copy updates through the Microsoft Store.")
                               : updateChecker.installKind === "portable"
-                              ? "Portable version: download the new ZIP from the release page and replace the app folder."
-                              : "The installer downloads inside the app. Click Install when it is ready. Your settings are kept."
+                              ? qsTr("Portable version: download the new ZIP from the release page and replace the app folder.")
+                              : qsTr("The installer downloads inside the app. Click Install when it is ready. Your settings are kept.")
                         color: theme.textTertiary
                         font.pixelSize: 12
                     }
 
                     SettingRow {
                         width: parent.width
-                        label: "Check for updates on launch"
-                        description: "Automatically look for a newer release shortly after startup."
+                        label: qsTr("Check for updates on launch")
+                        description: qsTr("Automatically look for a newer release shortly after startup.")
                         value: settings.autoCheckUpdates
                         onToggled: settings.autoCheckUpdates = value
                     }
 
                     Text {
-                        text: "Report a problem"
+                        text: qsTr("Report a problem")
                         color: theme.textPrimary
                         font.pixelSize: 15
                         font.bold: true
@@ -1957,24 +1971,24 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Create a report with the app log, your settings and system details, then attach it to a new GitHub issue. The issue page opens with a blank template. Nothing is sent until you post the issue. You can open the report and check its contents first."
+                        text: qsTr("Create a report with the app log, your settings and system details, then attach it to a new GitHub issue. The issue page opens with a blank template. Nothing is sent until you post the issue. You can open the report and check its contents first.")
                         color: theme.textSecondary
                         font.pixelSize: 13
                     }
                     Row {
                         spacing: 12
                         Button {
-                            text: "Create error report"
+                            text: qsTr("Create error report")
                             onClicked: errorReporter.createReport()
                         }
                         Button {
                             visible: errorReporter.lastReportPath !== ""
-                            text: "Show report"
+                            text: qsTr("Show report")
                             onClicked: errorReporter.revealReport()
                         }
                         Button {
                             visible: errorReporter.lastReportPath !== ""
-                            text: "Open new issue"
+                            text: qsTr("Open new issue")
                             onClicked: errorReporter.openIssuePage()
                         }
                     }
@@ -1989,7 +2003,7 @@ Window {
                     }
 
                     Text {
-                        text: "Restart"
+                        text: qsTr("Restart")
                         color: theme.textPrimary
                         font.pixelSize: 15
                         font.bold: true
@@ -1998,14 +2012,14 @@ Window {
                     Text {
                         width: parent.width
                         wrapMode: Text.WordWrap
-                        text: "Saves an error report, then closes and reopens the app. Use it when a flyout or widget looks wrong: the report keeps the log of this session so the problem can be traced after the restart."
+                        text: qsTr("Saves an error report, then closes and reopens the app. Use it when a flyout or widget looks wrong: the report keeps the log of this session so the problem can be traced after the restart.")
                         color: theme.textSecondary
                         font.pixelSize: 13
                     }
                     Row {
                         spacing: 12
                         Button {
-                            text: "Save report and restart"
+                            text: qsTr("Save report and restart")
                             onClicked: restarter.restart()
                         }
                         Text {
@@ -2050,22 +2064,22 @@ Window {
 
     FileDialog {
         id: exportDialog
-        title: "Export settings"
+        title: qsTr("Export settings")
         fileMode: FileDialog.SaveFile
-        nameFilters: ["Settings files (*.ini)"]
+        nameFilters: [qsTr("Settings files (*.ini)")]
         defaultSuffix: "ini"
         onAccepted: settings.exportTo(selectedFile)
     }
     FileDialog {
         id: importDialog
-        title: "Import settings"
+        title: qsTr("Import settings")
         fileMode: FileDialog.OpenFile
-        nameFilters: ["Settings files (*.ini)"]
+        nameFilters: [qsTr("Settings files (*.ini)")]
         onAccepted: settings.importFrom(selectedFile)
     }
     ColorDialog {
         id: accentDialog
-        title: "Choose accent color"
+        title: qsTr("Choose accent color")
         onAccepted: settings.customAccent = selectedColor
     }
 
@@ -2078,7 +2092,7 @@ Window {
     function resetToDefaults() {
         log.info("Dashboard: user restored default settings")
         settings.resetToDefaults()
-        dash.resetStatus = "Defaults restored."
+        dash.resetStatus = qsTr("Defaults restored.")
         resetStatusTimer.restart()
     }
 
@@ -2099,7 +2113,7 @@ Window {
         contentItem: Column {
             spacing: 12
             Text {
-                text: "Restore default settings?"
+                text: qsTr("Restore default settings?")
                 color: theme.textPrimary
                 font.pixelSize: 15
                 font.bold: true
@@ -2107,7 +2121,7 @@ Window {
             Text {
                 width: parent.width
                 wrapMode: Text.WordWrap
-                text: "All settings go back to their factory values. This cannot be undone."
+                text: qsTr("All settings go back to their factory values. This cannot be undone.")
                 color: theme.textSecondary
                 font.pixelSize: 13
             }
@@ -2116,11 +2130,11 @@ Window {
                 spacing: 8
                 topPadding: 4
                 Button {
-                    text: "Cancel"
+                    text: qsTr("Cancel")
                     onClicked: resetConfirm.close()
                 }
                 Button {
-                    text: "Restore defaults"
+                    text: qsTr("Restore defaults")
                     onClicked: {
                         resetConfirm.close()
                         dash.resetToDefaults()

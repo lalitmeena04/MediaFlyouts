@@ -42,11 +42,11 @@ QtObject {
         switch(connectionKind) {
         case "bluetooth":
         case "ble":
-            return "Bluetooth"
+            return qsTr("Bluetooth")
         case "wireless":
-            return "2.4 GHz"
+            return qsTr("2.4 GHz")
         case "usb":
-            return "USB"
+            return qsTr("USB")
         }
         return ""
     }
