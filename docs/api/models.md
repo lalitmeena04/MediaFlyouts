@@ -96,6 +96,48 @@ into a degraded state at startup.
 - `chargerAvailable` is excluded from `degraded`: a desktop with no battery is
   normal, not a failure.
 
+## Entitlement (`namespace mf`)
+
+The pure core of the Pro paywall (see
+[dev-notes/PRO-PAYWALL-PLAN.md](../../dev-notes/PRO-PAYWALL-PLAN.md)). No Store
+or Windows dependency, so every branch is unit-tested.
+
+- `Tier` (`Free`, `Trial`, `Pro`), `ProFeature` (the gated features) and
+  `EntitlementSource` (why a tier was granted: `AddOn`, `Grandfathered`,
+  `StoreTrial`, `LocalTrial`, `Cached`, `Expired`, `Unlocked`).
+- `resolveEntitlement(EntitlementInputs)` takes the install kind, what the
+  Store answered (`StoreFacts`: add-on licensed, acquisition date), the last
+  `EntitlementCache`, the `EntitlementPolicy` (gating flag, cutover, trial
+  days) and `now`. It fails open: non-Store installs, gating off or a missing
+  cutover are `Pro`. An acquisition before the cutover is grandfathered. A
+  trial runs `trialDays` from the acquisition date, or from the first run when
+  the Store does not answer. The clock cannot move backwards:
+  `effectiveNow = max(now, cache.lastSeen)`.
+- `cacheFrom(state)` is what a caller persists after a resolution.
+- `isUnlocked(feature, tier)`, `trialDaysLeft(now, end)`, stable ids
+  (`tierId`, `sourceId`, `featureId`, `featureFromId`, `allFeatureIds`) for
+  QML and logs, and `describeEntitlement(state)` for one-line diagnostics.
+
+## EntitlementStore (`namespace mf`)
+
+Persists the `EntitlementCache` in one sealed file
+(`MediaFlyouts/Entitlement.dat`, next to the user settings ini), apart from
+`Settings`, so a settings export, import or reset never copies or restarts a
+trial. The payload is compact JSON (`tier`, `trialEnd`, `lastSeen`, UTC)
+passed through an `IEntitlementCodec` before it hits the disk:
+
+- `DpapiCodec` *(Windows, default)* — `CryptProtectData` bound to the signed-in
+  Windows user. Another user or PC cannot open the file. No key ships in the
+  app; the OS holds it. An altered payload fails DPAPI's own integrity check.
+- `ChecksumCodec` *(portable, tests)* — salted SHA-256 tag in front of the
+  plain bytes. Detects edits, not copies.
+
+File layout: `MFE1` magic, one codec id byte, sealed bytes. A file from another
+codec, user or machine, a truncated or edited file, or malformed JSON all load
+as an invalid cache (logged), which resolves like a first run. Writes go
+through `QSaveFile`. `load()`, `save()`, `clear()`; `serializeEntitlementCache`
+/ `parseEntitlementCache` are exposed for tests.
+
 ## Peripheral battery helpers
 
 Pure, unit-tested logic shared by the battery providers, so the protocol and

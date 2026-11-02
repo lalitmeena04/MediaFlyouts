@@ -28,6 +28,8 @@ isolation:
 - **WinMediaProvider** *(Windows)* — SMTC bridge feeding `TrackInfo`.
 - **Peripheral battery models** — protocol parsers and `BatteryAlertPolicy`
   keep provider-specific parsing and alert rules portable and testable.
+- **Entitlement / EntitlementStore** — pure Pro-tier resolution (add-on,
+  grandfathering, trial, offline fallback) and its tamper-checked cache file.
 
 ### Controllers (`Controllers/`)
 Qt objects that wire the model to Windows and to QML:

@@ -64,6 +64,8 @@ add_executable(mediaflyout_gtest
     Model/BatteryUtilsTest.cpp
     Model/CapabilitiesTest.cpp
     Model/DualSenseProtocolTest.cpp
+    Model/EntitlementStoreTest.cpp
+    Model/EntitlementTest.cpp
     Model/FastPairProtocolTest.cpp
     Model/FftTest.cpp
     Model/FlyoutPositionerTest.cpp

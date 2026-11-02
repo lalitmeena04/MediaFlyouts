@@ -82,6 +82,10 @@ qt_add_library(mediaflyout_core STATIC
     Model/Capabilities.h
     Model/DualSenseProtocol.cpp
     Model/DualSenseProtocol.h
+    Model/Entitlement.cpp
+    Model/Entitlement.h
+    Model/EntitlementStore.cpp
+    Model/EntitlementStore.h
     Model/FastPairProtocol.cpp
     Model/FastPairProtocol.h
     Model/Fft.cpp
@@ -121,6 +125,10 @@ target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
     spdlog::spdlog
 )
+if(WIN32)
+    # EntitlementStore seals its cache with DPAPI.
+    target_link_libraries(mediaflyout_core PUBLIC crypt32)
+endif()
 # Logging on compiles TRC calls at or above MEDIAFLYOUTS_LOG_LEVEL. Logging off removes them all.
 # Default level: DEBUG for Debug builds, INFO otherwise. INFO keeps release logs small.
 option(MEDIAFLYOUTS_ENABLE_LOGGING "Enable spdlog file logging" ON)
