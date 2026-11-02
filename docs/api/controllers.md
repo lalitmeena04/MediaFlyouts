@@ -110,8 +110,72 @@ run on `MonitorMapper::changed`, on `Show`, on `DevicePixelRatioChange`, and
 after each suspicious resize. The pure rules live in
 `Model/WindowScalePolicy.h`.
 
+### EntitlementController
+The `entitlement` context property: the Pro paywall seen from QML (see
+[dev-notes/PRO-PAYWALL-PLAN.md](../../dev-notes/PRO-PAYWALL-PLAN.md)). It
+feeds `mf::resolveEntitlement` with the install kind, the Store answer
+(`StoreSnapshot`) and the cached state, persists the result through
+`EntitlementStore`, and re-resolves at the trial end (and daily) so the UI
+flips without a restart.
+
+- `tier` / `source` / `unlocked` / `isPro` / `isTrial` / `trialDaysLeft`, plus
+  `gatingEnabled`, `storeAvailable`, `canPurchase`, `price`, `purchasing`,
+  `refreshing`, `lastPurchaseStatus`, `tipAddOnStoreIds`, `featureIds`.
+- `isUnlocked("visualizer")` for the gated features (`mf::allFeatureIds`). An
+  unknown id reads as unlocked and logs a warning: a typo must never lock a
+  feature.
+- `purchase(window)` buys the Pro add-on, `purchaseAddOn(id, window)` any
+  add-on (tips). The QML `Window` becomes the owner of the Store dialog.
+  `purchaseFinished(ok, statusId, storeId)` reports stable ids from
+  `mf::purchase` (`succeeded`, `alreadyPurchased`, `notPurchased`,
+  `networkError`, `serverError`, `unavailable`, `notConfigured`, `busy`);
+  QML maps them to text.
+- Talks to the Store through the `StoreGateway` interface
+  (`StoreLicensing` on Windows, a fake in tests). Without a gateway the Store
+  never answers and the offline fallbacks apply. Non-Store installs are
+  always `Pro`; the Store is still queried for the logs.
+- Debug builds honour `MEDIAFLYOUTS_ENTITLEMENT=free|trial|pro`
+  (`source` = `override`, never cached).
+- Build constants come from `mf::proBuildConfig()` (`MEDIAFLYOUTS_PRO_ADDON_STORE_ID`,
+  `MEDIAFLYOUTS_STORE_CUTOVER_UTC`, `MEDIAFLYOUTS_TRIAL_DAYS`,
+  `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`; see the build guide).
+
+### ProGate
+The `pro` context property: the *effective* value of every gated setting.
+Reads `Settings` and `EntitlementController` and answers the stored value when
+the feature is unlocked, the free-tier default when it is locked
+(`visualizerEnabled`, `mixerEnabled`, `mixerWindowAllowed`,
+`peripheralsWidgetEnabled`, `peripheralFlyoutEnabled`,
+`peripheralLowBatteryToast`, `nextUpStyle`, `taskbarWidget*`). Emits
+`changed` on either source. Flyouts and widgets bind to it; the stored
+settings are never modified, so a purchase brings the user's choices back.
+`MainControllerClass` also consults it for the low-battery tray toast.
+
+### DonationController
+The `donate` context property behind the Dashboard **Support** page. Built
+from `mf::donationConfig()` (payee details stamped at build time) and the
+install kind. `showDirect` (UPI QR + NEFT details) is true only for
+installer/portable builds; the Store build gets `showStoreTips` (consumable
+tip add-ons bought through `entitlement.purchaseAddOn`) and the page link,
+which satisfies Store policy §10.8.2. `upiUri` is the `upi://pay` deep link,
+`upiQrSource` the `image://qr/<base64url>` URL served by `QrImageProvider`.
+`openPage()` opens the donation web page, `copyToClipboard(text)` backs the
+Copy buttons. Donations unlock nothing.
+
 ## Windows-only
 
+- **StoreLicensing** — the `StoreGateway` for packaged builds, over
+  `Windows.Services.Store`. `refresh()` reads `GetAppLicenseAsync`
+  (add-on licenses), `GetUserCollectionAsync` (the app's `AcquiredDate`) and
+  `GetAssociatedStoreProductsAsync` (localized price) on a worker thread with
+  a multi-threaded WinRT apartment, then answers with one `StoreSnapshot`.
+  `purchase(id)` initializes the context with the owner HWND
+  (`IInitializeWithWindow`) and runs `RequestPurchaseAsync` on the UI thread
+  with a `Completed` handler; a successful consumable (tip) purchase is then
+  reported with `ReportConsumableFulfillmentAsync` so it can be bought again.
+  `OfflineLicensesChanged` is forwarded as
+  `licensesChanged`. Unpackaged processes report `supported() == false` and
+  answer every call with an unavailable snapshot. Every HRESULT is logged.
 - **VolumeController** — master volume/mute via `IAudioEndpointVolume`; follows
   the default output device (`IMMNotificationClient`).
 - **VolumeMixer** — per-app sessions via `IAudioSessionManager2` /

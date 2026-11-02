@@ -24,6 +24,9 @@ class Capabilities;
 class QmlLogger;
 class AlbumArtProvider;
 class TrayController;
+class EntitlementController;
+class ProGate;
+class DonationController;
 
 #ifdef Q_OS_WIN
 class WinMediaProvider;
@@ -32,6 +35,7 @@ class NativeFlyoutSuppressor;
 class FullscreenDetector;
 class LockKeysController;
 class StartupController;
+class StoreLicensing;
 class TaskbarInfo;
 class TaskbarBackdrop;
 class VolumeMixer;
@@ -80,10 +84,14 @@ class MainControllerClass {
         std::unique_ptr<QQmlApplicationEngine> m_engine;
         std::unique_ptr<QmlLogger> m_qmlLog;
         std::unique_ptr<TrayController> m_tray;
+        std::unique_ptr<EntitlementController> m_entitlement;
+        std::unique_ptr<ProGate> m_proGate;
+        std::unique_ptr<DonationController> m_donation;
         AlbumArtProvider* m_artProvider = nullptr; // Owned by QML engine.
 
 #ifdef Q_OS_WIN
         std::unique_ptr<WinMediaProvider> m_provider;
+        std::unique_ptr<StoreLicensing> m_storeLicensing;
         std::unique_ptr<VolumeController> m_volumeController;
         std::unique_ptr<NativeFlyoutSuppressor> m_nativeSuppressor;
         std::unique_ptr<FullscreenDetector> m_fullscreen;

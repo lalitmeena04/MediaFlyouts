@@ -555,15 +555,15 @@ TEST(QmlContractTest, QmlReadsMonitorFactsFromTheSharedMap) {
 
 TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     const QString source = loadSource("Views/TaskbarWidget.qml");
-    expectContains(source, QStringLiteral("visualizerLive: root.visible && settings.taskbarVisualizerEnabled"));
+    expectContains(source, QStringLiteral("visualizerLive: root.visible && pro.visualizerEnabled"));
     expectContains(source, QStringLiteral("audioCapture.start()"));
     expectContains(source, QStringLiteral("audioCapture.stop()"));
 }
 
 TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     const QString widget = loadSource("Views/TaskbarWidget.qml");
-    expectContains(widget, QStringLiteral("pauseAllVisible: settings.taskbarWidgetPauseAllEnabled"));
-    expectContains(widget, QStringLiteral("showPlayAll: settings.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll"));
+    expectContains(widget, QStringLiteral("pauseAllVisible: pro.taskbarWidgetPauseAllEnabled"));
+    expectContains(widget, QStringLiteral("showPlayAll: pro.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll"));
     expectContains(widget, QStringLiteral("glyph: root.showPlayAll ? Fluent.playCircle : Fluent.pauseCircle"));
     expectContains(widget, QStringLiteral("onClicked: root.showPlayAll ? nowPlaying.playAll() : nowPlaying.pauseAll()"));
     EXPECT_EQ(widget.count(QStringLiteral("nowPlaying.pauseAll()")), 1);
@@ -572,7 +572,7 @@ TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     expectContains(widget, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     expectContains(widget, QStringLiteral("pauseAllButtonShown: root.pauseAllVisible"));
-    expectContains(widget, QStringLiteral("&& (settings.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
+    expectContains(widget, QStringLiteral("&& (pro.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
     expectContains(widget, QStringLiteral("opacity: root.pauseAllButtonShown ? 1 : 0"));
     expectContains(widget, QStringLiteral("enabled: root.pauseAllButtonShown"));
     EXPECT_FALSE(widget.contains(QStringLiteral("root.pauseAllButtonShown ? root.pauseAllSlot")))
@@ -586,7 +586,7 @@ TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
 
 TEST(QmlContractTest, WidgetStackPagesMediaAndPeripheralSections) {
     const QString stack = loadSource("Views/WidgetStack.qml");
-    expectContains(stack, QStringLiteral("enabled: settings.taskbarWidgetLayout === 1"));
+    expectContains(stack, QStringLiteral("enabled: pro.taskbarWidgetLayout === 1"));
     expectContains(stack, QStringLiteral("list.push(stack.mediaPage)"));
     expectContains(stack, QStringLiteral("list.push(sections[i].label)"));
     expectContains(stack, QStringLiteral("function cycle(step)"));
@@ -814,7 +814,7 @@ TEST(QmlContractTest, DockableWidgetRedocksOnSizeChange) {
 
 TEST(QmlContractTest, DockableWidgetOwnsTheBackdropAwarePalette) {
     const QString base = loadSource("Views/DockableWidget.qml");
-    expectContains(base, QStringLiteral("adaptiveColors: settings.taskbarWidgetAdaptiveColors"));
+    expectContains(base, QStringLiteral("adaptiveColors: pro.taskbarWidgetAdaptiveColors"));
     expectContains(base, QStringLiteral("lightBackdrop: base.adaptiveColors && taskbarBackdrop.light"));
     expectContains(base, QStringLiteral("running: base.visible && base.adaptiveColors"));
     expectContains(base, QStringLiteral("taskbarBackdrop.sample(base)"));
@@ -915,3 +915,116 @@ TEST(QmlContractTest, BundlesTheFontAwesomeFallbackFont) {
     EXPECT_GT(font.size(), 0);
 }
 
+
+// --- Pro gating ------------------------------------------------------------
+
+namespace {
+void expectNotContains(const QString& source, const QString& forbidden) {
+    EXPECT_FALSE(source.contains(forbidden)) << "Behaviour must bind to pro.*, not: " << forbidden.toStdString();
+}
+} // namespace
+
+TEST(QmlContractTest, GatedBehaviourBindsToTheProGateNotToSettings) {
+    const QString widget = loadSource("Views/TaskbarWidget.qml");
+    expectContains(widget, QStringLiteral("pro.visualizerEnabled"));
+    expectContains(widget, QStringLiteral("pro.taskbarWidgetControlsEnabled"));
+    expectContains(widget, QStringLiteral("pro.taskbarWidgetPauseAllEnabled"));
+    expectContains(widget, QStringLiteral("pro.taskbarWidgetPlayAllEnabled"));
+    expectContains(widget, QStringLiteral("pro.taskbarWidgetShowPauseOverlay"));
+    expectContains(widget, QStringLiteral("pro.taskbarWidgetScrollingEnabled"));
+    expectNotContains(widget, QStringLiteral("settings.taskbarVisualizerEnabled"));
+    expectNotContains(widget, QStringLiteral("settings.taskbarWidgetControlsEnabled"));
+    expectNotContains(widget, QStringLiteral("settings.taskbarWidgetPauseAllEnabled"));
+    expectNotContains(widget, QStringLiteral("settings.taskbarWidgetPlayAllEnabled"));
+    expectNotContains(widget, QStringLiteral("settings.taskbarWidgetShowPauseOverlay"));
+    expectNotContains(widget, QStringLiteral("settings.taskbarWidgetScrollingEnabled"));
+
+    expectContains(loadSource("Views/DockableWidget.qml"), QStringLiteral("pro.taskbarWidgetAdaptiveColors"));
+    expectContains(loadSource("Views/WidgetStack.qml"), QStringLiteral("pro.taskbarWidgetLayout === 1"));
+    expectContains(loadSource("Views/NowPlayingFlyout.qml"), QStringLiteral("pro.nextUpStyle === 1"));
+
+    const QString volume = loadSource("Views/VolumeFlyout.qml");
+    expectContains(volume, QStringLiteral("pro.mixerEnabled"));
+    expectNotContains(volume, QStringLiteral("settings.volumeFlyoutMixerEnabled"));
+
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("pollActive: pro.peripheralsWidgetEnabled"));
+    expectNotContains(peripherals, QStringLiteral("settings.peripheralsWidgetEnabled"));
+    expectContains(loadSource("Views/PeripheralFlyout.qml"), QStringLiteral("!pro.peripheralFlyoutEnabled"));
+
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("if(pro.mixerWindowAllowed)"));
+    expectContains(app, QStringLiteral("dashboard.showPage(\"home\")"));
+}
+
+TEST(QmlContractTest, DashboardTogglesStayOnSettingsAndLockWithTheEntitlement) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"visualizer\")"));
+    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"perAppMixer\")"));
+    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"peripheralBattery\")"));
+    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"nowPlayingStyles\")"));
+    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"taskbarWidgetOptions\")"));
+    expectContains(dashboard, QStringLiteral("settings.taskbarVisualizerEnabled = value"));
+    expectContains(dashboard, QStringLiteral("settings.volumeFlyoutMixerEnabled = value"));
+    expectContains(dashboard, QStringLiteral("settings.nextUpStyle = index"));
+
+    const QRegularExpression knownIds(QStringLiteral("entitlement\\.isUnlocked\\(\"([A-Za-z]+)\"\\)"));
+    auto it = knownIds.globalMatch(dashboard);
+    const QStringList allowed{QStringLiteral("visualizer"), QStringLiteral("perAppMixer"),
+                              QStringLiteral("peripheralBattery"), QStringLiteral("nowPlayingStyles"),
+                              QStringLiteral("taskbarWidgetOptions")};
+    int found = 0;
+    while(it.hasNext()) {
+        const QString id = it.next().captured(1);
+        EXPECT_TRUE(allowed.contains(id)) << "Unknown feature id in Dashboard.qml: " << id.toStdString();
+        ++found;
+    }
+    EXPECT_GE(found, 5);
+}
+
+TEST(QmlContractTest, SettingRowsShowAProBadgeWhenLocked) {
+    for(const char* file : {"Views/SettingRow.qml", "Views/SettingCombo.qml"}) {
+        const QString source = loadSource(file);
+        expectContains(source, QStringLiteral("property bool locked: false"));
+        expectContains(source, QStringLiteral("ProBadge {"));
+    }
+    expectContains(loadSource("Views/ProBadge.qml"), QStringLiteral("qsTr(\"PRO\")"));
+}
+
+TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
+    const QString card = loadSource("Views/UpgradeCard.qml");
+    expectContains(card, QStringLiteral("visible: entitlement.gatingEnabled && !entitlement.isPro"));
+    expectContains(card, QStringLiteral("entitlement.purchase(card.ownerWindow)"));
+    expectContains(card, QStringLiteral("enabled: card.clickable"));
+    expectContains(card, QStringLiteral("entitlement.trialDaysLeft"));
+    expectContains(card, QStringLiteral("entitlement.price"));
+    expectContains(card, QStringLiteral("function onPurchaseFinished(ok, statusId, storeId)"));
+    expectContains(card, QStringLiteral("storeId === entitlement.proAddOnStoreId"));
+    for(const char* status : {"succeeded", "alreadyPurchased", "notPurchased", "networkError", "unavailable",
+                              "notConfigured", "busy"})
+        expectContains(card, QStringLiteral("case \"%1\"").arg(QLatin1String(status)));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("UpgradeCard {"));
+    expectContains(dashboard, QStringLiteral("ownerWindow: dash"));
+}
+
+TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
+    const QString page = loadSource("Views/SupportPage.qml");
+    expectContains(page, QStringLiteral("visible: donate.showDirect"));
+    expectContains(page, QStringLiteral("visible: donate.showStoreTips"));
+    expectContains(page, QStringLiteral("visible: donate.hasPage"));
+    expectContains(page, QStringLiteral("source: donate.upiQrSource"));
+    expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
+    expectContains(page, QStringLiteral("page.copy(donate.upiId)"));
+    expectContains(page, QStringLiteral("model: entitlement.tipAddOnStoreIds"));
+    expectContains(page, QStringLiteral("entitlement.purchaseAddOn(modelData, page.ownerWindow)"));
+    expectContains(page, QStringLiteral("Microsoft is not the fundraiser or sponsor"));
+    expectContains(page, QStringLiteral("Donations are voluntary and unlock nothing."));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("\"key\": \"support\""));
+    expectContains(dashboard, QStringLiteral("SupportPage {"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 10 && donate.available"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 11"));
+}

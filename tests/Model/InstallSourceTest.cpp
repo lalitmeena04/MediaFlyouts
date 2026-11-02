@@ -50,6 +50,8 @@ TEST(InstallSourceTest, StoreUrlUsesTheStoreScheme) {
 TEST(InstallSourceTest, DetectionRunsWithoutCrashing) {
     const InstallKind kind = mf::detectInstallKind();
     EXPECT_TRUE(kind == InstallKind::Portable || kind == InstallKind::Unknown);
+    // The test binary is never packaged.
+    EXPECT_FALSE(mf::isPackagedProcess());
 }
 
 namespace {

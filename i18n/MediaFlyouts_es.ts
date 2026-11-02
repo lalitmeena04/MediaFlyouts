@@ -151,6 +151,14 @@ No disponible: %1</translation>
         <translation>Idioma, tema, color de énfasis, inicio, bandeja y copia de seguridad de los ajustes.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>Apoyo</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>Da las gracias con una donación o una propina.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -385,6 +393,14 @@ No disponible: %1</translation>
     <message>
         <source>Restore default settings</source>
         <translation>Restaurar ajustes predeterminados</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Donar</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Propina</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1510,6 +1526,110 @@ No disponible: %1</translation>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Función Pro. Obtén Pro en la página de inicio para usarla.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Función Pro. Obtén Pro en la página de inicio para usarla.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>¡Gracias por la propina!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>No se pudo completar la propina. Inténtalo más tarde.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>Apoya MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts lo desarrolla una sola persona. Si se ha ganado un lugar en tu barra de tareas, una donación ayuda a mantenerlo. Las donaciones son voluntarias y no desbloquean nada.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft no es el recaudador ni el patrocinador de estas donaciones.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>Abrir página de donaciones</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>Escanea con cualquier app de UPI</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>Copiar ID de UPI</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Copiado</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>Transferencia bancaria (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>Titular de la cuenta</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>Banco</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>Número de cuenta</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Deja una propina a través de Microsoft Store</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>Las propinas son compras únicas en Microsoft Store. Microsoft gestiona el pago.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>Propina de %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Propina</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1811,57 @@ No disponible: %1</translation>
     <message>
         <source>Skip this version</source>
         <translation>Omitir esta versión</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Prueba Pro: quedan %1 días</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Tu prueba de Pro ha terminado</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Abriendo Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>Obtener Pro por %1</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Obtener Pro</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro se vende a través de la versión de MediaFlyouts de Microsoft Store.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>¡Gracias! Pro está desbloqueado.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>Ya tienes Pro. Restaurando tu compra…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Sin conexión con Microsoft Store. Comprueba tu red e inténtalo de nuevo.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>Las compras no están disponibles en esta versión.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store no pudo completar la compra. Inténtalo más tarde.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro desbloquea el visualizador de audio, el mezclador por aplicación, la batería de periféricos, los estilos de Now Playing y las opciones del widget multimedia.</translation>
     </message>
 </context>
 <context>

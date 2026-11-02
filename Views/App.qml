@@ -150,7 +150,10 @@ QtObject {
         }
 
         function onOpenMixerRequested() {
-            volumeMixerWindow.open()
+            if(pro.mixerWindowAllowed)
+                volumeMixerWindow.open()
+            else
+                dashboard.showPage("home")
         }
 
         function onReportBugRequested() {

@@ -11,12 +11,20 @@
 #include "AppRestarter.h"
 #include "AppTranslator.h"
 #include "Capabilities.h"
+#include "Donation.h"
+#include "DonationController.h"
+#include "EntitlementController.h"
+#include "EntitlementStore.h"
 #include "ErrorReporter.h"
 #include "FlyoutPlacement.h"
+#include "InstallSource.h"
 #include "Logging.h"
 #include "MonitorMapper.h"
 #include "NowPlaying.h"
+#include "ProBuildConfig.h"
+#include "ProGate.h"
 #include "QmlLogger.h"
+#include "QrCode.h"
 #include "Settings.h"
 #include "SingleInstance.h"
 #include "SwipeDetector.h"
@@ -37,6 +45,7 @@
 #include "PeripheralAlerts.h"
 #include "PowerStatusController.h"
 #include "StartupController.h"
+#include "StoreLicensing.h"
 #include "TaskbarBackdrop.h"
 #include "TaskbarInfo.h"
 #include "VolumeController.h"
@@ -71,6 +80,8 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
 #ifdef Q_OS_WIN
     buildPlatformSubsystems();
 #endif
+    // After the platform gateway exists, so the first Store refresh runs at startup.
+    m_entitlement->start();
     registerContextProperties();
     m_engine->loadFromModule("MediaFlyouts", "App");
 }
@@ -116,6 +127,11 @@ void MainControllerClass::buildCoreSubsystems() {
     m_capabilities = std::make_unique<Capabilities>();
     m_errorReporter = std::make_unique<ErrorReporter>(m_settings.get(), m_capabilities.get());
     m_restarter = std::make_unique<AppRestarter>(m_errorReporter.get());
+    m_entitlement = std::make_unique<EntitlementController>(mf::detectInstallKind(), mf::proBuildConfig(),
+                                                            std::make_unique<mf::EntitlementStore>());
+    m_proGate = std::make_unique<ProGate>(m_settings.get(), m_entitlement.get());
+    m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind(),
+                                                      !mf::proBuildConfig().tipAddOnStoreIds.isEmpty());
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_translator->setEngine(m_engine.get());
@@ -123,6 +139,7 @@ void MainControllerClass::buildCoreSubsystems() {
 
     m_artProvider = new AlbumArtProvider();
     m_engine->addImageProvider(QStringLiteral("albumart"), m_artProvider);
+    m_engine->addImageProvider(QStringLiteral("qr"), new QrImageProvider());
     m_nowPlaying->setArtProvider(m_artProvider);
 
     m_tray = std::make_unique<TrayController>(m_iconFamily, m_settings.get());
@@ -135,6 +152,10 @@ void MainControllerClass::buildCoreSubsystems() {
 
 #ifdef Q_OS_WIN
 void MainControllerClass::buildPlatformSubsystems() {
+    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId,
+                                                        mf::proBuildConfig().tipAddOnStoreIds);
+    m_entitlement->setGateway(m_storeLicensing.get());
+
     m_provider = std::make_unique<WinMediaProvider>();
     m_nowPlaying->setController(m_provider.get());
     QObject::connect(m_provider.get(), &WinMediaProvider::trackChanged, m_nowPlaying.get(), &NowPlaying::applyTrack);
@@ -213,7 +234,7 @@ void MainControllerClass::buildPlatformSubsystems() {
 
     QObject::connect(m_peripheralAlerts.get(), &PeripheralAlerts::lowBattery, m_tray.get(),
                      [this](const QString& device, int percent, bool veryLow) {
-                         if(!m_settings->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())
+                         if(!m_proGate->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())
                              return;
                          if(!m_settings->peripheralSelected(device))
                              return;
@@ -238,6 +259,9 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("nowPlaying", m_nowPlaying.get());
     ctx->setContextProperty("settings", m_settings.get());
     ctx->setContextProperty("capabilities", m_capabilities.get());
+    ctx->setContextProperty("entitlement", m_entitlement.get());
+    ctx->setContextProperty("pro", m_proGate.get());
+    ctx->setContextProperty("donate", m_donation.get());
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("errorReporter", m_errorReporter.get());

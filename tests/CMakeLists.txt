@@ -12,15 +12,25 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/AppRestarter.h
     ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.h
+    ${CMAKE_SOURCE_DIR}/Controllers/DonationController.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/DonationController.h
+    ${CMAKE_SOURCE_DIR}/Controllers/EntitlementController.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/EntitlementController.h
+    ${CMAKE_SOURCE_DIR}/Controllers/ProGate.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/ProGate.h
+    ${CMAKE_SOURCE_DIR}/Controllers/StoreGateway.h
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.h
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.h
+    ${CMAKE_SOURCE_DIR}/Model/QrCode.cpp
+    ${CMAKE_SOURCE_DIR}/Model/QrCode.h
     ${CMAKE_SOURCE_DIR}/Model/Settings.cpp
     ${CMAKE_SOURCE_DIR}/Model/Settings.h
 )
 target_link_libraries(mediaflyout_testlib PUBLIC
     mediaflyout_core
+    qrcodegen
     Qt6::Gui
     Qt6::Network
     Qt6::Quick
@@ -53,7 +63,10 @@ add_executable(mediaflyout_gtest
     Controllers/ErrorReporterTest.cpp
     Controllers/AppRestarterTest.cpp
     Controllers/AppTranslatorTest.cpp
+    Controllers/DonationControllerTest.cpp
+    Controllers/EntitlementControllerTest.cpp
     Controllers/NowPlayingTest.cpp
+    Controllers/ProGateTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
     gtest_main.cpp
@@ -63,7 +76,10 @@ add_executable(mediaflyout_gtest
     Model/BatteryAlertPolicyTest.cpp
     Model/BatteryUtilsTest.cpp
     Model/CapabilitiesTest.cpp
+    Model/DonationTest.cpp
     Model/DualSenseProtocolTest.cpp
+    Model/EntitlementStoreTest.cpp
+    Model/EntitlementTest.cpp
     Model/FastPairProtocolTest.cpp
     Model/FftTest.cpp
     Model/FlyoutPositionerTest.cpp
@@ -73,6 +89,8 @@ add_executable(mediaflyout_gtest
     Model/LocalizationTest.cpp
     Model/PlaybackControllerTest.cpp
     Model/PowerAlertPolicyTest.cpp
+    Model/ProBuildConfigTest.cpp
+    Model/QrCodeTest.cpp
     Model/RazerProtocolTest.cpp
     Model/ReceiverProfilesTest.cpp
     Model/SessionSelectionTest.cpp
@@ -117,6 +135,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/MonitorMapper.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PowerStatusController.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/StoreLicensing.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarBackdrop.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarInfo.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp

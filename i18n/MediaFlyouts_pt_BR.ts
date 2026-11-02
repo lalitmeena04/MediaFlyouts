@@ -151,6 +151,14 @@ Indisponível: %1</translation>
         <translation>Idioma, tema, cor de destaque, inicialização, bandeja e backup das configurações.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>Apoiar</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>Agradeça com uma doação ou uma gorjeta.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>Sobre</translation>
     </message>
@@ -385,6 +393,14 @@ Indisponível: %1</translation>
     <message>
         <source>Restore default settings</source>
         <translation>Restaurar configurações padrão</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Doar</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Gorjeta</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1510,6 +1526,110 @@ Indisponível: %1</translation>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Recurso Pro. Obtenha o Pro na página inicial para usá-lo.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Recurso Pro. Obtenha o Pro na página inicial para usá-lo.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>Obrigado pela gorjeta!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>Não foi possível concluir a gorjeta. Tente novamente mais tarde.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>Apoie o MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>O MediaFlyouts é feito por um único desenvolvedor. Se ele conquistou um lugar na sua barra de tarefas, uma doação ajuda a mantê-lo. Doações são voluntárias e não desbloqueiam nada.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>A Microsoft não é a arrecadadora nem a patrocinadora dessas doações.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>Abrir página de doação</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>Escaneie com qualquer app UPI</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>Copiar ID UPI</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Copiado</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>Transferência bancária (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>Titular da conta</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>Banco</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>Número da conta</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Deixe uma gorjeta pela Microsoft Store</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>Gorjetas são compras únicas na Microsoft Store. A Microsoft processa o pagamento.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>Gorjeta de %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Gorjeta</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1811,57 @@ Indisponível: %1</translation>
     <message>
         <source>Skip this version</source>
         <translation>Ignorar esta versão</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Avaliação Pro: faltam %1 dias</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Sua avaliação do Pro terminou</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Abrindo a Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>Obter o Pro por %1</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Obter o Pro</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>O Pro é vendido pela versão da Microsoft Store do MediaFlyouts.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>Obrigado! O Pro foi desbloqueado.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>Você já possui o Pro. Restaurando sua compra…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Sem conexão com a Microsoft Store. Verifique sua rede e tente novamente.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>Compras não estão disponíveis nesta versão.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>A Microsoft Store não conseguiu concluir a compra. Tente novamente mais tarde.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>O Pro desbloqueia o visualizador de áudio, o mixer por aplicativo, a bateria de periféricos, os estilos de Now Playing e as opções do widget de mídia.</translation>
     </message>
 </context>
 <context>

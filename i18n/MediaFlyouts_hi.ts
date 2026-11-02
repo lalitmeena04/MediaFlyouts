@@ -151,6 +151,14 @@ Unavailable: %1</source>
         <translation>भाषा, थीम, एक्सेंट, स्टार्टअप, ट्रे और सेटिंग्स बैकअप।</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>सहयोग</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>दान या टिप देकर धन्यवाद कहें।</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>परिचय</translation>
     </message>
@@ -385,6 +393,14 @@ Unavailable: %1</source>
     <message>
         <source>Restore default settings</source>
         <translation>डिफ़ॉल्ट सेटिंग्स बहाल करें</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>दान करें</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>टिप</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1510,6 +1526,110 @@ Unavailable: %1</source>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro सुविधा। इसे उपयोग करने के लिए होम पेज से Pro प्राप्त करें।</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro सुविधा। इसे उपयोग करने के लिए होम पेज से Pro प्राप्त करें।</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>टिप के लिए धन्यवाद!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>टिप पूरी नहीं हो सकी। बाद में पुनः प्रयास करें।</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>MediaFlyouts का सहयोग करें</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts एक अकेले डेवलपर ने बनाया है। अगर इसने आपके टास्कबार पर जगह बनाई है, तो दान इसे जारी रखने में मदद करता है। दान स्वैच्छिक है और इससे कुछ भी अनलॉक नहीं होता।</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft इन दानों का संग्रहकर्ता या प्रायोजक नहीं है।</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>दान पृष्ठ खोलें</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>किसी भी UPI ऐप से स्कैन करें</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>UPI ID कॉपी करें</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>कॉपी हो गया</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>बैंक ट्रांसफर (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>खाताधारक</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>बैंक</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>खाता संख्या</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>कॉपी करें</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Microsoft Store के माध्यम से टिप दें</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>टिप Microsoft Store की एकमुश्त खरीदारी है। भुगतान Microsoft संभालता है।</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>%1 टिप</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>टिप</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1811,57 @@ Unavailable: %1</source>
     <message>
         <source>Skip this version</source>
         <translation>यह संस्करण छोड़ें</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Pro ट्रायल: %1 दिन शेष</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>आपका Pro ट्रायल समाप्त हो गया है</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Microsoft Store खोला जा रहा है…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>%1 में Pro प्राप्त करें</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Pro प्राप्त करें</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro केवल MediaFlyouts के Microsoft Store संस्करण के माध्यम से बेचा जाता है।</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>धन्यवाद! Pro अनलॉक हो गया है।</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>आपके पास पहले से Pro है। आपकी खरीद पुनर्स्थापित की जा रही है…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Microsoft Store से कनेक्शन नहीं है। अपना नेटवर्क जांचें और पुनः प्रयास करें।</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>इस बिल्ड में खरीदारी उपलब्ध नहीं है।</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store खरीद पूरी नहीं कर सका। बाद में पुनः प्रयास करें।</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro ऑडियो विज़ुअलाइज़र, प्रति-ऐप मिक्सर, पेरिफेरल बैटरी, Now Playing शैलियाँ और मीडिया विजेट विकल्प अनलॉक करता है।</translation>
     </message>
 </context>
 <context>

@@ -151,6 +151,14 @@ Unavailable: %1</source>
         <translation>언어, 테마, 강조 색, 시작 프로그램, 트레이, 설정 백업입니다.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>후원</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>기부나 팁으로 감사를 전하세요.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>정보</translation>
     </message>
@@ -385,6 +393,14 @@ Unavailable: %1</source>
     <message>
         <source>Restore default settings</source>
         <translation>기본 설정 복원</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>기부</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>팁</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1510,6 +1526,110 @@ Unavailable: %1</source>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro 기능입니다. 홈 페이지에서 Pro를 구매하면 사용할 수 있습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro 기능입니다. 홈 페이지에서 Pro를 구매하면 사용할 수 있습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>팁 감사합니다!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>팁을 완료하지 못했습니다. 나중에 다시 시도하세요.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>MediaFlyouts 후원하기</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts는 개발자 한 명이 만듭니다. 작업 표시줄에 둘 가치가 있다면 기부가 개발을 이어가는 데 도움이 됩니다. 기부는 자발적이며 어떤 기능도 잠금 해제하지 않습니다.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft는 이 기부의 모금자나 후원자가 아닙니다.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>기부 페이지 열기</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>아무 UPI 앱으로 스캔하세요</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>UPI ID 복사</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>복사됨</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>은행 송금 (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>예금주</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>은행</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>계좌번호</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>복사</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Microsoft Store를 통해 팁 남기기</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>팁은 Microsoft Store의 일회성 구매입니다. 결제는 Microsoft가 처리합니다.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>%1 팁</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>팁</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1811,57 @@ Unavailable: %1</source>
     <message>
         <source>Skip this version</source>
         <translation>이 버전 건너뛰기</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Pro 체험판: %1일 남음</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Pro 체험 기간이 종료되었습니다</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Microsoft Store를 여는 중…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>%1에 Pro 구매</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Pro 구매</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro는 Microsoft Store 버전의 MediaFlyouts에서 판매됩니다.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>감사합니다! Pro가 잠금 해제되었습니다.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>이미 Pro를 보유하고 있습니다. 구매 내역을 복원하는 중…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Microsoft Store에 연결할 수 없습니다. 네트워크를 확인한 후 다시 시도하세요.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>이 빌드에서는 구매할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store에서 구매를 완료하지 못했습니다. 나중에 다시 시도하세요.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro는 오디오 시각화, 앱별 믹서, 주변기기 배터리, 지금 재생 중 스타일, 미디어 위젯 옵션을 잠금 해제합니다.</translation>
     </message>
 </context>
 <context>

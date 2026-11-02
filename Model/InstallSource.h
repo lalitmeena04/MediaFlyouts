@@ -13,6 +13,9 @@ enum class InstallKind {
 
 InstallKind classifyInstall(bool packaged, const QString& installDir, const QString& appDir);
 
+// True inside an MSIX package. False on other platforms.
+bool isPackagedProcess();
+
 InstallKind detectInstallKind();
 
 QString installKindId(InstallKind kind);

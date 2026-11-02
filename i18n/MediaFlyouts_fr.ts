@@ -151,6 +151,14 @@ Indisponible : %1</translation>
         <translation>Langue, thème, couleur d&apos;accentuation, démarrage, zone de notification et sauvegarde des paramètres.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>Soutenir</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>Dites merci avec un don ou un pourboire.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>À propos</translation>
     </message>
@@ -385,6 +393,14 @@ Indisponible : %1</translation>
     <message>
         <source>Restore default settings</source>
         <translation>Restaurer les paramètres par défaut</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Faire un don</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Pourboire</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1510,6 +1526,110 @@ Indisponible : %1</translation>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fonction Pro. Obtenez Pro depuis la page d’accueil pour l’utiliser.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fonction Pro. Obtenez Pro depuis la page d’accueil pour l’utiliser.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>Merci pour le pourboire !</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>Le pourboire n’a pas pu être finalisé. Réessayez plus tard.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>Soutenir MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts est développé par une seule personne. S’il a gagné sa place dans votre barre des tâches, un don aide à le faire vivre. Les dons sont volontaires et ne débloquent rien.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft n’est ni le collecteur ni le sponsor de ces dons.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>Ouvrir la page de don</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>Scannez avec n’importe quelle application UPI</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>Copier l’identifiant UPI</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Copié</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>Virement bancaire (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>Titulaire du compte</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>Banque</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>Numéro de compte</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Copier</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Laisser un pourboire via le Microsoft Store</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>Les pourboires sont des achats uniques sur le Microsoft Store. Microsoft gère le paiement.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>Pourboire de %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Pourboire</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1811,57 @@ Indisponible : %1</translation>
     <message>
         <source>Skip this version</source>
         <translation>Ignorer cette version</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Essai Pro : %1 jours restants</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Votre essai Pro est terminé</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Ouverture du Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>Obtenir Pro pour %1</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Obtenir Pro</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro est vendu via la version Microsoft Store de MediaFlyouts.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>Merci ! Pro est débloqué.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>Vous possédez déjà Pro. Restauration de votre achat…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Pas de connexion au Microsoft Store. Vérifiez votre réseau et réessayez.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>Les achats ne sont pas disponibles dans cette version.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Le Microsoft Store n’a pas pu finaliser l’achat. Réessayez plus tard.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro débloque le visualiseur audio, le mixeur par application, la batterie des périphériques, les styles Now Playing et les options du widget multimédia.</translation>
     </message>
 </context>
 <context>

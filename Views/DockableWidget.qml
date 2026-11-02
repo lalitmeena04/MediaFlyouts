@@ -14,7 +14,7 @@ Window {
 
     // Widget colors. They follow the taskbar backdrop when adaptive colors are on,
     // so text stays readable over a transparent taskbar or a live wallpaper.
-    readonly property bool adaptiveColors: settings.taskbarWidgetAdaptiveColors
+    readonly property bool adaptiveColors: pro.taskbarWidgetAdaptiveColors
     readonly property bool lightBackdrop: base.adaptiveColors && taskbarBackdrop.light
     readonly property color fgPrimary: base.lightBackdrop ? "#1A1A1A" : "#FFFFFF"
     readonly property color fgSecondary: base.lightBackdrop ? "#555555" : "#AAAAAA"

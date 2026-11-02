@@ -76,9 +76,29 @@ jobs:
       - name: Set up CMake and Ninja
         uses: lukka/get-cmake@latest
 
+      # Pro paywall and donation details come from repository variables (see
+      # docs/developer/build-guide.md). Unset variables keep the CMake defaults:
+      # no cutover = gating off, no add-on id = no purchase button.
       - name: Configure & build (release)
+        shell: pwsh
         run: |
-          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR"
+          $defines = @()
+          $map = @{
+            MEDIAFLYOUTS_STORE_CUTOVER_UTC   = "${{ vars.PRO_STORE_CUTOVER_UTC }}"
+            MEDIAFLYOUTS_PRO_ADDON_STORE_ID  = "${{ vars.PRO_ADDON_STORE_ID }}"
+            MEDIAFLYOUTS_TRIAL_DAYS          = "${{ vars.PRO_TRIAL_DAYS }}"
+            MEDIAFLYOUTS_TIP_ADDON_STORE_IDS = "${{ vars.PRO_TIP_ADDON_STORE_IDS }}"
+            MEDIAFLYOUTS_DONATE_URL          = "${{ vars.DONATE_URL }}"
+            MEDIAFLYOUTS_DONATE_UPI_ID       = "${{ vars.DONATE_UPI_ID }}"
+            MEDIAFLYOUTS_DONATE_PAYEE_NAME   = "${{ vars.DONATE_PAYEE_NAME }}"
+            MEDIAFLYOUTS_DONATE_BANK_NAME    = "${{ vars.DONATE_BANK_NAME }}"
+            MEDIAFLYOUTS_DONATE_BANK_ACCOUNT = "${{ vars.DONATE_BANK_ACCOUNT }}"
+            MEDIAFLYOUTS_DONATE_BANK_IFSC    = "${{ vars.DONATE_BANK_IFSC }}"
+            MEDIAFLYOUTS_DONATE_BANK_HOLDER  = "${{ vars.DONATE_BANK_HOLDER }}"
+          }
+          foreach ($k in $map.Keys) { if ($map[$k] -ne '') { $defines += "-D$k=$($map[$k])" } }
+          Write-Host "Extra defines: $(($defines | ForEach-Object { ($_ -split '=')[0] }) -join ' ')"
+          cmake --preset msvc-release -D "CMAKE_PREFIX_PATH=$env:QT_ROOT_DIR" @defines
           cmake --build --preset msvc-release
 
       - name: Test
@@ -151,10 +171,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Failed to clone $repo." }
           Push-Location $work
 
-          # Wipe the old tree but keep git metadata and the release repo's own
-          # workflows/scripts. Each release is a clean snapshot of the shipped
-          # app files plus the docs.
-          Get-ChildItem -Force | Where-Object { $_.Name -notin @('.git', '.github') } | Remove-Item -Recurse -Force
+          # Wipe the old tree but keep git metadata, the release repo's own
+          # workflows/scripts, and the donation page (GitHub Pages source that
+          # lives only in that repo). Each release is a clean snapshot of the
+          # shipped app files plus the docs.
+          Get-ChildItem -Force | Where-Object { $_.Name -notin @('.git', '.github', '.nojekyll', 'donate') } | Remove-Item -Recurse -Force
           Copy-Item "${{ github.workspace }}\bin\*" . -Recurse -Force
           Copy-Item "${{ github.workspace }}\README.md" README.md -Force
           # The README links to LICENSE. Ship it so the terms are public.

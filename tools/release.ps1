@@ -40,9 +40,14 @@
   With -SignLocal: replace the local signing certificate with a new one. The
   new .cer must be trusted again.
 
+.PARAMETER Define
+  Extra CMake cache entries (NAME=VALUE) for the release build, such as the
+  Pro cutover, add-on ids and donation details. See docs/developer/build-guide.md.
+
 .EXAMPLE
   .\tools\release.ps1
   .\tools\release.ps1 -StoreIdentityName 12345Publisher.MediaFlyouts -StoreIdentityPublisher 'CN=<GUID>'
+  .\tools\release.ps1 -Define MEDIAFLYOUTS_STORE_CUTOVER_UTC=2026-12-04T12:00:00Z,MEDIAFLYOUTS_PRO_ADDON_STORE_ID=9NXXXX
   .\tools\release.ps1 -DevBuild
   .\tools\release.ps1 -SkipBuild -OutDir dist
   .\tools\release.ps1 -SkipBuild -SignLocal
@@ -55,7 +60,8 @@ param(
     [string]$StoreIdentityPublisher,
     [switch]$DevBuild,
     [switch]$SignLocal,
-    [switch]$NewCertificate
+    [switch]$NewCertificate,
+    [string[]]$Define = @()
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -91,11 +97,10 @@ if (-not $SkipBuild) {
     # Stop running instance before bin cleanup.
     Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\bin\*" } | Stop-Process -Force -ErrorAction SilentlyContinue
     Step 'Clean release build'
-    if ($DevBuild) {
-        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging -BuildNumber $buildNumber | Out-Host
-    } else {
-        & (Join-Path $root 'mediaflyouts.ps1') build -Config release -Clean -NoTests -NoLogging | Out-Host
-    }
+    $buildParams = @{ Command = 'build'; Config = 'release'; Clean = $true; NoTests = $true; NoLogging = $true }
+    if ($DevBuild) { $buildParams['BuildNumber'] = $buildNumber }
+    if ($Define.Count -gt 0) { $buildParams['Define'] = $Define }
+    & (Join-Path $root 'mediaflyouts.ps1') @buildParams | Out-Host
 } else {
     Step 'Reusing existing bin\ (-SkipBuild)'
 }

@@ -7,6 +7,7 @@ Guidance for AI coding agents working in this repository.
 - Always keep code generalized.
 - Always add or update existing unit tests for any changes made in the code.
 - For comments: state facts and use simple langauge with short sentences. Follow softened ASD-STE100 standard and use light caveman mode.
+- Keep comments minimal. Comment only what the code cannot say: a non-obvious constraint, an external quirk, a deliberate trade-off. Do not restate the code, and do not document every struct field or enum value.
 - Add diagnostic logging to facilitate error logging.
 
 ## Building

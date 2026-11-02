@@ -35,7 +35,7 @@ FlyoutBase {
     function showFlyout(pending) {
         if(!settings.onboardingCompleted)
             return
-        if(!settings.peripheralFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.peripheralFlyoutMonitor))
+        if(!pro.peripheralFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.peripheralFlyoutMonitor))
             return
 
         var shown = []

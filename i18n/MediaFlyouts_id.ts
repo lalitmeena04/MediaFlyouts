@@ -151,6 +151,14 @@ Tidak tersedia: %1</translation>
         <translation>Bahasa, tema, warna aksen, mulai otomatis, baki, dan cadangan pengaturan.</translation>
     </message>
     <message>
+        <source>Support</source>
+        <translation>Dukungan</translation>
+    </message>
+    <message>
+        <source>Say thanks with a donation or a tip.</source>
+        <translation>Ucapkan terima kasih dengan donasi atau tip.</translation>
+    </message>
+    <message>
         <source>About</source>
         <translation>Tentang</translation>
     </message>
@@ -385,6 +393,14 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Restore default settings</source>
         <translation>Pulihkan pengaturan bawaan</translation>
+    </message>
+    <message>
+        <source>Donate</source>
+        <translation>Donasi</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Tip</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -1510,6 +1526,110 @@ Tidak tersedia: %1</translation>
     </message>
 </context>
 <context>
+    <name>ProBadge</name>
+    <message>
+        <source>PRO</source>
+        <translation>PRO</translation>
+    </message>
+</context>
+<context>
+    <name>SettingCombo</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>
+    </message>
+</context>
+<context>
+    <name>SupportPage</name>
+    <message>
+        <source>Thank you for the tip!</source>
+        <translation>Terima kasih atas tipnya!</translation>
+    </message>
+    <message>
+        <source>The tip could not be completed. Try again later.</source>
+        <translation>Tip tidak dapat diselesaikan. Coba lagi nanti.</translation>
+    </message>
+    <message>
+        <source>Support MediaFlyouts</source>
+        <translation>Dukung MediaFlyouts</translation>
+    </message>
+    <message>
+        <source>MediaFlyouts is built by one developer. If it earns a place on your taskbar, a donation helps keep it going. Donations are voluntary and unlock nothing.</source>
+        <translation>MediaFlyouts dibuat oleh satu pengembang. Jika layak mendapat tempat di taskbar Anda, donasi membantu pengembangannya terus berjalan. Donasi bersifat sukarela dan tidak membuka fitur apa pun.</translation>
+    </message>
+    <message>
+        <source>Microsoft is not the fundraiser or sponsor of these donations.</source>
+        <translation>Microsoft bukan penggalang dana atau sponsor donasi ini.</translation>
+    </message>
+    <message>
+        <source>Open donation page</source>
+        <translation>Buka halaman donasi</translation>
+    </message>
+    <message>
+        <source>UPI</source>
+        <translation>UPI</translation>
+    </message>
+    <message>
+        <source>Scan with any UPI app</source>
+        <translation>Pindai dengan aplikasi UPI apa pun</translation>
+    </message>
+    <message>
+        <source>Copy UPI ID</source>
+        <translation>Salin ID UPI</translation>
+    </message>
+    <message>
+        <source>Copied</source>
+        <translation>Disalin</translation>
+    </message>
+    <message>
+        <source>Bank transfer (NEFT / IMPS)</source>
+        <translation>Transfer bank (NEFT / IMPS)</translation>
+    </message>
+    <message>
+        <source>Account holder</source>
+        <translation>Pemilik rekening</translation>
+    </message>
+    <message>
+        <source>Bank</source>
+        <translation>Bank</translation>
+    </message>
+    <message>
+        <source>Account number</source>
+        <translation>Nomor rekening</translation>
+    </message>
+    <message>
+        <source>IFSC</source>
+        <translation>IFSC</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Salin</translation>
+    </message>
+    <message>
+        <source>Leave a tip through the Microsoft Store</source>
+        <translation>Beri tip melalui Microsoft Store</translation>
+    </message>
+    <message>
+        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
+        <translation>Tip adalah pembelian sekali bayar di Microsoft Store. Pembayaran ditangani oleh Microsoft.</translation>
+    </message>
+    <message>
+        <source>Tip %1</source>
+        <translation>Tip %1</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Tip</translation>
+    </message>
+</context>
+<context>
     <name>TaskbarWidget</name>
     <message>
         <source>Previous</source>
@@ -1691,6 +1811,57 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Skip this version</source>
         <translation>Lewati versi ini</translation>
+    </message>
+</context>
+<context>
+    <name>UpgradeCard</name>
+    <message>
+        <source>Pro trial: %1 days left</source>
+        <translation>Uji coba Pro: tersisa %1 hari</translation>
+    </message>
+    <message>
+        <source>Your Pro trial has ended</source>
+        <translation>Uji coba Pro Anda telah berakhir</translation>
+    </message>
+    <message>
+        <source>Opening the Microsoft Store…</source>
+        <translation>Membuka Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Get Pro for %1</source>
+        <translation>Dapatkan Pro seharga %1</translation>
+    </message>
+    <message>
+        <source>Get Pro</source>
+        <translation>Dapatkan Pro</translation>
+    </message>
+    <message>
+        <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
+        <translation>Pro dijual melalui MediaFlyouts versi Microsoft Store.</translation>
+    </message>
+    <message>
+        <source>Thank you! Pro is unlocked.</source>
+        <translation>Terima kasih! Pro telah terbuka.</translation>
+    </message>
+    <message>
+        <source>You already own Pro. Restoring your purchase…</source>
+        <translation>Anda sudah memiliki Pro. Memulihkan pembelian Anda…</translation>
+    </message>
+    <message>
+        <source>No connection to the Microsoft Store. Check your network and try again.</source>
+        <translation>Tidak ada koneksi ke Microsoft Store. Periksa jaringan Anda dan coba lagi.</translation>
+    </message>
+    <message>
+        <source>Purchases are not available in this build.</source>
+        <translation>Pembelian tidak tersedia di versi ini.</translation>
+    </message>
+    <message>
+        <source>The Microsoft Store could not complete the purchase. Try again later.</source>
+        <translation>Microsoft Store tidak dapat menyelesaikan pembelian. Coba lagi nanti.</translation>
+    </message>
+    <message>
+        <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
+        <translation>Pro membuka visualizer audio, mixer per aplikasi, baterai periferal, gaya Now Playing, dan opsi widget media.</translation>
     </message>
 </context>
 <context>

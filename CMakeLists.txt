@@ -40,6 +40,39 @@ message(STATUS "MediaFlyouts version: ${MEDIAFLYOUTS_VERSION}")
 # Expose version to C++ through Version.h.
 add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")
 
+# --- Pro add-on (Microsoft Store). Empty cutover = gating off. See dev-notes/PRO-PAYWALL-PLAN.md.
+set(MEDIAFLYOUTS_PRO_ADDON_STORE_ID "" CACHE STRING "Store ID of the MediaFlyouts Pro durable add-on (9N...)")
+set(MEDIAFLYOUTS_STORE_CUTOVER_UTC "" CACHE STRING "ISO-8601 UTC instant when the Store app went free (e.g. 2026-12-01T00:00:00Z)")
+set(MEDIAFLYOUTS_TRIAL_DAYS "15" CACHE STRING "Pro trial length in days")
+set(MEDIAFLYOUTS_TIP_ADDON_STORE_IDS "" CACHE STRING "Comma-separated Store IDs of the consumable tip add-ons")
+add_compile_definitions(
+    MEDIAFLYOUTS_PRO_ADDON_STORE_ID="${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}"
+    MEDIAFLYOUTS_STORE_CUTOVER_UTC="${MEDIAFLYOUTS_STORE_CUTOVER_UTC}"
+    MEDIAFLYOUTS_TRIAL_DAYS="${MEDIAFLYOUTS_TRIAL_DAYS}"
+    MEDIAFLYOUTS_TIP_ADDON_STORE_IDS="${MEDIAFLYOUTS_TIP_ADDON_STORE_IDS}")
+if(MEDIAFLYOUTS_STORE_CUTOVER_UTC STREQUAL "")
+    message(STATUS "MediaFlyouts Pro gating: off (no cutover)")
+else()
+    message(STATUS "MediaFlyouts Pro gating: cutover ${MEDIAFLYOUTS_STORE_CUTOVER_UTC}, trial ${MEDIAFLYOUTS_TRIAL_DAYS} days, add-on '${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}'")
+endif()
+
+# --- Donations. Public payee details, stamped at build time so the source stays free of them.
+set(MEDIAFLYOUTS_DONATE_URL "https://lalitmeena04.github.io/MediaFlyouts-Releases/donate/" CACHE STRING "Donation web page")
+set(MEDIAFLYOUTS_DONATE_UPI_ID "" CACHE STRING "UPI VPA, e.g. name@bank")
+set(MEDIAFLYOUTS_DONATE_PAYEE_NAME "" CACHE STRING "Payee name as UPI apps display it")
+set(MEDIAFLYOUTS_DONATE_BANK_NAME "" CACHE STRING "Bank name for NEFT")
+set(MEDIAFLYOUTS_DONATE_BANK_ACCOUNT "" CACHE STRING "Account number for NEFT")
+set(MEDIAFLYOUTS_DONATE_BANK_IFSC "" CACHE STRING "IFSC for NEFT")
+set(MEDIAFLYOUTS_DONATE_BANK_HOLDER "" CACHE STRING "Account holder name for NEFT")
+add_compile_definitions(
+    MEDIAFLYOUTS_DONATE_URL="${MEDIAFLYOUTS_DONATE_URL}"
+    MEDIAFLYOUTS_DONATE_UPI_ID="${MEDIAFLYOUTS_DONATE_UPI_ID}"
+    MEDIAFLYOUTS_DONATE_PAYEE_NAME="${MEDIAFLYOUTS_DONATE_PAYEE_NAME}"
+    MEDIAFLYOUTS_DONATE_BANK_NAME="${MEDIAFLYOUTS_DONATE_BANK_NAME}"
+    MEDIAFLYOUTS_DONATE_BANK_ACCOUNT="${MEDIAFLYOUTS_DONATE_BANK_ACCOUNT}"
+    MEDIAFLYOUTS_DONATE_BANK_IFSC="${MEDIAFLYOUTS_DONATE_BANK_IFSC}"
+    MEDIAFLYOUTS_DONATE_BANK_HOLDER="${MEDIAFLYOUTS_DONATE_BANK_HOLDER}")
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -63,6 +96,19 @@ if(NOT spdlog_FOUND)
     FetchContent_MakeAvailable(spdlog)
 endif()
 
+# QR codes for the donation page: Nayuki's qrcodegen (MIT). One source file, no CMake project.
+include(FetchContent)
+FetchContent_Declare(qrcodegen
+    GIT_REPOSITORY https://github.com/nayuki/QR-Code-generator.git
+    GIT_TAG v1.8.0
+    GIT_SHALLOW TRUE
+    SOURCE_SUBDIR none
+)
+FetchContent_MakeAvailable(qrcodegen)
+add_library(qrcodegen STATIC ${qrcodegen_SOURCE_DIR}/cpp/qrcodegen.cpp)
+target_include_directories(qrcodegen SYSTEM PUBLIC ${qrcodegen_SOURCE_DIR}/cpp)
+set_target_properties(qrcodegen PROPERTIES CXX_STANDARD 17 AUTOMOC OFF)
+
 option(MEDIAFLYOUTS_BUILD_TESTS "Build the unit tests" ON)
 if(MEDIAFLYOUTS_BUILD_TESTS)
     enable_testing()
@@ -80,8 +126,14 @@ qt_add_library(mediaflyout_core STATIC
     Model/BatteryUtils.h
     Model/Capabilities.cpp
     Model/Capabilities.h
+    Model/Donation.cpp
+    Model/Donation.h
     Model/DualSenseProtocol.cpp
     Model/DualSenseProtocol.h
+    Model/Entitlement.cpp
+    Model/Entitlement.h
+    Model/EntitlementStore.cpp
+    Model/EntitlementStore.h
     Model/FastPairProtocol.cpp
     Model/FastPairProtocol.h
     Model/Fft.cpp
@@ -100,6 +152,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/PlaybackController.h
     Model/PowerAlertPolicy.cpp
     Model/PowerAlertPolicy.h
+    Model/ProBuildConfig.cpp
+    Model/ProBuildConfig.h
     Model/RazerProtocol.cpp
     Model/RazerProtocol.h
     Model/ReceiverProfiles.cpp
@@ -121,6 +175,10 @@ target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
     spdlog::spdlog
 )
+if(WIN32)
+    # EntitlementStore seals its cache with DPAPI.
+    target_link_libraries(mediaflyout_core PUBLIC crypt32)
+endif()
 # Logging on compiles TRC calls at or above MEDIAFLYOUTS_LOG_LEVEL. Logging off removes them all.
 # Default level: DEBUG for Debug builds, INFO otherwise. INFO keeps release logs small.
 option(MEDIAFLYOUTS_ENABLE_LOGGING "Enable spdlog file logging" ON)
@@ -173,11 +231,20 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/AppRestarter.h
     Controllers/AppTranslator.cpp
     Controllers/AppTranslator.h
+    Controllers/DonationController.cpp
+    Controllers/DonationController.h
+    Controllers/EntitlementController.cpp
+    Controllers/EntitlementController.h
+    Controllers/ProGate.cpp
+    Controllers/ProGate.h
+    Controllers/StoreGateway.h
     main.cpp
     MainControllerClass.cpp
     MainControllerClass.h
     Model/AlbumArtProvider.cpp
     Model/AlbumArtProvider.h
+    Model/QrCode.cpp
+    Model/QrCode.h
     Model/Settings.cpp
     Model/Settings.h
 )
@@ -227,15 +294,18 @@ qt_add_qml_module(MediaFlyouts
         Views/PeripheralFlyout.qml
         Views/PeripheralRow.qml
         Views/PeripheralsWidget.qml
+        Views/ProBadge.qml
         Views/RoundedArt.qml
         Views/ScrubArea.qml
         Views/SettingCombo.qml
         Views/SettingRow.qml
         Views/SettingSlider.qml
         Views/SlideFade.qml
+        Views/SupportPage.qml
         Views/TaskbarVisualizer.qml
         Views/TaskbarWidget.qml
         Views/UpdateDialog.qml
+        Views/UpgradeCard.qml
         Views/VolumeFlyout.qml
         Views/VolumeMixerWindow.qml
         Views/WidgetButton.qml
@@ -264,6 +334,7 @@ target_link_libraries(MediaFlyouts PRIVATE
     Qt6::Quick
     Qt6::Widgets
     mediaflyout_core
+    qrcodegen
 )
 
 # Compiled .qm files are embedded under :/i18n in the core library, so the app
@@ -330,6 +401,8 @@ if (WIN32)
         Controllers/PowerStatusController.h
         Controllers/StartupController.cpp
         Controllers/StartupController.h
+        Controllers/StoreLicensing.cpp
+        Controllers/StoreLicensing.h
         Controllers/TaskbarBackdrop.cpp
         Controllers/TaskbarBackdrop.h
         Controllers/TaskbarInfo.cpp
