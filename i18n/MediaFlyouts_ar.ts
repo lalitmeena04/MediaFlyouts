@@ -411,6 +411,10 @@ Unavailable: %1</source>
         <translation>الإصدار</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>ما الجديد</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>الإبلاغ عن مشكلة</translation>
     </message>
@@ -1891,6 +1895,25 @@ Unavailable: %1</source>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>لا توجد تطبيقات تشغّل صوتًا الآن.</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>ما الجديد</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>ما الجديد في MediaFlyouts %1</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>ملاحظات الإصدار الكاملة</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>إغلاق</translation>
     </message>
 </context>
 </TS>

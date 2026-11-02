@@ -32,6 +32,7 @@
 #include "TrayController.h"
 #include "UpdateChecker.h"
 #include "Version.h"
+#include "WhatsNewController.h"
 #include "WindowScaleRefresher.h"
 
 #ifdef Q_OS_WIN
@@ -132,6 +133,8 @@ void MainControllerClass::buildCoreSubsystems() {
     m_proGate = std::make_unique<ProGate>(m_settings.get(), m_entitlement.get());
     m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind(),
                                                       !mf::proBuildConfig().tipAddOnStoreIds.isEmpty());
+    m_whatsNew = std::make_unique<WhatsNewController>(m_settings.get());
+    m_whatsNew->start();
 
     m_engine = std::make_unique<QQmlApplicationEngine>();
     m_translator->setEngine(m_engine.get());
@@ -262,6 +265,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("entitlement", m_entitlement.get());
     ctx->setContextProperty("pro", m_proGate.get());
     ctx->setContextProperty("donate", m_donation.get());
+    ctx->setContextProperty("whatsNew", m_whatsNew.get());
     ctx->setContextProperty("theme", m_theme.get());
     ctx->setContextProperty("updateChecker", m_updateChecker.get());
     ctx->setContextProperty("errorReporter", m_errorReporter.get());

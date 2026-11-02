@@ -27,6 +27,7 @@ class TrayController;
 class EntitlementController;
 class ProGate;
 class DonationController;
+class WhatsNewController;
 
 #ifdef Q_OS_WIN
 class WinMediaProvider;
@@ -87,6 +88,7 @@ class MainControllerClass {
         std::unique_ptr<EntitlementController> m_entitlement;
         std::unique_ptr<ProGate> m_proGate;
         std::unique_ptr<DonationController> m_donation;
+        std::unique_ptr<WhatsNewController> m_whatsNew;
         AlbumArtProvider* m_artProvider = nullptr; // Owned by QML engine.
 
 #ifdef Q_OS_WIN

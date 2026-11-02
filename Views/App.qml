@@ -38,6 +38,7 @@ QtObject {
     property VolumeMixerWindow volumeMixerWindow: VolumeMixerWindow {}
     property OnboardingWindow onboarding: OnboardingWindow {}
     property UpdateDialog updateDialog: UpdateDialog {}
+    property WhatsNewDialog whatsNewDialog: WhatsNewDialog {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         stack: widgetStack
         onActivated: flyout.showFlyout()
@@ -51,7 +52,19 @@ QtObject {
         peripheralsWidget: app.peripheralsWidget
     }
 
-    Component.onCompleted: if(!settings.onboardingCompleted) onboarding.show()
+    Component.onCompleted: {
+        if(!settings.onboardingCompleted)
+            onboarding.show()
+        else if(whatsNew.pending)
+            whatsNewDialog.open()
+    }
+
+    property Connections _whatsNewConn: Connections {
+        target: whatsNew
+        function onShowRequested() {
+            whatsNewDialog.open()
+        }
+    }
 
     property Timer _updateTimer: Timer {
         interval: 4000

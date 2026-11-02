@@ -411,6 +411,10 @@ Indisponible : %1</translation>
         <translation>Version</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>Nouveautés</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>Signaler un problème</translation>
     </message>
@@ -1891,6 +1895,25 @@ Indisponible : %1</translation>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>Aucune application ne lit de son pour le moment.</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>Nouveautés</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>Nouveautés de MediaFlyouts %1</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>Notes de version complètes</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Fermer</translation>
     </message>
 </context>
 </TS>

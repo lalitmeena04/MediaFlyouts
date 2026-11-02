@@ -168,12 +168,19 @@ qt_add_library(mediaflyout_core STATIC
     Model/TrackInfo.h
     Model/WiredPeripheralRules.cpp
     Model/WiredPeripheralRules.h
+    Model/WhatsNew.cpp
+    Model/WhatsNew.h
     Model/WindowScalePolicy.cpp
     Model/WindowScalePolicy.h
 )
 target_link_libraries(mediaflyout_core PUBLIC
     Qt6::Core
     spdlog::spdlog
+)
+# The "What's new" notes ship inside the binary. One file feeds the dialog and the Store listing.
+qt_add_resources(mediaflyout_core "whatsnew"
+    PREFIX "/whatsnew"
+    FILES WHATS_NEW.md
 )
 if(WIN32)
     # EntitlementStore seals its cache with DPAPI.
@@ -238,6 +245,8 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/ProGate.cpp
     Controllers/ProGate.h
     Controllers/StoreGateway.h
+    Controllers/WhatsNewController.cpp
+    Controllers/WhatsNewController.h
     main.cpp
     MainControllerClass.cpp
     MainControllerClass.h
@@ -308,6 +317,7 @@ qt_add_qml_module(MediaFlyouts
         Views/UpgradeCard.qml
         Views/VolumeFlyout.qml
         Views/VolumeMixerWindow.qml
+        Views/WhatsNewDialog.qml
         Views/WidgetButton.qml
         Views/WidgetStack.qml
         Views/WidgetTooltip.qml

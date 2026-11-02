@@ -110,6 +110,7 @@ Window {
         { "label": qsTr("Restore default settings"), "page": 9 },
         { "label": qsTr("Donate"), "page": 10 }, { "label": qsTr("Tip"), "page": 10 },
         { "label": qsTr("Check for updates"), "page": 11 }, { "label": qsTr("Version"), "page": 11 },
+        { "label": qsTr("What's new"), "page": 11 },
         { "label": qsTr("Report a problem"), "page": 11 }, { "label": qsTr("Error report"), "page": 11 }
     ]
 
@@ -1959,6 +1960,10 @@ Window {
                             visible: updateChecker.updateAvailable
                             text: qsTr("Get %1").arg(updateChecker.latestVersion)
                             onClicked: updateChecker.notifyUpdate()
+                        }
+                        Button {
+                            text: qsTr("What's new")
+                            onClicked: whatsNew.requestShow()
                         }
                         Text {
                             anchors.verticalCenter: parent.verticalCenter

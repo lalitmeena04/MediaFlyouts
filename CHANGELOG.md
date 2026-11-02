@@ -28,6 +28,12 @@ All notable changes to MediaFlyouts are documented here. This project follows
   Store in the Store build. Payee details are stamped at build time
   (`MEDIAFLYOUTS_DONATE_*`). QR codes use Nayuki's qrcodegen (MIT, fetched by
   CMake). Donations unlock nothing.
+- **What's new after an update.** The first launch after an update shows a
+  short, plain-language note of what changed; **About → What's new** shows
+  it again. The text is `WHATS_NEW.md` at the repo root, embedded in the
+  binary and reused verbatim for the Store "What's new in this version"
+  field. `WhatsNewTest` fails when its `Version` line does not match
+  `VERSION.txt`, so it cannot go stale. New setting `lastSeenVersion`.
 - **Localization.** The app is now available in English, Spanish, Simplified
   Chinese, Japanese, German, French, Korean, Brazilian Portuguese, Hindi,
   Arabic and Indonesian. It follows the Windows display language by default;

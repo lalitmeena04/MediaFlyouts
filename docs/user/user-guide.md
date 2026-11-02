@@ -136,4 +136,6 @@ Enable **launch on startup** to have MediaFlyouts start with Windows (minimized
 to tray). Installer and portable builds use the Windows `Run` registry key;
 MSIX installs use the Windows startup-task mechanism. Turn on **automatic update
 checks** to be notified when a newer release is available. The About page can
-also check manually and install an available update.
+also check manually and install an available update. After an update, the
+first launch shows a short **What's new** note; **About → What's new** shows
+it again.

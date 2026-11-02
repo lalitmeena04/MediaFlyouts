@@ -411,6 +411,10 @@ Unavailable: %1</source>
         <translation>版本</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>新功能</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>报告问题</translation>
     </message>
@@ -1891,6 +1895,25 @@ Unavailable: %1</source>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>目前没有应用正在播放音频。</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>新功能</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>MediaFlyouts %1 的新功能</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>完整更新日志</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>关闭</translation>
     </message>
 </context>
 </TS>

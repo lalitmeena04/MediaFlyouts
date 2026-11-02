@@ -28,6 +28,10 @@ properties and QML binds to their properties/signals.
 - **OnboardingWindow.qml** — first-run wizard. Until it sets
   `settings.onboardingCompleted`, every `showFlyout()` returns early and the
   taskbar widget's `visible` binding stays false.
+- **WhatsNewDialog.qml** — the bundled `WHATS_NEW.md` rendered as Markdown.
+  `App.qml` opens it once after an update (`whatsNew.pending`, never over
+  the onboarding wizard) and on demand from **About → What's new**. Closing
+  it calls `whatsNew.markSeen()`.
 - **TaskbarWidget.qml** + **TaskbarVisualizer.qml** — the taskbar now-playing
   widget and its multi-style audio visualizer. Hosts the "Pause all" /
   "Play all" button.
@@ -82,7 +86,7 @@ result to the available screen.
 
 `nowPlaying`, `settings`, `theme`, `placement`, `tray`, `updateChecker`,
 `errorReporter`, `restarter`, `instance`, `capabilities`, `entitlement`, `pro`,
-`donate`, `monitors`, and (on Windows) `volumeController`,
+`donate`, `whatsNew`, `monitors`, and (on Windows) `volumeController`,
 `volumeMixer`, `audioCapture`, `taskbar`, `fullscreen`, `lockKeys`,
 `windowEffects`. QML reads these directly, e.g. `nowPlaying.title`,
 `settings.visualizerStyle`, `theme.accent`, `audioCapture.bands`.

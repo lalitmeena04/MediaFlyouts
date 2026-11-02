@@ -1028,3 +1028,19 @@ TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
     expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 10 && donate.available"));
     expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 11"));
 }
+
+TEST(QmlContractTest, WhatsNewShowsOnceAfterAnUpdate) {
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("property WhatsNewDialog whatsNewDialog"));
+    expectContains(app, QStringLiteral("else if(whatsNew.pending)"));
+    expectContains(app, QStringLiteral("function onShowRequested()"));
+
+    const QString dialog = loadSource("Views/WhatsNewDialog.qml");
+    expectContains(dialog, QStringLiteral("onClosing: whatsNew.markSeen()"));
+    expectContains(dialog, QStringLiteral("text: whatsNew.body"));
+    expectContains(dialog, QStringLiteral("textFormat: Text.MarkdownText"));
+    expectContains(dialog, QStringLiteral("updateChecker.openReleasePage()"));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("onClicked: whatsNew.requestShow()"));
+}

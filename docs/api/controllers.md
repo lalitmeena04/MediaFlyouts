@@ -162,6 +162,18 @@ which satisfies Store policy §10.8.2. `upiUri` is the `upi://pay` deep link,
 `openPage()` opens the donation web page, `copyToClipboard(text)` backs the
 Copy buttons. Donations unlock nothing.
 
+### WhatsNewController
+The `whatsNew` context property. On `start()` it compares
+`Settings::lastSeenVersion` with the running base version
+(`mf::baseVersion`, suffix stripped): a first run records the version and
+stays quiet; a different version sets `pending`, and `App.qml` opens
+`WhatsNewDialog` once onboarding is done. Closing the dialog calls
+`markSeen()`. `requestShow()` reopens it from **About → What's new**. `text`
+/ `body` come from the bundled `WHATS_NEW.md` (`:/whatsnew/`), the same file
+pasted into the Store "What's new" field; `mf::whatsNewVersion` parses its
+`Version x.y.z` first line and `WhatsNewTest` fails the build when it does
+not match `VERSION.txt`.
+
 ## Windows-only
 
 - **StoreLicensing** — the `StoreGateway` for packaged builds, over

@@ -53,6 +53,7 @@ Every file below carries the version. Update all of them in one commit.
 | File | What to change |
 |------|----------------|
 | [`VERSION.txt`](../../VERSION.txt) | The plain version, e.g. `1.6.0`. CMake, Inno Setup, `tools/release.ps1` and the release workflow all read this file. |
+| [`WHATS_NEW.md`](../../WHATS_NEW.md) | Rewrite for the release. First line `Version 1.6.0`, then a short `- ` bullet list in plain language. See [Write the release notes](#3-write-the-release-notes). |
 | [`packaging/msix/AppxManifest.xml`](../../packaging/msix/AppxManifest.xml) | `Version="1.6.0.0"` on the `<Identity>` element. Four parts, last part `0`. |
 | [`CHANGELOG.md`](../../CHANGELOG.md) | Rename `## [Unreleased]` to `## [1.6.0] — YYYY-MM-DD`. Add a new empty `## [Unreleased]` above it. Add a `[1.6.0]: …/releases/tag/v1.6.0` link at the bottom. |
 | [`docs/RELEASE_NOTES.md`](../RELEASE_NOTES.md) | Add a `## Version 1.6.0 — <title> (<Month Year>)` section at the top. See [Write the release notes](#3-write-the-release-notes). |
@@ -76,7 +77,18 @@ Files that do **not** need a manual edit:
 
 ## 3. Write the release notes
 
-Two documents describe each release. They have different readers.
+Three documents describe each release. They have different readers.
+
+**`WHATS_NEW.md`** is for the person who just updated. The app shows it once
+on the first launch after an update (and from **About → What's new**), and
+the same text goes into the Partner Center **What's new in this version**
+field. Rules, enforced by `WhatsNewTest`:
+
+- First line is exactly `Version <ver>`; it must match `VERSION.txt`.
+- Then a blank line and `- ` bullets. Plain text only: no `**`, `#` or links,
+  because the Store field shows markup literally. At most 1500 characters.
+- Three to five bullets, each one sentence or two, naming the setting that
+  controls the feature. Skip internals and fixes nobody saw.
 
 **`CHANGELOG.md`** is for developers. Keep the Keep-a-Changelog layout:
 a one-paragraph summary, then `### Added`, `### Fixed`, `### Changed` as
@@ -182,6 +194,8 @@ Then do by hand:
    version and the download succeeds.
 4. Upload `MediaFlyouts-<ver>.msix` to Partner Center. See
    [`packaging/README.md`](../../packaging/README.md#microsoft-store-submission).
+   Paste `WHATS_NEW.md` (without the `Version` line if you prefer) into
+   **What's new in this version**.
 
 ## 7. Pro add-on, cutover and donations
 

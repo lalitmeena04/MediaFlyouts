@@ -411,6 +411,10 @@ Tidak tersedia: %1</translation>
         <translation>Versi</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>Yang baru</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>Laporkan masalah</translation>
     </message>
@@ -1891,6 +1895,25 @@ Tidak tersedia: %1</translation>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>Tidak ada aplikasi yang memutar audio saat ini.</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>Yang baru</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>Yang baru di MediaFlyouts %1</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>Catatan rilis lengkap</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Tutup</translation>
     </message>
 </context>
 </TS>

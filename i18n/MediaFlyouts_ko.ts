@@ -411,6 +411,10 @@ Unavailable: %1</source>
         <translation>버전</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>새로운 기능</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>문제 신고</translation>
     </message>
@@ -1891,6 +1895,25 @@ Unavailable: %1</source>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>지금 오디오를 재생 중인 앱이 없습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>새로운 기능</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>MediaFlyouts %1의 새로운 기능</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>전체 릴리스 노트</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>닫기</translation>
     </message>
 </context>
 </TS>

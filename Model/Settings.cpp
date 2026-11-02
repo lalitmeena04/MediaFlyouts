@@ -141,6 +141,7 @@ void Settings::reload() {
     m_filterList = m_store.value(QStringLiteral("filterList")).toStringList();
     m_autoCheckUpdates = m_store.value(QStringLiteral("autoCheckUpdates"), false).toBool();
     m_skippedUpdateVersion = m_store.value(QStringLiteral("skippedUpdateVersion")).toString();
+    m_lastSeenVersion = m_store.value(QStringLiteral("lastSeenVersion")).toString();
     m_language = m_store.value(QStringLiteral("language")).toString();
 }
 
@@ -357,6 +358,9 @@ bool Settings::autoCheckUpdates() const {
 }
 QString Settings::skippedUpdateVersion() const {
     return m_skippedUpdateVersion;
+}
+QString Settings::lastSeenVersion() const {
+    return m_lastSeenVersion;
 }
 QString Settings::language() const {
     return m_language;
@@ -654,6 +658,14 @@ void Settings::setSkippedUpdateVersion(const QString& v) {
         return;
     m_skippedUpdateVersion = v;
     m_store.setValue(QStringLiteral("skippedUpdateVersion"), v);
+    emit changed();
+}
+void Settings::setLastSeenVersion(const QString& v) {
+    if(m_lastSeenVersion == v)
+        return;
+    TRC_INFO("settings: lastSeenVersion {} -> {}", m_lastSeenVersion.toStdString(), v.toStdString());
+    m_lastSeenVersion = v;
+    m_store.setValue(QStringLiteral("lastSeenVersion"), v);
     emit changed();
 }
 void Settings::setLanguage(const QString& v) {

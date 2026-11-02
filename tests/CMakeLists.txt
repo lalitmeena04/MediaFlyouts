@@ -19,6 +19,8 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/ProGate.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/ProGate.h
     ${CMAKE_SOURCE_DIR}/Controllers/StoreGateway.h
+    ${CMAKE_SOURCE_DIR}/Controllers/WhatsNewController.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/WhatsNewController.h
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.h
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
@@ -69,6 +71,7 @@ add_executable(mediaflyout_gtest
     Controllers/ProGateTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
+    Controllers/WhatsNewControllerTest.cpp
     gtest_main.cpp
     I18n/TranslationFilesTest.cpp
     Model/AlbumArtProviderTest.cpp
@@ -98,6 +101,7 @@ add_executable(mediaflyout_gtest
     Model/SwipeRecognizerTest.cpp
     Model/TaskbarLayoutTest.cpp
     Model/TrackInfoTest.cpp
+    Model/WhatsNewTest.cpp
     Model/WiredPeripheralRulesTest.cpp
     Model/WindowScalePolicyTest.cpp
     Packaging/IconAssetsTest.cpp

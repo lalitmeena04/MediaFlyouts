@@ -411,6 +411,10 @@ Unavailable: %1</source>
         <translation>バージョン</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>新着情報</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>問題を報告</translation>
     </message>
@@ -1891,6 +1895,25 @@ Unavailable: %1</source>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>現在、音声を再生しているアプリはありません。</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>新着情報</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>MediaFlyouts %1 の新着情報</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>リリースノート全文</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>閉じる</translation>
     </message>
 </context>
 </TS>

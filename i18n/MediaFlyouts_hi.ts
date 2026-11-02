@@ -411,6 +411,10 @@ Unavailable: %1</source>
         <translation>संस्करण</translation>
     </message>
     <message>
+        <source>What&apos;s new</source>
+        <translation>नया क्या है</translation>
+    </message>
+    <message>
         <source>Report a problem</source>
         <translation>समस्या की रिपोर्ट करें</translation>
     </message>
@@ -1891,6 +1895,25 @@ Unavailable: %1</source>
     <message>
         <source>No apps are playing audio right now.</source>
         <translation>अभी कोई ऐप ऑडियो नहीं चला रहा।</translation>
+    </message>
+</context>
+<context>
+    <name>WhatsNewDialog</name>
+    <message>
+        <source>What&apos;s new</source>
+        <translation>नया क्या है</translation>
+    </message>
+    <message>
+        <source>What&apos;s new in MediaFlyouts %1</source>
+        <translation>MediaFlyouts %1 में नया क्या है</translation>
+    </message>
+    <message>
+        <source>Full release notes</source>
+        <translation>पूरे रिलीज़ नोट्स</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>बंद करें</translation>
     </message>
 </context>
 </TS>
