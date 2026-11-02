@@ -80,7 +80,7 @@ install the signed copy from the Store listing.
 ### Automated (CI)
 Push a `v*.*.*` tag to run
 [`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
-builds, tests, packages the four artifacts and publishes a GitHub Release in
+builds, tests, packages the three artifacts and publishes a GitHub Release in
 the `MediaFlyouts-Releases` repo. Once that Release exists, the same tag,
 artifacts and notes are mirrored as a GitHub Release in this repo, so both
 repos carry identical files. The MSIX is then uploaded to Partner Center
@@ -95,6 +95,9 @@ Before tagging, make sure both of these are on `main`:
 - [`docs/RELEASE_NOTES.md`](../RELEASE_NOTES.md) has a `## Version <ver>` section
   — its body becomes the GitHub Release description, and a missing section fails
   the release rather than publishing an empty one.
+
+The full step-by-step checklist (version bump, notes, tagging, post-release
+checks) is in the [Release Guide](release-guide.md).
 
 ### MSIX startup task and Store signing
 

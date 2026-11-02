@@ -5,6 +5,8 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+## [1.6.0] — 2026-10-30
+
 Backdrop-aware taskbar widget colors, a restore-defaults option, a new app
 icon, and a fix for the unit tests wiping the app's settings.
 
@@ -395,3 +397,6 @@ written from scratch in Qt 6 / C++ / QML.
 [1.3.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.3.0
 [1.4.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.0
 [1.4.1]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.1
+[1.4.2]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.2
+[1.5.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.5.0
+[1.6.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.6.0

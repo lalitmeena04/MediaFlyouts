@@ -31,3 +31,10 @@ deployment. Useful variants:
 ## Version Control
 
 Never commit or push agent made changes automatically.
+
+## Releases
+
+To prepare a release, follow `docs/developer/release-guide.md`. Releases are
+always prepared on `main` after all required PRs are merged; never prepare one
+on `dev` or a feature branch. Update every file in the guide's version table
+in one change set.
