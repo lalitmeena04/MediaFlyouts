@@ -43,6 +43,11 @@
 .PARAMETER NoLogging
     (build) Compile out spdlog file logging (MEDIAFLYOUTS_ENABLE_LOGGING=OFF).
 
+.PARAMETER Define
+    (build, package) Extra CMake cache entries as NAME=VALUE, e.g.
+    -Define MEDIAFLYOUTS_STORE_CUTOVER_UTC=2026-12-04T12:00:00Z,MEDIAFLYOUTS_PRO_ADDON_STORE_ID=9NXXXX.
+    See docs/developer/build-guide.md for the Pro and donation variables.
+
 .PARAMETER SkipBuild
     (package) Reuse the existing bin\ instead of doing a clean release build.
 
@@ -115,6 +120,7 @@ param(
     [switch]$SkipDeploy,
     [switch]$NoLogging,
     [string]$BuildNumber  = "",
+    [string[]]$Define     = @(),
 
     # -- package --------------------------------------------------------------
     [switch]$SkipBuild,
@@ -286,6 +292,7 @@ function Invoke-ShowHelp {
     Write-Host "    -OutDir <dir>             Output folder (default: release)"
     Write-Host "    -StoreIdentityName <n>    Store Identity Name for the MSIX"
     Write-Host "    -StoreIdentityPublisher <p> Store Identity Publisher (CN=<GUID>)"
+    Write-Host "    -Define NAME=VALUE[,...]  Extra CMake cache entries (build and package)"
     Write-Host "    -SignLocal                Also build a self-signed, installable MSIX + .cer"
     Write-Host "    -NewCertificate           With -SignLocal: make a new signing certificate"
     Write-Host ""
@@ -381,6 +388,10 @@ function Invoke-Build {
                    "-DMEDIAFLYOUTS_ENABLE_LOGGING=$loggingFlag")
     if ($BuildNumber) { $cmakeArgs += "-DMEDIAFLYOUTS_BUILD_NUMBER=$BuildNumber" }
     else              { $cmakeArgs += "-UMEDIAFLYOUTS_BUILD_NUMBER" }
+    foreach ($d in $Define) {
+        if ($d -notmatch '^[A-Za-z_][A-Za-z0-9_]*=') { Write-Err "-Define expects NAME=VALUE, got '$d'."; exit 1 }
+        $cmakeArgs += "-D$d"
+    }
 
     Write-Info ("cmake " + ($cmakeArgs -join ' '))
     Invoke-Native { cmake @cmakeArgs } "CMake configuration failed."
@@ -474,6 +485,7 @@ function Invoke-Package {
     if ($StoreIdentityPublisher) { $releaseArgs["StoreIdentityPublisher"] = $StoreIdentityPublisher }
     if ($SignLocal)              { $releaseArgs["SignLocal"]              = $true }
     if ($NewCertificate)         { $releaseArgs["NewCertificate"]         = $true }
+    if ($Define.Count -gt 0)     { $releaseArgs["Define"]                 = $Define }
 
     & $script @releaseArgs
 }
