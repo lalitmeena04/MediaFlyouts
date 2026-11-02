@@ -40,6 +40,22 @@ message(STATUS "MediaFlyouts version: ${MEDIAFLYOUTS_VERSION}")
 # Expose version to C++ through Version.h.
 add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")
 
+# --- Pro add-on (Microsoft Store). Empty cutover = gating off. See dev-notes/PRO-PAYWALL-PLAN.md.
+set(MEDIAFLYOUTS_PRO_ADDON_STORE_ID "" CACHE STRING "Store ID of the MediaFlyouts Pro durable add-on (9N...)")
+set(MEDIAFLYOUTS_STORE_CUTOVER_UTC "" CACHE STRING "ISO-8601 UTC instant when the Store app went free (e.g. 2026-12-01T00:00:00Z)")
+set(MEDIAFLYOUTS_TRIAL_DAYS "15" CACHE STRING "Pro trial length in days")
+set(MEDIAFLYOUTS_TIP_ADDON_STORE_IDS "" CACHE STRING "Comma-separated Store IDs of the consumable tip add-ons")
+add_compile_definitions(
+    MEDIAFLYOUTS_PRO_ADDON_STORE_ID="${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}"
+    MEDIAFLYOUTS_STORE_CUTOVER_UTC="${MEDIAFLYOUTS_STORE_CUTOVER_UTC}"
+    MEDIAFLYOUTS_TRIAL_DAYS="${MEDIAFLYOUTS_TRIAL_DAYS}"
+    MEDIAFLYOUTS_TIP_ADDON_STORE_IDS="${MEDIAFLYOUTS_TIP_ADDON_STORE_IDS}")
+if(MEDIAFLYOUTS_STORE_CUTOVER_UTC STREQUAL "")
+    message(STATUS "MediaFlyouts Pro gating: off (no cutover)")
+else()
+    message(STATUS "MediaFlyouts Pro gating: cutover ${MEDIAFLYOUTS_STORE_CUTOVER_UTC}, trial ${MEDIAFLYOUTS_TRIAL_DAYS} days, add-on '${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}'")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -104,6 +120,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/PlaybackController.h
     Model/PowerAlertPolicy.cpp
     Model/PowerAlertPolicy.h
+    Model/ProBuildConfig.cpp
+    Model/ProBuildConfig.h
     Model/RazerProtocol.cpp
     Model/RazerProtocol.h
     Model/ReceiverProfiles.cpp
@@ -181,6 +199,9 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/AppRestarter.h
     Controllers/AppTranslator.cpp
     Controllers/AppTranslator.h
+    Controllers/EntitlementController.cpp
+    Controllers/EntitlementController.h
+    Controllers/StoreGateway.h
     main.cpp
     MainControllerClass.cpp
     MainControllerClass.h
@@ -338,6 +359,8 @@ if (WIN32)
         Controllers/PowerStatusController.h
         Controllers/StartupController.cpp
         Controllers/StartupController.h
+        Controllers/StoreLicensing.cpp
+        Controllers/StoreLicensing.h
         Controllers/TaskbarBackdrop.cpp
         Controllers/TaskbarBackdrop.h
         Controllers/TaskbarInfo.cpp

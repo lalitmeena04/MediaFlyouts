@@ -12,7 +12,6 @@ EntitlementState grant(EntitlementState s, Tier tier, EntitlementSource source) 
     return s;
 }
 
-// Trial while `now` is before trialEnd. Expired after that.
 EntitlementState trialOrExpired(EntitlementState s, EntitlementSource source) {
     if(s.effectiveNow < s.trialEnd)
         return grant(s, Tier::Trial, source);
@@ -35,12 +34,11 @@ EntitlementState resolveEntitlement(const EntitlementInputs& in) {
     s.effectiveNow = in.now;
     const QDateTime& lastSeen = in.cache.lastSeen;
     if(in.cache.valid && lastSeen.isValid() && (!in.now.isValid() || in.now < lastSeen)) {
-        // The clock went backwards. Time only moves forward here.
         s.effectiveNow = lastSeen;
         s.clockRolledBack = in.now.isValid();
     }
 
-    // Fail open. A build without a cutover or a Store-less install never locks anything.
+    // Fail open.
     if(!in.policy.gatingEnabled || !in.policy.cutover.isValid() || in.install != InstallKind::Store
        || !s.effectiveNow.isValid())
         return grant(s, Tier::Pro, EntitlementSource::Unlocked);
@@ -54,7 +52,6 @@ EntitlementState resolveEntitlement(const EntitlementInputs& in) {
             s.trialEnd = in.store.acquired.addDays(in.policy.trialDays);
             return trialOrExpired(s, EntitlementSource::StoreTrial);
         }
-        // The Store answered without an acquisition date. The cache decides.
     }
 
     if(in.cache.valid) {
@@ -66,7 +63,7 @@ EntitlementState resolveEntitlement(const EntitlementInputs& in) {
         }
     }
 
-    // First run with no Store answer. The trial starts now.
+    // First run with no Store answer.
     s.trialEnd = s.effectiveNow.addDays(in.policy.trialDays);
     return trialOrExpired(s, EntitlementSource::LocalTrial);
 }
@@ -85,8 +82,7 @@ bool isUnlocked(Tier tier) {
 }
 
 bool isUnlocked(ProFeature, Tier tier) {
-    // Every Pro feature follows the same tier today. The feature stays in the
-    // signature so a per-feature rule can be added without touching callers.
+    // One tier for every feature today. The parameter leaves room for per-feature rules.
     return isUnlocked(tier);
 }
 
@@ -117,6 +113,7 @@ QString sourceId(EntitlementSource source) {
         case EntitlementSource::LocalTrial: return QStringLiteral("localTrial");
         case EntitlementSource::Cached: return QStringLiteral("cached");
         case EntitlementSource::Expired: return QStringLiteral("expired");
+        case EntitlementSource::Override: return QStringLiteral("override");
     }
     return QStringLiteral("unlocked");
 }

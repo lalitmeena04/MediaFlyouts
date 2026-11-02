@@ -110,8 +110,48 @@ run on `MonitorMapper::changed`, on `Show`, on `DevicePixelRatioChange`, and
 after each suspicious resize. The pure rules live in
 `Model/WindowScalePolicy.h`.
 
+### EntitlementController
+The `entitlement` context property: the Pro paywall seen from QML (see
+[dev-notes/PRO-PAYWALL-PLAN.md](../../dev-notes/PRO-PAYWALL-PLAN.md)). It
+feeds `mf::resolveEntitlement` with the install kind, the Store answer
+(`StoreSnapshot`) and the cached state, persists the result through
+`EntitlementStore`, and re-resolves at the trial end (and daily) so the UI
+flips without a restart.
+
+- `tier` / `source` / `unlocked` / `isPro` / `isTrial` / `trialDaysLeft`, plus
+  `gatingEnabled`, `storeAvailable`, `canPurchase`, `price`, `purchasing`,
+  `refreshing`, `lastPurchaseStatus`, `tipAddOnStoreIds`, `featureIds`.
+- `isUnlocked("visualizer")` for the gated features (`mf::allFeatureIds`). An
+  unknown id reads as unlocked and logs a warning: a typo must never lock a
+  feature.
+- `purchase(window)` buys the Pro add-on, `purchaseAddOn(id, window)` any
+  add-on (tips). The QML `Window` becomes the owner of the Store dialog.
+  `purchaseFinished(ok, statusId, storeId)` reports stable ids from
+  `mf::purchase` (`succeeded`, `alreadyPurchased`, `notPurchased`,
+  `networkError`, `serverError`, `unavailable`, `notConfigured`, `busy`);
+  QML maps them to text.
+- Talks to the Store through the `StoreGateway` interface
+  (`StoreLicensing` on Windows, a fake in tests). Without a gateway the Store
+  never answers and the offline fallbacks apply. Non-Store installs are
+  always `Pro`; the Store is still queried for the logs.
+- Debug builds honour `MEDIAFLYOUTS_ENTITLEMENT=free|trial|pro`
+  (`source` = `override`, never cached).
+- Build constants come from `mf::proBuildConfig()` (`MEDIAFLYOUTS_PRO_ADDON_STORE_ID`,
+  `MEDIAFLYOUTS_STORE_CUTOVER_UTC`, `MEDIAFLYOUTS_TRIAL_DAYS`,
+  `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`; see the build guide).
+
 ## Windows-only
 
+- **StoreLicensing** — the `StoreGateway` for packaged builds, over
+  `Windows.Services.Store`. `refresh()` reads `GetAppLicenseAsync`
+  (add-on licenses), `GetUserCollectionAsync` (the app's `AcquiredDate`) and
+  `GetAssociatedStoreProductsAsync` (localized price) on a worker thread with
+  a multi-threaded WinRT apartment, then answers with one `StoreSnapshot`.
+  `purchase(id)` initializes the context with the owner HWND
+  (`IInitializeWithWindow`) and runs `RequestPurchaseAsync` on the UI thread
+  with a `Completed` handler. `OfflineLicensesChanged` is forwarded as
+  `licensesChanged`. Unpackaged processes report `supported() == false` and
+  answer every call with an unavailable snapshot. Every HRESULT is logged.
 - **VolumeController** — master volume/mute via `IAudioEndpointVolume`; follows
   the default output device (`IMMNotificationClient`).
 - **VolumeMixer** — per-app sessions via `IAudioSessionManager2` /

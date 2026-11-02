@@ -26,7 +26,7 @@ namespace {
 constexpr char kMagic[] = {'M', 'F', 'E', '1'};
 constexpr int kMagicSize = 4;
 constexpr int kHeaderSize = kMagicSize + 1;
-// Mixed into every seal. Bump when the payload layout changes so old files are dropped.
+// Bump to drop files from older layouts.
 constexpr char kSalt[] = "MediaFlyouts.Entitlement.v1";
 constexpr int kSaltSize = sizeof(kSalt) - 1;
 constexpr int kSha256Size = 32;
@@ -39,13 +39,11 @@ QString timeToText(const QDateTime& t) {
     return t.isValid() ? t.toUTC().toString(Qt::ISODateWithMs) : QString();
 }
 
-// False when `text` is present but not a time. Empty text is a valid "no time".
 bool timeFromText(const QString& text, QDateTime* out) {
     if(text.isEmpty()) {
         *out = QDateTime();
         return true;
     }
-    // Stored text ends in "Z", so the parsed value is already UTC.
     const QDateTime t = QDateTime::fromString(text, Qt::ISODateWithMs);
     if(!t.isValid())
         return false;
@@ -63,7 +61,7 @@ bool tierFromId(const QString& id, Tier* tier) {
     return false;
 }
 
-// A missing key reads as empty. Any non-string value is malformed.
+// A missing key reads as empty. A non-string value is malformed.
 bool textField(const QJsonObject& o, const char* key, QString* out) {
     const QJsonValue v = o.value(QLatin1String(key));
     if(v.isUndefined()) {
@@ -155,7 +153,6 @@ bool DpapiCodec::open(const QByteArray& sealed, QByteArray* plain) const {
     DATA_BLOB entropy = saltBlob();
     DATA_BLOB out{};
     if(!CryptUnprotectData(&in, nullptr, &entropy, nullptr, nullptr, CRYPTPROTECT_UI_FORBIDDEN, &out)) {
-        // Expected after a file edit, or for a file from another user or PC.
         TRC_WARN("entitlement store: CryptUnprotectData failed (err={})", GetLastError());
         return false;
     }
@@ -176,7 +173,7 @@ std::unique_ptr<IEntitlementCodec> defaultEntitlementCodec() {
 }
 
 QString defaultEntitlementFile() {
-    // Same folder as the user settings ini. Tests redirect that folder.
+    // Probe QSettings so the test redirect applies here too.
     const QSettings probe(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("MediaFlyouts"),
                           QStringLiteral("MediaFlyouts"));
     return QFileInfo(probe.fileName()).absolutePath() + QStringLiteral("/Entitlement.dat");

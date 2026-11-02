@@ -138,6 +138,17 @@ as an invalid cache (logged), which resolves like a first run. Writes go
 through `QSaveFile`. `load()`, `save()`, `clear()`; `serializeEntitlementCache`
 / `parseEntitlementCache` are exposed for tests.
 
+## ProBuildConfig (`namespace mf`)
+
+The Store identifiers and gating policy compiled into the binary
+(`MEDIAFLYOUTS_PRO_ADDON_STORE_ID`, `MEDIAFLYOUTS_STORE_CUTOVER_UTC`,
+`MEDIAFLYOUTS_TRIAL_DAYS`, `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`).
+`parseProBuildConfig()` is the pure parser: trims, reads the cutover as UTC
+(a bare date-time counts as UTC, offsets are normalised), falls back to 15
+trial days on bad input, de-duplicates tip ids. A bad or empty cutover leaves
+gating off. `proBuildConfig()` returns the parsed build values and logs them
+once.
+
 ## Peripheral battery helpers
 
 Pure, unit-tested logic shared by the battery providers, so the protocol and

@@ -74,6 +74,14 @@ InstallKind classifyInstall(bool packaged, const QString& installDir, const QStr
     return app == install ? InstallKind::Installer : InstallKind::Portable;
 }
 
+bool isPackagedProcess() {
+#ifdef Q_OS_WIN
+    return runningPackaged();
+#else
+    return false;
+#endif
+}
+
 InstallKind detectInstallKind() {
 #ifdef Q_OS_WIN
     return classifyInstall(runningPackaged(), innoInstallLocation(), QCoreApplication::applicationDirPath());

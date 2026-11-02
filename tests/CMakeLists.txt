@@ -12,6 +12,9 @@ qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/AppRestarter.h
     ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/AppTranslator.h
+    ${CMAKE_SOURCE_DIR}/Controllers/EntitlementController.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/EntitlementController.h
+    ${CMAKE_SOURCE_DIR}/Controllers/StoreGateway.h
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/TrayController.h
     ${CMAKE_SOURCE_DIR}/Model/AlbumArtProvider.cpp
@@ -53,6 +56,7 @@ add_executable(mediaflyout_gtest
     Controllers/ErrorReporterTest.cpp
     Controllers/AppRestarterTest.cpp
     Controllers/AppTranslatorTest.cpp
+    Controllers/EntitlementControllerTest.cpp
     Controllers/NowPlayingTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
@@ -75,6 +79,7 @@ add_executable(mediaflyout_gtest
     Model/LocalizationTest.cpp
     Model/PlaybackControllerTest.cpp
     Model/PowerAlertPolicyTest.cpp
+    Model/ProBuildConfigTest.cpp
     Model/RazerProtocolTest.cpp
     Model/ReceiverProfilesTest.cpp
     Model/SessionSelectionTest.cpp
@@ -119,6 +124,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/MonitorMapper.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PeripheralAlerts.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/PowerStatusController.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/StoreLicensing.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarBackdrop.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/TaskbarInfo.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/VolumeMixer.cpp

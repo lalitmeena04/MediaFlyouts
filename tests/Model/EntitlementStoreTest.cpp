@@ -41,7 +41,6 @@ void writeAll(const QString& path, const QByteArray& bytes) {
     f.write(bytes);
 }
 
-// Flips one byte at `offset` in the file.
 void corruptByte(const QString& path, int offset) {
     QByteArray bytes = readAll(path);
     ASSERT_GT(bytes.size(), offset);
@@ -75,8 +74,7 @@ TEST_P(CodecContractTest, SealThenOpenRoundTrips) {
 }
 
 TEST_P(CodecContractTest, AlteredSealedBytesNeverOpenToADifferentPayload) {
-    // DPAPI ignores a few header bytes that do not affect the plaintext. The
-    // contract is: an altered file is rejected, or it opens to the original.
+    // DPAPI ignores a few header bytes. Altered input must fail or open to the original.
     const QByteArray plain = QByteArrayLiteral("{\"tier\":\"trial\"}");
     const QByteArray sealed = codec->seal(plain);
     ASSERT_FALSE(sealed.isEmpty());
@@ -90,7 +88,7 @@ TEST_P(CodecContractTest, AlteredSealedBytesNeverOpenToADifferentPayload) {
 }
 
 TEST_P(CodecContractTest, AlteredTrailingBytesAreRejected) {
-    // The tail holds the payload (checksum) or the integrity tag (DPAPI). Both must fail.
+    // Tail = payload (checksum) or integrity tag (DPAPI).
     const QByteArray sealed = codec->seal(QByteArrayLiteral("{\"tier\":\"trial\"}"));
     ASSERT_GT(sealed.size(), 8);
     for(int back = 1; back <= 8; ++back) {

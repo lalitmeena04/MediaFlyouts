@@ -3,6 +3,7 @@
 #include <QVariant>
 #include <QVariantMap>
 #include <QCoreApplication>
+#include <QSignalSpy>
 
 #include <windows.h>
 
@@ -14,6 +15,7 @@
 #include "HidChangeWatcher.h"
 #include "MonitorMapper.h"
 #include "PowerStatusController.h"
+#include "StoreLicensing.h"
 #include "TaskbarBackdrop.h"
 #include "TaskbarInfo.h"
 #include "VolumeMixer.h"
@@ -68,6 +70,59 @@ TEST(Win32ControllersTest, WiredProviderReportsUsableDevicesOnly) {
         EXPECT_FALSE(device.name.trimmed().isEmpty());
         EXPECT_FALSE(mf::isGenericDeviceName(device.name));
     }
+}
+
+TEST(Win32ControllersTest, StoreLicensingIsUnsupportedOutsideAPackage) {
+    // No package identity here. Every call must answer, not hang or throw.
+    StoreLicensing store(QStringLiteral(" 9NTEST0000 "));
+    EXPECT_EQ(store.proAddOnStoreId(), QStringLiteral("9NTEST0000"));
+    EXPECT_FALSE(store.supported());
+
+    QSignalSpy ready(&store, &StoreGateway::snapshotReady);
+    store.refresh();
+    ASSERT_EQ(ready.count(), 1);
+    const StoreSnapshot snapshot = ready.at(0).at(0).value<StoreSnapshot>();
+    EXPECT_FALSE(snapshot.available);
+    EXPECT_FALSE(snapshot.addOnLicensed);
+    EXPECT_FALSE(snapshot.acquired.isValid());
+    EXPECT_EQ(snapshot.error, QStringLiteral("notPackaged"));
+
+    QSignalSpy done(&store, &StoreGateway::purchaseFinished);
+    store.purchase(QStringLiteral("9NTEST0000"));
+    ASSERT_EQ(done.count(), 1);
+    EXPECT_FALSE(done.at(0).at(1).toBool());
+    EXPECT_EQ(done.at(0).at(2).toString(), mf::purchase::kUnavailable);
+
+    store.purchase(QString());
+    ASSERT_EQ(done.count(), 2);
+    EXPECT_EQ(done.at(1).at(2).toString(), mf::purchase::kNotConfigured);
+    store.setWindow(nullptr);
+}
+
+TEST(Win32ControllersTest, StoreLicensingMapsPurchaseStatuses) {
+    using winrt::Windows::Services::Store::StorePurchaseStatus;
+    bool ok = false;
+    EXPECT_EQ(StoreLicensing::statusIdFor(StorePurchaseStatus::Succeeded, &ok), mf::purchase::kSucceeded);
+    EXPECT_TRUE(ok);
+    EXPECT_EQ(StoreLicensing::statusIdFor(StorePurchaseStatus::AlreadyPurchased, &ok), mf::purchase::kAlreadyPurchased);
+    EXPECT_TRUE(ok);
+    EXPECT_EQ(StoreLicensing::statusIdFor(StorePurchaseStatus::NotPurchased, &ok), mf::purchase::kNotPurchased);
+    EXPECT_FALSE(ok);
+    EXPECT_EQ(StoreLicensing::statusIdFor(StorePurchaseStatus::NetworkError, &ok), mf::purchase::kNetworkError);
+    EXPECT_FALSE(ok);
+    EXPECT_EQ(StoreLicensing::statusIdFor(StorePurchaseStatus::ServerError, &ok), mf::purchase::kServerError);
+    EXPECT_FALSE(ok);
+}
+
+TEST(Win32ControllersTest, StoreLicensingMatchesAddOnKeysWithAndWithoutSkuSuffix) {
+    const QString id = QStringLiteral("9NABCDEF1234");
+    EXPECT_TRUE(StoreLicensing::licenseKeyMatches(id, id));
+    EXPECT_TRUE(StoreLicensing::licenseKeyMatches(QStringLiteral("9nabcdef1234"), id));
+    EXPECT_TRUE(StoreLicensing::licenseKeyMatches(QStringLiteral("9NABCDEF1234/0010"), id));
+    EXPECT_FALSE(StoreLicensing::licenseKeyMatches(QStringLiteral("9NABCDEF12345"), id));
+    EXPECT_FALSE(StoreLicensing::licenseKeyMatches(QStringLiteral("9NOTHER00000/0010"), id));
+    EXPECT_FALSE(StoreLicensing::licenseKeyMatches(QString(), id));
+    EXPECT_FALSE(StoreLicensing::licenseKeyMatches(id, QString()));
 }
 
 TEST(Win32ControllersTest, PowerStatusStartRaisesNoChargerEvent) {

@@ -23,7 +23,6 @@ QDateTime utc(int y, int mo, int d, int h = 0) {
 const QDateTime kCutover = utc(2026, 12, 1);
 const QDateTime kNow = utc(2027, 1, 20, 12);
 
-// Store install, gating on, cutover set, Store silent, no cache.
 EntitlementInputs storeBase() {
     EntitlementInputs in;
     in.install = InstallKind::Store;
@@ -141,7 +140,7 @@ TEST(EntitlementTest, StoreTrialIsStillActiveOneSecondBeforeEnd) {
 }
 
 TEST(EntitlementTest, StoreAnswerOverridesAStaleProCache) {
-    // Refund case. The Store is the source of truth when it answers.
+    // Refund case.
     EntitlementInputs in = storeBase();
     in.store = answered(kNow.addDays(-30));
     in.cache.valid = true;
@@ -319,6 +318,7 @@ TEST(EntitlementTest, IdsAreStable) {
     EXPECT_EQ(mf::tierId(Tier::Pro), QStringLiteral("pro"));
     EXPECT_EQ(mf::sourceId(EntitlementSource::Grandfathered), QStringLiteral("grandfathered"));
     EXPECT_EQ(mf::sourceId(EntitlementSource::Expired), QStringLiteral("expired"));
+    EXPECT_EQ(mf::sourceId(EntitlementSource::Override), QStringLiteral("override"));
     EXPECT_EQ(mf::featureId(ProFeature::Visualizer), QStringLiteral("visualizer"));
     EXPECT_EQ(mf::featureId(ProFeature::PerAppMixer), QStringLiteral("perAppMixer"));
     EXPECT_EQ(mf::featureId(ProFeature::PeripheralBattery), QStringLiteral("peripheralBattery"));
