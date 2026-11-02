@@ -5,10 +5,15 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+## [1.7.0] — 2026-11-02
+
+Eleven languages with a runtime switch, a Support page for donations, and the
+entitlement layer for MediaFlyouts Pro (not enabled in this release).
+
 ### Added
 
-- **MediaFlyouts Pro (Store build).** The Microsoft Store app becomes free and
-  sells a one-time **Pro** add-on. Pro covers the audio visualizer, the
+- **MediaFlyouts Pro entitlement layer.** The Store build can sell a one-time
+  **Pro** add-on covering the audio visualizer, the
   per-app mixer, peripheral battery (widget, flyout, low-battery toast), the
   Now Playing styles and the media widget options. New installs get a 15-day
   trial anchored to the Store acquisition date; accounts that bought the app
@@ -21,7 +26,8 @@ All notable changes to MediaFlyouts are documented here. This project follows
   variables `MEDIAFLYOUTS_STORE_CUTOVER_UTC`, `MEDIAFLYOUTS_PRO_ADDON_STORE_ID`,
   `MEDIAFLYOUTS_TRIAL_DAYS`, `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`; debug builds
   honour `MEDIAFLYOUTS_ENTITLEMENT=free|trial|pro`. See
-  `docs/developer/release-guide.md` §7.
+  `docs/developer/release-guide.md` §7. Gating is off unless a build carries
+  a cutover; 1.7.0 does not.
 - **Support page.** A new dashboard page for donations: a link to the donation
   web page in every build, a UPI QR code and NEFT details with Copy buttons in
   installer/portable builds, and one-time tip add-ons through the Microsoft
@@ -444,4 +450,5 @@ written from scratch in Qt 6 / C++ / QML.
 [1.4.1]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.1
 [1.4.2]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.2
 [1.5.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.5.0
+[1.7.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.7.0
 [1.6.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.6.0

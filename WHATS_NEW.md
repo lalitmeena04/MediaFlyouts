@@ -1,5 +1,5 @@
-Version 1.6.0
+Version 1.7.0
 
-- Widgets that match your taskbar. The taskbar widgets now read the taskbar beside them and switch between light and dark text, so they stay readable over a transparent taskbar or a live wallpaper. Turn it off with Adapt colors to the taskbar.
-- Restore default settings. Additional Settings has a button that puts every setting back to its factory value. The first-run wizard stays done.
-- A new app icon, used everywhere from the tray to the installer.
+- Eleven languages. MediaFlyouts now speaks English, Spanish, Simplified Chinese, Japanese, German, French, Korean, Brazilian Portuguese, Hindi, Arabic and Indonesian. It follows your Windows display language; pick another under Additional Settings > Language. Everything switches at once, no restart.
+- Support page. A new page in the dashboard with ways to say thanks. Donations are voluntary and unlock nothing.
+- What's new. This note appears once after each update. Find it again any time on the About page.

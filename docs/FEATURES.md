@@ -5,10 +5,7 @@ Qt 6 / C++ / QML: media, volume, lock-key, now-playing, peripheral-battery and
 charger flyouts, a per-app volume mixer, and taskbar widgets with an audio
 visualizer. This document describes the features that ship in the app.
 
-> Anything not listed here is not implemented yet. In particular there is **no
-> window acrylic/mica backdrop** (flyouts use solid, theme-matched surfaces with
-> dark title bars), **no localization** (English only for now) and **no
-> telemetry**.
+> Anything not listed here is not implemented yet.
 
 ## Media flyout
 
