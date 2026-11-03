@@ -107,6 +107,8 @@ void Settings::reload() {
     m_taskbarVisualizerCentered = m_store.value(QStringLiteral("taskbarVisualizerCentered"), true).toBool();
     // Visualizer style values. 0 = bars. 1 = radial. 2 = waveform. 3 = particles.
     m_visualizerStyle = m_store.value(QStringLiteral("visualizerStyle"), 0).toInt();
+    // Pro icon style. Index into mf::kProIconStyles: 0 = bar, 1 = ribbon.
+    m_proIconStyle = m_store.value(QStringLiteral("proIconStyle"), 0).toInt();
     m_peripheralsWidgetEnabled = m_store.value(QStringLiteral("peripheralsWidgetEnabled"), false).toBool();
     m_peripheralsWidgetWiredEnabled = m_store.value(QStringLiteral("peripheralsWidgetWiredEnabled"), false).toBool();
     m_peripheralsWidgetExcluded = m_store.value(QStringLiteral("peripheralsWidgetExcluded")).toStringList();
@@ -410,6 +412,9 @@ bool Settings::taskbarVisualizerCentered() const {
 }
 int Settings::visualizerStyle() const {
     return m_visualizerStyle;
+}
+int Settings::proIconStyle() const {
+    return m_proIconStyle;
 }
 bool Settings::peripheralsWidgetEnabled() const {
     return m_peripheralsWidgetEnabled;
@@ -731,6 +736,9 @@ void Settings::setTaskbarVisualizerCentered(bool v) {
 }
 void Settings::setVisualizerStyle(int v) {
     assignInt("visualizerStyle", m_visualizerStyle, v);
+}
+void Settings::setProIconStyle(int v) {
+    assignInt("proIconStyle", m_proIconStyle, v);
 }
 void Settings::setPeripheralsWidgetEnabled(bool v) {
     assign("peripheralsWidgetEnabled", m_peripheralsWidgetEnabled, v);

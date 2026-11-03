@@ -329,13 +329,18 @@ qt_add_qml_module(MediaFlyouts
 )
 
 # App icon for tray, window frames and QML headers. Same files the exe and
-# installer embed. See tools/generate_icon.ps1.
+# installer embed. The Pro pair shows for a licensed Pro user at runtime.
+# See tools/generate_icon.ps1.
 qt_add_resources(MediaFlyouts "appicon"
     PREFIX "/icons"
     BASE packaging/assets
     FILES
         packaging/assets/MediaFlyouts.ico
         packaging/assets/icon-256.png
+        packaging/assets/MediaFlyoutsProBar.ico
+        packaging/assets/icon-pro-bar-256.png
+        packaging/assets/MediaFlyoutsProRibbon.ico
+        packaging/assets/icon-pro-ribbon-256.png
 )
 
 target_link_libraries(MediaFlyouts PRIVATE

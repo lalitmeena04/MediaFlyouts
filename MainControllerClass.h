@@ -67,6 +67,7 @@ class MainControllerClass {
         QApplication& m_app;
         bool m_primary = false;
         QString m_iconFamily;
+        QString m_appIconResource;
 
         // Construction order also sets teardown order.
         std::unique_ptr<SingleInstance> m_instance;

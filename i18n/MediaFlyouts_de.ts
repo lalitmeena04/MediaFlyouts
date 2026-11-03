@@ -375,6 +375,10 @@ Nicht verfügbar: %1</translation>
         <translation>Akzentfarbe</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>Pro-Symbol</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>Beim Anmelden starten</translation>
     </message>
@@ -1105,6 +1109,18 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Custom</source>
         <translation>Benutzerdefiniert</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>Welches Pro-Zeichen Infobereich, Fensterrahmen und dieses Dashboard zeigen.</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>Seitenleiste</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>Eckband</translation>
     </message>
     <message>
         <source>Choose color…</source>

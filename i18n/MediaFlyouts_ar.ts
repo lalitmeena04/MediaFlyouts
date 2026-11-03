@@ -375,6 +375,10 @@ Unavailable: %1</source>
         <translation>لون التمييز</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>أيقونة برو</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>التشغيل عند بدء النظام</translation>
     </message>
@@ -1105,6 +1109,18 @@ Unavailable: %1</source>
     <message>
         <source>Custom</source>
         <translation>مخصص</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>علامة برو التي تظهر في علبة النظام وإطارات النوافذ وهذه اللوحة.</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>شريط جانبي</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>شريط الزاوية</translation>
     </message>
     <message>
         <source>Choose color…</source>

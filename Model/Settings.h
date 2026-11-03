@@ -71,6 +71,7 @@ class Settings : public QObject {
         Q_PROPERTY(bool taskbarVisualizerCentered READ taskbarVisualizerCentered WRITE setTaskbarVisualizerCentered
                        NOTIFY changed)
         Q_PROPERTY(int visualizerStyle READ visualizerStyle WRITE setVisualizerStyle NOTIFY changed)
+        Q_PROPERTY(int proIconStyle READ proIconStyle WRITE setProIconStyle NOTIFY changed)
         Q_PROPERTY(bool peripheralsWidgetEnabled READ peripheralsWidgetEnabled WRITE setPeripheralsWidgetEnabled
                        NOTIFY changed)
         Q_PROPERTY(bool peripheralsWidgetWiredEnabled READ peripheralsWidgetWiredEnabled WRITE
@@ -178,6 +179,7 @@ class Settings : public QObject {
         bool taskbarVisualizerEnabled() const;
         bool taskbarVisualizerCentered() const;
         int visualizerStyle() const;
+        int proIconStyle() const;
         bool peripheralsWidgetEnabled() const;
         bool peripheralsWidgetWiredEnabled() const;
         QStringList peripheralsWidgetExcluded() const;
@@ -266,6 +268,7 @@ class Settings : public QObject {
         void setTaskbarVisualizerEnabled(bool v);
         void setTaskbarVisualizerCentered(bool v);
         void setVisualizerStyle(int v);
+        void setProIconStyle(int v);
         void setPeripheralsWidgetEnabled(bool v);
         void setPeripheralsWidgetWiredEnabled(bool v);
         void setBatteryRingUseAccent(bool v);
@@ -357,6 +360,7 @@ class Settings : public QObject {
         bool m_taskbarVisualizerEnabled;
         bool m_taskbarVisualizerCentered;
         int m_visualizerStyle;
+        int m_proIconStyle;
         bool m_peripheralsWidgetEnabled;
         bool m_peripheralsWidgetWiredEnabled;
         QStringList m_peripheralsWidgetExcluded;

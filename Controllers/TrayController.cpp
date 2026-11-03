@@ -46,7 +46,7 @@ QIcon renderGlyphIcon(const QString& family, QChar glyph) {
 } // namespace
 
 TrayController::TrayController(const QString& iconFamily, Settings* settings, QObject* parent)
-    : QObject(parent), m_iconFamily(iconFamily), m_settings(settings) {
+    : QObject(parent), m_iconFamily(iconFamily), m_settings(settings), m_iconResource(mf::kAppIconResource) {
     m_menu = new QMenu();
     m_menu->setStyleSheet(QStringLiteral(
         "QMenu { background-color: #2b2b2b; color: #ffffff; border: 1px solid #3d3d3d; border-radius: 8px; "
@@ -87,7 +87,7 @@ TrayController::TrayController(const QString& iconFamily, Settings* settings, QO
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
     // Tray shows the app icon. The .ico holds every shell size.
-    m_tray = new QSystemTrayIcon(mf::loadAppIcon(), this);
+    m_tray = new QSystemTrayIcon(mf::loadAppIcon(m_iconResource), this);
     m_tray->setToolTip(QStringLiteral("MediaFlyouts"));
     m_tray->setContextMenu(m_menu);
 
@@ -162,7 +162,16 @@ void TrayController::refreshIcon() {
     if(!m_tray)
         return;
     TRC_DEBUG("tray: re-applying icon after display change");
-    m_tray->setIcon(mf::loadAppIcon());
+    m_tray->setIcon(mf::loadAppIcon(m_iconResource));
+}
+
+void TrayController::setIconResource(const QString& resource) {
+    if(m_iconResource == resource)
+        return;
+    m_iconResource = resource;
+    TRC_INFO("tray: icon {}", resource.toStdString());
+    if(m_tray)
+        m_tray->setIcon(mf::loadAppIcon(m_iconResource));
 }
 
 void TrayController::notify(const QString& title, const QString& message) {

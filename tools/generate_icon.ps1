@@ -2,12 +2,28 @@
 # Master: packaging\assets\MediaFlyouts.png (square, transparent background).
 # The mark is cropped to its opaque bounds, then scaled into each target size.
 # Run:  powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1
+#       powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1 -Variant pro-bar
+#       powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1 -Variant pro-ribbon
+# The "pro-*" variants render the Pro masters into an .ico and a 256 px logo
+# for the in-app Pro look; a licensed user picks one in the dashboard. MSIX
+# tiles come from the manifest and cannot switch at runtime, so only the base
+# variant writes them.
+param(
+    [ValidateSet('app', 'pro-bar', 'pro-ribbon')]
+    [string]$Variant = 'app'
+)
 Add-Type -AssemblyName System.Drawing
 
 $root      = Split-Path $PSScriptRoot -Parent
 $assetsDir = Join-Path $root 'packaging\assets'
 $imagesDir = Join-Path $root 'packaging\msix\Images'
-$masterPath = Join-Path $assetsDir 'MediaFlyouts.png'
+$variants = @{
+    'app'        = @{ Master = 'MediaFlyouts.png';          Ico = 'MediaFlyouts.ico';          Logo = 'icon-256.png';            Tiles = $true  }
+    'pro-bar'    = @{ Master = 'MediaFlyoutsProBar.png';    Ico = 'MediaFlyoutsProBar.ico';    Logo = 'icon-pro-bar-256.png';    Tiles = $false }
+    'pro-ribbon' = @{ Master = 'MediaFlyoutsProRibbon.png'; Ico = 'MediaFlyoutsProRibbon.ico'; Logo = 'icon-pro-ribbon-256.png'; Tiles = $false }
+}
+$v = $variants[$Variant]
+$masterPath = Join-Path $assetsDir $v.Master
 New-Item -ItemType Directory -Force $assetsDir | Out-Null
 New-Item -ItemType Directory -Force $imagesDir | Out-Null
 
@@ -137,10 +153,16 @@ foreach ($s in $icoSizes) {
 }
 foreach ($s in $icoSizes) { $bw.Write([byte[]]$pngs[$s]) }
 $bw.Flush()
-$icoPath = Join-Path $assetsDir 'MediaFlyouts.ico'
+$icoPath = Join-Path $assetsDir $v.Ico
 [System.IO.File]::WriteAllBytes($icoPath, $ms.ToArray())
 Write-Host "  wrote $icoPath"
-Save-Png (New-Tile $mark 256 256) (Join-Path $assetsDir 'icon-256.png')
+Save-Png (New-Tile $mark 256 256) (Join-Path $assetsDir $v.Logo)
+
+if (-not $v.Tiles) {
+    $mark.Dispose()
+    Write-Host "Icon assets for variant '$Variant' written to packaging\assets."
+    exit 0
+}
 
 # --- MSIX tile logos ------------------------------------------------------
 # Tiles keep a margin. The shell paints the tile background behind them.

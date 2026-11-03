@@ -67,7 +67,8 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     TRC_INFO("os: {} ({}), qt {}", QSysInfo::prettyProductName().toStdString(), QSysInfo::kernelVersion().toStdString(),
              qVersion());
     // Every QML Window inherits this icon for its frame and taskbar button.
-    QApplication::setWindowIcon(mf::loadAppIcon());
+    m_appIconResource = mf::kAppIconResource;
+    QApplication::setWindowIcon(mf::loadAppIcon(m_appIconResource));
 
     // A restarted instance must not hand over to the instance it replaces.
     AppRestarter::waitForPredecessor(QCoreApplication::arguments());
@@ -150,6 +151,18 @@ void MainControllerClass::buildCoreSubsystems() {
     QObject::connect(m_translator.get(), &AppTranslator::languageChanged, m_tray.get(), &TrayController::retranslate);
     // The shell does not always re-query the icon after a DPI change.
     QObject::connect(m_monitors.get(), &MonitorMapper::changed, m_tray.get(), &TrayController::refreshIcon);
+    // Pro licence holders see the Pro mark of their chosen style in the tray
+    // and on window frames. Re-applied only when the resource changes.
+    const auto applyAppIcon = [this] {
+        const QString resource = mf::appIconResource(m_entitlement->licensed(), m_settings->proIconStyle());
+        if(resource == m_appIconResource)
+            return;
+        m_appIconResource = resource;
+        m_tray->setIconResource(resource);
+        QApplication::setWindowIcon(mf::loadAppIcon(resource));
+    };
+    QObject::connect(m_entitlement.get(), &EntitlementController::changed, m_tray.get(), applyAppIcon);
+    QObject::connect(m_settings.get(), &Settings::changed, m_tray.get(), applyAppIcon);
     QObject::connect(m_updateChecker.get(), &UpdateChecker::installStarted, &m_app, &QApplication::quit);
 }
 

@@ -106,6 +106,10 @@ bool EntitlementController::isPro() const {
     return m_state.tier == Tier::Pro;
 }
 
+bool EntitlementController::licensed() const {
+    return isPro() && m_state.source != mf::EntitlementSource::Unlocked;
+}
+
 bool EntitlementController::isTrial() const {
     return m_state.tier == Tier::Trial;
 }
@@ -159,10 +163,6 @@ QStringList EntitlementController::featureIds() const {
     return mf::allFeatureIds();
 }
 
-bool EntitlementController::isUnlocked(const QString& featureId) const {
-    mf::ProFeature feature;
-    if(!mf::featureFromId(featureId, &feature)) {
-        TRC_WARN("entitlement: unknown feature id '{}', treated as unlocked", featureId.toStdString());
 QVariantMap EntitlementController::lockedFeatures() const {
     QVariantMap map;
     for(const QString& id : mf::allFeatureIds())
@@ -170,6 +170,10 @@ QVariantMap EntitlementController::lockedFeatures() const {
     return map;
 }
 
+bool EntitlementController::isUnlocked(const QString& featureId) const {
+    mf::ProFeature feature;
+    if(!mf::featureFromId(featureId, &feature)) {
+        TRC_WARN("entitlement: unknown feature id '{}', treated as unlocked", featureId.toStdString());
         return true;
     }
     return mf::isUnlocked(feature, m_state.tier);

@@ -375,6 +375,10 @@ Unavailable: %1</source>
         <translation>アクセント色</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>プロ版アイコン</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>サインイン時に起動</translation>
     </message>
@@ -1105,6 +1109,18 @@ Unavailable: %1</source>
     <message>
         <source>Custom</source>
         <translation>カスタム</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>トレイ、ウィンドウ枠、このダッシュボードに表示するプロ版マーク。</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>サイドバー</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>コーナーリボン</translation>
     </message>
     <message>
         <source>Choose color…</source>

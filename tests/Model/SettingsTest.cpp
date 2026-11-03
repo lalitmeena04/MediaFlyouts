@@ -78,6 +78,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_FALSE(s.taskbarVisualizerEnabled());
     EXPECT_TRUE(s.taskbarVisualizerCentered());
     EXPECT_EQ(s.visualizerStyle(), 0);
+    EXPECT_EQ(s.proIconStyle(), 0);
     EXPECT_FALSE(s.onboardingCompleted());
     EXPECT_FALSE(s.accentFromArt());
     EXPECT_TRUE(s.accentFromArtAppWide());

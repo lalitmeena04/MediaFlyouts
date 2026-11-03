@@ -60,6 +60,17 @@ Replace the master PNG and re-run the script to change the icon everywhere:
 powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1
 ```
 
+Two Pro masters, `MediaFlyoutsProBar.png` and `MediaFlyoutsProRibbon.png`,
+render with `-Variant pro-bar` / `-Variant pro-ribbon` into
+`MediaFlyoutsPro{Bar,Ribbon}.ico` and `icon-pro-{bar,ribbon}-256.png`. A
+licensed Pro user (`entitlement.licensed`: add-on, grandfathered or cached,
+never the always-unlocked installer build) gets one of those pairs at runtime
+for the tray icon, window frames and `AppLogo`, and picks which under
+Additional Settings → Pro icon (`settings.proIconStyle`, default: side bar).
+The style table lives in `Controllers/AppIcon.h`; `Views/AppLogo.qml` mirrors
+it. The MSIX tiles, Start menu and taskbar pin come from the manifest and
+always show the base mark.
+
 ## Local (sideload) MSIX
 
 To test the packaged (Store-like) build on your own PC, produce a second MSIX

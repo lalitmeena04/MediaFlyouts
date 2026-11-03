@@ -5,6 +5,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+#include "AppIcon.h"
+
 namespace {
 
 QString loadSource(const char* relativePath) {
@@ -146,7 +148,14 @@ TEST(QmlContractTest, AboutPageUsesTheGitHubBrandMark) {
 
 TEST(QmlContractTest, AppLogoRendersTheBundledIconBitmap) {
     const QString logo = loadSource("Views/AppLogo.qml");
-    expectContains(logo, QStringLiteral("source: \"qrc:/icons/icon-256.png\""));
+    expectContains(logo, QStringLiteral(
+        "source: entitlement.licensed ? (proLogos[settings.proIconStyle] || proLogos[0]) : \"qrc:/icons/icon-256.png\""));
+    // The QML list and mf::kProIconStyles must agree, index for index.
+    QStringList expected;
+    for(const mf::ProIconStyle& style : mf::kProIconStyles)
+        expected << QLatin1Char('"') + style.logo + QLatin1Char('"');
+    expectContains(logo, QStringLiteral("readonly property var proLogos: [") + expected.join(QStringLiteral(", "))
+                             + QLatin1Char(']'));
     expectContains(logo, QStringLiteral("mipmap: true"));
     expectContains(logo, QStringLiteral("property int size"));
 }
@@ -967,6 +976,8 @@ TEST(QmlContractTest, DashboardTogglesStayOnSettingsAndLockWithTheEntitlement) {
     expectContains(dashboard, QStringLiteral("settings.taskbarVisualizerEnabled = value"));
     expectContains(dashboard, QStringLiteral("settings.volumeFlyoutMixerEnabled = value"));
     expectContains(dashboard, QStringLiteral("settings.nextUpStyle = index"));
+    // The invokable does not notify, so a binding on it would freeze at the startup tier.
+    expectNotContains(dashboard, QStringLiteral("entitlement.isUnlocked("));
 
     const QRegularExpression knownIds(QStringLiteral("entitlement\\.locked\\.([A-Za-z]+)"));
     auto it = knownIds.globalMatch(dashboard);
@@ -976,12 +987,26 @@ TEST(QmlContractTest, DashboardTogglesStayOnSettingsAndLockWithTheEntitlement) {
     int found = 0;
     while(it.hasNext()) {
         const QString id = it.next().captured(1);
-    // The invokable does not notify, so a binding on it would freeze at the startup tier.
-    expectNotContains(dashboard, QStringLiteral("entitlement.isUnlocked("));
         EXPECT_TRUE(allowed.contains(id)) << "Unknown feature id in Dashboard.qml: " << id.toStdString();
         ++found;
     }
     EXPECT_GE(found, 5);
+}
+
+TEST(QmlContractTest, ProIconPickerIsOnlyForLicenceHolders) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    // The search index names it first; the control is the last occurrence.
+    const int at = dashboard.lastIndexOf(QStringLiteral("label: qsTr(\"Pro icon\")"));
+    ASSERT_GE(at, 0);
+    const QString block = dashboard.mid(at - 200, 600);
+    expectContains(block, QStringLiteral("visible: entitlement.licensed"));
+    expectContains(block, QStringLiteral("currentIndex: settings.proIconStyle"));
+    expectContains(block, QStringLiteral("onActivated: settings.proIconStyle = index"));
+    // One combo entry per style in mf::kProIconStyles.
+    const QRegularExpression model(QStringLiteral("model: \\[((?:qsTr\\(\"[^\"]+\"\\)(?:, )?)+)\\]"));
+    const auto m = model.match(block);
+    ASSERT_TRUE(m.hasMatch());
+    EXPECT_EQ(m.captured(1).count(QStringLiteral("qsTr(")), mf::kProIconStyleCount);
 }
 
 TEST(QmlContractTest, SettingRowsShowAProBadgeWhenLocked) {
@@ -993,31 +1018,6 @@ TEST(QmlContractTest, SettingRowsShowAProBadgeWhenLocked) {
     expectContains(loadSource("Views/ProBadge.qml"), QStringLiteral("qsTr(\"PRO\")"));
 }
 
-TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
-    const QString card = loadSource("Views/UpgradeCard.qml");
-    expectContains(card, QStringLiteral("visible: entitlement.gatingEnabled && !entitlement.isPro"));
-    expectContains(card, QStringLiteral("entitlement.purchase(card.ownerWindow)"));
-    expectContains(card, QStringLiteral("enabled: card.clickable"));
-    expectContains(card, QStringLiteral("entitlement.trialDaysLeft"));
-    expectContains(card, QStringLiteral("entitlement.price"));
-    expectContains(card, QStringLiteral("function onPurchaseFinished(ok, statusId, storeId)"));
-    expectContains(card, QStringLiteral("storeId === entitlement.proAddOnStoreId"));
-    for(const char* status : {"succeeded", "alreadyPurchased", "notPurchased", "networkError", "unavailable",
-                              "notConfigured", "busy"})
-        expectContains(card, QStringLiteral("case \"%1\"").arg(QLatin1String(status)));
-
-    const QString dashboard = loadSource("Views/Dashboard.qml");
-    expectContains(dashboard, QStringLiteral("UpgradeCard {"));
-    expectContains(dashboard, QStringLiteral("ownerWindow: dash"));
-}
-
-TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
-    const QString page = loadSource("Views/SupportPage.qml");
-    expectContains(page, QStringLiteral("visible: donate.showDirect"));
-    expectContains(page, QStringLiteral("visible: donate.showStoreTips"));
-    expectContains(page, QStringLiteral("visible: donate.hasPage"));
-    expectContains(page, QStringLiteral("source: donate.upiQrSource"));
-    expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
 // Controls that only matter while a locked feature runs follow that lock,
 // without a badge of their own.
 TEST(QmlContractTest, DependentRowsFollowTheParentLock) {
@@ -1045,6 +1045,31 @@ TEST(QmlContractTest, DependentRowsFollowTheParentLock) {
     EXPECT_EQ(peripheral, 12);
 }
 
+TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
+    const QString card = loadSource("Views/UpgradeCard.qml");
+    expectContains(card, QStringLiteral("visible: entitlement.gatingEnabled && !entitlement.isPro"));
+    expectContains(card, QStringLiteral("entitlement.purchase(card.ownerWindow)"));
+    expectContains(card, QStringLiteral("enabled: card.clickable"));
+    expectContains(card, QStringLiteral("entitlement.trialDaysLeft"));
+    expectContains(card, QStringLiteral("entitlement.price"));
+    expectContains(card, QStringLiteral("function onPurchaseFinished(ok, statusId, storeId)"));
+    expectContains(card, QStringLiteral("storeId === entitlement.proAddOnStoreId"));
+    for(const char* status : {"succeeded", "alreadyPurchased", "notPurchased", "networkError", "unavailable",
+                              "notConfigured", "busy"})
+        expectContains(card, QStringLiteral("case \"%1\"").arg(QLatin1String(status)));
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("UpgradeCard {"));
+    expectContains(dashboard, QStringLiteral("ownerWindow: dash"));
+}
+
+TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
+    const QString page = loadSource("Views/SupportPage.qml");
+    expectContains(page, QStringLiteral("visible: donate.showDirect"));
+    expectContains(page, QStringLiteral("visible: donate.showStoreTips"));
+    expectContains(page, QStringLiteral("visible: donate.hasPage"));
+    expectContains(page, QStringLiteral("source: donate.upiQrSource"));
+    expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
     expectContains(page, QStringLiteral("page.copy(donate.upiId)"));
     expectContains(page, QStringLiteral("model: entitlement.tipAddOnStoreIds"));
     expectContains(page, QStringLiteral("entitlement.purchaseAddOn(modelData, page.ownerWindow)"));

@@ -375,6 +375,10 @@ Tidak tersedia: %1</translation>
         <translation>Warna aksen</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>Ikon Pro</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>Jalankan saat mulai</translation>
     </message>
@@ -1105,6 +1109,18 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Custom</source>
         <translation>Kustom</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>Tanda Pro mana yang ditampilkan baki, bingkai jendela, dan dasbor ini.</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>Bilah samping</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>Pita sudut</translation>
     </message>
     <message>
         <source>Choose color…</source>

@@ -375,6 +375,10 @@ No disponible: %1</translation>
         <translation>Color de énfasis</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>Icono Pro</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>Iniciar con el sistema</translation>
     </message>
@@ -1105,6 +1109,18 @@ No disponible: %1</translation>
     <message>
         <source>Custom</source>
         <translation>Personalizado</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>Qué marca Pro muestran la bandeja, los marcos de ventana y este panel.</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>Barra lateral</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>Cinta de esquina</translation>
     </message>
     <message>
         <source>Choose color…</source>

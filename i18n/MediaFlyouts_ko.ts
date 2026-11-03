@@ -375,6 +375,10 @@ Unavailable: %1</source>
         <translation>강조 색</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>프로 아이콘</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>로그인 시 시작</translation>
     </message>
@@ -1105,6 +1109,18 @@ Unavailable: %1</source>
     <message>
         <source>Custom</source>
         <translation>사용자 지정</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>트레이, 창 테두리, 이 대시보드에 표시할 프로 마크입니다.</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>사이드 바</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>모서리 리본</translation>
     </message>
     <message>
         <source>Choose color…</source>

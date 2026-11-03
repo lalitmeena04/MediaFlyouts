@@ -86,6 +86,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(!s.taskbarVisualizerEnabled());
     QVERIFY(s.taskbarVisualizerCentered());
     QCOMPARE(s.visualizerStyle(), 0);
+    QCOMPARE(s.proIconStyle(), 0);
     QVERIFY(!s.peripheralFlyoutEnabled());
     QCOMPARE(s.peripheralFlyoutDuration(), 3000);
     QCOMPARE(s.peripheralFlyoutPosition(), 4);

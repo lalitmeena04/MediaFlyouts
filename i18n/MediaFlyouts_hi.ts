@@ -375,6 +375,10 @@ Unavailable: %1</source>
         <translation>एक्सेंट रंग</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>प्रो आइकन</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>स्टार्टअप पर चलाएँ</translation>
     </message>
@@ -1105,6 +1109,18 @@ Unavailable: %1</source>
     <message>
         <source>Custom</source>
         <translation>कस्टम</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>ट्रे, विंडो फ़्रेम और यह डैशबोर्ड कौन-सा प्रो चिह्न दिखाएँ।</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>साइड बार</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>कोने का रिबन</translation>
     </message>
     <message>
         <source>Choose color…</source>

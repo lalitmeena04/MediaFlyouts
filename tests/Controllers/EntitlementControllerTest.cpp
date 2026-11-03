@@ -115,6 +115,28 @@ TEST_F(EntitlementControllerTest, GatingOffBuildIsProEvenOnTheStore) {
     EXPECT_TRUE(c->isPro());
 }
 
+// The Pro icon is for licence holders. Unlocked builds and trials keep the base icon.
+TEST_F(EntitlementControllerTest, LicensedMeansProThroughALicence) {
+    FakeStoreGateway gateway;
+    auto installer = make(InstallKind::Installer, gatedConfig(), &gateway);
+    installer->start();
+    EXPECT_TRUE(installer->isPro());
+    EXPECT_FALSE(installer->licensed());
+
+    auto store = make(InstallKind::Store, gatedConfig(), &gateway);
+    store->start();
+    EXPECT_TRUE(store->isTrial());
+    EXPECT_FALSE(store->licensed());
+    gateway.answer(storeAnswer(kNow.addDays(-20)));
+    EXPECT_FALSE(store->licensed());
+    gateway.answer(storeAnswer(kNow.addDays(-20), true));
+    EXPECT_EQ(store->sourceId(), QStringLiteral("addOn"));
+    EXPECT_TRUE(store->licensed());
+    gateway.answer(storeAnswer(kNow.addDays(-100)));
+    EXPECT_EQ(store->sourceId(), QStringLiteral("grandfathered"));
+    EXPECT_TRUE(store->licensed());
+}
+
 TEST_F(EntitlementControllerTest, WithoutAGatewayAStoreBuildStartsALocalTrial) {
     auto c = make(InstallKind::Store, gatedConfig(), nullptr);
     c->start();
@@ -190,28 +212,6 @@ TEST_F(EntitlementControllerTest, ExpiredTrialLocksFeatures) {
     EXPECT_TRUE(c->canPurchase());
 }
 
-TEST_F(EntitlementControllerTest, AddOnOwnerIsPro) {
-    FakeStoreGateway gateway;
-    auto c = make(InstallKind::Store, gatedConfig(), &gateway);
-    c->start();
-    gateway.answer(storeAnswer(kNow.addDays(-20), true));
-    EXPECT_TRUE(c->isPro());
-    EXPECT_EQ(c->sourceId(), QStringLiteral("addOn"));
-    EXPECT_FALSE(c->canPurchase());
-}
-
-TEST_F(EntitlementControllerTest, StoreSilenceKeepsTheCachedProState) {
-    FakeStoreGateway gateway;
-    {
-        auto first = make(InstallKind::Store, gatedConfig(), &gateway);
-        first->start();
-        gateway.answer(storeAnswer(QDateTime(QDate(2025, 3, 1), QTime(0, 0), QTimeZone::UTC)));
-        ASSERT_TRUE(first->isPro());
-    }
-    auto second = make(InstallKind::Store, gatedConfig(), &gateway);
-    second->start();
-    EXPECT_TRUE(second->isPro());
-    EXPECT_EQ(second->sourceId(), QStringLiteral("cached"));
 // Startup grants a local trial until the Store answers. The locked map must
 // follow that change and announce it, or Dashboard rows stay unlocked.
 TEST_F(EntitlementControllerTest, LockedMapFollowsTheTierAndNotifies) {
@@ -238,6 +238,28 @@ TEST_F(EntitlementControllerTest, LockedMapFollowsTheTierAndNotifies) {
         EXPECT_FALSE(c->lockedFeatures().value(id).toBool()) << id.toStdString();
 }
 
+TEST_F(EntitlementControllerTest, AddOnOwnerIsPro) {
+    FakeStoreGateway gateway;
+    auto c = make(InstallKind::Store, gatedConfig(), &gateway);
+    c->start();
+    gateway.answer(storeAnswer(kNow.addDays(-20), true));
+    EXPECT_TRUE(c->isPro());
+    EXPECT_EQ(c->sourceId(), QStringLiteral("addOn"));
+    EXPECT_FALSE(c->canPurchase());
+}
+
+TEST_F(EntitlementControllerTest, StoreSilenceKeepsTheCachedProState) {
+    FakeStoreGateway gateway;
+    {
+        auto first = make(InstallKind::Store, gatedConfig(), &gateway);
+        first->start();
+        gateway.answer(storeAnswer(QDateTime(QDate(2025, 3, 1), QTime(0, 0), QTimeZone::UTC)));
+        ASSERT_TRUE(first->isPro());
+    }
+    auto second = make(InstallKind::Store, gatedConfig(), &gateway);
+    second->start();
+    EXPECT_TRUE(second->isPro());
+    EXPECT_EQ(second->sourceId(), QStringLiteral("cached"));
     StoreSnapshot silent;
     silent.error = QStringLiteral("networkError");
     gateway.answer(silent);

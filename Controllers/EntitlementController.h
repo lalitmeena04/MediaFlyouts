@@ -24,6 +24,9 @@ class EntitlementController : public QObject {
         Q_PROPERTY(QString source READ sourceId NOTIFY changed)
         Q_PROPERTY(bool unlocked READ unlocked NOTIFY changed)
         Q_PROPERTY(bool isPro READ isPro NOTIFY changed)
+        // Pro through a licence (add-on, grandfathered, cached), not the
+        // always-unlocked installer build. Drives the Pro app icon.
+        Q_PROPERTY(bool licensed READ licensed NOTIFY changed)
         Q_PROPERTY(bool isTrial READ isTrial NOTIFY changed)
         Q_PROPERTY(int trialDaysLeft READ trialDaysLeft NOTIFY changed)
         Q_PROPERTY(bool gatingEnabled READ gatingEnabled CONSTANT)
@@ -37,12 +40,12 @@ class EntitlementController : public QObject {
         Q_PROPERTY(QStringList tipAddOnStoreIds READ tipAddOnStoreIds CONSTANT)
         Q_PROPERTY(QString proAddOnStoreId READ proAddOnStoreId CONSTANT)
         Q_PROPERTY(QStringList featureIds READ featureIds CONSTANT)
-
-    public:
-        using Clock = std::function<QDateTime()>;
         // Feature id -> locked. Bindings on this re-evaluate when the tier changes;
         // the invokable isUnlocked() does not notify.
         Q_PROPERTY(QVariantMap locked READ lockedFeatures NOTIFY changed)
+
+    public:
+        using Clock = std::function<QDateTime()>;
 
         EntitlementController(mf::InstallKind install, const mf::ProBuildConfig& config,
                               std::unique_ptr<mf::EntitlementStore> store, QObject* parent = nullptr);
@@ -64,6 +67,7 @@ class EntitlementController : public QObject {
         QString sourceId() const;
         bool unlocked() const;
         bool isPro() const;
+        bool licensed() const;
         bool isTrial() const;
         int trialDaysLeft() const;
         bool gatingEnabled() const;
@@ -77,11 +81,11 @@ class EntitlementController : public QObject {
         QStringList tipAddOnStoreIds() const;
         QString proAddOnStoreId() const;
         QStringList featureIds() const;
+        QVariantMap lockedFeatures() const;
 
         // Unknown ids read as unlocked. A typo must not lock a feature.
         Q_INVOKABLE bool isUnlocked(const QString& featureId) const;
         // `ownerWindow` is the QML Window that owns the Store dialog.
-        QVariantMap lockedFeatures() const;
         Q_INVOKABLE void purchase(QObject* ownerWindow = nullptr);
         Q_INVOKABLE void purchaseAddOn(const QString& storeId, QObject* ownerWindow = nullptr);
         Q_INVOKABLE void refresh();

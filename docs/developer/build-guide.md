@@ -200,4 +200,6 @@ The master logo is `packaging/assets/MediaFlyouts.png`.
 (`packaging/assets/MediaFlyouts.ico`, embedded via
 [`packaging/MediaFlyouts.rc`](../../packaging/MediaFlyouts.rc) and compiled in
 as `:/icons/MediaFlyouts.ico` for the tray and windows), the in-app logo
-(`icon-256.png`) and the MSIX tile logos from it.
+(`icon-256.png`) and the MSIX tile logos from it. `-Variant pro-bar` and
+`-Variant pro-ribbon` render the Pro marks a licence holder can pick; see
+[packaging/README.md](../../packaging/README.md#icon-assets).

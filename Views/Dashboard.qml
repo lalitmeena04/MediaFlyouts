@@ -104,7 +104,7 @@ Window {
         { "label": qsTr("Blacklist"), "page": 8 },
         { "label": qsTr("Whitelist"), "page": 8 }, { "label": qsTr("Filter mode"), "page": 8 },
         { "label": qsTr("Language"), "page": 9 },
-        { "label": qsTr("Theme"), "page": 9 }, { "label": qsTr("Accent color"), "page": 9 },
+        { "label": qsTr("Theme"), "page": 9 }, { "label": qsTr("Accent color"), "page": 9 }, { "label": qsTr("Pro icon"), "page": 9 },
         { "label": qsTr("Launch on startup"), "page": 9 }, { "label": qsTr("Hide tray icon"), "page": 9 },
         { "label": qsTr("Export settings"), "page": 9 }, { "label": qsTr("Import settings"), "page": 9 },
         { "label": qsTr("Restore default settings"), "page": 9 },
@@ -1827,6 +1827,16 @@ Window {
                         model: [qsTr("Default"), qsTr("Match system"), qsTr("Custom")]
                         currentIndex: settings.accentMode
                         onActivated: settings.accentMode = index
+                    }
+                    SettingCombo {
+                        // Only a licence holder has a Pro mark to choose.
+                        visible: entitlement.licensed
+                        width: parent.width
+                        label: qsTr("Pro icon")
+                        description: qsTr("Which Pro mark the tray, window frames and this dashboard show.")
+                        model: [qsTr("Side bar"), qsTr("Corner ribbon")]
+                        currentIndex: settings.proIconStyle
+                        onActivated: settings.proIconStyle = index
                     }
                     Row {
                         visible: settings.accentMode === 2

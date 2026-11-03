@@ -121,6 +121,9 @@ flips without a restart.
 - `tier` / `source` / `unlocked` / `isPro` / `isTrial` / `trialDaysLeft`, plus
   `gatingEnabled`, `storeAvailable`, `canPurchase`, `price`, `purchasing`,
   `refreshing`, `lastPurchaseStatus`, `tipAddOnStoreIds`, `featureIds`.
+- `licensed` — Pro through a licence (add-on, grandfathered, cached), false
+  for the always-unlocked installer build and for trials. Switches the tray,
+  window and `AppLogo` icons to the Pro mark.
 - `locked` — map of feature id → bool (`entitlement.locked.visualizer`) with
   `NOTIFY changed`, the thing Dashboard rows bind to. `isUnlocked(id)` is the
   same answer as an invokable; it does not notify, so a binding on it would

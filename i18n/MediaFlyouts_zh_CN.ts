@@ -375,6 +375,10 @@ Unavailable: %1</source>
         <translation>强调色</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>专业版图标</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>开机启动</translation>
     </message>
@@ -1105,6 +1109,18 @@ Unavailable: %1</source>
     <message>
         <source>Custom</source>
         <translation>自定义</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>托盘、窗口边框和此仪表板显示的专业版标志。</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>侧边条</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>角标</translation>
     </message>
     <message>
         <source>Choose color…</source>

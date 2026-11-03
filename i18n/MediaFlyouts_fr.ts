@@ -375,6 +375,10 @@ Indisponible : %1</translation>
         <translation>Couleur d&apos;accentuation</translation>
     </message>
     <message>
+        <source>Pro icon</source>
+        <translation>Icône Pro</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>Lancer au démarrage</translation>
     </message>
@@ -1105,6 +1109,18 @@ Indisponible : %1</translation>
     <message>
         <source>Custom</source>
         <translation>Personnalisée</translation>
+    </message>
+    <message>
+        <source>Which Pro mark the tray, window frames and this dashboard show.</source>
+        <translation>Quelle marque Pro la zone de notification, les cadres de fenêtre et ce tableau de bord affichent.</translation>
+    </message>
+    <message>
+        <source>Side bar</source>
+        <translation>Barre latérale</translation>
+    </message>
+    <message>
+        <source>Corner ribbon</source>
+        <translation>Ruban d’angle</translation>
     </message>
     <message>
         <source>Choose color…</source>

@@ -24,6 +24,8 @@ class TrayController : public QObject {
 
     public slots:
         void refreshIcon();
+        // Swaps the tray icon, e.g. to the Pro mark for a licence holder.
+        void setIconResource(const QString& resource);
         // Re-applies menu and tooltip text after a language switch.
         void retranslate();
 
@@ -45,4 +47,5 @@ class TrayController : public QObject {
         Capabilities* m_capabilities = nullptr;
         QTimer* m_singleClickTimer = nullptr;
         QList<QAction*> m_actions;
+        QString m_iconResource;
 };
