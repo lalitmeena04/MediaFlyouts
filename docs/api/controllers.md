@@ -178,7 +178,9 @@ not match `VERSION.txt`.
 
 - **StoreLicensing** — the `StoreGateway` for packaged builds, over
   `Windows.Services.Store`. `refresh()` reads `GetAppLicenseAsync`
-  (add-on licenses), `GetUserCollectionAsync` (the app's `AcquiredDate`) and
+  (add-on licenses), `GetStoreProductForCurrentAppAsync` (the app's
+  `AcquiredDate` from its owned SKU; `GetUserCollectionAsync` does not list a
+  Desktop Bridge app itself) and
   `GetAssociatedStoreProductsAsync` (localized price) on a worker thread with
   a multi-threaded WinRT apartment, then answers with one `StoreSnapshot`.
   `purchase(id)` initializes the context with the owner HWND

@@ -41,6 +41,8 @@ if (-not $Package) {
 $Package = (Resolve-Path $Package).Path
 if (-not $Certificate) { $Certificate = [IO.Path]::ChangeExtension($Package, '.cer') }
 if (-not $SkipTrust -and -not (Test-Path $Certificate)) { throw "Certificate not found: $Certificate" }
+# The elevated helper starts in System32, so a relative path would not resolve there.
+if (Test-Path $Certificate) { $Certificate = (Resolve-Path $Certificate).Path }
 
 function Test-Elevated {
     $id = [Security.Principal.WindowsIdentity]::GetCurrent()

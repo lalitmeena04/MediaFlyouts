@@ -257,9 +257,10 @@ upload: a Store build that says `off (no cutover)` sells nothing.
 ### Dry run (last paid release, 1.x)
 
 Ship one paid release with the Phase 1–2 code and **no cutover**. Everything
-stays unlocked; the log records `store: in collection ... acquired=...` and the
-add-on query result. Confirm on your own machine that `AcquiredDate` is the
-original purchase date before you rely on it.
+stays unlocked; the log records `store: app sku=... owned=... acquired=...` and
+the add-on query result. Confirm on your own machine that `AcquiredDate` is the
+original purchase date before you rely on it (done for 1.7.0: the Store build
+on a paid account reports `acquired=2026-10-12T06:08:33Z`, the purchase date).
 
 ### Cutover release (v2.0.0)
 
@@ -282,6 +283,29 @@ Microsoft account. The log must show `store: context ready`, a snapshot with
 `available=true` and a valid `acquired=` date, and one `entitlement: tier=...`
 line. A purchased or redeemed add-on shows `source=addOn`; a pre-cutover
 account shows `source=grandfathered`.
+
+To test Store licensing **before** publishing, sideload a package that carries
+the Store identity. The Store answers by package family name, so the signed-in
+account's real license and `AcquiredDate` come back; a plain `-SignLocal`
+package (`CN=MediaFlyouts`) only gets `0x803F6107` (not associated with the
+Store). Remove the Store-installed copy first (same identity, different
+signer). After `.\mediaflyouts.ps1 package` (or any release build in `bin\`):
+
+```powershell
+$pub = 'CN=<Store Identity Publisher GUID>'
+.\tools\stage-msix.ps1 -Version <ver>.0 -Output release\MediaFlyouts-storeid.msix `
+    -IdentityName <Store Identity Name> -IdentityPublisher $pub `
+    -Layout build\msix-layout-storeid -Sideload
+.\tools\sign-msix-local.ps1 -Package release\MediaFlyouts-storeid.msix -Subject $pub `
+    -CerOutput release\MediaFlyouts-storeid.cer
+Get-AppxPackage <Store Identity Name> | Remove-AppxPackage
+.\tools\install-local-msix.ps1 -Package release\MediaFlyouts-storeid.msix `
+    -Certificate release\MediaFlyouts-storeid.cer
+```
+
+The log lives under
+`%LOCALAPPDATA%\Packages\<PackageFamilyName>\LocalCache\Roaming\MediaFlyouts\MediaFlyouts\logs\`.
+Reinstall from the Store when done.
 
 ## Troubleshooting
 

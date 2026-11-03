@@ -25,6 +25,7 @@ using winrt::Windows::Services::Store::StoreContext;
 using winrt::Windows::Services::Store::StoreLicense;
 using winrt::Windows::Services::Store::StoreProduct;
 using winrt::Windows::Services::Store::StoreProductQueryResult;
+using winrt::Windows::Services::Store::StoreProductResult;
 using winrt::Windows::Services::Store::StorePurchaseResult;
 using winrt::Windows::Services::Store::StorePurchaseStatus;
 using winrt::Windows::Services::Store::StoreSku;
@@ -156,6 +157,9 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
         }
         s.appLicenseActive = license.IsActive();
         s.appLicenseTrial = license.IsTrial();
+        TRC_INFO("store: app license active={} trial={} sku={} expires={}", s.appLicenseActive, s.appLicenseTrial,
+                 toQString(license.SkuStoreId()).toStdString(),
+                 toQDateTime(license.ExpirationDate()).toString(Qt::ISODate).toStdString());
         for(const auto& kv : license.AddOnLicenses()) {
             const QString key = toQString(kv.Key());
             const StoreLicense addOn = kv.Value();
@@ -175,27 +179,28 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
     }
 
     // Needs network and a signed-in account. A miss keeps the license result.
+    // GetUserCollectionAsync does not list the app itself for a Desktop Bridge
+    // package (verified: zero products with an active license), so the acquire
+    // date comes from the current-app product's owned SKUs.
     try {
-        const StoreProductQueryResult result = ctx.GetUserCollectionAsync(kinds({L"Application"})).get();
-        if(result.ExtendedError() != S_OK)
-            TRC_WARN("store: GetUserCollectionAsync extended error 0x{:08x}",
+        const StoreProductResult result = ctx.GetStoreProductForCurrentAppAsync().get();
+        const StoreProduct product = result.Product();
+        if(!product) {
+            TRC_WARN("store: GetStoreProductForCurrentAppAsync returned no product (extendedError=0x{:08x})",
                      static_cast<unsigned long>(result.ExtendedError().value));
-        for(const auto& kv : result.Products()) {
-            const StoreProduct product = kv.Value();
+        } else {
             for(const StoreSku& sku : product.Skus()) {
-                if(!sku.IsInUserCollection())
-                    continue;
-                const QDateTime acquired = toQDateTime(sku.CollectionData().AcquiredDate());
-                TRC_INFO("store: in collection product={} sku={} acquired={} trial={}",
-                         toQString(kv.Key()).toStdString(), toQString(sku.StoreId()).toStdString(),
-                         acquired.isValid() ? acquired.toString(Qt::ISODate).toStdString() : "none",
-                         sku.CollectionData().IsTrial());
-                if(acquired.isValid() && (!s.acquired.isValid() || acquired < s.acquired))
+                const bool owned = sku.IsInUserCollection();
+                const QDateTime acquired = owned ? toQDateTime(sku.CollectionData().AcquiredDate()) : QDateTime();
+                TRC_INFO("store: app sku={} owned={} trial={} acquired={}", toQString(sku.StoreId()).toStdString(),
+                         owned, sku.IsTrial(),
+                         acquired.isValid() ? acquired.toString(Qt::ISODate).toStdString() : "none");
+                if(owned && acquired.isValid() && (!s.acquired.isValid() || acquired < s.acquired))
                     s.acquired = acquired;
             }
         }
     } catch(const winrt::hresult_error& e) {
-        TRC_WARN("store: GetUserCollectionAsync failed ({}): {}", hresultText(e).toStdString(),
+        TRC_WARN("store: GetStoreProductForCurrentAppAsync failed ({}): {}", hresultText(e).toStdString(),
                  toQString(e.message()).toStdString());
     }
 

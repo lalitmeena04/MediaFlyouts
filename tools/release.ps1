@@ -97,7 +97,8 @@ if (-not $SkipBuild) {
     # Stop running instance before bin cleanup.
     Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$root\bin\*" } | Stop-Process -Force -ErrorAction SilentlyContinue
     Step 'Clean release build'
-    $buildParams = @{ Command = 'build'; Config = 'release'; Clean = $true; NoTests = $true; NoLogging = $true }
+    # Logging stays on (INFO) to match the CI release build.
+    $buildParams = @{ Command = 'build'; Config = 'release'; Clean = $true; NoTests = $true }
     if ($DevBuild) { $buildParams['BuildNumber'] = $buildNumber }
     if ($Define.Count -gt 0) { $buildParams['Define'] = $Define }
     & (Join-Path $root 'mediaflyouts.ps1') @buildParams | Out-Host
