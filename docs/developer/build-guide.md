@@ -195,7 +195,7 @@ For the MSIX (packaging + signing) and the icon assets, see
 
 ## Icons
 
-The master logo is `packaging/assets/media-flyouts.png`.
+The master logo is `packaging/assets/MediaFlyouts.png`.
 [`tools/generate_icon.ps1`](../../tools/generate_icon.ps1) renders the app icon
 (`packaging/assets/MediaFlyouts.ico`, embedded via
 [`packaging/MediaFlyouts.rc`](../../packaging/MediaFlyouts.rc) and compiled in

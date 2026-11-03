@@ -42,7 +42,7 @@ workflow.
 
 ## Icon assets
 
-The master logo is `packaging/assets/media-flyouts.png` (square PNG,
+The master logo is `packaging/assets/MediaFlyouts.png` (square PNG,
 transparent background). [`tools/generate_icon.ps1`](../tools/generate_icon.ps1)
 crops the mark and renders every derived asset from it:
 

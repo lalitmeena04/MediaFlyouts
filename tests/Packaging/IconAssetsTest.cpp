@@ -55,7 +55,7 @@ bool hasClearPixels(const QImage& image) {
 } // namespace
 
 TEST(IconAssetsTest, MasterLogoIsSquareWithTransparentBackground) {
-    const QImage master(assetPath("packaging/assets/media-flyouts.png"));
+    const QImage master(assetPath("packaging/assets/MediaFlyouts.png"));
     ASSERT_FALSE(master.isNull());
     EXPECT_EQ(master.width(), master.height());
     EXPECT_GE(master.width(), 512);

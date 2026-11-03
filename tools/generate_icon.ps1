@@ -1,5 +1,5 @@
 # Render MediaFlyouts app icon and MSIX tile logos from one master PNG.
-# Master: packaging\assets\media-flyouts.png (square, transparent background).
+# Master: packaging\assets\MediaFlyouts.png (square, transparent background).
 # The mark is cropped to its opaque bounds, then scaled into each target size.
 # Run:  powershell -ExecutionPolicy Bypass -File tools\generate_icon.ps1
 Add-Type -AssemblyName System.Drawing
@@ -7,7 +7,7 @@ Add-Type -AssemblyName System.Drawing
 $root      = Split-Path $PSScriptRoot -Parent
 $assetsDir = Join-Path $root 'packaging\assets'
 $imagesDir = Join-Path $root 'packaging\msix\Images'
-$masterPath = Join-Path $assetsDir 'media-flyouts.png'
+$masterPath = Join-Path $assetsDir 'MediaFlyouts.png'
 New-Item -ItemType Directory -Force $assetsDir | Out-Null
 New-Item -ItemType Directory -Force $imagesDir | Out-Null
 
