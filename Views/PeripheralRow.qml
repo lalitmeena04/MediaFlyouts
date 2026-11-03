@@ -8,6 +8,7 @@ Item {
     required property string deviceName
     property string description: ""
     property bool value: false
+    property bool parentLocked: false
     signal toggled(bool value)
 
     readonly property string displayName: settings.peripheralNames[row.deviceName] || row.deviceName
@@ -16,6 +17,8 @@ Item {
 
     width: parent ? parent.width : 400
     height: description.length > 0 ? 58 : 44
+    enabled: !row.parentLocked
+    opacity: row.parentLocked ? 0.5 : 1.0
 
     function commit(text) {
         settings.setPeripheralDisplayName(row.deviceName, text)

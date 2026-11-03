@@ -10,10 +10,13 @@ Item {
     property real stepSize: 1
     property real value: 0
     property string valueText: ""
+    property bool parentLocked: false
     signal moved(real value)
 
     width: parent ? parent.width : 400
     height: description.length > 0 ? 58 : 44
+    enabled: !root.parentLocked
+    opacity: root.parentLocked ? 0.5 : 1.0
 
     Column {
         anchors.left: parent.left

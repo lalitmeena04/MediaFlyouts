@@ -1018,6 +1018,33 @@ TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
     expectContains(page, QStringLiteral("visible: donate.hasPage"));
     expectContains(page, QStringLiteral("source: donate.upiQrSource"));
     expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
+// Controls that only matter while a locked feature runs follow that lock,
+// without a badge of their own.
+TEST(QmlContractTest, DependentRowsFollowTheParentLock) {
+    for(const char* file :
+        {"Views/SettingRow.qml", "Views/SettingCombo.qml", "Views/SettingSlider.qml", "Views/PeripheralRow.qml"}) {
+        const QString source = loadSource(file);
+        expectContains(source, QStringLiteral("property bool parentLocked: false"));
+        expectContains(source, QStringLiteral("parentLocked"));
+        EXPECT_TRUE(source.contains(QStringLiteral("enabled: ")))
+            << file << " must disable itself when parentLocked";
+    }
+
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    const QRegularExpression uses(QStringLiteral("parentLocked: entitlement\\.locked\\.([A-Za-z]+)"));
+    auto it = uses.globalMatch(dashboard);
+    int peripheral = 0;
+    while(it.hasNext()) {
+        const QString id = it.next().captured(1);
+        EXPECT_EQ(id, QStringLiteral("peripheralBattery")) << "Unknown feature id in Dashboard.qml: " << id.toStdString();
+        if(id == QStringLiteral("peripheralBattery"))
+            ++peripheral;
+    }
+    // Peripheral flyout: 5 event toggles + position + monitor + duration.
+    // Peripheral widget: accent + 2 device lists + wired toggle.
+    EXPECT_EQ(peripheral, 12);
+}
+
     expectContains(page, QStringLiteral("page.copy(donate.upiId)"));
     expectContains(page, QStringLiteral("model: entitlement.tipAddOnStoreIds"));
     expectContains(page, QStringLiteral("entitlement.purchaseAddOn(modelData, page.ownerWindow)"));

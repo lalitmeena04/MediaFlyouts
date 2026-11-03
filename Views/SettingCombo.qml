@@ -8,14 +8,16 @@ Item {
     property alias model: combo.model
     property int currentIndex: 0
     property bool locked: false
+    property bool parentLocked: false
     signal activated(int index)
 
     readonly property string detail: root.locked ? qsTr("Pro feature. Get Pro on the Home page to use it.") : root.description
+    readonly property bool usable: !root.locked && !root.parentLocked
 
     width: parent ? parent.width : 400
     height: detail.length > 0 ? 58 : 44
-    enabled: !root.locked
-    opacity: root.locked ? 0.5 : 1.0
+    enabled: root.usable
+    opacity: root.usable ? 1.0 : 0.5
 
     Column {
         anchors.left: parent.left

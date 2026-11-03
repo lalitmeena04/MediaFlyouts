@@ -9,12 +9,14 @@ Item {
     property bool available: true
     property string unavailableNote: ""
     property bool locked: false
+    // The controlling setting is a locked Pro feature. Disabled, no badge of its own.
+    property bool parentLocked: false
     signal toggled(bool value)
 
     readonly property bool showNote: !row.available && row.unavailableNote.length > 0
     readonly property string detail: row.locked ? qsTr("Pro feature. Get Pro on the Home page to use it.")
                                                 : (row.showNote ? row.unavailableNote : row.description)
-    readonly property bool usable: row.available && !row.locked
+    readonly property bool usable: row.available && !row.locked && !row.parentLocked
 
     width: parent ? parent.width : 400
     height: detail.length > 0 ? 58 : 44

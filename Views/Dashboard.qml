@@ -1438,6 +1438,7 @@ Window {
                         description: qsTr("Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level.")
                         value: settings.batteryRingUseAccent
                         onToggled: settings.batteryRingUseAccent = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
 
                     Text {
@@ -1475,6 +1476,7 @@ Window {
                             }
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
+                            parentLocked: entitlement.locked.peripheralBattery
                         }
                     }
 
@@ -1491,6 +1493,7 @@ Window {
                         description: qsTr("List plugged-in USB peripherals.")
                         value: settings.peripheralsWidgetWiredEnabled
                         onToggled: settings.peripheralsWidgetWiredEnabled = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     Text {
                         visible: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
@@ -1511,6 +1514,7 @@ Window {
                             description: qsTr("Plugged in over USB.")
                             value: settings.peripheralSelected(modelData.name)
                             onToggled: settings.setPeripheralSelected(modelData.name, value)
+                            parentLocked: entitlement.locked.peripheralBattery
                         }
                     }
 
@@ -1543,6 +1547,7 @@ Window {
                         description: qsTr("Announce a peripheral when it connects.")
                         value: settings.peripheralFlyoutOnConnect
                         onToggled: settings.peripheralFlyoutOnConnect = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingRow {
                         width: parent.width
@@ -1550,6 +1555,7 @@ Window {
                         description: qsTr("Announce a peripheral when it disconnects.")
                         value: settings.peripheralFlyoutOnDisconnect
                         onToggled: settings.peripheralFlyoutOnDisconnect = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingRow {
                         width: parent.width
@@ -1557,6 +1563,7 @@ Window {
                         description: qsTr("Warn once when a battery drops below 20%, and again below 10%.")
                         value: settings.peripheralFlyoutOnLowBattery
                         onToggled: settings.peripheralFlyoutOnLowBattery = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingRow {
                         width: parent.width
@@ -1564,6 +1571,7 @@ Window {
                         description: qsTr("Announce when a peripheral starts or stops charging.")
                         value: settings.peripheralFlyoutOnCharging
                         onToggled: settings.peripheralFlyoutOnCharging = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingRow {
                         width: parent.width
@@ -1571,6 +1579,7 @@ Window {
                         description: qsTr("Announce USB peripherals as they are plugged in or removed.")
                         value: settings.peripheralFlyoutOnWired
                         onToggled: settings.peripheralFlyoutOnWired = value
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingRow {
                         width: parent.width
@@ -1594,6 +1603,7 @@ Window {
                         model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
                         currentIndex: settings.peripheralFlyoutPosition
                         onActivated: settings.peripheralFlyoutPosition = index
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingCombo {
                         width: parent.width
@@ -1602,6 +1612,7 @@ Window {
                         model: monitors.names
                         currentIndex: settings.peripheralFlyoutMonitor
                         onActivated: settings.peripheralFlyoutMonitor = index
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                     SettingSlider {
                         width: parent.width
@@ -1613,6 +1624,7 @@ Window {
                         value: settings.peripheralFlyoutDuration
                         valueText: qsTr("%1 s").arg((settings.peripheralFlyoutDuration / 1000).toFixed(1))
                         onMoved: settings.peripheralFlyoutDuration = Math.round(value)
+                        parentLocked: entitlement.locked.peripheralBattery
                     }
                 }
 
