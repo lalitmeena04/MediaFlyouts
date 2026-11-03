@@ -40,6 +40,9 @@ class EntitlementController : public QObject {
 
     public:
         using Clock = std::function<QDateTime()>;
+        // Feature id -> locked. Bindings on this re-evaluate when the tier changes;
+        // the invokable isUnlocked() does not notify.
+        Q_PROPERTY(QVariantMap locked READ lockedFeatures NOTIFY changed)
 
         EntitlementController(mf::InstallKind install, const mf::ProBuildConfig& config,
                               std::unique_ptr<mf::EntitlementStore> store, QObject* parent = nullptr);
@@ -78,6 +81,7 @@ class EntitlementController : public QObject {
         // Unknown ids read as unlocked. A typo must not lock a feature.
         Q_INVOKABLE bool isUnlocked(const QString& featureId) const;
         // `ownerWindow` is the QML Window that owns the Store dialog.
+        QVariantMap lockedFeatures() const;
         Q_INVOKABLE void purchase(QObject* ownerWindow = nullptr);
         Q_INVOKABLE void purchaseAddOn(const QString& storeId, QObject* ownerWindow = nullptr);
         Q_INVOKABLE void refresh();

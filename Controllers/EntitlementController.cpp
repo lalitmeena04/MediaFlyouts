@@ -163,6 +163,13 @@ bool EntitlementController::isUnlocked(const QString& featureId) const {
     mf::ProFeature feature;
     if(!mf::featureFromId(featureId, &feature)) {
         TRC_WARN("entitlement: unknown feature id '{}', treated as unlocked", featureId.toStdString());
+QVariantMap EntitlementController::lockedFeatures() const {
+    QVariantMap map;
+    for(const QString& id : mf::allFeatureIds())
+        map.insert(id, !isUnlocked(id));
+    return map;
+}
+
         return true;
     }
     return mf::isUnlocked(feature, m_state.tier);

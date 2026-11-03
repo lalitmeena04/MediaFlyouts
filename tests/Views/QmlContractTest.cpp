@@ -959,16 +959,16 @@ TEST(QmlContractTest, GatedBehaviourBindsToTheProGateNotToSettings) {
 
 TEST(QmlContractTest, DashboardTogglesStayOnSettingsAndLockWithTheEntitlement) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
-    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"visualizer\")"));
-    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"perAppMixer\")"));
-    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"peripheralBattery\")"));
-    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"nowPlayingStyles\")"));
-    expectContains(dashboard, QStringLiteral("locked: !entitlement.isUnlocked(\"taskbarWidgetOptions\")"));
+    expectContains(dashboard, QStringLiteral("locked: entitlement.locked.visualizer"));
+    expectContains(dashboard, QStringLiteral("locked: entitlement.locked.perAppMixer"));
+    expectContains(dashboard, QStringLiteral("locked: entitlement.locked.peripheralBattery"));
+    expectContains(dashboard, QStringLiteral("locked: entitlement.locked.nowPlayingStyles"));
+    expectContains(dashboard, QStringLiteral("locked: entitlement.locked.taskbarWidgetOptions"));
     expectContains(dashboard, QStringLiteral("settings.taskbarVisualizerEnabled = value"));
     expectContains(dashboard, QStringLiteral("settings.volumeFlyoutMixerEnabled = value"));
     expectContains(dashboard, QStringLiteral("settings.nextUpStyle = index"));
 
-    const QRegularExpression knownIds(QStringLiteral("entitlement\\.isUnlocked\\(\"([A-Za-z]+)\"\\)"));
+    const QRegularExpression knownIds(QStringLiteral("entitlement\\.locked\\.([A-Za-z]+)"));
     auto it = knownIds.globalMatch(dashboard);
     const QStringList allowed{QStringLiteral("visualizer"), QStringLiteral("perAppMixer"),
                               QStringLiteral("peripheralBattery"), QStringLiteral("nowPlayingStyles"),
@@ -976,6 +976,8 @@ TEST(QmlContractTest, DashboardTogglesStayOnSettingsAndLockWithTheEntitlement) {
     int found = 0;
     while(it.hasNext()) {
         const QString id = it.next().captured(1);
+    // The invokable does not notify, so a binding on it would freeze at the startup tier.
+    expectNotContains(dashboard, QStringLiteral("entitlement.isUnlocked("));
         EXPECT_TRUE(allowed.contains(id)) << "Unknown feature id in Dashboard.qml: " << id.toStdString();
         ++found;
     }

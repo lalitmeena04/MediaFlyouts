@@ -212,6 +212,32 @@ TEST_F(EntitlementControllerTest, StoreSilenceKeepsTheCachedProState) {
     second->start();
     EXPECT_TRUE(second->isPro());
     EXPECT_EQ(second->sourceId(), QStringLiteral("cached"));
+// Startup grants a local trial until the Store answers. The locked map must
+// follow that change and announce it, or Dashboard rows stay unlocked.
+TEST_F(EntitlementControllerTest, LockedMapFollowsTheTierAndNotifies) {
+    FakeStoreGateway gateway;
+    auto c = make(InstallKind::Store, gatedConfig(), &gateway);
+    c->start();
+    EXPECT_TRUE(c->isTrial());
+    QVariantMap locked = c->lockedFeatures();
+    EXPECT_EQ(locked.size(), c->featureIds().size());
+    for(const QString& id : c->featureIds()) {
+        ASSERT_TRUE(locked.contains(id)) << id.toStdString();
+        EXPECT_FALSE(locked.value(id).toBool()) << id.toStdString();
+    }
+
+    QSignalSpy changed(c.get(), &EntitlementController::changed);
+    gateway.answer(storeAnswer(kNow.addDays(-20)));
+    EXPECT_GE(changed.count(), 1);
+    locked = c->lockedFeatures();
+    for(const QString& id : c->featureIds())
+        EXPECT_TRUE(locked.value(id).toBool()) << id.toStdString();
+
+    gateway.answer(storeAnswer(kNow.addDays(-20), true));
+    for(const QString& id : c->featureIds())
+        EXPECT_FALSE(c->lockedFeatures().value(id).toBool()) << id.toStdString();
+}
+
     StoreSnapshot silent;
     silent.error = QStringLiteral("networkError");
     gateway.answer(silent);

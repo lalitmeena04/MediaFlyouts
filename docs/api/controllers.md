@@ -121,9 +121,11 @@ flips without a restart.
 - `tier` / `source` / `unlocked` / `isPro` / `isTrial` / `trialDaysLeft`, plus
   `gatingEnabled`, `storeAvailable`, `canPurchase`, `price`, `purchasing`,
   `refreshing`, `lastPurchaseStatus`, `tipAddOnStoreIds`, `featureIds`.
-- `isUnlocked("visualizer")` for the gated features (`mf::allFeatureIds`). An
-  unknown id reads as unlocked and logs a warning: a typo must never lock a
-  feature.
+- `locked` — map of feature id → bool (`entitlement.locked.visualizer`) with
+  `NOTIFY changed`, the thing Dashboard rows bind to. `isUnlocked(id)` is the
+  same answer as an invokable; it does not notify, so a binding on it would
+  freeze at the startup tier. An unknown id reads as unlocked and logs a
+  warning: a typo must never lock a feature.
 - `purchase(window)` buys the Pro add-on, `purchaseAddOn(id, window)` any
   add-on (tips). The QML `Window` becomes the owner of the Store dialog.
   `purchaseFinished(ok, statusId, storeId)` reports stable ids from

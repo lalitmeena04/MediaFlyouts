@@ -93,7 +93,8 @@ result to the available screen.
 
 Pro gating has two faces in QML. `entitlement` (tier, trial days, purchase) is
 for the Dashboard: toggles bind to `settings.*` and set
-`locked: !entitlement.isUnlocked("<feature>")`. `pro` (`ProGate`) holds the
+`locked: entitlement.locked.<feature>` (a notifying map, so rows lock the
+moment the tier changes). `pro` (`ProGate`) holds the
 *effective* values — the stored setting when unlocked, the free-tier default
 when locked — and every flyout or widget binds its behaviour to `pro.*`
 (`pro.visualizerEnabled`, `pro.mixerEnabled`, `pro.nextUpStyle`, …), never to
