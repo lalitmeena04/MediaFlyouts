@@ -239,11 +239,17 @@ upload: a Store build that says `off (no cutover)` sells nothing.
 ### One-time Partner Center setup (before v2.0.0)
 
 1. **Create the add-on**: Partner Center → the app → **Add-ons** → **Create a
-   new add-on** → *Durable*, product lifetime *Forever*, name
-   **MediaFlyouts Pro**. Set the base price and an India override of ₹200
-   (nearest tier). Under **Pricing and availability → Visibility** restrict it
-   (see *Test the add-on before cutover*) and publish it. Copy its **Store ID**
-   into `PRO_ADDON_STORE_ID`.
+   new add-on** → *Durable*, product lifetime *Forever*, content type
+   *Electronic software download*, name **MediaFlyouts Pro**. Under
+   **Pricing** set the base currency to INR and the Default market group to
+   ₹199 (nearest tier); Microsoft converts it to local tiers for the other
+   markets. **Store listings**:
+   export, run `python tools\store\make_addon_listing_csv.py pro <export>.csv`
+   and upload `tools/store/addon-import/` (eleven languages, icon included).
+   Under **Pricing and availability → Visibility** restrict it (see *Test the
+   add-on before cutover*), discoverability *Available for purchase from
+   within the parent product only*, and publish. Copy its **Store ID** into
+   `PRO_ADDON_STORE_ID`.
 2. **Create the tips** (optional): one or more *Consumable* (developer-managed)
    add-ons, e.g. "Tip ₹100", "Tip ₹300". Publish. Copy the IDs, comma-separated,
    into `PRO_TIP_ADDON_STORE_IDS`.
@@ -281,13 +287,15 @@ audience.
    pick one:
    - **Private Audience**: **Engage → Customer groups → Create new group →
      Known user group**, add your Microsoft account e-mail, then select that
-     group as the audience. Only group members can see or buy the add-on. This
-     tests the real `RequestPurchaseAsync` dialog; you pay ₹200 to yourself and
-     get it back at payout minus the Store fee.
-   - **Hidden in the Store → Stop acquisition**: nobody can buy, but a
-     promotional code still redeems. Tests licence detection only, not the
-     purchase dialog. Generate a code under **Attract → Promotional codes** and
-     redeem it in the Store app (**Redeem a code**).
+     group as the audience, with discoverability *Available for purchase from
+     within the parent product only*. Only group members can see or buy the
+     add-on. This tests the real `RequestPurchaseAsync` dialog; you pay ₹200
+     to yourself and get it back at payout minus the Store fee.
+   - **Hidden in the Store → Stop acquisition**: nobody can buy, not even a
+     private audience, so `RequestPurchaseAsync` fails; only a promotional
+     code redeems. Tests licence detection, not the purchase dialog. Generate
+     a code under **Attract → Promotional codes** and redeem it in the Store
+     app (**Redeem a code**).
 2. **Publish the add-on** and wait until its status is *In the Store*. Copy the
    Store ID from its **Product identity** page.
 3. **Build a 2.0.0 candidate** on the current branch with the real add-on ID

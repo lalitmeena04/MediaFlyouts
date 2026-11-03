@@ -175,6 +175,15 @@ debug-only `MEDIAFLYOUTS_SETTINGS_DIR` variable. The generated folder is
 committed as a fallback. The export itself is gitignored: its name carries
 the submission id and it changes every submission.
 
+Add-on listings (Title, 200-character Description, 300×300 icon) follow the
+same path with
+[`tools/store/make_addon_listing_csv.py`](../tools/store/make_addon_listing_csv.py):
+export from the add-on's submission page, run
+`python tools\store\make_addon_listing_csv.py pro <export>.csv`, and upload
+`tools/store/addon-import/`. A fresh add-on exports only the `default`
+column; the script appends one column per language and the import creates
+those listings.
+
 ### Manifest rules the Store enforces
 
 - `Identity Name` / `Publisher` must equal the reserved values; the repo
