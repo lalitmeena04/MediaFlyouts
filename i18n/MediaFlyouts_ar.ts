@@ -1556,14 +1556,14 @@ Unavailable: %1</source>
     <name>SettingCombo</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
-        <translation>ميزة Pro. احصل على Pro من الصفحة الرئيسية لاستخدامها.</translation>
+        <translation>ميزة برو. احصل على برو من الصفحة الرئيسية لاستخدامها.</translation>
     </message>
 </context>
 <context>
     <name>SettingRow</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
-        <translation>ميزة Pro. احصل على Pro من الصفحة الرئيسية لاستخدامها.</translation>
+        <translation>ميزة برو. احصل على برو من الصفحة الرئيسية لاستخدامها.</translation>
     </message>
 </context>
 <context>
@@ -1837,11 +1837,11 @@ Unavailable: %1</source>
     <name>UpgradeCard</name>
     <message>
         <source>Pro trial: %1 days left</source>
-        <translation>تجربة Pro: متبقي %1 يوم</translation>
+        <translation>تجربة برو: متبقي %1 يوم</translation>
     </message>
     <message>
         <source>Your Pro trial has ended</source>
-        <translation>انتهت فترة تجربة Pro</translation>
+        <translation>انتهت فترة تجربة برو</translation>
     </message>
     <message>
         <source>Opening the Microsoft Store…</source>
@@ -1849,23 +1849,23 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Get Pro for %1</source>
-        <translation>احصل على Pro مقابل %1</translation>
+        <translation>احصل على برو مقابل %1</translation>
     </message>
     <message>
         <source>Get Pro</source>
-        <translation>احصل على Pro</translation>
+        <translation>احصل على برو</translation>
     </message>
     <message>
         <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
-        <translation>يُباع Pro عبر إصدار Microsoft Store من MediaFlyouts.</translation>
+        <translation>يُباع برو عبر إصدار Microsoft Store من MediaFlyouts.</translation>
     </message>
     <message>
         <source>Thank you! Pro is unlocked.</source>
-        <translation>شكرًا لك! تم تفعيل Pro.</translation>
+        <translation>شكرًا لك! تم تفعيل برو.</translation>
     </message>
     <message>
         <source>You already own Pro. Restoring your purchase…</source>
-        <translation>أنت تملك Pro بالفعل. جارٍ استعادة عملية الشراء…</translation>
+        <translation>أنت تملك برو بالفعل. جارٍ استعادة عملية الشراء…</translation>
     </message>
     <message>
         <source>No connection to the Microsoft Store. Check your network and try again.</source>
@@ -1881,7 +1881,7 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
-        <translation>يفتح Pro مُصوِّر الصوت، وخلاط الصوت لكل تطبيق، وبطارية الأجهزة الطرفية، وأنماط قيد التشغيل، وخيارات أداة الوسائط.</translation>
+        <translation>يفتح برو مُصوِّر الصوت، وخلاط الصوت لكل تطبيق، وبطارية الأجهزة الطرفية، وأنماط قيد التشغيل، وخيارات أداة الوسائط.</translation>
     </message>
 </context>
 <context>

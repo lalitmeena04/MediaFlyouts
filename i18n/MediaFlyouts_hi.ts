@@ -1556,14 +1556,14 @@ Unavailable: %1</source>
     <name>SettingCombo</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
-        <translation>Pro सुविधा। इसे उपयोग करने के लिए होम पेज से Pro प्राप्त करें।</translation>
+        <translation>प्रो सुविधा। इसे उपयोग करने के लिए होम पेज से प्रो प्राप्त करें।</translation>
     </message>
 </context>
 <context>
     <name>SettingRow</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
-        <translation>Pro सुविधा। इसे उपयोग करने के लिए होम पेज से Pro प्राप्त करें।</translation>
+        <translation>प्रो सुविधा। इसे उपयोग करने के लिए होम पेज से प्रो प्राप्त करें।</translation>
     </message>
 </context>
 <context>
@@ -1837,11 +1837,11 @@ Unavailable: %1</source>
     <name>UpgradeCard</name>
     <message>
         <source>Pro trial: %1 days left</source>
-        <translation>Pro ट्रायल: %1 दिन शेष</translation>
+        <translation>प्रो ट्रायल: %1 दिन शेष</translation>
     </message>
     <message>
         <source>Your Pro trial has ended</source>
-        <translation>आपका Pro ट्रायल समाप्त हो गया है</translation>
+        <translation>आपका प्रो ट्रायल समाप्त हो गया है</translation>
     </message>
     <message>
         <source>Opening the Microsoft Store…</source>
@@ -1849,23 +1849,23 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Get Pro for %1</source>
-        <translation>%1 में Pro प्राप्त करें</translation>
+        <translation>%1 में प्रो प्राप्त करें</translation>
     </message>
     <message>
         <source>Get Pro</source>
-        <translation>Pro प्राप्त करें</translation>
+        <translation>प्रो प्राप्त करें</translation>
     </message>
     <message>
         <source>Pro is sold through the Microsoft Store version of MediaFlyouts.</source>
-        <translation>Pro केवल MediaFlyouts के Microsoft Store संस्करण के माध्यम से बेचा जाता है।</translation>
+        <translation>प्रो केवल MediaFlyouts के Microsoft Store संस्करण के माध्यम से बेचा जाता है।</translation>
     </message>
     <message>
         <source>Thank you! Pro is unlocked.</source>
-        <translation>धन्यवाद! Pro अनलॉक हो गया है।</translation>
+        <translation>धन्यवाद! प्रो अनलॉक हो गया है।</translation>
     </message>
     <message>
         <source>You already own Pro. Restoring your purchase…</source>
-        <translation>आपके पास पहले से Pro है। आपकी खरीद पुनर्स्थापित की जा रही है…</translation>
+        <translation>आपके पास पहले से प्रो है। आपकी खरीद पुनर्स्थापित की जा रही है…</translation>
     </message>
     <message>
         <source>No connection to the Microsoft Store. Check your network and try again.</source>
@@ -1881,7 +1881,7 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
-        <translation>Pro ऑडियो विज़ुअलाइज़र, प्रति-ऐप मिक्सर, पेरिफेरल बैटरी, Now Playing शैलियाँ और मीडिया विजेट विकल्प अनलॉक करता है।</translation>
+        <translation>प्रो ऑडियो विज़ुअलाइज़र, प्रति-ऐप मिक्सर, पेरिफ़ेरल बैटरी, नाउ प्लेइंग शैलियाँ और मीडिया विजेट विकल्प अनलॉक करता है।</translation>
     </message>
 </context>
 <context>
