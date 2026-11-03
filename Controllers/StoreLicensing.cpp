@@ -164,8 +164,8 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
             const QString key = toQString(kv.Key());
             const StoreLicense addOn = kv.Value();
             const bool active = addOn.IsActive();
-            TRC_DEBUG("store: add-on license key={} sku={} active={}", key.toStdString(),
-                      toQString(addOn.SkuStoreId()).toStdString(), active);
+            TRC_INFO("store: add-on license key={} sku={} active={}", key.toStdString(),
+                     toQString(addOn.SkuStoreId()).toStdString(), active);
             if(active && (licenseKeyMatches(key, m_proAddOnStoreId)
                           || licenseKeyMatches(toQString(addOn.SkuStoreId()), m_proAddOnStoreId)))
                 s.addOnLicensed = true;
@@ -209,12 +209,14 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
     try {
         const StoreProductQueryResult result =
             ctx.GetAssociatedStoreProductsAsync(kinds({L"Durable", L"Consumable"})).get();
+        int products = 0;
         for(const auto& kv : result.Products()) {
+            ++products;
             const QString key = toQString(kv.Key());
             const StoreProduct product = kv.Value();
             const QString price = toQString(product.Price().FormattedPrice());
-            TRC_DEBUG("store: add-on product {} price={} owned={}", key.toStdString(), price.toStdString(),
-                      product.IsInUserCollection());
+            TRC_INFO("store: add-on product {} price='{}' owned={}", key.toStdString(), price.toStdString(),
+                     product.IsInUserCollection());
             s.addOnPrices.insert(key, price);
             if(licenseKeyMatches(key, m_proAddOnStoreId)) {
                 s.proPrice = price;
@@ -222,6 +224,11 @@ StoreSnapshot StoreLicensing::readSnapshot(StoreContext ctx) const {
                     s.addOnLicensed = true;
             }
         }
+        // Zero products with an id configured means the add-on is not published
+        // or not visible to this account.
+        if(products == 0)
+            TRC_WARN("store: no associated add-on products (extendedError=0x{:08x})",
+                     static_cast<unsigned long>(result.ExtendedError().value));
     } catch(const winrt::hresult_error& e) {
         TRC_WARN("store: GetAssociatedStoreProductsAsync failed ({}): {}", hresultText(e).toStdString(),
                  toQString(e.message()).toStdString());

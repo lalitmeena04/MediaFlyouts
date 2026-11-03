@@ -241,7 +241,9 @@ upload: a Store build that says `off (no cutover)` sells nothing.
 1. **Create the add-on**: Partner Center → the app → **Add-ons** → **Create a
    new add-on** → *Durable*, product lifetime *Forever*, name
    **MediaFlyouts Pro**. Set the base price and an India override of ₹200
-   (nearest tier). Publish it. Copy its **Store ID** into `PRO_ADDON_STORE_ID`.
+   (nearest tier). Under **Pricing and availability → Visibility** restrict it
+   (see *Test the add-on before cutover*) and publish it. Copy its **Store ID**
+   into `PRO_ADDON_STORE_ID`.
 2. **Create the tips** (optional): one or more *Consumable* (developer-managed)
    add-ons, e.g. "Tip ₹100", "Tip ₹300". Publish. Copy the IDs, comma-separated,
    into `PRO_TIP_ADDON_STORE_IDS`.
@@ -261,6 +263,82 @@ stays unlocked; the log records `store: app sku=... owned=... acquired=...` and
 the add-on query result. Confirm on your own machine that `AcquiredDate` is the
 original purchase date before you rely on it (done for 1.7.0: the Store build
 on a paid account reports `acquired=2026-10-12T06:08:33Z`, the purchase date).
+
+### Test the add-on before cutover
+
+Add-ons publish independently of the app package, and a sideloaded package
+with the Store identity gets real licence data (see *Verifying a Store build*).
+So the whole purchase path can be tested while retail still ships 1.x. The
+shipped 1.x binary has no add-on ID compiled in and never calls purchase, so a
+published-but-restricted add-on is invisible to users.
+
+Partner Center *Experiments* are not for this: they A/B-test remote variables
+through the old Store Services SDK and create no licences. Windows apps have no
+purchase sandbox either; the test uses the retail Store with a restricted
+audience.
+
+1. **Restrict who can buy.** On the add-on's **Pricing and availability** page
+   pick one:
+   - **Private Audience**: **Engage → Customer groups → Create new group →
+     Known user group**, add your Microsoft account e-mail, then select that
+     group as the audience. Only group members can see or buy the add-on. This
+     tests the real `RequestPurchaseAsync` dialog; you pay ₹200 to yourself and
+     get it back at payout minus the Store fee.
+   - **Hidden in the Store → Stop acquisition**: nobody can buy, but a
+     promotional code still redeems. Tests licence detection only, not the
+     purchase dialog. Generate a code under **Attract → Promotional codes** and
+     redeem it in the Store app (**Redeem a code**).
+2. **Publish the add-on** and wait until its status is *In the Store*. Copy the
+   Store ID from its **Product identity** page.
+3. **Build a 2.0.0 candidate** on the current branch with the real add-on ID
+   and a cutover **earlier than your own purchase date**. That makes your
+   account a normal free user (not grandfathered, trial already over), so the
+   Home upgrade card appears and the real purchase path runs:
+
+   ```powershell
+   .\mediaflyouts.ps1 build -Config release -NoTests `
+       -Define MEDIAFLYOUTS_PRO_ADDON_STORE_ID=9NXXXXXXXXXX,MEDIAFLYOUTS_STORE_CUTOVER_UTC=2026-10-01T00:00:00Z
+   ```
+
+   Check the configure log says `MediaFlyouts Pro gating: on ...`.
+4. **Stage, sign and sideload** with the Store identity exactly as in
+   *Verifying a Store build*. Remove any earlier Store-identity sideload or the
+   Store-installed copy first.
+5. **Before buying**, the log must show the price in your currency and the
+   free tier:
+
+   ```
+   store: add-on product 9NXXXXXXXXXX price='₹200.00' owned=false
+   store: snapshot available=true addOn=false acquired=2026-10-12T06:08:33Z price='₹200.00'
+   entitlement: tier=free source=expired ...
+   ```
+
+   `store: no associated add-on products` means the add-on is not published
+   yet or your account is outside its audience. Pro toggles in the Dashboard
+   must be greyed with the Pro badge and the upgrade card must show the price.
+6. **Buy or redeem.** Click the upgrade card (or a Support page tip for the
+   consumable path). After the Store dialog closes the log shows
+   `store: purchase 9NXXXXXXXXXX -> succeeded`, `store: offline licenses
+   changed`, `store: add-on license key=9NXXXXXXXXXX ... active=true`,
+   `snapshot ... addOn=true` and `entitlement: tier=pro source=addOn`. The
+   toggles unlock without a restart.
+7. **Restart the app offline** (disable the network first). `AddOnLicenses`
+   comes from the offline licence cache, so `addOn=true` and `source=addOn`
+   must survive without network. Then re-enable the network.
+8. **Grandfather check**: rebuild with the real planned cutover (after your
+   purchase date), sideload again, and confirm `source=grandfathered`. A real
+   Store-anchored trial needs a second Microsoft account that acquires the app
+   *after* it is free, so that path is checked right after cutover.
+9. **Clean up**: `Get-AppxPackage ScleaverZer0ne.MediaFlyouts |
+   Remove-AppxPackage`, reinstall from the Store, and leave the add-on
+   restricted until cutover day. A refunded or revoked test purchase shows up
+   as `addOn=false` on the next refresh; that is the expected path, nothing to
+   handle.
+
+Optionally **package-flight** the same candidate to a flight group holding
+your account instead of sideloading. That tests the Store-signed package
+through the real install path while retail stays 1.x; the Store updates your
+installed copy to the flight.
 
 ### Cutover release (v2.0.0)
 
