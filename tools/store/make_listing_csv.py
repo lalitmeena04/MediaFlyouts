@@ -67,9 +67,12 @@ PRIVACY
 No account, no telemetry, no ads. The only network request is an optional update check. Settings stay in a local file you can export, import or delete.
 
 Media Flyouts runs in the tray and starts with Windows if you want it to. Open the dashboard from the tray icon to configure every flyout, position, duration and monitor.""",
-    ReleaseNotes="""- Eleven languages. Media Flyouts now speaks English, Spanish, Simplified Chinese, Japanese, German, French, Korean, Brazilian Portuguese, Hindi, Arabic and Indonesian. It follows your Windows display language; pick another under Additional Settings > Language. Everything switches at once, no restart.
-- Support page. A new page in the dashboard with ways to say thanks. Donations are voluntary and unlock nothing.
-- What's new. This note appears once after each update. Find it again any time on the About page.""",
+    Pro="""MEDIA FLYOUTS PRO
+The app is free. Five features are Pro: the audio visualizer, the per-app volume mixer, peripheral battery (widget, flyout and low-battery notification), Now Playing styles and the media widget options. Everything else is free forever. Every new install gets a 15-day trial of Pro; after that a one-time in-app purchase of MediaFlyouts Pro (about USD 2.69, shown in your local currency) unlocks it for good on every PC you sign in to. No subscription. If you bought Media Flyouts while it was a paid app, you already own Pro.""",
+    PrivacyHeading="PRIVACY",
+    ReleaseNotes="""- Media Flyouts is now free. Five advanced features become MediaFlyouts Pro, a one-time purchase, with a 15-day trial for every new install. Bought the paid app before? You already own Pro, nothing changes for you.
+- Pro icon. Pro users see a Pro mark in the tray, on window frames and in the dashboard. Pick between two styles under Additional Settings > Pro icon.
+- Clearer locks. A greyed toggle with a PRO badge marks a Pro feature; the controls that depend on it are disabled too.""",
     Features=[
         "Fluent-style media flyout with album art, seekbar, repeat and shuffle",
         "Volume flyout that replaces the Windows overlay, with a per-app mixer",
@@ -125,9 +128,12 @@ DATENSCHUTZ
 Kein Konto, keine Telemetrie, keine Werbung. Die einzige Netzwerkanfrage ist eine optionale Update-Prüfung. Einstellungen bleiben in einer lokalen Datei, die du exportieren, importieren oder löschen kannst.
 
 Media Flyouts läuft im Tray und startet auf Wunsch mit Windows. Über das Tray-Symbol öffnest du das Dashboard und konfigurierst jedes Flyout, Position, Dauer und Monitor.""",
-    ReleaseNotes="""- Elf Sprachen. Media Flyouts spricht jetzt Englisch, Spanisch, vereinfachtes Chinesisch, Japanisch, Deutsch, Französisch, Koreanisch, brasilianisches Portugiesisch, Hindi, Arabisch und Indonesisch. Die App folgt der Windows-Anzeigesprache; eine andere wählst du unter Weitere Einstellungen > Sprache. Alles wechselt sofort, ohne Neustart.
-- Unterstützen-Seite. Eine neue Seite im Dashboard mit Möglichkeiten, Danke zu sagen. Spenden sind freiwillig und schalten nichts frei.
-- Neuigkeiten. Dieser Hinweis erscheint einmal nach jedem Update. Du findest ihn jederzeit auf der Info-Seite wieder.""",
+    Pro="""MEDIA FLYOUTS PRO
+Die App ist kostenlos. Fünf Funktionen sind Pro: der Audio-Visualizer, der Lautstärkemixer pro App, der Peripherie-Akku (Widget, Flyout und Warnung bei niedrigem Akku), die Now-Playing-Stile und die Optionen des Medien-Widgets. Alles andere bleibt dauerhaft kostenlos. Jede Neuinstallation erhält 15 Tage Pro zum Testen; danach schaltet ein einmaliger In-App-Kauf von MediaFlyouts Pro (etwa 2,49 €, in deiner Währung angezeigt) alles dauerhaft frei, auf jedem PC mit deinem Konto. Kein Abo. Wer Media Flyouts als Bezahl-App gekauft hat, besitzt Pro bereits.""",
+    PrivacyHeading="DATENSCHUTZ",
+    ReleaseNotes="""- Media Flyouts ist jetzt kostenlos. Fünf erweiterte Funktionen werden zu MediaFlyouts Pro, einem Einmalkauf, mit 15 Tagen Testzeit für jede Neuinstallation. Bezahl-App gekauft? Dann besitzt du Pro bereits, für dich ändert sich nichts.
+- Pro-Symbol. Pro-Nutzer sehen ein Pro-Zeichen im Infobereich, am Fensterrahmen und im Dashboard. Zwei Stile unter Weitere Einstellungen > Pro-Symbol.
+- Klarere Sperren. Ein ausgegrauter Schalter mit PRO-Abzeichen markiert eine Pro-Funktion; davon abhängige Einstellungen werden ebenfalls deaktiviert.""",
     Features=[
         "Medien-Flyout im Fluent-Stil mit Albumcover, Fortschrittsleiste, Wiederholen und Zufall",
         "Lautstärke-Flyout, das das Windows-Overlay ersetzt, mit App-Mixer",
@@ -183,9 +189,12 @@ CONFIDENTIALITÉ
 Pas de compte, pas de télémétrie, pas de publicité. La seule requête réseau est une vérification de mise à jour facultative. Les réglages restent dans un fichier local que vous pouvez exporter, importer ou supprimer.
 
 Media Flyouts tourne dans la zone de notification et démarre avec Windows si vous le souhaitez. Ouvrez le tableau de bord depuis l'icône pour configurer chaque flyout, sa position, sa durée et son écran.""",
-    ReleaseNotes="""- Onze langues. Media Flyouts parle désormais anglais, espagnol, chinois simplifié, japonais, allemand, français, coréen, portugais brésilien, hindi, arabe et indonésien. L'application suit la langue d'affichage de Windows ; choisissez-en une autre sous Paramètres supplémentaires > Langue. Tout change d'un coup, sans redémarrage.
-- Page Soutenir. Une nouvelle page du tableau de bord pour dire merci. Les dons sont volontaires et ne débloquent rien.
-- Nouveautés. Cette note apparaît une fois après chaque mise à jour. Retrouvez-la à tout moment sur la page À propos.""",
+    Pro="""MEDIA FLYOUTS PRO
+L'application est gratuite. Cinq fonctions sont Pro : le visualiseur audio, le mixeur de volume par application, la batterie des périphériques (widget, flyout et alerte de batterie faible), les styles Lecture en cours et les options du widget média. Tout le reste reste gratuit pour toujours. Chaque nouvelle installation profite de 15 jours d'essai de Pro ; ensuite un achat unique de MediaFlyouts Pro (environ 2,49 €, affiché dans votre devise) le débloque définitivement sur tous vos PC. Sans abonnement. Si vous avez acheté Media Flyouts quand l'application était payante, vous possédez déjà Pro.""",
+    PrivacyHeading="CONFIDENTIALITÉ",
+    ReleaseNotes="""- Media Flyouts est désormais gratuit. Cinq fonctions avancées deviennent MediaFlyouts Pro, un achat unique, avec 15 jours d'essai pour chaque nouvelle installation. Vous aviez acheté l'application payante ? Vous possédez déjà Pro, rien ne change pour vous.
+- Icône Pro. Les utilisateurs Pro voient une marque Pro dans la zone de notification, sur les cadres de fenêtre et dans le tableau de bord. Deux styles sous Paramètres supplémentaires > Icône Pro.
+- Verrous plus clairs. Un interrupteur grisé avec un badge PRO signale une fonction Pro ; les réglages qui en dépendent sont désactivés aussi.""",
     Features=[
         "Flyout média de style Fluent avec pochette, barre de progression, répétition et aléatoire",
         "Flyout volume qui remplace l'overlay Windows, avec mixeur par application",
@@ -241,9 +250,12 @@ PRIVACIDAD
 Sin cuenta, sin telemetría, sin anuncios. La única petición de red es una comprobación de actualizaciones opcional. Los ajustes se guardan en un archivo local que puedes exportar, importar o borrar.
 
 Media Flyouts se ejecuta en la bandeja y arranca con Windows si lo deseas. Abre el panel desde el icono de la bandeja para configurar cada flyout, posición, duración y monitor.""",
-    ReleaseNotes="""- Once idiomas. Media Flyouts ahora habla inglés, español, chino simplificado, japonés, alemán, francés, coreano, portugués de Brasil, hindi, árabe e indonesio. Sigue el idioma de Windows; elige otro en Ajustes adicionales > Idioma. Todo cambia a la vez, sin reiniciar.
-- Página Apoyo. Una nueva página en el panel con formas de dar las gracias. Las donaciones son voluntarias y no desbloquean nada.
-- Novedades. Esta nota aparece una vez tras cada actualización. Vuelve a verla cuando quieras en la página Acerca de.""",
+    Pro="""MEDIA FLYOUTS PRO
+La aplicación es gratuita. Cinco funciones son Pro: el visualizador de audio, el mezclador de volumen por aplicación, la batería de periféricos (widget, flyout y aviso de batería baja), los estilos de Reproduciendo y las opciones del widget multimedia. Todo lo demás es gratis para siempre. Cada instalación nueva tiene 15 días de prueba de Pro; después, una compra única de MediaFlyouts Pro (unos 2,49 €, en tu moneda) lo desbloquea para siempre en todos tus PC. Sin suscripción. Si compraste Media Flyouts cuando era de pago, ya tienes Pro.""",
+    PrivacyHeading="PRIVACIDAD",
+    ReleaseNotes="""- Media Flyouts ahora es gratis. Cinco funciones avanzadas pasan a ser MediaFlyouts Pro, una compra única, con 15 días de prueba en cada instalación nueva. ¿Compraste la versión de pago? Ya tienes Pro, nada cambia para ti.
+- Icono Pro. Los usuarios Pro ven una marca Pro en la bandeja, en los marcos de ventana y en el panel. Dos estilos en Ajustes adicionales > Icono Pro.
+- Bloqueos más claros. Un interruptor atenuado con la insignia PRO marca una función Pro; los controles que dependen de ella también se desactivan.""",
     Features=[
         "Flyout multimedia de estilo Fluent con carátula, barra de progreso, repetir y aleatorio",
         "Flyout de volumen que sustituye la superposición de Windows, con mezclador por aplicación",
@@ -299,9 +311,12 @@ PRIVACIDADE
 Sem conta, sem telemetria, sem anúncios. A única solicitação de rede é uma verificação de atualização opcional. As configurações ficam em um arquivo local que você pode exportar, importar ou excluir.
 
 O Media Flyouts roda na bandeja e inicia com o Windows se você quiser. Abra o painel pelo ícone da bandeja para configurar cada flyout, posição, duração e monitor.""",
-    ReleaseNotes="""- Onze idiomas. O Media Flyouts agora fala inglês, espanhol, chinês simplificado, japonês, alemão, francês, coreano, português do Brasil, hindi, árabe e indonésio. Ele segue o idioma de exibição do Windows; escolha outro em Configurações adicionais > Idioma. Tudo muda de uma vez, sem reiniciar.
-- Página Apoiar. Uma nova página no painel com formas de agradecer. Doações são voluntárias e não desbloqueiam nada.
-- Novidades. Esta nota aparece uma vez após cada atualização. Encontre-a novamente a qualquer momento na página Sobre.""",
+    Pro="""MEDIA FLYOUTS PRO
+O app é gratuito. Cinco recursos são Pro: o visualizador de áudio, o mixer de volume por aplicativo, a bateria de periféricos (widget, flyout e aviso de bateria fraca), os estilos de Tocando agora e as opções do widget de mídia. Todo o resto é grátis para sempre. Cada instalação nova ganha 15 dias de teste do Pro; depois, uma compra única do MediaFlyouts Pro (cerca de R$ 12,90, exibido na sua moeda) libera tudo para sempre em todos os seus PCs. Sem assinatura. Se você comprou o Media Flyouts quando ele era pago, já tem o Pro.""",
+    PrivacyHeading="PRIVACIDADE",
+    ReleaseNotes="""- O Media Flyouts agora é gratuito. Cinco recursos avançados viram o MediaFlyouts Pro, uma compra única, com 15 dias de teste em cada instalação nova. Comprou o app pago? Você já tem o Pro, nada muda para você.
+- Ícone Pro. Usuários Pro veem uma marca Pro na bandeja, nas molduras de janela e no painel. Dois estilos em Configurações adicionais > Ícone Pro.
+- Bloqueios mais claros. Um botão esmaecido com o selo PRO marca um recurso Pro; os controles que dependem dele também ficam desativados.""",
     Features=[
         "Flyout de mídia no estilo Fluent com capa, barra de progresso, repetir e aleatório",
         "Flyout de volume que substitui a sobreposição do Windows, com mixer por aplicativo",
@@ -357,9 +372,12 @@ PRIVASI
 Tanpa akun, tanpa telemetri, tanpa iklan. Satu-satunya permintaan jaringan adalah pemeriksaan pembaruan opsional. Pengaturan tersimpan di file lokal yang bisa Anda ekspor, impor, atau hapus.
 
 Media Flyouts berjalan di tray dan dapat dimulai bersama Windows. Buka dasbor dari ikon tray untuk mengatur setiap flyout, posisi, durasi, dan monitor.""",
-    ReleaseNotes="""- Sebelas bahasa. Media Flyouts kini tersedia dalam bahasa Inggris, Spanyol, Mandarin Sederhana, Jepang, Jerman, Prancis, Korea, Portugis Brasil, Hindi, Arab, dan Indonesia. Aplikasi mengikuti bahasa tampilan Windows; pilih yang lain di Pengaturan tambahan > Bahasa. Semuanya berganti sekaligus, tanpa mulai ulang.
-- Halaman Dukungan. Halaman baru di dasbor dengan cara untuk berterima kasih. Donasi bersifat sukarela dan tidak membuka fitur apa pun.
-- Yang baru. Catatan ini muncul sekali setelah setiap pembaruan. Temukan lagi kapan saja di halaman Tentang.""",
+    Pro="""MEDIA FLYOUTS PRO
+Aplikasi ini gratis. Lima fitur adalah Pro: visualizer audio, mixer volume per aplikasi, baterai periferal (widget, flyout, dan peringatan baterai lemah), gaya Sedang Diputar, dan opsi widget media. Yang lain gratis selamanya. Setiap instalasi baru mendapat uji coba Pro 15 hari; setelah itu pembelian sekali MediaFlyouts Pro (sekitar Rp 39.000, ditampilkan dalam mata uang Anda) membukanya selamanya di semua PC Anda. Tanpa langganan. Jika Anda membeli Media Flyouts saat masih berbayar, Anda sudah memiliki Pro.""",
+    PrivacyHeading="PRIVASI",
+    ReleaseNotes="""- Media Flyouts kini gratis. Lima fitur lanjutan menjadi MediaFlyouts Pro, pembelian sekali, dengan uji coba 15 hari untuk setiap instalasi baru. Pernah membeli versi berbayar? Anda sudah memiliki Pro, tidak ada yang berubah.
+- Ikon Pro. Pengguna Pro melihat tanda Pro di baki, bingkai jendela, dan dasbor. Dua gaya di Pengaturan Tambahan > Ikon Pro.
+- Kunci lebih jelas. Sakelar redup dengan lencana PRO menandai fitur Pro; kontrol yang bergantung padanya ikut dinonaktifkan.""",
     Features=[
         "Flyout media bergaya Fluent dengan sampul album, bilah pencarian, ulangi, dan acak",
         "Flyout volume yang menggantikan overlay Windows, dengan mixer per aplikasi",
@@ -415,9 +433,12 @@ Bluetooth、Bluetooth LE、Google Fast Pair、DualSense、Razer、Logitech、Jab
 アカウント不要、テレメトリなし、広告なし。ネットワーク通信は任意の更新チェックのみです。設定はローカル ファイルに保存され、エクスポート、インポート、削除が自由にできます。
 
 Media Flyouts はトレイに常駐し、必要なら Windows と一緒に起動します。トレイ アイコンからダッシュボードを開いて、各フライアウトの位置、表示時間、モニターを設定できます。""",
-    ReleaseNotes="""- 11 言語に対応。英語、スペイン語、簡体字中国語、日本語、ドイツ語、フランス語、韓国語、ブラジル ポルトガル語、ヒンディー語、アラビア語、インドネシア語で利用できます。Windows の表示言語に従い、追加設定 > 言語 で別の言語も選べます。再起動なしで一度に切り替わります。
-- サポート ページ。ダッシュボードに感謝を伝えるための新しいページを追加しました。寄付は任意で、機能の解除はありません。
-- 新着情報。この案内は更新後に一度だけ表示されます。バージョン情報ページからいつでも再表示できます。""",
+    Pro="""MEDIA FLYOUTS PRO
+アプリは無料です。プロ版の機能は 5 つ：オーディオビジュアライザー、アプリ別音量ミキサー、周辺機器のバッテリー（ウィジェット、フライアウト、残量低下の通知）、再生中スタイル、メディアウィジェットのオプション。それ以外はずっと無料です。新規インストールでは 15 日間プロ版をすべて試せます。その後は MediaFlyouts Pro のアプリ内買い切り（約 ¥400、お住まいの通貨で表示）で、同じアカウントのすべての PC で永久に利用できます。サブスクリプションはありません。有料アプリだった頃に Media Flyouts を購入した方は、すでにプロ版をお持ちです。""",
+    PrivacyHeading="プライバシー",
+    ReleaseNotes="""- Media Flyouts は無料になりました。高度な 5 機能はプロ版（MediaFlyouts Pro、買い切り）となり、新規インストールには 15 日間の試用が付きます。有料版を購入済みの方はすでにプロ版をお持ちで、何も変わりません。
+- プロ版アイコン。プロ版ユーザーはトレイ、ウィンドウ枠、ダッシュボードにプロ版マークが表示されます。追加設定 > プロ版アイコンで 2 つのスタイルから選べます。
+- ロック表示の改善。PRO バッジ付きのグレーのスイッチがプロ版機能を示し、それに依存する設定も無効になります。""",
     Features=[
         "アルバム アート、シークバー、リピート、シャッフル付きの Fluent スタイル メディア フライアウト",
         "Windows のオーバーレイを置き換える音量フライアウトとアプリ別ミキサー",
@@ -473,9 +494,12 @@ Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech, Jabra를 
 계정 없음, 원격 분석 없음, 광고 없음. 유일한 네트워크 요청은 선택 사항인 업데이트 확인입니다. 설정은 내보내기, 가져오기, 삭제할 수 있는 로컬 파일에 저장됩니다.
 
 Media Flyouts는 트레이에서 실행되며 원하면 Windows와 함께 시작합니다. 트레이 아이콘에서 대시보드를 열어 모든 플라이아웃의 위치, 표시 시간, 모니터를 설정하세요.""",
-    ReleaseNotes="""- 11개 언어. Media Flyouts가 이제 영어, 스페인어, 중국어 간체, 일본어, 독일어, 프랑스어, 한국어, 브라질 포르투갈어, 힌디어, 아랍어, 인도네시아어를 지원합니다. Windows 표시 언어를 따르며 추가 설정 > 언어에서 다른 언어를 고를 수 있습니다. 다시 시작 없이 한 번에 전환됩니다.
-- 후원 페이지. 감사를 전할 수 있는 새 대시보드 페이지입니다. 기부는 자발적이며 어떤 기능도 잠금 해제하지 않습니다.
-- 새로운 기능. 이 안내는 업데이트 후 한 번만 표시됩니다. 정보 페이지에서 언제든 다시 볼 수 있습니다.""",
+    Pro="""MEDIA FLYOUTS PRO
+앱은 무료입니다. 프로 기능은 다섯 가지입니다: 오디오 시각화, 앱별 볼륨 믹서, 주변기기 배터리(위젯, 플라이아웃, 배터리 부족 알림), 지금 재생 중 스타일, 미디어 위젯 옵션. 나머지는 영구 무료입니다. 새로 설치하면 15일 동안 프로를 체험할 수 있고, 이후 MediaFlyouts Pro를 앱 내에서 1회 구매(약 ₩3,500, 현지 통화로 표시)하면 같은 계정의 모든 PC에서 영구히 사용할 수 있습니다. 구독 없음. 유료 앱이던 시절에 Media Flyouts를 구매했다면 이미 프로를 보유하고 있습니다.""",
+    PrivacyHeading="개인정보",
+    ReleaseNotes="""- Media Flyouts가 무료가 되었습니다. 고급 기능 다섯 가지는 1회 구매 상품인 MediaFlyouts Pro가 되며, 새 설치마다 15일 체험이 제공됩니다. 유료 앱을 구매하셨다면 이미 프로를 보유하고 있으며 달라지는 것은 없습니다.
+- 프로 아이콘. 프로 사용자는 트레이, 창 테두리, 대시보드에서 프로 마크를 봅니다. 추가 설정 > 프로 아이콘에서 두 가지 스타일 중 선택할 수 있습니다.
+- 더 명확한 잠금. PRO 배지가 붙은 흐린 토글이 프로 기능을 표시하며, 그에 종속된 컨트롤도 함께 비활성화됩니다.""",
     Features=[
         "앨범 아트, 탐색 바, 반복, 셔플이 있는 Fluent 스타일 미디어 플라이아웃",
         "Windows 오버레이를 대체하는 볼륨 플라이아웃과 앱별 믹서",
@@ -531,9 +555,12 @@ T["zh-hans"] = dict(
 无账户、无遥测、无广告。唯一的网络请求是可选的更新检查。设置保存在本地文件中，可随时导出、导入或删除。
 
 Media Flyouts 常驻托盘，可随 Windows 启动。通过托盘图标打开仪表板，配置每个弹出面板的位置、时长和显示器。""",
-    ReleaseNotes="""- 十一种语言。Media Flyouts 现已支持英语、西班牙语、简体中文、日语、德语、法语、韩语、巴西葡萄牙语、印地语、阿拉伯语和印尼语。默认跟随 Windows 显示语言；可在 其他设置 > 语言 中另选。所有界面同时切换，无需重启。
-- 支持页面。仪表板新增一个页面，提供表达感谢的方式。捐赠完全自愿，不会解锁任何功能。
-- 新功能。此说明在每次更新后显示一次，随时可在关于页面再次查看。""",
+    Pro="""MEDIA FLYOUTS PRO
+应用免费。五项功能属于专业版：音频可视化、按应用音量混音器、外设电量（小组件、弹出面板和低电量提醒）、正在播放样式以及媒体小组件选项。其余功能永久免费。每次全新安装可免费试用专业版 15 天；之后通过应用内一次性购买 MediaFlyouts Pro（约 ¥18，按您所在地区货币显示）即可在同一账户的所有电脑上永久解锁。无订阅。若您在 Media Flyouts 付费时期购买过，则已拥有专业版。""",
+    PrivacyHeading="隐私",
+    ReleaseNotes="""- Media Flyouts 现已免费。五项高级功能成为一次性购买的 MediaFlyouts Pro，每次全新安装可试用 15 天。此前购买过付费版？您已拥有专业版，一切照旧。
+- 专业版图标。专业版用户会在托盘、窗口边框和仪表板中看到专业版标志。可在其他设置 > 专业版图标中选择两种样式。
+- 更清晰的锁定提示。带 PRO 徽标的灰色开关表示专业版功能，依赖它的控件也会一并禁用。""",
     Features=[
         "带专辑封面、进度条、重复和随机播放的 Fluent 风格媒体弹出面板",
         "取代 Windows 叠加层的音量弹出面板，含按应用混音器",
@@ -589,9 +616,12 @@ Bluetooth, Bluetooth LE, Google Fast Pair, DualSense, Razer, Logitech और Jab
 कोई खाता नहीं, कोई टेलीमेट्री नहीं, कोई विज्ञापन नहीं। एकमात्र नेटवर्क अनुरोध वैकल्पिक अपडेट जाँच है। सेटिंग्स एक स्थानीय फ़ाइल में रहती हैं जिसे आप निर्यात, आयात या हटा सकते हैं।
 
 Media Flyouts ट्रे में चलता है और चाहें तो Windows के साथ शुरू होता है। हर फ्लाईआउट की स्थिति, अवधि और मॉनिटर सेट करने के लिए ट्रे आइकन से डैशबोर्ड खोलें।""",
-    ReleaseNotes="""- ग्यारह भाषाएँ। Media Flyouts अब अंग्रेज़ी, स्पेनिश, सरलीकृत चीनी, जापानी, जर्मन, फ़्रेंच, कोरियाई, ब्राज़ीलियाई पुर्तगाली, हिंदी, अरबी और इंडोनेशियाई में उपलब्ध है। यह Windows की प्रदर्शन भाषा का अनुसरण करता है; अतिरिक्त सेटिंग्स > भाषा में दूसरी चुनें। सब कुछ एक साथ बदलता है, बिना रीस्टार्ट के।
-- सहयोग पेज। डैशबोर्ड में धन्यवाद कहने के तरीकों वाला नया पेज। दान स्वैच्छिक है और इससे कुछ भी अनलॉक नहीं होता।
-- नया क्या है। यह नोट हर अपडेट के बाद एक बार दिखता है। इसे कभी भी परिचय पेज पर फिर से देखें।""",
+    Pro="""MEDIA FLYOUTS PRO
+ऐप मुफ़्त है। पाँच सुविधाएँ प्रो हैं: ऑडियो विज़ुअलाइज़र, प्रति-ऐप वॉल्यूम मिक्सर, पेरिफ़ेरल बैटरी (विजेट, फ्लाईआउट और कम बैटरी सूचना), नाउ प्लेइंग शैलियाँ और मीडिया विजेट विकल्प। बाकी सब हमेशा के लिए मुफ़्त है। हर नए इंस्टॉल को 15 दिन का प्रो ट्रायल मिलता है; उसके बाद MediaFlyouts Pro की एक बार की इन-ऐप ख़रीद (₹199, आपकी मुद्रा में दिखाई जाती है) इसे आपके हर PC पर हमेशा के लिए अनलॉक कर देती है। कोई सदस्यता नहीं। यदि आपने Media Flyouts को सशुल्क ऐप रहते हुए ख़रीदा था, तो प्रो आपके पास पहले से है।""",
+    PrivacyHeading="गोपनीयता",
+    ReleaseNotes="""- Media Flyouts अब मुफ़्त है। पाँच उन्नत सुविधाएँ MediaFlyouts Pro बन गई हैं, जो एक बार की ख़रीद है, और हर नए इंस्टॉल को 15 दिन का ट्रायल मिलता है। पहले सशुल्क ऐप ख़रीदा था? प्रो आपके पास पहले से है, आपके लिए कुछ नहीं बदलता।
+- प्रो आइकन। प्रो उपयोगकर्ताओं को ट्रे, विंडो फ़्रेम और डैशबोर्ड में प्रो चिह्न दिखता है। अतिरिक्त सेटिंग्स > प्रो आइकन में दो शैलियों में से चुनें।
+- स्पष्ट लॉक। PRO बैज वाला धुँधला टॉगल प्रो सुविधा दर्शाता है; उस पर निर्भर नियंत्रण भी अक्षम हो जाते हैं।""",
     Features=[
         "एल्बम आर्ट, सीकबार, रिपीट और शफल के साथ Fluent शैली का मीडिया फ्लाईआउट",
         "Windows ओवरले की जगह लेने वाला वॉल्यूम फ्लाईआउट, प्रति-ऐप मिक्सर के साथ",
@@ -647,9 +677,12 @@ T["ar"] = dict(
 لا حساب ولا قياس عن بُعد ولا إعلانات. طلب الشبكة الوحيد هو فحص اختياري للتحديثات. تبقى الإعدادات في ملف محلي يمكنك تصديره أو استيراده أو حذفه.
 
 يعمل Media Flyouts في علبة النظام ويبدأ مع Windows إن أردت. افتح لوحة التحكم من أيقونة علبة النظام لضبط موضع كل نافذة ومدتها وشاشتها.""",
-    ReleaseNotes="""- إحدى عشرة لغة. يتحدث Media Flyouts الآن الإنجليزية والإسبانية والصينية المبسطة واليابانية والألمانية والفرنسية والكورية والبرتغالية البرازيلية والهندية والعربية والإندونيسية. يتبع لغة عرض Windows؛ اختر لغة أخرى من الإعدادات الإضافية > اللغة. يتغير كل شيء دفعة واحدة دون إعادة تشغيل.
-- صفحة الدعم. صفحة جديدة في لوحة التحكم تضم طرقًا لقول شكرًا. التبرعات طوعية ولا تفتح أي ميزات.
-- ما الجديد. تظهر هذه الملاحظة مرة واحدة بعد كل تحديث. يمكنك العودة إليها في أي وقت من صفحة حول.""",
+    Pro="""MEDIA FLYOUTS PRO
+التطبيق مجاني. خمس ميزات هي برو: مصوّر الصوت، وخلاط الصوت لكل تطبيق، وبطارية الأجهزة الطرفية (الأداة والنافذة وتنبيه انخفاض البطارية)، وأنماط «قيد التشغيل»، وخيارات أداة الوسائط. كل ما عدا ذلك مجاني للأبد. كل تثبيت جديد يحصل على تجربة برو لمدة 15 يومًا؛ بعدها يفتح شراء MediaFlyouts Pro لمرة واحدة داخل التطبيق (نحو 9,99 ر.س، يُعرض بعملتك) كل شيء للأبد على جميع أجهزتك. بلا اشتراك. إذا اشتريت Media Flyouts عندما كان تطبيقًا مدفوعًا فأنت تملك برو بالفعل.""",
+    PrivacyHeading="الخصوصية",
+    ReleaseNotes="""- أصبح Media Flyouts مجانيًا. خمس ميزات متقدمة أصبحت MediaFlyouts Pro، شراء لمرة واحدة، مع تجربة 15 يومًا لكل تثبيت جديد. هل اشتريت التطبيق المدفوع؟ أنت تملك برو بالفعل ولا يتغير شيء لديك.
+- أيقونة برو. يرى مستخدمو برو علامة برو في علبة النظام وإطارات النوافذ ولوحة التحكم. نمطان في الإعدادات الإضافية > أيقونة برو.
+- أقفال أوضح. مفتاح باهت مع شارة PRO يشير إلى ميزة برو، وتُعطَّل معه عناصر التحكم التي تعتمد عليها.""",
     Features=[
         "نافذة وسائط بنمط Fluent مع صورة الألبوم وشريط التقدم والتكرار والخلط",
         "نافذة صوت تحل محل طبقة Windows، مع خلاط لكل تطبيق",
@@ -682,7 +715,12 @@ COPYRIGHT = "© 2026 ScleaverZer0ne. All rights reserved."
 
 def value_for(field: str, lang: str) -> str | None:
     t = T[lang]
-    if field in ("Title", "ShortDescription", "Description", "ReleaseNotes"):
+    if field == "Description":
+        # The Pro section sits before the privacy section (Store policy 10.8.4).
+        anchor = "\n" + t["PrivacyHeading"] + "\n"
+        assert anchor in t["Description"], lang
+        return t["Description"].replace(anchor, "\n" + t["Pro"] + "\n" + anchor, 1)
+    if field in ("Title", "ShortDescription", "ReleaseNotes"):
         return t[field]
     if field == "DevStudio":
         return DEV_STUDIO
@@ -753,8 +791,9 @@ problems = []
 for lang in LANGS:
     t = T[lang]
     for k in ("Title", "ShortDescription", "Description", "ReleaseNotes"):
-        if len(t[k]) > LIMITS[k]:
-            problems.append(f"{lang} {k}: {len(t[k])} > {LIMITS[k]}")
+        n = len(value_for(k, lang))
+        if n > LIMITS[k]:
+            problems.append(f"{lang} {k}: {n} > {LIMITS[k]}")
     for k, lim in (("Features", 200), ("Captions", 200), ("SearchTerms", 30)):
         for i, s in enumerate(t[k], 1):
             if len(s) > lim:

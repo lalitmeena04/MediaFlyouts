@@ -354,13 +354,25 @@ installed copy to the flight.
    Anyone who *buys* the paid app before the cutover is grandfathered; anyone
    who installs the free app before it gets Pro too. The margin protects the
    buyers, that is the right trade.
-2. Set `PRO_ADDON_STORE_ID` (and tips). Tag and build as usual.
-3. In the same submission change the price to **Free** and upload the MSIX.
+2. Set `PRO_ADDON_STORE_ID` (`9PM4LNF0XX1M`; tips are optional and can follow
+   in a later release). Check the workflow's configure log says
+   `MediaFlyouts Pro gating: cutover ...`. Tag and build as usual.
+3. In the same submission change the price to **Free**, upload the MSIX, and
+   import `tools/store/import/` (the Description now carries the
+   MEDIA FLYOUTS PRO section that policy 10.8.4 requires, and the 2.0.0
+   release notes). In the submission notes declare the in-app purchase and
+   the external donation link (policy 10.8.2).
 4. Choose **publish manually** on the submission. When certification passes,
    publish inside the 72 h window. If it slips past the window, rebuild with a
    later cutover and resubmit; never publish a binary whose cutover is in the
    past relative to real purchases.
-5. Watch the first week's error reports and logs for `store:` HRESULTs.
+5. Within the same hour, flip the add-on's **Pricing and availability →
+   Visibility** to *Public audience* (an add-on-only submission; no app
+   package needed). Until then the Home card shows the price but a purchase
+   fails for anyone outside the test group.
+6. Watch the first week's error reports and logs for `store:` HRESULTs, and
+   check the first new-user trial log (`source=storeTrial`, 15 days from
+   their `acquired=`), the one path a pre-cutover account cannot exercise.
 
 ### Verifying a Store build
 
