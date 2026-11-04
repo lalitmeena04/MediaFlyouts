@@ -168,6 +168,68 @@ TEST_F(EntitlementControllerTest, StartAsksTheStoreAndMarksRefreshing) {
     EXPECT_TRUE(c->refreshing());
     gateway.answer(storeAnswer(kNow.addDays(-1)));
     EXPECT_FALSE(c->refreshing());
+    EXPECT_EQ(c->retryDelayMinutes(), 0);
+}
+
+// First launch after logon, before the network is up: the licence reads but
+// the product query fails. The app must ask again instead of running out
+// the local trial on a buyer.
+TEST_F(EntitlementControllerTest, IndecisiveStoreAnswerIsRetriedWithBackoff) {
+    FakeStoreGateway gateway;
+    auto c = make(InstallKind::Store, gatedConfig(), &gateway);
+    c->start();
+    StoreSnapshot offline;
+    offline.available = true;
+    offline.appLicenseActive = true;
+    gateway.answer(offline);
+    // start() already granted the local trial and cached it; the answer re-reads that cache.
+    EXPECT_TRUE(c->isTrial());
+    EXPECT_EQ(c->sourceId(), QStringLiteral("cached"));
+    EXPECT_EQ(c->retryDelayMinutes(), 1);
+
+    c->reevaluate();
+    EXPECT_EQ(gateway.refreshCalls, 2);
+    gateway.answer(offline);
+    EXPECT_EQ(c->retryDelayMinutes(), 5);
+    c->reevaluate();
+    gateway.answer(offline);
+    EXPECT_EQ(c->retryDelayMinutes(), 15);
+    c->reevaluate();
+    gateway.answer(offline);
+    EXPECT_EQ(c->retryDelayMinutes(), 60);
+    c->reevaluate();
+    gateway.answer(offline);
+    EXPECT_EQ(c->retryDelayMinutes(), 60) << "backoff caps at the last step";
+    EXPECT_EQ(gateway.refreshCalls, 5);
+
+    // Network is back: the buyer is grandfathered and retries stop.
+    c->reevaluate();
+    gateway.answer(storeAnswer(QDateTime(QDate(2025, 3, 1), QTime(0, 0), QTimeZone::UTC)));
+    EXPECT_EQ(c->sourceId(), QStringLiteral("grandfathered"));
+    EXPECT_EQ(c->retryDelayMinutes(), 0);
+    EXPECT_EQ(store()->load().tier, Tier::Pro);
+}
+
+TEST_F(EntitlementControllerTest, SettledAnswerIsNotRetried) {
+    FakeStoreGateway gateway;
+    auto c = make(InstallKind::Store, gatedConfig(), &gateway);
+    c->start();
+    gateway.answer(storeAnswer(kNow.addDays(-1)));
+    EXPECT_EQ(gateway.refreshCalls, 1);
+    c->reevaluate();
+    EXPECT_EQ(gateway.refreshCalls, 1) << "later licence changes arrive through licensesChanged";
+}
+
+TEST_F(EntitlementControllerTest, UngatedBuildsNeverRetry) {
+    FakeStoreGateway gateway;
+    auto installer = make(InstallKind::Installer, gatedConfig(), &gateway);
+    installer->start();
+    StoreSnapshot offline;
+    offline.available = true;
+    gateway.answer(offline);
+    EXPECT_EQ(installer->retryDelayMinutes(), 0);
+    installer->reevaluate();
+    EXPECT_EQ(gateway.refreshCalls, 1);
 }
 
 TEST_F(EntitlementControllerTest, GrandfatheredUserIsProAndCached) {

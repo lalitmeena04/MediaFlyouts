@@ -1,6 +1,7 @@
 #include "EntitlementController.h"
 
 #include <algorithm>
+#include <iterator>
 
 #include <QWindow>
 
@@ -13,6 +14,9 @@ namespace {
 
 constexpr qint64 kMsPerDay = 24 * 60 * 60 * 1000;
 constexpr char kOverrideEnv[] = "MEDIAFLYOUTS_ENTITLEMENT";
+// Store retry delays after an answer that did not settle the tier, e.g. the
+// first launch after logon before the network is up. Then once a day.
+constexpr int kRetryMinutes[] = {1, 5, 15, 60};
 
 // effectiveNow moves on every call and is left out.
 bool visibleStateEquals(const mf::EntitlementState& a, const mf::EntitlementState& b) {
@@ -225,6 +229,22 @@ void EntitlementController::refresh() {
 
 void EntitlementController::reevaluate() {
     resolve();
+    // Ask the Store again while its last answer did not settle the tier.
+    // Settled users rely on OfflineLicensesChanged for later changes.
+    if(retryDelayMinutes() > 0 && !m_refreshing)
+        refresh();
+}
+
+bool EntitlementController::snapshotSettlesTier() const {
+    return m_snapshot.available && (m_snapshot.addOnLicensed || m_snapshot.acquired.isValid());
+}
+
+int EntitlementController::retryDelayMinutes() const {
+    // m_retryStep counts indecisive answers; it is only raised for gated Store installs.
+    if(m_retryStep == 0)
+        return 0;
+    const int steps = static_cast<int>(std::size(kRetryMinutes));
+    return kRetryMinutes[std::min(m_retryStep, steps) - 1];
 }
 
 std::optional<Tier> EntitlementController::parseOverride(const QString& value) {
@@ -242,6 +262,13 @@ QString EntitlementController::overrideEnvironmentVariable() {
 void EntitlementController::onSnapshot(const StoreSnapshot& snapshot) {
     m_refreshing = false;
     m_snapshot = snapshot;
+    if(snapshotSettlesTier()) {
+        m_retryStep = 0;
+    } else if(gatingEnabled() && m_install == mf::InstallKind::Store) {
+        ++m_retryStep;
+        TRC_WARN("entitlement: store answer did not settle the tier (available={} error='{}'), retry in {} min",
+                 snapshot.available, snapshot.error.toStdString(), retryDelayMinutes());
+    }
     resolve();
     // Price or availability may change without the tier moving.
     emit changed();
@@ -298,9 +325,11 @@ void EntitlementController::resolve() {
 }
 
 void EntitlementController::scheduleReevaluation() {
-    // Wake at the trial end, else once a day.
+    // Wake at the trial end, at the next Store retry, else once a day.
     qint64 ms = kMsPerDay;
     if(m_state.tier == Tier::Trial && m_state.trialEnd.isValid() && m_state.effectiveNow.isValid())
         ms = std::clamp<qint64>(m_state.effectiveNow.msecsTo(m_state.trialEnd) + 1000, 1000, kMsPerDay);
+    if(const int retry = retryDelayMinutes(); retry > 0)
+        ms = std::min<qint64>(ms, static_cast<qint64>(retry) * 60 * 1000);
     m_reevaluate.start(static_cast<int>(ms));
 }

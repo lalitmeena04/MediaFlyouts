@@ -5,6 +5,15 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Store retry.** An indecisive Store answer (licence read, product query
+  failed; typical right after logon before the network is up) left the app
+  in the 15-day local trial without ever asking the Store again while it kept
+  running. A buyer with a long-running session could have lost Pro at day 15
+  until a restart. `EntitlementController` now retries after 1, 5, 15 and
+  then every 60 minutes until the answer settles the tier.
+
 ## [1.7.0] — 2026-11-02
 
 Eleven languages with a runtime switch, a Support page for donations, and the

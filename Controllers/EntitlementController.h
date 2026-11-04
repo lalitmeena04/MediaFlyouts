@@ -89,7 +89,11 @@ class EntitlementController : public QObject {
         Q_INVOKABLE void purchase(QObject* ownerWindow = nullptr);
         Q_INVOKABLE void purchaseAddOn(const QString& storeId, QObject* ownerWindow = nullptr);
         Q_INVOKABLE void refresh();
+        // Re-resolves from the current snapshot. Asks the Store again while
+        // the last answer did not settle the tier, with a growing delay.
         void reevaluate();
+        // Minutes until the next Store retry, for tests. 0 when none is due.
+        int retryDelayMinutes() const;
 
         static std::optional<mf::Tier> parseOverride(const QString& value);
         static QString overrideEnvironmentVariable();
@@ -101,6 +105,7 @@ class EntitlementController : public QObject {
     private:
         void resolve();
         void scheduleReevaluation();
+        bool snapshotSettlesTier() const;
         void onSnapshot(const StoreSnapshot& snapshot);
         void onGatewayPurchaseFinished(const QString& storeId, bool ok, const QString& statusId);
         bool beginPurchase(const QString& storeId, QObject* ownerWindow);
@@ -116,6 +121,8 @@ class EntitlementController : public QObject {
         StoreSnapshot m_snapshot;
         mf::EntitlementState m_state;
         QTimer m_reevaluate;
+        // Index into the retry backoff table. Reset by a settling answer.
+        int m_retryStep = 0;
         bool m_started = false;
         bool m_refreshing = false;
         bool m_purchasing = false;

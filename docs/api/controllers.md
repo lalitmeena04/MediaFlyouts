@@ -116,7 +116,10 @@ The `entitlement` context property: the Pro paywall seen from QML (see
 feeds `mf::resolveEntitlement` with the install kind, the Store answer
 (`StoreSnapshot`) and the cached state, persists the result through
 `EntitlementStore`, and re-resolves at the trial end (and daily) so the UI
-flips without a restart.
+flips without a restart. A Store answer that settles nothing (no add-on, no
+acquisition date; typically the first launch after logon before the network
+is up) is retried after 1, 5, 15, then 60 minutes, so a buyer is recognised
+without a restart instead of running out the local trial.
 
 - `tier` / `source` / `unlocked` / `isPro` / `isTrial` / `trialDaysLeft`, plus
   `gatingEnabled`, `storeAvailable`, `canPurchase`, `price`, `purchasing`,
