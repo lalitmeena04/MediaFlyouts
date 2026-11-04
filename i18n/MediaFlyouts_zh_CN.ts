@@ -1880,8 +1880,20 @@ Unavailable: %1</source>
         <translation>Microsoft Store 无法完成购买。请稍后重试。</translation>
     </message>
     <message>
+        <source>No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.</source>
+        <translation>未在此 Microsoft 账户中找到专业版许可证。请使用购买本应用的账户登录 Microsoft Store，然后重试。</translation>
+    </message>
+    <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
         <translation>专业版可解锁音频可视化、按应用混音器、外设电量、正在播放样式以及媒体小组件选项。</translation>
+    </message>
+    <message>
+        <source>Checking with the Microsoft Store…</source>
+        <translation>正在向 Microsoft Store 核对…</translation>
+    </message>
+    <message>
+        <source>Already bought MediaFlyouts? Check your license</source>
+        <translation>已购买 Media Flyouts？检查许可证</translation>
     </message>
 </context>
 <context>

@@ -1880,8 +1880,20 @@ No disponible: %1</translation>
         <translation>Microsoft Store no pudo completar la compra. Inténtalo más tarde.</translation>
     </message>
     <message>
+        <source>No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.</source>
+        <translation>No se encontró una licencia Pro para esta cuenta de Microsoft. Inicia sesión en Microsoft Store con la cuenta que compró la aplicación e inténtalo de nuevo.</translation>
+    </message>
+    <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
         <translation>Pro desbloquea el visualizador de audio, el mezclador por aplicación, la batería de periféricos, los estilos de Now Playing y las opciones del widget multimedia.</translation>
+    </message>
+    <message>
+        <source>Checking with the Microsoft Store…</source>
+        <translation>Comprobando con Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Already bought MediaFlyouts? Check your license</source>
+        <translation>¿Ya compraste MediaFlyouts? Comprobar la licencia</translation>
     </message>
 </context>
 <context>

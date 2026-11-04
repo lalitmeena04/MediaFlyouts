@@ -1880,8 +1880,20 @@ Unavailable: %1</source>
         <translation>Microsoft Store खरीद पूरी नहीं कर सका। बाद में पुनः प्रयास करें।</translation>
     </message>
     <message>
+        <source>No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.</source>
+        <translation>इस Microsoft खाते के लिए कोई प्रो लाइसेंस नहीं मिला। जिस खाते से ऐप ख़रीदा था उसी से Microsoft Store में साइन इन करें, फिर दोबारा कोशिश करें।</translation>
+    </message>
+    <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
         <translation>प्रो ऑडियो विज़ुअलाइज़र, प्रति-ऐप मिक्सर, पेरिफ़ेरल बैटरी, नाउ प्लेइंग शैलियाँ और मीडिया विजेट विकल्प अनलॉक करता है।</translation>
+    </message>
+    <message>
+        <source>Checking with the Microsoft Store…</source>
+        <translation>Microsoft Store से जाँच हो रही है…</translation>
+    </message>
+    <message>
+        <source>Already bought MediaFlyouts? Check your license</source>
+        <translation>MediaFlyouts पहले ही ख़रीदा है? लाइसेंस जाँचें</translation>
     </message>
 </context>
 <context>

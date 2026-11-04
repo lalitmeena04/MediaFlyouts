@@ -65,7 +65,12 @@ properties and QML binds to their properties/signals.
 - **UpgradeCard.qml** — home-page card shown while `entitlement.gatingEnabled
   && !entitlement.isPro`. Shows the trial days left or "trial ended", the
   localized price, and maps `purchaseFinished` status ids to text. The whole
-  card is clickable and calls `entitlement.purchase(ownerWindow)`.
+  card is clickable and calls `entitlement.purchase(ownerWindow)`. A link at
+  the bottom ("Already bought MediaFlyouts? Check your license") calls
+  `entitlement.refresh()` for buyers the Store has not recognised yet; it
+  tracks `entitlement.refreshing` and reports a miss in words. The content
+  row sits at `z: 1` so the link receives its own clicks above the card-wide
+  purchase MouseArea.
 - **SupportPage.qml** — the Dashboard **Support** page. Shows the donation
   page link, and depending on `donate.showDirect` / `donate.showStoreTips`
   either the UPI QR + NEFT details with Copy buttons, or the Store tip

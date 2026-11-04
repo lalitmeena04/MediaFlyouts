@@ -1057,6 +1057,13 @@ TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
     for(const char* status : {"succeeded", "alreadyPurchased", "notPurchased", "networkError", "unavailable",
                               "notConfigured", "busy"})
         expectContains(card, QStringLiteral("case \"%1\"").arg(QLatin1String(status)));
+    // A buyer the Store has not recognised yet can ask for a licence check by hand.
+    expectContains(card, QStringLiteral("entitlement.refresh()"));
+    expectContains(card, QStringLiteral("readonly property bool canCheckLicense: entitlement.storeAvailable"));
+    expectContains(card, QStringLiteral("if(!card.checkingLicense || entitlement.refreshing)"));
+    expectContains(card, QStringLiteral("onClicked: card.checkLicense()"));
+    // The link sits above the card-wide purchase MouseArea.
+    expectContains(card, QStringLiteral("        z: 1"));
 
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("UpgradeCard {"));

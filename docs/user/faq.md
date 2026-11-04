@@ -44,8 +44,9 @@ No. If your Microsoft account acquired the app before it became free, you have
 Pro for good on every PC where you sign in with that account. The app reads
 this from the Store; nothing to enter. If the Home page still shows an upgrade
 card, make sure you are signed in to the Microsoft Store app and online, then
-restart MediaFlyouts. Still wrong? **Report a Bug** with an error report; the
-log shows what the Store answered.
+click **Already bought MediaFlyouts? Check your license** on the card (the app
+also retries on its own). Still wrong? **Report a Bug** with an error report;
+the log shows what the Store answered.
 
 ## My trial ended and some features switched off
 Every new Store install gets 15 days of Pro, counted from the day your account

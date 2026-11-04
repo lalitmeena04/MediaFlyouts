@@ -1,13 +1,16 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// Home page card. The whole card starts the Pro purchase.
+// Home page card. The whole card starts the Pro purchase; the link at the
+// bottom re-reads the licence for buyers the Store has not recognised yet.
 Rectangle {
     id: card
     property var ownerWindow: null
     property string statusText: ""
+    property bool checkingLicense: false
 
     readonly property bool clickable: entitlement.canPurchase
+    readonly property bool canCheckLicense: entitlement.storeAvailable && !entitlement.purchasing
     visible: entitlement.gatingEnabled && !entitlement.isPro
     width: parent ? parent.width : 400
     height: visible ? content.implicitHeight + 36 : 0
@@ -38,16 +41,34 @@ Rectangle {
         return qsTr("The Microsoft Store could not complete the purchase. Try again later.")
     }
 
+    function checkLicense() {
+        if(!card.canCheckLicense || card.checkingLicense)
+            return
+        card.statusText = ""
+        card.checkingLicense = true
+        entitlement.refresh()
+    }
+
     Connections {
         target: entitlement
         function onPurchaseFinished(ok, statusId, storeId) {
             if(storeId === entitlement.proAddOnStoreId)
                 card.statusText = card.statusMessage(statusId)
         }
+        function onChanged() {
+            if(!card.checkingLicense || entitlement.refreshing)
+                return
+            card.checkingLicense = false
+            // A Pro answer hides the card; only the miss needs words.
+            if(!entitlement.isPro)
+                card.statusText = qsTr("No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.")
+        }
     }
 
     Row {
         id: content
+        // Above the purchase MouseArea, so the license link gets its own clicks.
+        z: 1
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
@@ -105,6 +126,27 @@ Rectangle {
                 color: theme.textTertiary
                 font.pixelSize: 12
                 wrapMode: Text.WordWrap
+            }
+            Text {
+                id: licenseLink
+                visible: card.canCheckLicense
+                width: parent.width
+                text: card.checkingLicense ? qsTr("Checking with the Microsoft Store…")
+                                           : qsTr("Already bought MediaFlyouts? Check your license")
+                color: card.checkingLicense ? theme.textTertiary : theme.textSecondary
+                font.pixelSize: 12
+                font.underline: !card.checkingLicense && linkMouse.containsMouse
+                wrapMode: Text.WordWrap
+                topPadding: 2
+
+                MouseArea {
+                    id: linkMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    enabled: !card.checkingLicense
+                    cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    onClicked: card.checkLicense()
+                }
             }
         }
     }

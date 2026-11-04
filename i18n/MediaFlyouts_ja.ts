@@ -1880,8 +1880,20 @@ Unavailable: %1</source>
         <translation>Microsoft Store で購入を完了できませんでした。後でもう一度お試しください。</translation>
     </message>
     <message>
+        <source>No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.</source>
+        <translation>この Microsoft アカウントにプロ版のライセンスが見つかりません。アプリを購入したアカウントで Microsoft Store にサインインしてから、もう一度お試しください。</translation>
+    </message>
+    <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
         <translation>プロ版では、オーディオビジュアライザー、アプリ別ミキサー、周辺機器のバッテリー、再生中スタイル、メディアウィジェットのオプションが利用できます。</translation>
+    </message>
+    <message>
+        <source>Checking with the Microsoft Store…</source>
+        <translation>Microsoft Store に確認しています…</translation>
+    </message>
+    <message>
+        <source>Already bought MediaFlyouts? Check your license</source>
+        <translation>MediaFlyouts を購入済みですか？ライセンスを確認</translation>
     </message>
 </context>
 <context>

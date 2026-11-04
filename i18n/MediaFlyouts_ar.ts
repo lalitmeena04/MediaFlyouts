@@ -1880,8 +1880,20 @@ Unavailable: %1</source>
         <translation>تعذر على Microsoft Store إتمام عملية الشراء. حاول مرة أخرى لاحقًا.</translation>
     </message>
     <message>
+        <source>No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.</source>
+        <translation>لم يُعثر على ترخيص برو لهذا الحساب. سجّل الدخول إلى Microsoft Store بالحساب الذي اشترى التطبيق ثم أعد المحاولة.</translation>
+    </message>
+    <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
         <translation>يفتح برو مُصوِّر الصوت، وخلاط الصوت لكل تطبيق، وبطارية الأجهزة الطرفية، وأنماط قيد التشغيل، وخيارات أداة الوسائط.</translation>
+    </message>
+    <message>
+        <source>Checking with the Microsoft Store…</source>
+        <translation>جارٍ التحقق من Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Already bought MediaFlyouts? Check your license</source>
+        <translation>هل اشتريت MediaFlyouts من قبل؟ تحقق من الترخيص</translation>
     </message>
 </context>
 <context>

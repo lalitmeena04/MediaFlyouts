@@ -5,6 +5,13 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- **Check your license.** The Home upgrade card gains a link for buyers the
+  Store has not recognised yet: it calls `entitlement.refresh()`, shows
+  progress while `refreshing`, and reports a miss in words. A Pro answer
+  hides the card.
+
 ### Fixed
 
 - **Store retry.** An indecisive Store answer (licence read, product query

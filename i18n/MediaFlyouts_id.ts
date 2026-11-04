@@ -1880,8 +1880,20 @@ Tidak tersedia: %1</translation>
         <translation>Microsoft Store tidak dapat menyelesaikan pembelian. Coba lagi nanti.</translation>
     </message>
     <message>
+        <source>No Pro license found for this Microsoft account. Sign in to the Microsoft Store with the account that bought the app, then try again.</source>
+        <translation>Lisensi Pro tidak ditemukan untuk akun Microsoft ini. Masuk ke Microsoft Store dengan akun yang membeli aplikasi, lalu coba lagi.</translation>
+    </message>
+    <message>
         <source>Pro unlocks the audio visualizer, the per-app mixer, peripheral battery, Now Playing styles and media widget options.</source>
         <translation>Pro membuka visualizer audio, mixer per aplikasi, baterai periferal, gaya Now Playing, dan opsi widget media.</translation>
+    </message>
+    <message>
+        <source>Checking with the Microsoft Store…</source>
+        <translation>Memeriksa ke Microsoft Store…</translation>
+    </message>
+    <message>
+        <source>Already bought MediaFlyouts? Check your license</source>
+        <translation>Sudah membeli MediaFlyouts? Periksa lisensi</translation>
     </message>
 </context>
 <context>
