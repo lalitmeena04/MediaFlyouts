@@ -3,6 +3,7 @@ name: Sync issues with release repo
 on:
   issues:
     types:
+      - opened
       - edited
       - deleted
       - closed
@@ -26,8 +27,11 @@ env:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    # Only issues mirrored from the public repo carry this label.
-    if: contains(github.event.issue.labels.*.name, 'from-public')
+    # 'from-public' marks issues mirrored from the public repo.
+    # 'public' opts a private-origin issue in to be published there.
+    if: >-
+      contains(github.event.issue.labels.*.name, 'from-public') ||
+      contains(github.event.issue.labels.*.name, 'public')
     steps:
       # The sync script lives in the public repo. One copy for both sides.
       - name: Checkout sync script
