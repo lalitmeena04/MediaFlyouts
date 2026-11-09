@@ -7,6 +7,11 @@ using mf::reserveOnScreen;
 using mf::TaskbarReserve;
 using mf::TaskbarSide;
 using mf::taskbarWidgetX;
+using mf::detectTaskbarEdge;
+using mf::isHorizontalEdge;
+using mf::kDefaultTaskbarDepth;
+using mf::TaskbarEdge;
+using mf::taskbarWidgetY;
 
 namespace {
 
@@ -127,4 +132,51 @@ TEST(TaskbarLayoutTest, KeepsTheWidgetOnItsOwnScreen) {
 
     const int pushed = taskbarWidgetX(screen, TaskbarReserve{}, TaskbarSide::Left, 99999, kWidth, kMargin);
     EXPECT_LE(pushed + kWidth, screen.right() + 1);
+}
+
+// --- taskbar edge ----------------------------------------------------------
+
+TEST(TaskbarLayoutTest, EdgeFollowsTheWorkAreaGap) {
+    const QRect screen = primaryScreen();
+    EXPECT_EQ(detectTaskbarEdge(screen, QRect(0, 0, 1920, 1032), QRect()), TaskbarEdge::Bottom);
+    EXPECT_EQ(detectTaskbarEdge(screen, QRect(0, 48, 1920, 1032), QRect()), TaskbarEdge::Top);
+    EXPECT_EQ(detectTaskbarEdge(screen, QRect(62, 0, 1858, 1080), QRect()), TaskbarEdge::Left);
+    EXPECT_EQ(detectTaskbarEdge(screen, QRect(0, 0, 1858, 1080), QRect()), TaskbarEdge::Right);
+}
+
+// A docked side panel also reserves space; the taskbar is the larger gap.
+TEST(TaskbarLayoutTest, LargestGapWins) {
+    const QRect screen = primaryScreen();
+    EXPECT_EQ(detectTaskbarEdge(screen, QRect(30, 0, 1890, 1032), QRect()), TaskbarEdge::Bottom);
+    EXPECT_EQ(detectTaskbarEdge(screen, QRect(62, 0, 1858, 1050), QRect()), TaskbarEdge::Left);
+}
+
+TEST(TaskbarLayoutTest, AutoHideFallsBackToTheTaskbarWindow) {
+    const QRect screen = primaryScreen();
+    // Hidden taskbars leave a 2 px sliver on their edge; the window rect still tells the side.
+    EXPECT_EQ(detectTaskbarEdge(screen, screen, QRect(0, 1078, 1920, 48)), TaskbarEdge::Bottom);
+    EXPECT_EQ(detectTaskbarEdge(screen, screen, QRect(0, -46, 1920, 48)), TaskbarEdge::Top);
+    EXPECT_EQ(detectTaskbarEdge(screen, screen, QRect(-60, 0, 62, 1080)), TaskbarEdge::Left);
+    EXPECT_EQ(detectTaskbarEdge(screen, screen, QRect(1918, 0, 62, 1080)), TaskbarEdge::Right);
+    EXPECT_EQ(detectTaskbarEdge(screen, screen, QRect()), TaskbarEdge::Bottom);
+    // A window on another monitor says nothing about this one.
+    EXPECT_EQ(detectTaskbarEdge(screen, screen, QRect(1920, 1392, 2560, 48)), TaskbarEdge::Bottom);
+}
+
+TEST(TaskbarLayoutTest, WidgetYCentresInTheTaskbarStripOnEitherEdge) {
+    const QRect screen = primaryScreen();
+    EXPECT_EQ(taskbarWidgetY(screen, QRect(0, 0, 1920, 1032), TaskbarEdge::Bottom, 32), 1032 + 8);
+    EXPECT_EQ(taskbarWidgetY(screen, QRect(0, 48, 1920, 1032), TaskbarEdge::Top, 32), 8);
+    // Taller than the strip: pinned to the strip's top edge, never above it.
+    EXPECT_EQ(taskbarWidgetY(screen, QRect(0, 48, 1920, 1032), TaskbarEdge::Top, 60), 0);
+    // Auto-hide: no gap, assume the default depth on the detected edge.
+    EXPECT_EQ(taskbarWidgetY(screen, screen, TaskbarEdge::Top, 32), (kDefaultTaskbarDepth - 32) / 2);
+    EXPECT_EQ(taskbarWidgetY(screen, screen, TaskbarEdge::Bottom, 32), 1080 - kDefaultTaskbarDepth + (kDefaultTaskbarDepth - 32) / 2);
+}
+
+TEST(TaskbarLayoutTest, OnlyHorizontalEdgesHoldAWidget) {
+    EXPECT_TRUE(isHorizontalEdge(TaskbarEdge::Bottom));
+    EXPECT_TRUE(isHorizontalEdge(TaskbarEdge::Top));
+    EXPECT_FALSE(isHorizontalEdge(TaskbarEdge::Left));
+    EXPECT_FALSE(isHorizontalEdge(TaskbarEdge::Right));
 }

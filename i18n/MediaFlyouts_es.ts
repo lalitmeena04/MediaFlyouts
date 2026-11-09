@@ -739,6 +739,10 @@ No disponible: %1</translation>
         <translation>Cuánto tiempo permanece el panel de teclas de bloqueo en pantalla.</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>La barra de tareas de la pantalla elegida está a la izquierda o a la derecha. Los widgets necesitan una barra horizontal (arriba o abajo) y permanecen ocultos hasta que vuelva.</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>Widget de la barra de tareas</translation>
     </message>

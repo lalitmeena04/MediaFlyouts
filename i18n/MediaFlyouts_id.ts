@@ -739,6 +739,10 @@ Tidak tersedia: %1</translation>
         <translation>Berapa lama flyout tombol kunci tetap di layar.</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>Taskbar pada layar yang dipilih berada di kiri atau kanan. Widget memerlukan taskbar horizontal (atas atau bawah) dan tetap tersembunyi sampai taskbar dikembalikan.</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>Widget bilah tugas</translation>
     </message>

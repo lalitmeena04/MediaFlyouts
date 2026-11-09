@@ -24,7 +24,7 @@
 #include "Version.h"
 
 namespace {
-constexpr char kIssueUrl[] = "https://github.com/lalitmeena04/MediaFlyouts/issues/new";
+constexpr char kIssueUrl[] = "https://github.com/lalitmeena04/MediaFlyouts-Releases/issues/new";
 constexpr char kReportPrefix[] = "MediaFlyouts-report-";
 } // namespace
 

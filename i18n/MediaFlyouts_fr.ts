@@ -739,6 +739,10 @@ Indisponible : %1</translation>
         <translation>Durée d&apos;affichage du volet des touches de verrouillage.</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>La barre des tâches de l'écran choisi est à gauche ou à droite. Les widgets ont besoin d'une barre horizontale (en haut ou en bas) et restent masqués jusqu'à ce qu'elle y revienne.</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>Widget de la barre des tâches</translation>
     </message>

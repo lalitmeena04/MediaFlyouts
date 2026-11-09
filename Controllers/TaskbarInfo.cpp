@@ -200,24 +200,37 @@ mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
     return reserve;
 }
 
+mf::TaskbarEdge TaskbarInfo::edgeFor(const MonitorEntry& monitor) const {
+    const HWND taskbar = taskbarWindowForMonitor(static_cast<HMONITOR>(monitor.nativeHandle));
+    const QRect window = MonitorMapper::toLogical(monitor, nativeWindowRect(taskbar));
+    const mf::TaskbarEdge edge = mf::detectTaskbarEdge(monitor.logicalRect, monitor.availableRect, window);
+    auto& last = m_lastEdge[monitor.index];
+    if(!last.has_value() || *last != edge) {
+        TRC_INFO("taskbar edge: monitor={} edge={} available=({},{} {}x{}) window=({},{} {}x{})", monitor.index,
+                 static_cast<int>(edge), monitor.availableRect.x(), monitor.availableRect.y(),
+                 monitor.availableRect.width(), monitor.availableRect.height(), window.x(), window.y(),
+                 window.width(), window.height());
+        last = edge;
+    }
+    return edge;
+}
+
+int TaskbarInfo::taskbarEdge(int monitor) const {
+    const MonitorEntry* entry = m_monitors ? m_monitors->entry(monitor) : nullptr;
+    return static_cast<int>(entry ? edgeFor(*entry) : mf::TaskbarEdge::Bottom);
+}
+
+bool TaskbarInfo::widgetFits(int monitor) const {
+    return mf::isHorizontalEdge(static_cast<mf::TaskbarEdge>(taskbarEdge(monitor)));
+}
+
 QPoint TaskbarInfo::widgetPosition(int monitor, int side, int offset, int width, int height) const {
     const MonitorEntry* entry = m_monitors ? m_monitors->entry(monitor) : nullptr;
     if(!entry)
         return QPoint(0, 0);
 
     const QRect full = entry->logicalRect;
-    const QRect avail = entry->availableRect;
-
-    int taskbarHeight = full.bottom() - avail.bottom();
-    int taskbarTop;
-    if(taskbarHeight > 0) {
-        taskbarTop = avail.bottom() + 1;
-    } else {
-        taskbarHeight = 40;
-        taskbarTop = full.bottom() + 1 - taskbarHeight;
-    }
-    const int y = taskbarTop + qMax(0, (taskbarHeight - height) / 2);
-
+    const int y = mf::taskbarWidgetY(full, entry->availableRect, edgeFor(*entry), height);
     const int x = mf::taskbarWidgetX(full, reserveFor(*entry), static_cast<mf::TaskbarSide>(side), offset, width, 8);
     return QPoint(x, y);
 }

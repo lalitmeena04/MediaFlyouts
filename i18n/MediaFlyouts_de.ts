@@ -739,6 +739,10 @@ Nicht verfügbar: %1</translation>
         <translation>Wie lange das Feststelltasten-Flyout auf dem Bildschirm bleibt.</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>Die Taskleiste des gewählten Displays liegt links oder rechts. Die Widgets brauchen eine waagerechte Taskleiste (oben oder unten) und bleiben verborgen, bis sie zurückbewegt wird.</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>Taskleisten-Widget</translation>
     </message>

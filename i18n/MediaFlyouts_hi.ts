@@ -739,6 +739,10 @@ Unavailable: %1</source>
         <translation>लॉक कुंजी फ़्लाईआउट स्क्रीन पर कितनी देर रहे।</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>चुने गए डिस्प्ले का टास्कबार बाएँ या दाएँ है। विजेट को क्षैतिज टास्कबार (ऊपर या नीचे) चाहिए और जब तक वह वापस नहीं आता, वे छिपे रहते हैं।</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>टास्कबार विजेट</translation>
     </message>

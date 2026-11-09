@@ -9,6 +9,8 @@
 #include <QRect>
 #include <QTimer>
 
+#include <optional>
+
 #include "TaskbarLayout.h"
 
 class QWindow;
@@ -23,6 +25,10 @@ class TaskbarInfo : public QObject {
         ~TaskbarInfo() override;
 
         Q_INVOKABLE QPoint widgetPosition(int monitor, int side, int offset, int width, int height) const;
+        // mf::TaskbarEdge as int. Bottom when the monitor is unknown.
+        Q_INVOKABLE int taskbarEdge(int monitor) const;
+        // The widgets are horizontal strips; a left or right taskbar cannot hold them.
+        Q_INVOKABLE bool widgetFits(int monitor) const;
         Q_INVOKABLE void pinTopmost(QWindow* window) const;
         Q_INVOKABLE void pinAboveTaskbar(QWindow* window) const;
 
@@ -31,6 +37,7 @@ class TaskbarInfo : public QObject {
 
     private:
         mf::TaskbarReserve reserveFor(const MonitorEntry& monitor) const;
+        mf::TaskbarEdge edgeFor(const MonitorEntry& monitor) const;
 
         // The automation walk is slow. Widgets poll every 500 ms. Cache briefly.
         struct CachedReserve {
@@ -41,6 +48,8 @@ class TaskbarInfo : public QObject {
         };
         bool cacheIsFresh(const CachedReserve& entry, const MonitorEntry& monitor) const;
         mutable QHash<void*, CachedReserve> m_reserveCache;
+        // Last edge per monitor, so the log records moves only.
+        mutable QHash<int, std::optional<mf::TaskbarEdge>> m_lastEdge;
 
         const MonitorMapper* m_monitors = nullptr;
         mutable QList<QPointer<QWindow>> m_pinned;
