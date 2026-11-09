@@ -518,6 +518,16 @@ TEST(QmlContractTest, DockableWidgetOwnsSharedDockingAndBlocking) {
     expectContains(base, QStringLiteral("property bool pollActive"));
     expectContains(base, QStringLiteral("function updatePosition()"));
     expectContains(base, QStringLiteral("fullscreen.isFullscreen(base.dockMonitor)"));
+    // A left or right taskbar cannot hold the horizontal strip; the poll hides it.
+    expectContains(base, QStringLiteral("|| !taskbar.widgetFits(base.dockMonitor)"));
+}
+
+TEST(QmlContractTest, DashboardExplainsAVerticalTaskbarOnBothWidgetPages) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("property bool verticalTaskbar: false"));
+    expectContains(dashboard, QStringLiteral("mediaWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)"));
+    EXPECT_EQ(dashboard.count(QStringLiteral("visible: mediaWidgetPage.verticalTaskbar")), 2)
+        << "Media Widget and Peripheral Widget pages both carry the note";
 }
 
 TEST(QmlContractTest, WindowsRelayoutWhenTheMonitorLayoutChanges) {

@@ -739,6 +739,10 @@ Unavailable: %1</source>
         <translation>ロックキーフライアウトを画面に表示する時間。</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>選択したディスプレイのタスクバーが左または右にあります。ウィジェットには水平なタスクバー（上または下）が必要で、戻されるまで非表示のままです。</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>タスクバーウィジェット</translation>
     </message>

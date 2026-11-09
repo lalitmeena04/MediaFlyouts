@@ -73,10 +73,12 @@ Window {
         triggeredOnStart: true
         onTriggered: {
             var wasBlocked = base.blocked
+            // A horizontal strip cannot sit on a left or right taskbar.
             base.blocked = fullscreen.isLocked() || fullscreen.isFullscreen(base.dockMonitor)
+                || !taskbar.widgetFits(base.dockMonitor)
             if(wasBlocked !== base.blocked)
                 log.debug(base.logName + ".blocked changed " + wasBlocked + " -> " + base.blocked
-                    + " (monitor=" + base.dockMonitor + ")")
+                    + " (monitor=" + base.dockMonitor + " taskbarEdge=" + taskbar.taskbarEdge(base.dockMonitor) + ")")
             base.updatePosition()
         }
     }

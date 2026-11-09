@@ -739,6 +739,10 @@ Unavailable: %1</source>
         <translation>锁定键弹窗在屏幕上停留的时间。</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>所选显示器的任务栏位于左侧或右侧。小组件需要水平任务栏（顶部或底部），在任务栏移回之前将保持隐藏。</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>任务栏小组件</translation>
     </message>

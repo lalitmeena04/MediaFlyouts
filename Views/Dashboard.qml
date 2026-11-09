@@ -1275,9 +1275,39 @@ Window {
                 }
 
                 Column {
+                    id: mediaWidgetPage
                     visible: dash.currentIndex === 4
                     width: parent.width
                     spacing: 12
+
+                    // Polled: the taskbar edge has no change signal of its own.
+                    property bool verticalTaskbar: false
+                    Timer {
+                        interval: 1000
+                        running: mediaWidgetPage.visible || dash.currentIndex === 5
+                        repeat: true
+                        triggeredOnStart: true
+                        onTriggered: mediaWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)
+                    }
+
+                    Rectangle {
+                        visible: mediaWidgetPage.verticalTaskbar
+                        width: parent.width
+                        height: verticalNote.implicitHeight + 20
+                        radius: 8
+                        color: theme.card
+                        border.width: 1
+                        border.color: theme.border
+                        Text {
+                            id: verticalNote
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            wrapMode: Text.WordWrap
+                            text: qsTr("The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.")
+                            color: theme.textSecondary
+                            font.pixelSize: 12
+                        }
+                    }
 
                     SettingRow {
                         width: parent.width
@@ -1422,6 +1452,25 @@ Window {
                     visible: dash.currentIndex === 5
                     width: parent.width
                     spacing: 12
+
+                    Rectangle {
+                        visible: mediaWidgetPage.verticalTaskbar
+                        width: parent.width
+                        height: verticalNote2.implicitHeight + 20
+                        radius: 8
+                        color: theme.card
+                        border.width: 1
+                        border.color: theme.border
+                        Text {
+                            id: verticalNote2
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            wrapMode: Text.WordWrap
+                            text: verticalNote.text
+                            color: theme.textSecondary
+                            font.pixelSize: 12
+                        }
+                    }
 
                     SettingRow {
                         width: parent.width

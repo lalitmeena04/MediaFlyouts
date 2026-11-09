@@ -25,6 +25,51 @@ TaskbarReserve reserveOnScreen(const QRect& screen, TaskbarReserve reserve) {
     return reserve;
 }
 
+TaskbarEdge detectTaskbarEdge(const QRect& screen, const QRect& available, const QRect& taskbarWindow) {
+    struct Gap {
+            TaskbarEdge edge;
+            int size;
+    };
+    const Gap gaps[] = {
+        {TaskbarEdge::Bottom, screen.bottom() - available.bottom()},
+        {TaskbarEdge::Top, available.top() - screen.top()},
+        {TaskbarEdge::Left, available.left() - screen.left()},
+        {TaskbarEdge::Right, screen.right() - available.right()},
+    };
+    const Gap* best = &gaps[0];
+    for(const Gap& g : gaps)
+        if(g.size > best->size)
+            best = &g;
+    if(best->size > 0)
+        return best->edge;
+
+    // Auto-hide: the window still sits on its edge, partly off screen.
+    if(taskbarWindow.isEmpty() || !taskbarWindow.intersects(screen.adjusted(-1, -1, 1, 1)))
+        return TaskbarEdge::Bottom;
+    const QPoint c = taskbarWindow.center();
+    const QPoint s = screen.center();
+    if(taskbarWindow.width() >= taskbarWindow.height())
+        return c.y() < s.y() ? TaskbarEdge::Top : TaskbarEdge::Bottom;
+    return c.x() < s.x() ? TaskbarEdge::Left : TaskbarEdge::Right;
+}
+
+int taskbarWidgetY(const QRect& screen, const QRect& available, TaskbarEdge edge, int height) {
+    int depth;
+    int top;
+    if(edge == TaskbarEdge::Top) {
+        depth = available.top() - screen.top();
+        if(depth <= 0)
+            depth = kDefaultTaskbarDepth;
+        top = screen.top();
+    } else {
+        depth = screen.bottom() - available.bottom();
+        if(depth <= 0)
+            depth = kDefaultTaskbarDepth;
+        top = screen.bottom() + 1 - depth;
+    }
+    return top + qMax(0, (depth - height) / 2);
+}
+
 int taskbarWidgetX(const QRect& screen, const TaskbarReserve& reserve, TaskbarSide side, int offset, int width,
                    int margin) {
     int x = screen.left();

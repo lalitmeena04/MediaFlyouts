@@ -739,6 +739,10 @@ Unavailable: %1</source>
         <translation>잠금 키 플라이아웃이 화면에 유지되는 시간입니다.</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>선택한 디스플레이의 작업 표시줄이 왼쪽 또는 오른쪽에 있습니다. 위젯은 가로 작업 표시줄(위 또는 아래)이 필요하며, 되돌릴 때까지 숨겨집니다.</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>작업 표시줄 위젯</translation>
     </message>

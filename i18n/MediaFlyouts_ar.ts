@@ -739,6 +739,10 @@ Unavailable: %1</source>
         <translation>مدة بقاء نافذة مفاتيح القفل على الشاشة.</translation>
     </message>
     <message>
+        <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
+        <translation>شريط المهام في الشاشة المختارة على اليسار أو اليمين. تحتاج الأدوات إلى شريط مهام أفقي (أعلى أو أسفل) وتبقى مخفية حتى يعود.</translation>
+    </message>
+    <message>
         <source>Taskbar widget</source>
         <translation>أداة شريط المهام</translation>
     </message>
