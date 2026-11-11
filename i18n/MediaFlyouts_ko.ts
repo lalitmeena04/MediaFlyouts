@@ -138,16 +138,8 @@ Unavailable: %1</source>
         <translation>미디어 위젯</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>작업 표시줄에 고정되는 작은 재생 중 위젯입니다.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>주변기기 위젯</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>작업 표시줄에 고정되는 무선 주변기기의 배터리 링입니다.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Unavailable: %1</source>
         <translation>현재 앨범 아트의 주요 색으로 플라이아웃 강조 색을 입힙니다.</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>작업 표시줄 위젯</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>작업 표시줄에 고정된 미디어 및 주변 기기 위젯을 구성합니다.</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>플라이아웃뿐 아니라 대시보드와 다른 창에도 색을 입힙니다.</translation>
     </message>
@@ -930,10 +930,6 @@ Unavailable: %1</source>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>주변기기의 배터리 링은 &apos;주변기기 위젯&apos; 페이지에서 설정합니다.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>선택한 무선 주변기기의 배터리 위젯을 작업 표시줄에 고정합니다.</translation>
     </message>
@@ -976,10 +972,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>USB로 연결됨.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>연결 및 배터리 부족 알림은 &apos;주변기기 플라이아웃&apos; 페이지에서 설정합니다. 위젯 레이아웃(나란히 또는 스크롤 가능한 스택)은 &apos;미디어 위젯&apos; 페이지에서 설정합니다.</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

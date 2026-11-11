@@ -138,16 +138,8 @@ Nicht verfügbar: %1</translation>
         <translation>Medien-Widget</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Ein kompaktes Wiedergabe-Widget in der Taskleiste.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Peripherie-Widget</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Akkuringe für kabellose Peripheriegeräte in der Taskleiste.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Nicht verfügbar: %1</translation>
         <translation>Die Flyout-Akzente mit der Hauptfarbe des aktuellen Albumcovers einfärben.</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>Taskleisten-Widget</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Medien- und Peripherie-Widgets konfigurieren, die an die Taskleiste angedockt sind.</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>Auch das Dashboard und andere Fenster einfärben, nicht nur die Flyouts.</translation>
     </message>
@@ -930,10 +930,6 @@ Nicht verfügbar: %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Akkuringe für Peripheriegeräte werden auf der Seite „Peripherie-Widget“ eingerichtet.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Ein Akku-Widget für ausgewählte kabellose Peripheriegeräte in der Taskleiste andocken.</translation>
     </message>
@@ -976,10 +972,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Über USB angeschlossen.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Meldungen zu Verbindung und schwachem Akku werden auf der Seite „Peripherie-Flyout“ eingerichtet. Das Widget-Layout (nebeneinander oder scrollbarer Stapel) auf der Seite „Medien-Widget“.</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

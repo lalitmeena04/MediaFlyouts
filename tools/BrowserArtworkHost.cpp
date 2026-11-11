@@ -1,30 +1,17 @@
 #include <cstdio>
 #include <fcntl.h>
 #include <io.h>
-#include <thread>
+#include <windows.h>
 
 #include <QCoreApplication>
 #include <QJsonDocument>
 #include <QLocalSocket>
-#include <QMetaObject>
-#include <QQueue>
 #include <QTimer>
 #include <QtEndian>
 
 namespace {
 constexpr quint32 kMaxMessageBytes = 128 * 1024;
 constexpr int kMaxQueuedBytes = 4 * 1024 * 1024;
-
-bool readMessage(QByteArray& message) {
-    quint32 wireLength = 0;
-    if(std::fread(&wireLength, 1, sizeof(wireLength), stdin) != sizeof(wireLength))
-        return false;
-    const quint32 length = qFromLittleEndian(wireLength);
-    if(length == 0 || length > kMaxMessageBytes)
-        return false;
-    message.resize(static_cast<qsizetype>(length));
-    return std::fread(message.data(), 1, length, stdin) == length && !message.contains('\n');
-}
 
 bool writeMessage(const QByteArray& message) {
     if(message.isEmpty() || message.size() > static_cast<qsizetype>(kMaxMessageBytes))
@@ -46,21 +33,19 @@ int main(int argc, char* argv[]) {
     const QString serverName = qEnvironmentVariable("MEDIAFLYOUTS_BROWSER_ART_SERVER",
                                                      QStringLiteral("MediaFlyouts.browserArtwork"));
     QLocalSocket socket;
-    QQueue<QByteArray> pending;
-    int pendingBytes = 0;
+    socket.setReadBufferSize(kMaxMessageBytes + 1);
+    QByteArray inputBuffer;
     QByteArray responseBuffer;
 
-    const auto flushPending = [&] {
-        while(socket.state() == QLocalSocket::ConnectedState && !pending.isEmpty()) {
-            const QByteArray message = pending.head() + '\n';
-            if(socket.write(message) < 0)
-                break;
-            pendingBytes -= pending.head().size();
-            pending.dequeue();
-        }
-    };
-
-    QObject::connect(&socket, &QLocalSocket::connected, &app, flushPending);
+    QObject::connect(&socket, &QLocalSocket::disconnected, &app, [&] {
+        std::fprintf(stderr, "MediaFlyouts browser host exiting: app connection closed\n");
+        app.quit();
+    });
+    QObject::connect(&socket, &QLocalSocket::errorOccurred, &app, [&](QLocalSocket::LocalSocketError) {
+        std::fprintf(stderr, "MediaFlyouts browser host exiting: %s\n",
+                     qPrintable(socket.errorString()));
+        app.quit();
+    });
     QObject::connect(&socket, &QLocalSocket::readyRead, &app, [&] {
         responseBuffer.append(socket.readAll());
         while(true) {
@@ -69,55 +54,78 @@ int main(int argc, char* argv[]) {
                 break;
             if(end == 0 || end > kMaxMessageBytes ||
                !QJsonDocument::fromJson(responseBuffer.first(end)).isObject()) {
-                socket.abort();
+                std::fprintf(stderr, "MediaFlyouts browser host received an invalid app message\n");
+                app.exit(1);
                 return;
             }
             if(!writeMessage(responseBuffer.first(end))) {
                 std::fprintf(stderr, "MediaFlyouts browser host could not write a native message\n");
-                socket.abort();
+                app.exit(1);
                 return;
             }
             responseBuffer.remove(0, end + 1);
         }
-        if(responseBuffer.size() > static_cast<qsizetype>(kMaxMessageBytes))
-            socket.abort();
-    });
-
-    QTimer reconnect;
-    reconnect.setInterval(500);
-    QObject::connect(&reconnect, &QTimer::timeout, &app, [&] {
-        if(socket.state() == QLocalSocket::UnconnectedState)
-            socket.connectToServer(serverName);
-    });
-    reconnect.start();
-    socket.connectToServer(serverName);
-
-    std::thread inputThread([&] {
-        QByteArray message;
-        while(readMessage(message)) {
-            QMetaObject::invokeMethod(
-                &app,
-                [&socket, &pending, &pendingBytes, message = std::move(message)] {
-                    if(pendingBytes + message.size() > kMaxQueuedBytes) {
-                        std::fprintf(stderr, "MediaFlyouts browser host dropped an oversized queue\n");
-                        return;
-                    }
-                    pendingBytes += message.size();
-                    pending.enqueue(message);
-                    while(socket.state() == QLocalSocket::ConnectedState && !pending.isEmpty()) {
-                        const QByteArray framed = pending.head() + '\n';
-                        if(socket.write(framed) < 0)
-                            break;
-                        pendingBytes -= pending.head().size();
-                        pending.dequeue();
-                    }
-                },
-                Qt::QueuedConnection);
+        if(responseBuffer.size() > static_cast<qsizetype>(kMaxMessageBytes)) {
+            std::fprintf(stderr, "MediaFlyouts browser host received an oversized app message\n");
+            app.exit(1);
         }
-        QMetaObject::invokeMethod(&app, [&app] { app.quit(); }, Qt::QueuedConnection);
     });
 
-    const int result = app.exec();
-    inputThread.join();
-    return result;
+    const HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
+    QTimer inputPoll;
+    inputPoll.setInterval(25);
+    QObject::connect(&inputPoll, &QTimer::timeout, &app, [&] {
+        DWORD available = 0;
+        if(!PeekNamedPipe(input, nullptr, 0, nullptr, &available, nullptr)) {
+            const DWORD error = GetLastError();
+            if(error == ERROR_BROKEN_PIPE) {
+                std::fprintf(stderr, "MediaFlyouts browser host exiting: browser connection closed\n");
+                app.quit();
+            } else {
+                std::fprintf(stderr, "MediaFlyouts browser host could not check browser input: %lu\n", error);
+                app.exit(1);
+            }
+            return;
+        }
+        if(available == 0 || socket.state() != QLocalSocket::ConnectedState)
+            return;
+        // Read only buffered pipe bytes so app shutdown never waits for browser input.
+        char bytes[16 * 1024];
+        DWORD count = 0;
+        const DWORD length = qMin(available, static_cast<DWORD>(sizeof(bytes)));
+        if(!ReadFile(input, bytes, length, &count, nullptr)) {
+            std::fprintf(stderr, "MediaFlyouts browser host could not read browser input: %lu\n", GetLastError());
+            app.exit(1);
+            return;
+        }
+        inputBuffer.append(bytes, static_cast<qsizetype>(count));
+        while(inputBuffer.size() >= static_cast<qsizetype>(sizeof(quint32))) {
+            const quint32 messageSize =
+                qFromLittleEndian<quint32>(reinterpret_cast<const uchar*>(inputBuffer.constData()));
+            if(messageSize == 0 || messageSize > kMaxMessageBytes) {
+                std::fprintf(stderr, "MediaFlyouts browser host received an invalid browser message size\n");
+                app.exit(1);
+                return;
+            }
+            const qsizetype frameSize = sizeof(quint32) + messageSize;
+            if(inputBuffer.size() < frameSize)
+                break;
+            const QByteArray message = inputBuffer.mid(sizeof(quint32), messageSize);
+            if(message.contains('\n') || socket.bytesToWrite() + message.size() + 1 > kMaxQueuedBytes) {
+                std::fprintf(stderr, "MediaFlyouts browser host rejected an invalid or oversized browser message\n");
+                app.exit(1);
+                return;
+            }
+            if(socket.write(message + '\n') < 0) {
+                std::fprintf(stderr, "MediaFlyouts browser host could not forward a browser message\n");
+                app.exit(1);
+                return;
+            }
+            inputBuffer.remove(0, frameSize);
+        }
+    });
+    inputPoll.start();
+    QTimer::singleShot(0, &socket, [&] { socket.connectToServer(serverName); });
+
+    return app.exec();
 }

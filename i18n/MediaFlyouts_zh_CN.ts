@@ -138,16 +138,8 @@ Unavailable: %1</source>
         <translation>媒体小组件</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>停靠在任务栏上的紧凑型正在播放小组件。</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>外设小组件</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>停靠在任务栏上的无线外设电量环。</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Unavailable: %1</source>
         <translation>使用当前专辑封面的主色调为弹窗强调色着色。</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>任务栏小组件</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>配置停靠在任务栏上的媒体和外设小组件。</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>同时为仪表板和其他窗口着色，而不只是弹窗。</translation>
     </message>
@@ -930,10 +930,6 @@ Unavailable: %1</source>
         <translation>%1 像素</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>外设电量环在“外设小组件”页面中配置。</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>在任务栏上为选定的无线外设停靠电量小组件。</translation>
     </message>
@@ -976,10 +972,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>通过 USB 连接。</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>连接和低电量提示在“外设弹窗”页面中配置。小组件布局（并排或可滚动堆叠）在“媒体小组件”页面中配置。</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

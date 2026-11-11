@@ -122,7 +122,10 @@ target_link_libraries(mediaflyout_gtest PRIVATE
     GTest::gtest
     GTest::gmock
 )
-target_compile_definitions(mediaflyout_gtest PRIVATE MEDIAFLYOUTS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+target_compile_definitions(mediaflyout_gtest PRIVATE
+    MEDIAFLYOUTS_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+    MEDIAFLYOUTS_QML_IMPORT_DIR="${CMAKE_BINARY_DIR}"
+)
 if(WIN32)
     target_compile_definitions(mediaflyout_gtest PRIVATE MEDIAFLYOUTS_BROWSER_HOST_PATH="$<TARGET_FILE:MediaFlyoutsBrowserHost>")
     add_dependencies(mediaflyout_gtest MediaFlyoutsBrowserHost)

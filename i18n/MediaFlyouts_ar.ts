@@ -138,16 +138,8 @@ Unavailable: %1</source>
         <translation>أداة الوسائط</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>أداة مدمجة لعرض ما يتم تشغيله، مثبّتة على شريط المهام.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>أداة الأجهزة الطرفية</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>حلقات بطارية لأجهزتك الطرفية اللاسلكية، مثبّتة على شريط المهام.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Unavailable: %1</source>
         <translation>تلوين عناصر التمييز في النافذة باللون السائد في غلاف الألبوم الحالي.</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>أداة شريط المهام</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>إعداد أدوات الوسائط والأجهزة الطرفية المثبتة على شريط المهام.</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>تلوين لوحة التحكم والنوافذ الأخرى أيضًا، وليس النوافذ المنبثقة فقط.</translation>
     </message>
@@ -930,10 +930,6 @@ Unavailable: %1</source>
         <translation>%1 بكسل</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>تُضبط حلقات بطارية أجهزتك الطرفية في صفحة «أداة الأجهزة الطرفية».</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>تثبيت أداة بطارية للأجهزة الطرفية اللاسلكية المحددة على شريط المهام.</translation>
     </message>
@@ -976,10 +972,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>موصول عبر USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>تُضبط تنبيهات الاتصال وانخفاض البطارية في صفحة «نافذة الأجهزة الطرفية». ويُضبط تخطيط الأداة (جنبًا إلى جنب أو مكدّس قابل للتمرير) في صفحة «أداة الوسائط».</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

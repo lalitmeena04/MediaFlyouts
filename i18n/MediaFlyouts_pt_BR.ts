@@ -138,16 +138,8 @@ Indisponível: %1</translation>
         <translation>Widget de mídia</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Um widget compacto de reprodução fixado na barra de tarefas.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Widget de periféricos</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Anéis de bateria dos seus periféricos sem fio, fixados na barra de tarefas.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Indisponível: %1</translation>
         <translation>Colorir os destaques do painel com a cor dominante da capa do álbum atual.</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>Widget da barra de tarefas</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Configure os widgets de mídia e periféricos encaixados na barra de tarefas.</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>Colorir também o painel de controle e outras janelas, não apenas os painéis.</translation>
     </message>
@@ -930,10 +930,6 @@ Indisponível: %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Os anéis de bateria dos seus periféricos são configurados na página &quot;Widget de periféricos&quot;.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Fixar um widget de bateria para os periféricos sem fio selecionados na barra de tarefas.</translation>
     </message>
@@ -976,10 +972,6 @@ Indisponível: %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Conectado por USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Os avisos de conexão e bateria fraca são configurados na página &quot;Painel de periféricos&quot;. O layout do widget (lado a lado ou pilha rolável) é configurado na página &quot;Widget de mídia&quot;.</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

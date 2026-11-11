@@ -93,12 +93,17 @@ screenshot script uses it.
 ### Browser integration extension
 
 The build stages a native messaging host and unpacked extension packages under
-`bin\browser-extensions`. In a debug build, open **Media Widget**, select a
+`bin\browser-extensions`. In a debug build, open **Taskbar Widget**, select a
 browser, and choose **Open development extension**. This registers the native
 host for the current Windows user and opens the package folder. Load it using
 `chrome://extensions`, `edge://extensions`, or `brave://extensions` (Developer mode, Load unpacked),
 or `about:debugging` in Firefox (Load Temporary Add-on, select `manifest.json`).
 Firefox removes temporary add-ons when it closes.
+
+Each native host exits when its browser connection closes or MediaFlyouts is
+unavailable or disconnects. It does not keep retrying while the app is closed.
+The extension reconnects on tab events or its 30-second refresh after the app
+starts again.
 
 The extension sends the title and favicon bytes of a single audible tab over
 native messaging. When no tab is audible, it reports the last identified tab,

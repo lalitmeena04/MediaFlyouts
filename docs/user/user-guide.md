@@ -31,9 +31,9 @@ draggable; the pin/close control keeps it on screen ("always display") until you
 dismiss it.
 
 For browser media without album art, the optional browser extension can supply
-the website's icon. In **Media Widget** settings, select Chrome, Edge, Firefox, or Brave and
-choose **Install browser extension** once it is available in that browser's
-store. Confirm the installation in the browser. The app uses the icon when a
+the website's icon. In **Taskbar Widget** settings, select Chrome, Edge,
+Firefox, or Brave, then choose **Install browser extension** when its listing is
+available in that browser's store. Confirm the installation in the browser. The app uses the icon when a
 single audible tab, or a remembered or active tab when no tabs are audible,
 matches the selected media title. It keeps the icon while that media is paused.
 When the source cannot be identified, the usual placeholder remains. The extension

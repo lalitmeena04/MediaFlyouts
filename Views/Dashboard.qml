@@ -68,8 +68,7 @@ Window {
         { "icon": Fluent.play,      "key": "media",       "name": qsTr("Media Flyout"), "desc": qsTr("Configure the now-playing flyout that appears on media keys.") },
         { "icon": Fluent.plugConnected, "key": "peripheralFlyout", "name": qsTr("Peripheral Flyout"), "desc": qsTr("Announce peripherals as they connect, disconnect or run low on battery.") },
         { "icon": Fluent.charge, "key": "charger", "name": qsTr("Charger Flyout"), "desc": qsTr("Announce the charger as it is plugged in or unplugged.") },
-        { "icon": Fluent.musicNote, "key": "mediaWidget", "name": qsTr("Media Widget"), "desc": qsTr("A compact now-playing widget docked on the taskbar.") },
-        { "icon": Fluent.usbStick,  "key": "peripheralWidget", "name": qsTr("Peripheral Widget"), "desc": qsTr("Battery rings for your wireless peripherals, docked on the taskbar.") },
+        { "icon": Fluent.musicNote, "key": "taskbarWidget", "name": qsTr("Taskbar Widget"), "desc": qsTr("Configure the media and peripheral widgets docked on the taskbar.") },
         { "icon": Fluent.speaker2,  "key": "volume",      "name": qsTr("Volume"),       "desc": qsTr("Configure the volume flyout and native OSD override.") },
         { "icon": Fluent.keyboard,  "key": "lockKeys",    "name": qsTr("Lock Keys"),    "desc": qsTr("Caps / Num / Scroll lock indicator flyouts.") },
         { "icon": Fluent.filter,    "key": "filtering",   "name": qsTr("App Filtering"), "desc": qsTr("Choose which media apps are allowed to show flyouts.") },
@@ -88,11 +87,11 @@ Window {
         { "label": qsTr("Hide during fullscreen"), "page": 1 }, { "label": qsTr("Flyout position"), "page": 1 },
         { "label": qsTr("Monitor"), "page": 1 }, { "label": qsTr("Flyout duration"), "page": 1 },
         { "label": qsTr("Animation speed"), "page": 1 }, { "label": qsTr("Animation easing"), "page": 1 },
-        { "label": qsTr("Volume flyout"), "page": 6 }, { "label": qsTr("Override native OSD"), "page": 6 },
-        { "label": qsTr("Volume flyout duration"), "page": 6 }, { "label": qsTr("Lock keys flyout"), "page": 7 },
-        { "label": qsTr("Caps lock"), "page": 7 }, { "label": qsTr("Num lock"), "page": 7 },
-        { "label": qsTr("Scroll lock"), "page": 7 }, { "label": qsTr("Insert key"), "page": 7 },
-        { "label": qsTr("Bold indicator text"), "page": 7 }, { "label": qsTr("Lock keys duration"), "page": 7 },
+        { "label": qsTr("Volume flyout"), "page": 5 }, { "label": qsTr("Override native OSD"), "page": 5 },
+        { "label": qsTr("Volume flyout duration"), "page": 5 }, { "label": qsTr("Lock keys flyout"), "page": 6 },
+        { "label": qsTr("Caps lock"), "page": 6 }, { "label": qsTr("Num lock"), "page": 6 },
+        { "label": qsTr("Scroll lock"), "page": 6 }, { "label": qsTr("Insert key"), "page": 6 },
+        { "label": qsTr("Bold indicator text"), "page": 6 }, { "label": qsTr("Lock keys duration"), "page": 6 },
         { "label": qsTr("Media widget"), "page": 4 }, { "label": qsTr("Widget controls"), "page": 4 },
         { "label": qsTr("Widget alignment"), "page": 4 }, { "label": qsTr("Widget offset"), "page": 4 },
         { "label": qsTr("Widget layout"), "page": 4 }, { "label": qsTr("Stack"), "page": 4 },
@@ -102,19 +101,19 @@ Window {
         { "label": qsTr("Wired devices"), "page": 2 },
         { "label": qsTr("Charger flyout"), "page": 3 }, { "label": qsTr("On plug in"), "page": 3 },
         { "label": qsTr("On unplug"), "page": 3 }, { "label": qsTr("Charger flyout duration"), "page": 3 },
-        { "label": qsTr("Peripherals widget"), "page": 5 }, { "label": qsTr("Battery rings"), "page": 5 },
-        { "label": qsTr("Wired devices in widget"), "page": 5 },
-        { "label": qsTr("Blacklist"), "page": 8 },
-        { "label": qsTr("Whitelist"), "page": 8 }, { "label": qsTr("Filter mode"), "page": 8 },
-        { "label": qsTr("Language"), "page": 9 },
-        { "label": qsTr("Theme"), "page": 9 }, { "label": qsTr("Accent color"), "page": 9 }, { "label": qsTr("Pro icon"), "page": 9 },
-        { "label": qsTr("Launch on startup"), "page": 9 }, { "label": qsTr("Hide tray icon"), "page": 9 },
-        { "label": qsTr("Export settings"), "page": 9 }, { "label": qsTr("Import settings"), "page": 9 },
-        { "label": qsTr("Restore default settings"), "page": 9 },
-        { "label": qsTr("Donate"), "page": 10 }, { "label": qsTr("Tip"), "page": 10 },
-        { "label": qsTr("Check for updates"), "page": 11 }, { "label": qsTr("Version"), "page": 11 },
-        { "label": qsTr("What's new"), "page": 11 },
-        { "label": qsTr("Report a problem"), "page": 11 }, { "label": qsTr("Error report"), "page": 11 }
+        { "label": qsTr("Peripherals widget"), "page": 4 }, { "label": qsTr("Battery rings"), "page": 4 },
+        { "label": qsTr("Wired devices in widget"), "page": 4 },
+        { "label": qsTr("Blacklist"), "page": 7 },
+        { "label": qsTr("Whitelist"), "page": 7 }, { "label": qsTr("Filter mode"), "page": 7 },
+        { "label": qsTr("Language"), "page": 8 },
+        { "label": qsTr("Theme"), "page": 8 }, { "label": qsTr("Accent color"), "page": 8 }, { "label": qsTr("Pro icon"), "page": 8 },
+        { "label": qsTr("Launch on startup"), "page": 8 }, { "label": qsTr("Hide tray icon"), "page": 8 },
+        { "label": qsTr("Export settings"), "page": 8 }, { "label": qsTr("Import settings"), "page": 8 },
+        { "label": qsTr("Restore default settings"), "page": 8 },
+        { "label": qsTr("Donate"), "page": 9 }, { "label": qsTr("Tip"), "page": 9 },
+        { "label": qsTr("Check for updates"), "page": 10 }, { "label": qsTr("Version"), "page": 10 },
+        { "label": qsTr("What's new"), "page": 10 },
+        { "label": qsTr("Report a problem"), "page": 10 }, { "label": qsTr("Error report"), "page": 10 }
     ]
 
     readonly property var searchResults: {
@@ -786,11 +785,11 @@ Window {
                             Repeater {
                                 model: [
                                     { "name": qsTr("Media flyout"), "icon": Fluent.play, "key": "media", "page": 1 },
-                                    { "name": qsTr("Volume flyout"), "icon": Fluent.speaker2, "key": "volume", "page": 6 },
-                                    { "name": qsTr("Lock keys"), "icon": Fluent.keyboard, "key": "lock", "page": 7 },
+                                    { "name": qsTr("Volume flyout"), "icon": Fluent.speaker2, "key": "volume", "page": 5 },
+                                    { "name": qsTr("Lock keys"), "icon": Fluent.keyboard, "key": "lock", "page": 6 },
                                     { "name": qsTr("Media widget"), "icon": Fluent.musicNote, "key": "widget", "page": 4 },
                                     { "name": qsTr("Now Playing"), "icon": Fluent.next, "key": "nextup", "page": 1 },
-                                    { "name": qsTr("Native OSD override"), "icon": Fluent.speaker2, "key": "osd", "page": 6 },
+                                    { "name": qsTr("Native OSD override"), "icon": Fluent.speaker2, "key": "osd", "page": 5 },
                                     { "name": qsTr("Charger flyout"), "icon": Fluent.charge, "key": "charger", "page": 3 }
                                 ]
                                 delegate: Rectangle {
@@ -1162,7 +1161,7 @@ Window {
                 }
 
                 Column {
-                    visible: dash.currentIndex === 6
+                    visible: dash.currentIndex === 5
                     width: parent.width
                     spacing: 12
 
@@ -1220,7 +1219,7 @@ Window {
                 }
 
                 Column {
-                    visible: dash.currentIndex === 7
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 
@@ -1278,7 +1277,7 @@ Window {
                 }
 
                 Column {
-                    id: mediaWidgetPage
+                    id: taskbarWidgetPage
                     visible: dash.currentIndex === 4
                     width: parent.width
                     spacing: 12
@@ -1287,14 +1286,14 @@ Window {
                     property bool verticalTaskbar: false
                     Timer {
                         interval: 1000
-                        running: mediaWidgetPage.visible || dash.currentIndex === 5
+                        running: taskbarWidgetPage.visible
                         repeat: true
                         triggeredOnStart: true
-                        onTriggered: mediaWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)
+                        onTriggered: taskbarWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)
                     }
 
                     Rectangle {
-                        visible: mediaWidgetPage.verticalTaskbar
+                        visible: taskbarWidgetPage.verticalTaskbar
                         width: parent.width
                         height: verticalNote.implicitHeight + 20
                         radius: 8
@@ -1312,69 +1311,6 @@ Window {
                         }
                     }
 
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Taskbar widget")
-                        description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
-                        value: settings.taskbarWidgetEnabled
-                        onToggled: settings.taskbarWidgetEnabled = value
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Browser artwork")
-                        description: qsTr("Use the website icon when album art is unavailable.")
-                        model: ["Chrome", "Edge", "Firefox", "Brave"]
-                        currentIndex: dash.browserIndex
-                        onActivated: dash.browserIndex = index
-                    }
-                    Row {
-                        spacing: 12
-                        Button {
-                            text: qsTr("Install browser extension")
-                            enabled: browserIntegration.canInstall(dash.browserIds[dash.browserIndex])
-                            onClicked: browserIntegration.install(dash.browserIds[dash.browserIndex])
-                        }
-                        Button {
-                            visible: browserIntegration.developmentAvailable
-                            text: qsTr("Open development extension")
-                            onClicked: browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])
-                        }
-                    }
-                    Text {
-                        width: parent.width
-                        wrapMode: Text.WordWrap
-                        color: theme.textTertiary
-                        font.pixelSize: 12
-                        text: browserIntegration.status !== "" ? browserIntegration.status
-                              : browserIntegration.canInstall(dash.browserIds[dash.browserIndex]) ? ""
-                              : qsTr("The browser extension is not published yet.")
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Widget transport controls")
-                        description: qsTr("Show previous / play-pause / next buttons on the widget.")
-                        value: settings.taskbarWidgetControlsEnabled
-                        onToggled: settings.taskbarWidgetControlsEnabled = value
-                        locked: entitlement.locked.taskbarWidgetOptions
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Pause all button")
-                        description: qsTr("Show a button that pauses every playing media source at once.")
-                        value: settings.taskbarWidgetPauseAllEnabled
-                        onToggled: settings.taskbarWidgetPauseAllEnabled = value
-                        locked: entitlement.locked.taskbarWidgetOptions
-                    }
-                    SettingRow {
-                        visible: settings.taskbarWidgetPauseAllEnabled
-                        x: 16
-                        width: parent.width - 16
-                        label: qsTr("Play all after pausing")
-                        description: qsTr("When every source is paused, the same button becomes Play all and resumes them. When off, the button hides until something plays again.")
-                        value: settings.taskbarWidgetPlayAllEnabled
-                        onToggled: settings.taskbarWidgetPlayAllEnabled = value
-                        locked: entitlement.locked.taskbarWidgetOptions
-                    }
                     SettingCombo {
                         width: parent.width
                         label: qsTr("Widget side")
@@ -1393,61 +1329,6 @@ Window {
                         currentIndex: settings.taskbarWidgetLayout
                         onActivated: settings.taskbarWidgetLayout = index
                         locked: entitlement.locked.taskbarWidgetOptions
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Pause overlay")
-                        description: qsTr("Dim the album art with a pause glyph when playback is paused.")
-                        value: settings.taskbarWidgetShowPauseOverlay
-                        onToggled: settings.taskbarWidgetShowPauseOverlay = value
-                        locked: entitlement.locked.taskbarWidgetOptions
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Scroll long titles")
-                        description: qsTr("Marquee-scroll the track title when it is too long to fit.")
-                        value: settings.taskbarWidgetScrollingEnabled
-                        onToggled: settings.taskbarWidgetScrollingEnabled = value
-                        locked: entitlement.locked.taskbarWidgetOptions
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Adapt colors to the taskbar")
-                        description: qsTr("Read the taskbar next to the widgets and switch between light and dark text. Keeps the widgets readable over a transparent taskbar or a live wallpaper.")
-                        value: settings.taskbarWidgetAdaptiveColors
-                        onToggled: settings.taskbarWidgetAdaptiveColors = value
-                        locked: entitlement.locked.taskbarWidgetOptions
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Audio visualizer")
-                        description: qsTr("Show a live spectrum of the system audio behind the widget.")
-                        available: capabilities.audioAvailable
-                        unavailableNote: qsTr("Unavailable: no audio output device was detected.")
-                        value: settings.taskbarVisualizerEnabled
-                        onToggled: settings.taskbarVisualizerEnabled = value
-                        locked: entitlement.locked.visualizer
-                    }
-                    SettingCombo {
-                        visible: settings.taskbarVisualizerEnabled
-                        x: 16
-                        width: parent.width - 16
-                        label: qsTr("Visualizer style")
-                        description: qsTr("How the audio is drawn behind the widget.")
-                        model: [qsTr("Bars"), qsTr("Radial"), qsTr("Waveform"), qsTr("Particles")]
-                        currentIndex: settings.visualizerStyle
-                        onActivated: settings.visualizerStyle = index
-                        locked: entitlement.locked.visualizer
-                    }
-                    SettingRow {
-                        visible: settings.taskbarVisualizerEnabled && settings.visualizerStyle === 0
-                        x: 16
-                        width: parent.width - 16
-                        label: qsTr("Mirror the equalizer")
-                        description: qsTr("Grow the bars symmetrically from the middle instead of the bottom.")
-                        value: settings.taskbarVisualizerCentered
-                        onToggled: settings.taskbarVisualizerCentered = value
-                        locked: entitlement.locked.visualizer
                     }
                     SettingCombo {
                         width: parent.width
@@ -1471,142 +1352,291 @@ Window {
                         onMoved: settings.taskbarWidgetOffset = Math.round(value)
                     }
 
-                    Text {
+                    Column {
+                        id: mediaWidgetSection
+                        property bool expanded: true
                         width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("Battery rings for your peripherals are configured on the Peripheral Widget page.")
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                        topPadding: 8
-                    }
-                }
+                        spacing: 8
 
-                Column {
-                    visible: dash.currentIndex === 5
-                    width: parent.width
-                    spacing: 12
-
-                    Rectangle {
-                        visible: mediaWidgetPage.verticalTaskbar
-                        width: parent.width
-                        height: verticalNote2.implicitHeight + 20
-                        radius: 8
-                        color: theme.card
-                        border.width: 1
-                        border.color: theme.border
-                        Text {
-                            id: verticalNote2
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            wrapMode: Text.WordWrap
-                            text: verticalNote.text
-                            color: theme.textSecondary
-                            font.pixelSize: 12
-                        }
-                    }
-
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Peripherals widget")
-                        description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
-                        value: settings.peripheralsWidgetEnabled
-                        onToggled: settings.peripheralsWidgetEnabled = value
-                        locked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        label: qsTr("Match app accent")
-                        description: qsTr("Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level.")
-                        value: settings.batteryRingUseAccent
-                        onToggled: settings.batteryRingUseAccent = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-
-                    Text {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("Choose which detected peripherals MediaFlyouts should show. Hidden devices are left out of the widget, the home page and the flyouts:")
-                        color: theme.textSecondary
-                        font.pixelSize: 12
-                        topPadding: 4
-                    }
-                    Text {
-                        visible: settings.peripheralsWidgetEnabled && dash.wirelessDevices.length === 0
-                        width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("No peripherals are currently connected.")
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                    }
-                    Repeater {
-                        model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []
-                        delegate: PeripheralRow {
-                            required property var modelData
+                        Button {
+                            id: mediaWidgetSectionButton
                             width: parent.width
-                            deviceName: modelData.name
-                            description: {
-                                var text = modelData.percent >= 0 ? qsTr("Currently at %1%").arg(modelData.percent) : qsTr("Battery level unknown")
-                                var parts = []
-                                for(var i = 0; i < modelData.components.length; i++)
-                                    parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
-                                if(parts.length > 1)
-                                    text += " (" + parts.join(", ") + ")"
-                                var link = DeviceIcons.transport(modelData.connectionKind)
-                                return link ? qsTr("%1, over %2.").arg(text).arg(link) : text + "."
+                            height: 38
+                            text: qsTr("Media Widget")
+                            contentItem: Row {
+                                spacing: 8
+                                Text {
+                                    text: mediaWidgetSection.expanded ? "-" : "+"
+                                    color: theme.textSecondary
+                                    font: mediaWidgetSectionButton.font
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text {
+                                    text: mediaWidgetSectionButton.text
+                                    color: theme.textPrimary
+                                    font: mediaWidgetSectionButton.font
+                                    verticalAlignment: Text.AlignVCenter
+                                }
                             }
-                            value: settings.peripheralSelected(modelData.name)
-                            onToggled: settings.setPeripheralSelected(modelData.name, value)
-                            parentLocked: entitlement.locked.peripheralBattery
+                            onClicked: mediaWidgetSection.expanded = !mediaWidgetSection.expanded
                         }
-                    }
 
-                    Rectangle {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        height: 1
-                        color: theme.border
-                    }
-                    SettingRow {
-                        visible: settings.peripheralsWidgetEnabled
-                        width: parent.width
-                        label: qsTr("Wired devices")
-                        description: qsTr("List plugged-in USB peripherals.")
-                        value: settings.peripheralsWidgetWiredEnabled
-                        onToggled: settings.peripheralsWidgetWiredEnabled = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    Text {
-                        visible: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
-                                 && dash.wiredDevices.length === 0
-                        width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("No wired peripherals are currently plugged in.")
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                    }
-                    Repeater {
-                        model: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
-                               ? dash.wiredDevices : []
-                        delegate: PeripheralRow {
-                            required property var modelData
+                        Column {
+                            visible: mediaWidgetSection.expanded
                             width: parent.width
-                            deviceName: modelData.name
-                            description: qsTr("Plugged in over USB.")
-                            value: settings.peripheralSelected(modelData.name)
-                            onToggled: settings.setPeripheralSelected(modelData.name, value)
-                            parentLocked: entitlement.locked.peripheralBattery
+                            spacing: 12
+
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Taskbar widget")
+                                description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
+                                value: settings.taskbarWidgetEnabled
+                                onToggled: settings.taskbarWidgetEnabled = value
+                            }
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Browser artwork")
+                                description: qsTr("Use the website icon when album art is unavailable.")
+                                model: ["Chrome", "Edge", "Firefox", "Brave"]
+                                currentIndex: dash.browserIndex
+                                onActivated: dash.browserIndex = index
+                            }
+                            Row {
+                                spacing: 12
+                                Button {
+                                    text: qsTr("Install browser extension")
+                                    enabled: browserIntegration.canInstall(dash.browserIds[dash.browserIndex])
+                                    onClicked: browserIntegration.install(dash.browserIds[dash.browserIndex])
+                                }
+                                Button {
+                                    visible: browserIntegration.developmentAvailable
+                                    text: qsTr("Open development extension")
+                                    onClicked: browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])
+                                }
+                            }
+                            Text {
+                                width: parent.width
+                                wrapMode: Text.WordWrap
+                                color: theme.textTertiary
+                                font.pixelSize: 12
+                                text: browserIntegration.status !== "" ? browserIntegration.status
+                                      : browserIntegration.canInstall(dash.browserIds[dash.browserIndex]) ? ""
+                                      : qsTr("The browser extension is not published yet.")
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Widget transport controls")
+                                description: qsTr("Show previous / play-pause / next buttons on the widget.")
+                                value: settings.taskbarWidgetControlsEnabled
+                                onToggled: settings.taskbarWidgetControlsEnabled = value
+                                locked: entitlement.locked.taskbarWidgetOptions
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Pause all button")
+                                description: qsTr("Show a button that pauses every playing media source at once.")
+                                value: settings.taskbarWidgetPauseAllEnabled
+                                onToggled: settings.taskbarWidgetPauseAllEnabled = value
+                                locked: entitlement.locked.taskbarWidgetOptions
+                            }
+                            SettingRow {
+                                visible: settings.taskbarWidgetPauseAllEnabled
+                                x: 16
+                                width: parent.width - 16
+                                label: qsTr("Play all after pausing")
+                                description: qsTr("When every source is paused, the same button becomes Play all and resumes them. When off, the button hides until something plays again.")
+                                value: settings.taskbarWidgetPlayAllEnabled
+                                onToggled: settings.taskbarWidgetPlayAllEnabled = value
+                                locked: entitlement.locked.taskbarWidgetOptions
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Pause overlay")
+                                description: qsTr("Dim the album art with a pause glyph when playback is paused.")
+                                value: settings.taskbarWidgetShowPauseOverlay
+                                onToggled: settings.taskbarWidgetShowPauseOverlay = value
+                                locked: entitlement.locked.taskbarWidgetOptions
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Scroll long titles")
+                                description: qsTr("Marquee-scroll the track title when it is too long to fit.")
+                                value: settings.taskbarWidgetScrollingEnabled
+                                onToggled: settings.taskbarWidgetScrollingEnabled = value
+                                locked: entitlement.locked.taskbarWidgetOptions
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Adapt colors to the taskbar")
+                                description: qsTr("Read the taskbar next to the widgets and switch between light and dark text. Keeps the widgets readable over a transparent taskbar or a live wallpaper.")
+                                value: settings.taskbarWidgetAdaptiveColors
+                                onToggled: settings.taskbarWidgetAdaptiveColors = value
+                                locked: entitlement.locked.taskbarWidgetOptions
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Audio visualizer")
+                                description: qsTr("Show a live spectrum of the system audio behind the widget.")
+                                available: capabilities.audioAvailable
+                                unavailableNote: qsTr("Unavailable: no audio output device was detected.")
+                                value: settings.taskbarVisualizerEnabled
+                                onToggled: settings.taskbarVisualizerEnabled = value
+                                locked: entitlement.locked.visualizer
+                            }
+                            SettingCombo {
+                                visible: settings.taskbarVisualizerEnabled
+                                x: 16
+                                width: parent.width - 16
+                                label: qsTr("Visualizer style")
+                                description: qsTr("How the audio is drawn behind the widget.")
+                                model: [qsTr("Bars"), qsTr("Radial"), qsTr("Waveform"), qsTr("Particles")]
+                                currentIndex: settings.visualizerStyle
+                                onActivated: settings.visualizerStyle = index
+                                locked: entitlement.locked.visualizer
+                            }
+                            SettingRow {
+                                visible: settings.taskbarVisualizerEnabled && settings.visualizerStyle === 0
+                                x: 16
+                                width: parent.width - 16
+                                label: qsTr("Mirror the equalizer")
+                                description: qsTr("Grow the bars symmetrically from the middle instead of the bottom.")
+                                value: settings.taskbarVisualizerCentered
+                                onToggled: settings.taskbarVisualizerCentered = value
+                                locked: entitlement.locked.visualizer
+                            }
                         }
                     }
 
-                    Text {
+                    Column {
+                        id: peripheralWidgetSection
+                        property bool expanded: true
                         width: parent.width
-                        wrapMode: Text.WordWrap
-                        text: qsTr("Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.")
-                        color: theme.textMuted
-                        font.pixelSize: 12
-                        topPadding: 8
+                        spacing: 8
+
+                        Button {
+                            id: peripheralWidgetSectionButton
+                            width: parent.width
+                            height: 38
+                            text: qsTr("Peripheral Widget")
+                            contentItem: Row {
+                                spacing: 8
+                                Text {
+                                    text: peripheralWidgetSection.expanded ? "-" : "+"
+                                    color: theme.textSecondary
+                                    font: peripheralWidgetSectionButton.font
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text {
+                                    text: peripheralWidgetSectionButton.text
+                                    color: theme.textPrimary
+                                    font: peripheralWidgetSectionButton.font
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                            onClicked: peripheralWidgetSection.expanded = !peripheralWidgetSection.expanded
+                        }
+
+                        Column {
+                            visible: peripheralWidgetSection.expanded
+                            width: parent.width
+                            spacing: 12
+
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Peripherals widget")
+                                description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
+                                value: settings.peripheralsWidgetEnabled
+                                onToggled: settings.peripheralsWidgetEnabled = value
+                                locked: entitlement.locked.peripheralBattery
+                            }
+                            SettingRow {
+                                visible: settings.peripheralsWidgetEnabled
+                                width: parent.width
+                                label: qsTr("Match app accent")
+                                description: qsTr("Color the battery rings using the app accent (or album art, if that's enabled) instead of green/yellow/red by charge level.")
+                                value: settings.batteryRingUseAccent
+                                onToggled: settings.batteryRingUseAccent = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+
+                            Text {
+                                visible: settings.peripheralsWidgetEnabled
+                                width: parent.width
+                                wrapMode: Text.WordWrap
+                                text: qsTr("Choose which detected peripherals MediaFlyouts should show. Hidden devices are left out of the widget, the home page and the flyouts:")
+                                color: theme.textSecondary
+                                font.pixelSize: 12
+                                topPadding: 4
+                            }
+                            Text {
+                                visible: settings.peripheralsWidgetEnabled && dash.wirelessDevices.length === 0
+                                width: parent.width
+                                wrapMode: Text.WordWrap
+                                text: qsTr("No peripherals are currently connected.")
+                                color: theme.textMuted
+                                font.pixelSize: 12
+                            }
+                            Repeater {
+                                model: settings.peripheralsWidgetEnabled ? dash.wirelessDevices : []
+                                delegate: PeripheralRow {
+                                    required property var modelData
+                                    width: parent.width
+                                    deviceName: modelData.name
+                                    description: {
+                                        var text = modelData.percent >= 0 ? qsTr("Currently at %1%").arg(modelData.percent) : qsTr("Battery level unknown")
+                                        var parts = []
+                                        for(var i = 0; i < modelData.components.length; i++)
+                                            parts.push(modelData.components[i].label + " " + modelData.components[i].percent + "%")
+                                        if(parts.length > 1)
+                                            text += " (" + parts.join(", ") + ")"
+                                        var link = DeviceIcons.transport(modelData.connectionKind)
+                                        return link ? qsTr("%1, over %2.").arg(text).arg(link) : text + "."
+                                    }
+                                    value: settings.peripheralSelected(modelData.name)
+                                    onToggled: settings.setPeripheralSelected(modelData.name, value)
+                                    parentLocked: entitlement.locked.peripheralBattery
+                                }
+                            }
+
+                            Rectangle {
+                                visible: settings.peripheralsWidgetEnabled
+                                width: parent.width
+                                height: 1
+                                color: theme.border
+                            }
+                            SettingRow {
+                                visible: settings.peripheralsWidgetEnabled
+                                width: parent.width
+                                label: qsTr("Wired devices")
+                                description: qsTr("List plugged-in USB peripherals.")
+                                value: settings.peripheralsWidgetWiredEnabled
+                                onToggled: settings.peripheralsWidgetWiredEnabled = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            Text {
+                                visible: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
+                                         && dash.wiredDevices.length === 0
+                                width: parent.width
+                                wrapMode: Text.WordWrap
+                                text: qsTr("No wired peripherals are currently plugged in.")
+                                color: theme.textMuted
+                                font.pixelSize: 12
+                            }
+                            Repeater {
+                                model: settings.peripheralsWidgetEnabled && settings.peripheralsWidgetWiredEnabled
+                                       ? dash.wiredDevices : []
+                                delegate: PeripheralRow {
+                                    required property var modelData
+                                    width: parent.width
+                                    deviceName: modelData.name
+                                    description: qsTr("Plugged in over USB.")
+                                    value: settings.peripheralSelected(modelData.name)
+                                    onToggled: settings.setPeripheralSelected(modelData.name, value)
+                                    parentLocked: entitlement.locked.peripheralBattery
+                                }
+                            }
+
+                        }
                     }
                 }
 
@@ -1777,7 +1807,7 @@ Window {
                 }
 
                 Column {
-                    visible: dash.currentIndex === 8
+                    visible: dash.currentIndex === 7
                     width: parent.width
                     spacing: 12
 
@@ -1877,7 +1907,7 @@ Window {
                 }
 
                 Column {
-                    visible: dash.currentIndex === 9
+                    visible: dash.currentIndex === 8
                     width: parent.width
                     spacing: 12
 
@@ -2007,13 +2037,13 @@ Window {
                 }
 
                 SupportPage {
-                    visible: dash.currentIndex === 10 && donate.available
+                    visible: dash.currentIndex === 9 && donate.available
                     width: parent.width
                     ownerWindow: dash
                 }
 
                 Column {
-                    visible: dash.currentIndex === 11
+                    visible: dash.currentIndex === 10
                     width: parent.width
                     spacing: 12
 

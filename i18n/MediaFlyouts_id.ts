@@ -138,16 +138,8 @@ Tidak tersedia: %1</translation>
         <translation>Widget Media</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Widget ringkas sedang diputar yang menempel di bilah tugas.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Widget Periferal</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Cincin baterai untuk periferal nirkabel Anda, menempel di bilah tugas.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Tidak tersedia: %1</translation>
         <translation>Warnai aksen flyout dengan warna dominan sampul album saat ini.</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>Widget Taskbar</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Konfigurasikan widget media dan periferal yang ditambatkan ke taskbar.</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>Warnai juga dasbor dan jendela lain, bukan hanya flyout.</translation>
     </message>
@@ -930,10 +930,6 @@ Tidak tersedia: %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Cincin baterai untuk periferal Anda diatur di halaman Widget Periferal.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Tempelkan widget baterai untuk periferal nirkabel terpilih di bilah tugas.</translation>
     </message>
@@ -976,10 +972,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Tercolok melalui USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Pemberitahuan sambungan dan baterai lemah diatur di halaman Flyout Periferal. Tata letak widget (berdampingan atau tumpukan yang dapat digulir) diatur di halaman Widget Media.</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

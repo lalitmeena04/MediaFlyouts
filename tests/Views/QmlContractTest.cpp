@@ -2,8 +2,12 @@
 
 #include <QDir>
 #include <QFile>
+#include <QQmlAbstractUrlInterceptor>
+#include <QQmlComponent>
+#include <QQmlEngine>
 #include <QRegularExpression>
 #include <QString>
+#include <QUrl>
 
 #include "AppIcon.h"
 
@@ -20,6 +24,26 @@ void expectContains(const QString& source, const QString& expected) {
 }
 
 } // namespace
+
+TEST(QmlContractTest, DashboardCompilesWithoutQmlErrors) {
+    class SourceUrls : public QQmlAbstractUrlInterceptor {
+        public:
+            QUrl intercept(const QUrl& url, DataType) override {
+                const QString prefix = QStringLiteral("/qt/qml/MediaFlyouts/");
+                if(url.scheme() == QStringLiteral("qrc") && url.path().startsWith(prefix))
+                    return QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/") +
+                                               url.path().mid(prefix.size()));
+                return url;
+            }
+    } sourceUrls;
+    QQmlEngine engine;
+    engine.addUrlInterceptor(&sourceUrls);
+    engine.addImportPath(QStringLiteral(MEDIAFLYOUTS_QML_IMPORT_DIR));
+    QQmlComponent component(&engine,
+                            QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/Views/Dashboard.qml")),
+                            QQmlComponent::PreferSynchronous);
+    ASSERT_TRUE(component.isReady()) << component.errorString().toStdString();
+}
 
 TEST(QmlContractTest, RegistersAndStacksThePeripheralFlyout) {
     const QString source = loadSource("Views/App.qml");
@@ -63,7 +87,7 @@ TEST(QmlContractTest, DashboardOffersBrowserArtworkSetup) {
     expectContains(source, QStringLiteral("browserIntegration.install(dash.browserIds[dash.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])"));
     const int flyoutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 1"));
-    const int taskbarPage = source.indexOf(QStringLiteral("id: mediaWidgetPage"));
+    const int taskbarPage = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
     const int browserSetting =
         source.indexOf(QStringLiteral("label: qsTr(\"Browser artwork\")"), flyoutPage);
     EXPECT_GT(browserSetting, taskbarPage);
@@ -135,9 +159,9 @@ TEST(QmlContractTest, DashboardHasTheRequestedPagesInOrder) {
     const QString source = loadSource("Views/Dashboard.qml");
     const QStringList pages{
         QStringLiteral("Home"), QStringLiteral("Media Flyout"), QStringLiteral("Peripheral Flyout"),
-        QStringLiteral("Charger Flyout"), QStringLiteral("Media Widget"), QStringLiteral("Peripheral Widget"),
-        QStringLiteral("Volume"), QStringLiteral("Lock Keys"), QStringLiteral("App Filtering"),
-        QStringLiteral("Additional Settings"), QStringLiteral("About")};
+        QStringLiteral("Charger Flyout"), QStringLiteral("Taskbar Widget"), QStringLiteral("Volume"),
+        QStringLiteral("Lock Keys"), QStringLiteral("App Filtering"), QStringLiteral("Additional Settings"),
+        QStringLiteral("Support"), QStringLiteral("About")};
 
     int previous = -1;
     for(const QString& page : pages) {
@@ -146,6 +170,25 @@ TEST(QmlContractTest, DashboardHasTheRequestedPagesInOrder) {
         previous = current;
     }
     expectContains(source, QStringLiteral("property bool collapsed"));
+    EXPECT_FALSE(source.contains(QStringLiteral("\"key\": \"mediaWidget\"")));
+    EXPECT_FALSE(source.contains(QStringLiteral("\"key\": \"peripheralWidget\"")));
+}
+
+TEST(QmlContractTest, TaskbarWidgetPageKeepsSharedSettingsAboveCollapsibleSections) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    const int page = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
+    const int widgetSide = source.indexOf(QStringLiteral("label: qsTr(\"Widget side\")"), page);
+    const int mediaSection = source.indexOf(QStringLiteral("text: qsTr(\"Media Widget\")"), page);
+    const int peripheralSection = source.indexOf(QStringLiteral("text: qsTr(\"Peripheral Widget\")"), page);
+    ASSERT_GE(page, 0);
+    ASSERT_GE(widgetSide, 0);
+    ASSERT_GE(mediaSection, 0);
+    ASSERT_GE(peripheralSection, 0);
+    EXPECT_LT(widgetSide, mediaSection);
+    EXPECT_LT(mediaSection, peripheralSection);
+    EXPECT_TRUE(source.contains(QStringLiteral("text: mediaWidgetSection.expanded ? \"-\" : \"+\"")));
+    EXPECT_TRUE(source.contains(QStringLiteral("text: peripheralWidgetSection.expanded ? \"-\" : \"+\"")));
+    EXPECT_EQ(source.count(QStringLiteral("visible: taskbarWidgetPage.verticalTaskbar")), 1);
 }
 
 TEST(QmlContractTest, DashboardResetsScrollPositionWhenPageChanges) {
@@ -540,12 +583,11 @@ TEST(QmlContractTest, DockableWidgetOwnsSharedDockingAndBlocking) {
     expectContains(base, QStringLiteral("|| !taskbar.widgetFits(base.dockMonitor)"));
 }
 
-TEST(QmlContractTest, DashboardExplainsAVerticalTaskbarOnBothWidgetPages) {
+TEST(QmlContractTest, DashboardExplainsAVerticalTaskbarOnTheTaskbarWidgetPage) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("property bool verticalTaskbar: false"));
-    expectContains(dashboard, QStringLiteral("mediaWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)"));
-    EXPECT_EQ(dashboard.count(QStringLiteral("visible: mediaWidgetPage.verticalTaskbar")), 2)
-        << "Media Widget and Peripheral Widget pages both carry the note";
+    expectContains(dashboard, QStringLiteral("taskbarWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)"));
+    EXPECT_EQ(dashboard.count(QStringLiteral("visible: taskbarWidgetPage.verticalTaskbar")), 1);
 }
 
 TEST(QmlContractTest, WindowsRelayoutWhenTheMonitorLayoutChanges) {
@@ -894,7 +936,7 @@ TEST(QmlContractTest, TaskbarWidgetsUseThePaletteInsteadOfFixedColors) {
 
 TEST(QmlContractTest, DashboardOffersAConfirmedResetToDefaults) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
-    expectContains(dashboard, QStringLiteral("{ \"label\": qsTr(\"Restore default settings\"), \"page\": 9 }"));
+    expectContains(dashboard, QStringLiteral("{ \"label\": qsTr(\"Restore default settings\"), \"page\": 8 }"));
     expectContains(dashboard, QStringLiteral("text: qsTr(\"Restore default settings…\")"));
     expectContains(dashboard, QStringLiteral("onClicked: resetConfirm.open()"));
     expectContains(dashboard, QStringLiteral("id: resetConfirm"));
@@ -1114,8 +1156,8 @@ TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("\"key\": \"support\""));
     expectContains(dashboard, QStringLiteral("SupportPage {"));
-    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 10 && donate.available"));
-    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 11"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 9 && donate.available"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 10"));
 }
 
 TEST(QmlContractTest, WhatsNewShowsOnceAfterAnUpdate) {

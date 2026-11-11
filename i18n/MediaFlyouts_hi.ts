@@ -138,16 +138,8 @@ Unavailable: %1</source>
         <translation>मीडिया विजेट</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>टास्कबार पर लगा एक छोटा नाउ-प्लेइंग विजेट।</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>पेरिफेरल विजेट</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>टास्कबार पर लगे आपके वायरलेस पेरिफेरल के बैटरी रिंग।</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Unavailable: %1</source>
         <translation>वर्तमान एल्बम आर्ट के प्रमुख रंग से फ़्लाईआउट एक्सेंट रंगें।</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>टास्कबार विजेट</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>टास्कबार पर डॉक किए गए मीडिया और पेरिफेरल विजेट कॉन्फ़िगर करें।</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>सिर्फ़ फ़्लाईआउट ही नहीं, डैशबोर्ड और अन्य विंडो भी रंगें।</translation>
     </message>
@@ -930,10 +930,6 @@ Unavailable: %1</source>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>आपके पेरिफेरल के बैटरी रिंग “पेरिफेरल विजेट” पेज पर सेट होते हैं।</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>चुने हुए वायरलेस पेरिफेरल के लिए टास्कबार पर बैटरी विजेट लगाएँ।</translation>
     </message>
@@ -976,10 +972,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>USB से जुड़ा।</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>कनेक्ट और कम बैटरी की सूचनाएँ “पेरिफेरल फ़्लाईआउट” पेज पर सेट होती हैं। विजेट लेआउट (अगल-बगल या स्क्रॉल होने वाला स्टैक) “मीडिया विजेट” पेज पर सेट होता है।</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

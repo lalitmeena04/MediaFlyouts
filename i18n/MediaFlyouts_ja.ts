@@ -138,16 +138,8 @@ Unavailable: %1</source>
         <translation>メディアウィジェット</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>タスクバーに固定されるコンパクトな再生中ウィジェット。</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>周辺機器ウィジェット</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>タスクバーに固定されるワイヤレス周辺機器のバッテリーリング。</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Unavailable: %1</source>
         <translation>現在のアルバムアートの主要な色でフライアウトのアクセントを着色します。</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>タスクバーウィジェット</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>タスクバーにドッキングされたメディアウィジェットと周辺機器ウィジェットを設定します。</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>フライアウトだけでなく、ダッシュボードや他のウィンドウも着色します。</translation>
     </message>
@@ -930,10 +930,6 @@ Unavailable: %1</source>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>周辺機器のバッテリーリングは「周辺機器ウィジェット」ページで設定します。</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>選択したワイヤレス周辺機器のバッテリーウィジェットをタスクバーに固定します。</translation>
     </message>
@@ -976,10 +972,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>USB で接続。</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>接続とバッテリー残量低下の通知は「周辺機器フライアウト」ページで設定します。ウィジェットのレイアウト（横並びまたはスクロール可能なスタック）は「メディアウィジェット」ページで設定します。</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

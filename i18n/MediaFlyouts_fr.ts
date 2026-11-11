@@ -138,16 +138,8 @@ Indisponible : %1</translation>
         <translation>Widget multimédia</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Un widget de lecture compact ancré dans la barre des tâches.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Widget des périphériques</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Anneaux de batterie de vos périphériques sans fil, ancrés dans la barre des tâches.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -582,6 +574,14 @@ Indisponible : %1</translation>
         <translation>Teinter les accents du volet avec la couleur dominante de la pochette en cours.</translation>
     </message>
     <message>
+        <source>Taskbar Widget</source>
+        <translation>Widget de la barre des tâches</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Configurer les widgets multimédia et périphériques ancrés à la barre des tâches.</translation>
+    </message>
+    <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
         <translation>Teinter aussi le tableau de bord et les autres fenêtres, pas seulement les volets.</translation>
     </message>
@@ -930,10 +930,6 @@ Indisponible : %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Les anneaux de batterie de vos périphériques se configurent sur la page « Widget des périphériques ».</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Ancrer un widget de batterie pour les périphériques sans fil sélectionnés dans la barre des tâches.</translation>
     </message>
@@ -976,10 +972,6 @@ Indisponible : %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Branché en USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Les annonces de connexion et de batterie faible se configurent sur la page « Volet des périphériques ». La disposition du widget (côte à côte ou pile défilante) se configure sur la page « Widget multimédia ».</translation>
     </message>
     <message>
         <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>

@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLocalSocket>
+#include <QLocalServer>
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QSignalSpy>
@@ -111,6 +112,64 @@ TEST(BrowserArtworkBridgeTest, RejectsOversizedMessages) {
 }
 
 #ifdef Q_OS_WIN
+TEST(BrowserArtworkBridgeTest, NativeHostExitsWhenAppIsUnavailable) {
+    QProcess host;
+    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+    environment.insert(QStringLiteral("MEDIAFLYOUTS_BROWSER_ART_SERVER"),
+                       QStringLiteral("MediaFlyouts.test.") + QUuid::createUuid().toString(QUuid::Id128));
+    host.setProcessEnvironment(environment);
+    host.start(QStringLiteral(MEDIAFLYOUTS_BROWSER_HOST_PATH));
+    ASSERT_TRUE(host.waitForStarted(2000));
+    ASSERT_TRUE(host.waitForFinished(3000));
+    EXPECT_EQ(host.exitStatus(), QProcess::NormalExit);
+    EXPECT_EQ(host.exitCode(), 0);
+    EXPECT_TRUE(host.readAllStandardError().contains("exiting"));
+}
+
+TEST(BrowserArtworkBridgeTest, NativeHostExitsWhenAppDisconnectsWithBrowserInputOpen) {
+    for(const QByteArray& input : {QByteArray(), QByteArray("\x20\x00", 2),
+                                  QByteArray("\x20\x00\x00\x00{", 5)}) {
+        QLocalServer server;
+        const QString name = QStringLiteral("MediaFlyouts.test.") + QUuid::createUuid().toString(QUuid::Id128);
+        ASSERT_TRUE(server.listen(name));
+        QProcess host;
+        QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+        environment.insert(QStringLiteral("MEDIAFLYOUTS_BROWSER_ART_SERVER"), name);
+        host.setProcessEnvironment(environment);
+        host.start(QStringLiteral(MEDIAFLYOUTS_BROWSER_HOST_PATH));
+        ASSERT_TRUE(host.waitForStarted(2000));
+        ASSERT_TRUE(server.waitForNewConnection(3000));
+        QLocalSocket* client = server.nextPendingConnection();
+        ASSERT_NE(client, nullptr);
+        if(!input.isEmpty()) {
+            ASSERT_EQ(host.write(input), input.size());
+            ASSERT_TRUE(host.waitForBytesWritten(1000));
+            QTest::qWait(100);
+        }
+        client->abort();
+        ASSERT_TRUE(host.waitForFinished(3000));
+        EXPECT_EQ(host.exitStatus(), QProcess::NormalExit);
+        EXPECT_EQ(host.exitCode(), 0);
+    }
+}
+
+TEST(BrowserArtworkBridgeTest, NativeHostExitsWhenBrowserDisconnectsWithoutSendingMessages) {
+    QLocalServer server;
+    const QString name = QStringLiteral("MediaFlyouts.test.") + QUuid::createUuid().toString(QUuid::Id128);
+    ASSERT_TRUE(server.listen(name));
+    QProcess host;
+    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+    environment.insert(QStringLiteral("MEDIAFLYOUTS_BROWSER_ART_SERVER"), name);
+    host.setProcessEnvironment(environment);
+    host.start(QStringLiteral(MEDIAFLYOUTS_BROWSER_HOST_PATH));
+    ASSERT_TRUE(host.waitForStarted(2000));
+    ASSERT_TRUE(server.waitForNewConnection(3000));
+    host.closeWriteChannel();
+    ASSERT_TRUE(host.waitForFinished(3000));
+    EXPECT_EQ(host.exitStatus(), QProcess::NormalExit);
+    EXPECT_EQ(host.exitCode(), 0);
+}
+
 TEST(BrowserArtworkBridgeTest, NativeHostForwardsBrowserMessages) {
     BrowserArtworkBridge bridge;
     const QString name = QStringLiteral("MediaFlyouts.test.") + QUuid::createUuid().toString(QUuid::Id128);
