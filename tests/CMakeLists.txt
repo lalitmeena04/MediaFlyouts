@@ -47,7 +47,7 @@ target_link_libraries(mediaflyout_testlib PUBLIC
 if(WIN32)
     # UpdateChecker calls ShellExecuteEx. PUBLIC so every executable that
     # links this static lib gets shell32 without listing it again.
-    target_link_libraries(mediaflyout_testlib PUBLIC shell32 advapi32)
+    target_link_libraries(mediaflyout_testlib PUBLIC shell32 advapi32 ole32)
 endif()
 target_include_directories(mediaflyout_testlib PUBLIC
     ${CMAKE_SOURCE_DIR}/Model

@@ -10,6 +10,7 @@
 #include "Logging.h"
 
 #ifdef Q_OS_WIN
+#include <objbase.h>
 #include <windows.h>
 #endif
 
@@ -71,7 +72,15 @@ QImage browserExecutableIcon(const QString& browser) {
         TRC_DEBUG("browser artwork: executable not found for {}", browser.toStdString());
         return {};
     }
+#ifdef Q_OS_WIN
+    // The shell icon lookup needs COM. Non-Windows Qt platforms (offscreen) do not start it and the lookup crashes.
+    const HRESULT comResult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+#endif
     const QImage icon = QFileIconProvider().icon(QFileInfo(path)).pixmap(32, 32).toImage();
+#ifdef Q_OS_WIN
+    if(SUCCEEDED(comResult))
+        CoUninitialize();
+#endif
     if(icon.isNull())
         TRC_DEBUG("browser artwork: executable icon unavailable for {}", browser.toStdString());
     return icon;

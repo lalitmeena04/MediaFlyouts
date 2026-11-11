@@ -192,7 +192,7 @@ qt_add_resources(mediaflyout_core "whatsnew"
 )
 if(WIN32)
     # EntitlementStore seals its cache with DPAPI.
-    target_link_libraries(mediaflyout_core PUBLIC crypt32)
+    target_link_libraries(mediaflyout_core PUBLIC crypt32 ole32)
 endif()
 # Logging on compiles TRC calls at or above MEDIAFLYOUTS_LOG_LEVEL. Logging off removes them all.
 # Default level: DEBUG for Debug builds, INFO otherwise. INFO keeps release logs small.
