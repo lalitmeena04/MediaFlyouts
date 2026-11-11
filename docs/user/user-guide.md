@@ -24,6 +24,15 @@ Left-click behavior (open Settings vs. show the flyout) is configurable; with th
 
 ## Flyouts
 
+Open **Flyouts** in Settings for expandable Media, Volume, Lock Keys, Peripheral
+and Charger cards. Each card contains its own controls. Shared fullscreen,
+swipe and animation settings stay at the top. The shared position and monitor
+apply to Media, Now Playing and Lock Keys; Volume, Peripheral and Charger
+retain their own placement controls. Search results and Home shortcuts expand
+the relevant card. Each flyout and widget card has its master switch in the
+header. The switch works while the card is collapsed; click the title or
+chevron to expand its other controls.
+
 ### Media flyout
 Press a media key (or a volume key, unless excluded) while a player is active to
 show album art, title, artist and transport controls. The **seekbar** is
@@ -43,8 +52,8 @@ stores are not yet published, so the install button is currently unavailable.
 Press a volume key to show the master volume slider (it replaces the native
 Windows OSD). Click the **chevron** to expand the **per-app mixer**, where each
 app has its own volume slider, mute toggle and icon. Changes apply immediately.
-The in-flyout mixer is **off by default** — switch it on from the Volume flyout
-page in Settings.
+The in-flyout mixer is **off by default** — switch it on in the Volume card on
+the Flyouts page in Settings.
 
 ### Lock-keys flyout
 Toggling Caps / Num / Scroll / Insert shows a brief indicator. Enable or disable
@@ -91,7 +100,8 @@ or supported USB interfaces.
   breakdown.
 - The **Peripheral flyout** announces devices as they connect or disconnect and
   warns when a battery gets low. If several devices connect at once they appear
-  side by side. Turn individual events on or off on the Taskbar Widget page.
+  side by side. Turn individual events on or off in the Peripheral Flyout card
+  on the Flyouts page.
 - Rename a device from the peripheral settings list. The custom name is shown
   in the widget, dashboard and flyouts; hidden devices are left out of lists and
   alerts.
@@ -112,8 +122,8 @@ captures.
 
 ## The settings dashboard
 
-Open it from the tray menu. The sidebar groups settings into pages (Media Flyout,
-Volume, Lock Keys, Taskbar Widget, App Filtering, About, …). Use the **search
+Open it from the tray menu. The sidebar groups settings into pages (Flyouts,
+Taskbar Widget, App Filtering, About, …). Use the **search
 box** to jump to any setting. Highlights:
 
 - **Theme & accent** — light/dark/system, and a default / match-system / custom

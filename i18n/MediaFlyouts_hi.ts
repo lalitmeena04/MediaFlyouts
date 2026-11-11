@@ -162,6 +162,14 @@ Unavailable: %1</source>
         <translation>ऐप फ़िल्टर</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>फ़्लाईआउट</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>मीडिया, वॉल्यूम, लॉक कुंजियों, बाहरी उपकरणों और चार्जर के फ़्लाईआउट कॉन्फ़िगर करें।</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>चुनें कि कौन से मीडिया ऐप फ़्लाईआउट दिखा सकते हैं।</translation>
     </message>
@@ -522,10 +530,6 @@ Unavailable: %1</source>
         <translation>सुझाव: फ़्लाईआउट देखने के लिए कोई मीडिया या वॉल्यूम कुंजी दबाएँ, या ट्रे आइकन पर क्लिक करें।</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>मीडिया कुंजी दबाने पर नाउ-प्लेइंग फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>अनुपलब्ध: इस PC पर कोई सिस्टम मीडिया सत्र नहीं मिला।</translation>
     </message>
@@ -702,10 +706,6 @@ Unavailable: %1</source>
         <translation>कॉम्पैक्ट पिल</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>वॉल्यूम कुंजी दबाने पर वॉल्यूम फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>अनुपलब्ध: कोई ऑडियो आउटपुट डिवाइस नहीं मिला।</translation>
     </message>
@@ -746,14 +746,6 @@ Unavailable: %1</source>
         <translation>वॉल्यूम फ़्लाईआउट स्क्रीन पर कितनी देर रहे।</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>लॉक कुंजी संकेतक</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Caps, Num या Scroll Lock बदलने पर फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>अनुपलब्ध: कीबोर्ड हुक इंस्टॉल नहीं हो सका।</translation>
     </message>
@@ -792,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>चुने गए डिस्प्ले का टास्कबार बाएँ या दाएँ है। विजेट को क्षैतिज टास्कबार (ऊपर या नीचे) चाहिए और जब तक वह वापस नहीं आता, वे छिपे रहते हैं।</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>टास्कबार विजेट</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Unavailable: %1</source>
         <translation>USB से जुड़ा।</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>पेरिफेरल के जुड़ने, हटने या बैटरी कम होने पर फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>जुड़ने पर</translation>
     </message>
@@ -1022,10 +1006,6 @@ Unavailable: %1</source>
         <translation>कम बैटरी पर ट्रे सूचना भी दिखाएँ, ताकि वह छूट न जाए।</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>फ़ुलस्क्रीन वीडियो गेम सामने होने पर फ़्लाईआउट न दिखाएँ। यह सेटिंग अन्य फ़्लाईआउट के साथ साझा है।</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>पेरिफेरल फ़्लाईआउट की स्थिति</translation>
     </message>
@@ -1048,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>पेरिफेरल फ़्लाईआउट स्क्रीन पर कितनी देर रहे।</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>चार्जर लगाने या हटाने पर फ़्लाईआउट दिखाएँ।</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>प्रो सुविधा। इसे उपयोग करने के लिए होम पेज से प्रो प्राप्त करें।</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>प्रो सुविधा। इसे उपयोग करने के लिए होम पेज से प्रो प्राप्त करें।</translation>

@@ -162,6 +162,14 @@ Nicht verfügbar: %1</translation>
         <translation>App-Filter</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>Flyouts</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Flyouts für Medien, Lautstärke, Feststelltasten, Peripheriegeräte und Ladegerät einrichten.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>Festlegen, welche Medien-Apps Flyouts zeigen dürfen.</translation>
     </message>
@@ -522,10 +530,6 @@ Nicht verfügbar: %1</translation>
         <translation>Tipp: Eine Medien- oder Lautstärketaste drücken oder auf das Symbol im Infobereich klicken, um die Flyouts zu sehen.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Das Wiedergabe-Flyout bei Medientasten anzeigen.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Nicht verfügbar: Auf diesem PC wurde keine System-Mediensitzung gefunden.</translation>
     </message>
@@ -702,10 +706,6 @@ Nicht verfügbar: %1</translation>
         <translation>Kompakte Pille</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Das Lautstärke-Flyout bei Lautstärketasten anzeigen.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Nicht verfügbar: Kein Audioausgabegerät gefunden.</translation>
     </message>
@@ -746,14 +746,6 @@ Nicht verfügbar: %1</translation>
         <translation>Wie lange das Lautstärke-Flyout auf dem Bildschirm bleibt.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Feststelltasten-Anzeigen</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Ein Flyout anzeigen, wenn Feststell-, Num- oder Rollen-Taste umgeschaltet wird.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Nicht verfügbar: Der Tastatur-Hook konnte nicht installiert werden.</translation>
     </message>
@@ -792,10 +784,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>Die Taskleiste des gewählten Displays liegt links oder rechts. Die Widgets brauchen eine waagerechte Taskleiste (oben oder unten) und bleiben verborgen, bis sie zurückbewegt wird.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Taskleisten-Widget</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Nicht verfügbar: %1</translation>
         <translation>Über USB angeschlossen.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Ein Flyout anzeigen, wenn ein Peripheriegerät verbunden oder getrennt wird oder der Akku schwach ist.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>Beim Verbinden</translation>
     </message>
@@ -1022,10 +1006,6 @@ Nicht verfügbar: %1</translation>
         <translation>Zusätzlich eine Benachrichtigung im Infobereich zeigen, damit ein schwacher Akku nicht übersehen wird.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Flyouts unterdrücken, während ein Spiel im Vollbild im Vordergrund ist. Gilt für alle Flyouts.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Position des Peripherie-Flyouts</translation>
     </message>
@@ -1048,10 +1028,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Wie lange das Peripherie-Flyout auf dem Bildschirm bleibt.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Ein Flyout anzeigen, wenn das Ladegerät angeschlossen oder getrennt wird.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Nicht verfügbar: %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>

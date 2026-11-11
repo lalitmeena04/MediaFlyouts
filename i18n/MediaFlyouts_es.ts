@@ -162,6 +162,14 @@ No disponible: %1</translation>
         <translation>Filtro de aplicaciones</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>Paneles</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Configura los paneles de multimedia, volumen, teclas de bloqueo, periféricos y cargador.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>Elige qué aplicaciones multimedia pueden mostrar paneles.</translation>
     </message>
@@ -522,10 +530,6 @@ No disponible: %1</translation>
         <translation>Consejo: pulsa una tecla multimedia o de volumen, o haz clic en el icono de la bandeja, para ver los paneles.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Mostrar el panel de reproducción al pulsar teclas multimedia.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>No disponible: no se detectó ninguna sesión multimedia del sistema en este equipo.</translation>
     </message>
@@ -702,10 +706,6 @@ No disponible: %1</translation>
         <translation>Píldora compacta</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Mostrar el panel de volumen al pulsar las teclas de volumen.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>No disponible: no se detectó ningún dispositivo de salida de audio.</translation>
     </message>
@@ -746,14 +746,6 @@ No disponible: %1</translation>
         <translation>Cuánto tiempo permanece el panel de volumen en pantalla.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Indicadores de teclas de bloqueo</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Mostrar un panel al cambiar Bloq Mayús, Bloq Num o Bloq Despl.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>No disponible: no se pudo instalar el gancho de teclado.</translation>
     </message>
@@ -792,10 +784,6 @@ No disponible: %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>La barra de tareas de la pantalla elegida está a la izquierda o a la derecha. Los widgets necesitan una barra horizontal (arriba o abajo) y permanecen ocultos hasta que vuelva.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Widget de la barra de tareas</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ No disponible: %1</translation>
         <translation>Conectado por USB.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Mostrar un panel cuando un periférico se conecta, se desconecta o tiene poca batería.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>Al conectar</translation>
     </message>
@@ -1022,10 +1006,6 @@ No disponible: %1</translation>
         <translation>Mostrar también una notificación en la bandeja cuando la batería está baja, para que no pase desapercibida.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Suprimir los paneles mientras un videojuego a pantalla completa está en primer plano. Compartido con los demás paneles.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Posición del panel de periféricos</translation>
     </message>
@@ -1048,10 +1028,6 @@ No disponible: %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Cuánto tiempo permanece el panel de periféricos en pantalla.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Mostrar un panel cuando el cargador se conecta o se desconecta.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ No disponible: %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Función Pro. Obtén Pro en la página de inicio para usarla.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Función Pro. Obtén Pro en la página de inicio para usarla.</translation>

@@ -40,6 +40,33 @@ Window {
         raise()
         requestActivate()
     }
+    function openSettings(page, section) {
+        currentIndex = page
+        if(page !== 1 || !section) {
+            pageScroll.contentItem.contentY = 0
+            return
+        }
+        var sections = {
+            "media": mediaFlyoutSection,
+            "volume": volumeFlyoutSection,
+            "lockKeys": lockKeysFlyoutSection,
+            "peripheral": peripheralFlyoutSection,
+            "charger": chargerFlyoutSection
+        }
+        var target = sections[section]
+        if(!target) {
+            console.warn("Unknown flyout settings section:", section)
+            return
+        }
+        target.expanded = true
+        Qt.callLater(function() {
+            flyoutsPage.forceLayout()
+            pageContent.forceLayout()
+            var top = target.mapToItem(pageContent, 0, 0).y
+            pageScroll.contentItem.contentY = Math.max(0, Math.min(top,
+                pageScroll.contentItem.contentHeight - pageScroll.availableHeight))
+        })
+    }
     readonly property var wirelessDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind !== "usb"
     })
@@ -65,12 +92,8 @@ Window {
     ].filter(function(section) { return section.devices.length > 0 })
     readonly property var pages: [
         { "icon": Fluent.home,      "key": "home",        "name": qsTr("Home"),         "desc": qsTr("Overview of MediaFlyouts and what's currently playing.") },
-        { "icon": Fluent.play,      "key": "media",       "name": qsTr("Media Flyout"), "desc": qsTr("Configure the now-playing flyout that appears on media keys.") },
-        { "icon": Fluent.plugConnected, "key": "peripheralFlyout", "name": qsTr("Peripheral Flyout"), "desc": qsTr("Announce peripherals as they connect, disconnect or run low on battery.") },
-        { "icon": Fluent.charge, "key": "charger", "name": qsTr("Charger Flyout"), "desc": qsTr("Announce the charger as it is plugged in or unplugged.") },
+        { "icon": Fluent.play,      "key": "flyouts",     "name": qsTr("Flyouts"), "desc": qsTr("Configure media, volume, lock-key, peripheral and charger flyouts.") },
         { "icon": Fluent.musicNote, "key": "taskbarWidget", "name": qsTr("Taskbar Widget"), "desc": qsTr("Configure the media and peripheral widgets docked on the taskbar.") },
-        { "icon": Fluent.speaker2,  "key": "volume",      "name": qsTr("Volume"),       "desc": qsTr("Configure the volume flyout and native OSD override.") },
-        { "icon": Fluent.keyboard,  "key": "lockKeys",    "name": qsTr("Lock Keys"),    "desc": qsTr("Caps / Num / Scroll lock indicator flyouts.") },
         { "icon": Fluent.filter,    "key": "filtering",   "name": qsTr("App Filtering"), "desc": qsTr("Choose which media apps are allowed to show flyouts.") },
         { "icon": Fluent.settings,  "key": "additional",  "name": qsTr("Additional Settings"), "desc": qsTr("Language, theme, accent, startup, tray and settings backup.") },
         { "icon": Fluent.flash,     "key": "support",     "name": qsTr("Support"),      "desc": qsTr("Say thanks with a donation or a tip.") },
@@ -78,42 +101,42 @@ Window {
     ]
 
     readonly property var searchIndex: [
-        { "label": qsTr("Seekbar"), "page": 1 }, { "label": qsTr("Interactive seekbar"), "page": 1 },
-        { "label": qsTr("Compact layout"), "page": 1 }, { "label": qsTr("Center title and artist"), "page": 1 },
-        { "label": qsTr("Always display"), "page": 1 }, { "label": qsTr("Show player name"), "page": 1 },
-        { "label": qsTr("Accent from album art"), "page": 1 }, { "label": qsTr("Apply accent app-wide"), "page": 1 }, { "label": qsTr("Repeat button"), "page": 1 },
-        { "label": qsTr("Browser artwork"), "page": 4 },
-        { "label": qsTr("Shuffle button"), "page": 1 }, { "label": qsTr("Now Playing flyout"), "page": 1 },
+        { "label": qsTr("Seekbar"), "page": 1, "section": "media" }, { "label": qsTr("Interactive seekbar"), "page": 1, "section": "media" },
+        { "label": qsTr("Compact layout"), "page": 1, "section": "media" }, { "label": qsTr("Center title and artist"), "page": 1, "section": "media" },
+        { "label": qsTr("Always display"), "page": 1, "section": "media" }, { "label": qsTr("Show player name"), "page": 1, "section": "media" },
+        { "label": qsTr("Accent from album art"), "page": 1, "section": "media" }, { "label": qsTr("Apply accent app-wide"), "page": 1, "section": "media" }, { "label": qsTr("Repeat button"), "page": 1, "section": "media" },
+        { "label": qsTr("Browser artwork"), "page": 2 },
+        { "label": qsTr("Shuffle button"), "page": 1, "section": "media" }, { "label": qsTr("Now Playing flyout"), "page": 1, "section": "media" },
         { "label": qsTr("Hide during fullscreen"), "page": 1 }, { "label": qsTr("Flyout position"), "page": 1 },
-        { "label": qsTr("Monitor"), "page": 1 }, { "label": qsTr("Flyout duration"), "page": 1 },
+        { "label": qsTr("Monitor"), "page": 1 }, { "label": qsTr("Flyout duration"), "page": 1, "section": "media" },
         { "label": qsTr("Animation speed"), "page": 1 }, { "label": qsTr("Animation easing"), "page": 1 },
-        { "label": qsTr("Volume flyout"), "page": 5 }, { "label": qsTr("Override native OSD"), "page": 5 },
-        { "label": qsTr("Volume flyout duration"), "page": 5 }, { "label": qsTr("Lock keys flyout"), "page": 6 },
-        { "label": qsTr("Caps lock"), "page": 6 }, { "label": qsTr("Num lock"), "page": 6 },
-        { "label": qsTr("Scroll lock"), "page": 6 }, { "label": qsTr("Insert key"), "page": 6 },
-        { "label": qsTr("Bold indicator text"), "page": 6 }, { "label": qsTr("Lock keys duration"), "page": 6 },
-        { "label": qsTr("Media widget"), "page": 4 }, { "label": qsTr("Widget controls"), "page": 4 },
-        { "label": qsTr("Widget alignment"), "page": 4 }, { "label": qsTr("Widget offset"), "page": 4 },
-        { "label": qsTr("Widget layout"), "page": 4 }, { "label": qsTr("Stack"), "page": 4 },
-        { "label": qsTr("Pause overlay"), "page": 4 }, { "label": qsTr("Scroll long titles"), "page": 4 },
-        { "label": qsTr("Audio visualizer"), "page": 4 },
-        { "label": qsTr("Peripheral flyout"), "page": 2 }, { "label": qsTr("Low battery warning"), "page": 2 },
-        { "label": qsTr("Wired devices"), "page": 2 },
-        { "label": qsTr("Charger flyout"), "page": 3 }, { "label": qsTr("On plug in"), "page": 3 },
-        { "label": qsTr("On unplug"), "page": 3 }, { "label": qsTr("Charger flyout duration"), "page": 3 },
-        { "label": qsTr("Peripherals widget"), "page": 4 }, { "label": qsTr("Battery rings"), "page": 4 },
-        { "label": qsTr("Wired devices in widget"), "page": 4 },
-        { "label": qsTr("Blacklist"), "page": 7 },
-        { "label": qsTr("Whitelist"), "page": 7 }, { "label": qsTr("Filter mode"), "page": 7 },
-        { "label": qsTr("Language"), "page": 8 },
-        { "label": qsTr("Theme"), "page": 8 }, { "label": qsTr("Accent color"), "page": 8 }, { "label": qsTr("Pro icon"), "page": 8 },
-        { "label": qsTr("Launch on startup"), "page": 8 }, { "label": qsTr("Hide tray icon"), "page": 8 },
-        { "label": qsTr("Export settings"), "page": 8 }, { "label": qsTr("Import settings"), "page": 8 },
-        { "label": qsTr("Restore default settings"), "page": 8 },
-        { "label": qsTr("Donate"), "page": 9 }, { "label": qsTr("Tip"), "page": 9 },
-        { "label": qsTr("Check for updates"), "page": 10 }, { "label": qsTr("Version"), "page": 10 },
-        { "label": qsTr("What's new"), "page": 10 },
-        { "label": qsTr("Report a problem"), "page": 10 }, { "label": qsTr("Error report"), "page": 10 }
+        { "label": qsTr("Volume flyout"), "page": 1, "section": "volume" }, { "label": qsTr("Override native OSD"), "page": 1, "section": "volume" },
+        { "label": qsTr("Volume flyout duration"), "page": 1, "section": "volume" }, { "label": qsTr("Lock keys flyout"), "page": 1, "section": "lockKeys" },
+        { "label": qsTr("Caps lock"), "page": 1, "section": "lockKeys" }, { "label": qsTr("Num lock"), "page": 1, "section": "lockKeys" },
+        { "label": qsTr("Scroll lock"), "page": 1, "section": "lockKeys" }, { "label": qsTr("Insert key"), "page": 1, "section": "lockKeys" },
+        { "label": qsTr("Bold indicator text"), "page": 1, "section": "lockKeys" }, { "label": qsTr("Lock keys duration"), "page": 1, "section": "lockKeys" },
+        { "label": qsTr("Media widget"), "page": 2 }, { "label": qsTr("Widget controls"), "page": 2 },
+        { "label": qsTr("Widget alignment"), "page": 2 }, { "label": qsTr("Widget offset"), "page": 2 },
+        { "label": qsTr("Widget layout"), "page": 2 }, { "label": qsTr("Stack"), "page": 2 },
+        { "label": qsTr("Pause overlay"), "page": 2 }, { "label": qsTr("Scroll long titles"), "page": 2 },
+        { "label": qsTr("Audio visualizer"), "page": 2 },
+        { "label": qsTr("Peripheral flyout"), "page": 1, "section": "peripheral" }, { "label": qsTr("Low battery warning"), "page": 1, "section": "peripheral" },
+        { "label": qsTr("Wired devices"), "page": 1, "section": "peripheral" },
+        { "label": qsTr("Charger flyout"), "page": 1, "section": "charger" }, { "label": qsTr("On plug in"), "page": 1, "section": "charger" },
+        { "label": qsTr("On unplug"), "page": 1, "section": "charger" }, { "label": qsTr("Charger flyout duration"), "page": 1, "section": "charger" },
+        { "label": qsTr("Peripherals widget"), "page": 2 }, { "label": qsTr("Battery rings"), "page": 2 },
+        { "label": qsTr("Wired devices in widget"), "page": 2 },
+        { "label": qsTr("Blacklist"), "page": 3 },
+        { "label": qsTr("Whitelist"), "page": 3 }, { "label": qsTr("Filter mode"), "page": 3 },
+        { "label": qsTr("Language"), "page": 4 },
+        { "label": qsTr("Theme"), "page": 4 }, { "label": qsTr("Accent color"), "page": 4 }, { "label": qsTr("Pro icon"), "page": 4 },
+        { "label": qsTr("Launch on startup"), "page": 4 }, { "label": qsTr("Hide tray icon"), "page": 4 },
+        { "label": qsTr("Export settings"), "page": 4 }, { "label": qsTr("Import settings"), "page": 4 },
+        { "label": qsTr("Restore default settings"), "page": 4 },
+        { "label": qsTr("Donate"), "page": 5 }, { "label": qsTr("Tip"), "page": 5 },
+        { "label": qsTr("Check for updates"), "page": 6 }, { "label": qsTr("Version"), "page": 6 },
+        { "label": qsTr("What's new"), "page": 6 },
+        { "label": qsTr("Report a problem"), "page": 6 }, { "label": qsTr("Error report"), "page": 6 }
     ]
 
     readonly property var searchResults: {
@@ -271,7 +294,7 @@ Window {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    dash.currentIndex = modelData.page
+                                    dash.openSettings(modelData.page, modelData.section)
                                     searchField.text = ""
                                 }
                             }
@@ -464,7 +487,7 @@ Window {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    dash.currentIndex = modelData.page
+                                    dash.openSettings(modelData.page, modelData.section)
                                     sidebarSearchPopup.close()
                                 }
                             }
@@ -579,6 +602,7 @@ Window {
                 contentWidth: availableWidth
 
                 Column {
+                    id: pageContent
                     width: pageScroll.availableWidth
                     spacing: 16
 
@@ -784,13 +808,13 @@ Window {
 
                             Repeater {
                                 model: [
-                                    { "name": qsTr("Media flyout"), "icon": Fluent.play, "key": "media", "page": 1 },
-                                    { "name": qsTr("Volume flyout"), "icon": Fluent.speaker2, "key": "volume", "page": 5 },
-                                    { "name": qsTr("Lock keys"), "icon": Fluent.keyboard, "key": "lock", "page": 6 },
-                                    { "name": qsTr("Media widget"), "icon": Fluent.musicNote, "key": "widget", "page": 4 },
-                                    { "name": qsTr("Now Playing"), "icon": Fluent.next, "key": "nextup", "page": 1 },
-                                    { "name": qsTr("Native OSD override"), "icon": Fluent.speaker2, "key": "osd", "page": 5 },
-                                    { "name": qsTr("Charger flyout"), "icon": Fluent.charge, "key": "charger", "page": 3 }
+                                    { "name": qsTr("Media flyout"), "icon": Fluent.play, "key": "media", "page": 1, "section": "media" },
+                                    { "name": qsTr("Volume flyout"), "icon": Fluent.speaker2, "key": "volume", "page": 1, "section": "volume" },
+                                    { "name": qsTr("Lock keys"), "icon": Fluent.keyboard, "key": "lock", "page": 1, "section": "lockKeys" },
+                                    { "name": qsTr("Media widget"), "icon": Fluent.musicNote, "key": "widget", "page": 2 },
+                                    { "name": qsTr("Now Playing"), "icon": Fluent.next, "key": "nextup", "page": 1, "section": "media" },
+                                    { "name": qsTr("Native OSD override"), "icon": Fluent.speaker2, "key": "osd", "page": 1, "section": "volume" },
+                                    { "name": qsTr("Charger flyout"), "icon": Fluent.charge, "key": "charger", "page": 1, "section": "charger" }
                                 ]
                                 delegate: Rectangle {
                                     required property var modelData
@@ -834,7 +858,7 @@ Window {
                                         anchors.fill: parent
                                         hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: dash.currentIndex = modelData.page
+                                        onClicked: dash.openSettings(modelData.page, modelData.section)
                                     }
                                 }
                             }
@@ -984,102 +1008,11 @@ Window {
                     }
 
                 Column {
+                    id: flyoutsPage
                     visible: dash.currentIndex === 1
                     width: parent.width
                     spacing: 12
 
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Media flyout")
-                        description: qsTr("Show the now-playing flyout on media key presses.")
-                        available: capabilities.mediaSessionAvailable
-                        unavailableNote: qsTr("Unavailable: no system media session was detected on this PC.")
-                        value: settings.mediaFlyoutEnabled
-                        onToggled: settings.mediaFlyoutEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Seekbar")
-                        description: qsTr("Show the progress bar and elapsed / total time.")
-                        value: settings.seekbarEnabled
-                        onToggled: settings.seekbarEnabled = value
-                    }
-                    SettingRow {
-                        visible: settings.seekbarEnabled
-                        x: 16
-                        width: parent.width - 16
-                        label: qsTr("Interactive seekbar")
-                        description: qsTr("Allow clicking and dragging the seekbar to seek.")
-                        value: settings.seekbarInteractive
-                        onToggled: settings.seekbarInteractive = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Compact layout")
-                        description: qsTr("Use a smaller, denser media flyout.")
-                        value: settings.compactLayout
-                        onToggled: settings.compactLayout = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Center title and artist")
-                        description: qsTr("Center-align the track title and artist text.")
-                        value: settings.centerTitleArtist
-                        onToggled: settings.centerTitleArtist = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Always display")
-                        description: qsTr("Keep the media flyout on screen instead of auto-hiding.")
-                        value: settings.mediaFlyoutAlwaysDisplay
-                        onToggled: settings.mediaFlyoutAlwaysDisplay = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Show player name")
-                        description: qsTr("Show the name of the app playing the media.")
-                        value: settings.playerInfoEnabled
-                        onToggled: settings.playerInfoEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Accent from album art")
-                        description: qsTr("Tint the flyout accents using the current album art's dominant color.")
-                        value: settings.accentFromArt
-                        onToggled: settings.accentFromArt = value
-                    }
-                    SettingRow {
-                        visible: settings.accentFromArt
-                        x: 16
-                        width: parent.width - 16
-                        label: qsTr("Apply accent app-wide")
-                        description: qsTr("Also tint the dashboard and other windows, not just the flyouts.")
-                        value: settings.accentFromArtAppWide
-                        onToggled: settings.accentFromArtAppWide = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Repeat button")
-                        description: qsTr("Show a repeat control on the media flyout.")
-                        value: settings.repeatEnabled
-                        onToggled: settings.repeatEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Shuffle button")
-                        description: qsTr("Show a shuffle control on the media flyout.")
-                        value: settings.shuffleEnabled
-                        onToggled: settings.shuffleEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Now Playing flyout")
-                        description: qsTr("Show a compact card with the next track when one auto-advances.")
-                        available: capabilities.mediaSessionAvailable
-                        unavailableNote: qsTr("Unavailable: no system media session was detected on this PC.")
-                        value: settings.nextUpEnabled
-                        onToggled: settings.nextUpEnabled = value
-                    }
                     SettingRow {
                         width: parent.width
                         label: qsTr("Hide during fullscreen")
@@ -1094,7 +1027,6 @@ Window {
                         value: settings.flyoutSwipeDismissEnabled
                         onToggled: settings.flyoutSwipeDismissEnabled = value
                     }
-
                     SettingCombo {
                         width: parent.width
                         label: qsTr("Flyout position")
@@ -1110,17 +1042,6 @@ Window {
                         model: monitors.names
                         currentIndex: settings.flyoutMonitor
                         onActivated: settings.flyoutMonitor = index
-                    }
-                    SettingSlider {
-                        width: parent.width
-                        label: qsTr("Flyout duration")
-                        description: qsTr("How long the media flyout stays on screen.")
-                        from: 1000
-                        to: 10000
-                        stepSize: 500
-                        value: settings.flyoutDuration
-                        valueText: qsTr("%1 s").arg((settings.flyoutDuration / 1000).toFixed(1))
-                        onMoved: settings.flyoutDuration = Math.round(value)
                     }
                     SettingCombo {
                         width: parent.width
@@ -1138,147 +1059,428 @@ Window {
                         currentIndex: settings.flyoutAnimationEasingStyle
                         onActivated: settings.flyoutAnimationEasingStyle = index
                     }
-                    SettingSlider {
-                        width: parent.width
-                        label: qsTr("Now Playing duration")
-                        description: qsTr("How long the now playing flyout stays on screen.")
-                        from: 1000
-                        to: 10000
-                        stepSize: 500
-                        value: settings.nextUpDuration
-                        valueText: qsTr("%1 s").arg((settings.nextUpDuration / 1000).toFixed(1))
-                        onMoved: settings.nextUpDuration = Math.round(value)
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Now Playing style")
-                        description: qsTr("How the now playing flyout is laid out.")
-                        model: [qsTr("Now playing card"), qsTr("Compact pill")]
-                        currentIndex: settings.nextUpStyle
-                        onActivated: settings.nextUpStyle = index
-                        locked: entitlement.locked.nowPlayingStyles
-                    }
-                }
 
-                Column {
-                    visible: dash.currentIndex === 5
-                    width: parent.width
-                    spacing: 12
-
-                    SettingRow {
+                    SettingSection {
+                        id: mediaFlyoutSection
                         width: parent.width
-                        label: qsTr("Volume flyout")
-                        description: qsTr("Show the volume flyout on volume key presses.")
+                        text: qsTr("Media Flyout")
+                        description: qsTr("Configure the now-playing flyout that appears on media keys.")
+                        glyph: Fluent.play
+                        expanded: false
+                        available: capabilities.mediaSessionAvailable
+                        unavailableNote: qsTr("Unavailable: no system media session was detected on this PC.")
+                        value: settings.mediaFlyoutEnabled
+                        onToggled: settings.mediaFlyoutEnabled = value
+
+                        Column {
+                            width: parent.width
+                            spacing: 12
+
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Seekbar")
+                                description: qsTr("Show the progress bar and elapsed / total time.")
+                                value: settings.seekbarEnabled
+                                onToggled: settings.seekbarEnabled = value
+                            }
+                            SettingRow {
+                                visible: settings.seekbarEnabled
+                                x: 16
+                                width: parent.width - 16
+                                label: qsTr("Interactive seekbar")
+                                description: qsTr("Allow clicking and dragging the seekbar to seek.")
+                                value: settings.seekbarInteractive
+                                onToggled: settings.seekbarInteractive = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Compact layout")
+                                description: qsTr("Use a smaller, denser media flyout.")
+                                value: settings.compactLayout
+                                onToggled: settings.compactLayout = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Center title and artist")
+                                description: qsTr("Center-align the track title and artist text.")
+                                value: settings.centerTitleArtist
+                                onToggled: settings.centerTitleArtist = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Always display")
+                                description: qsTr("Keep the media flyout on screen instead of auto-hiding.")
+                                value: settings.mediaFlyoutAlwaysDisplay
+                                onToggled: settings.mediaFlyoutAlwaysDisplay = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Show player name")
+                                description: qsTr("Show the name of the app playing the media.")
+                                value: settings.playerInfoEnabled
+                                onToggled: settings.playerInfoEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Accent from album art")
+                                description: qsTr("Tint the flyout accents using the current album art's dominant color.")
+                                value: settings.accentFromArt
+                                onToggled: settings.accentFromArt = value
+                            }
+                            SettingRow {
+                                visible: settings.accentFromArt
+                                x: 16
+                                width: parent.width - 16
+                                label: qsTr("Apply accent app-wide")
+                                description: qsTr("Also tint the dashboard and other windows, not just the flyouts.")
+                                value: settings.accentFromArtAppWide
+                                onToggled: settings.accentFromArtAppWide = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Repeat button")
+                                description: qsTr("Show a repeat control on the media flyout.")
+                                value: settings.repeatEnabled
+                                onToggled: settings.repeatEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Shuffle button")
+                                description: qsTr("Show a shuffle control on the media flyout.")
+                                value: settings.shuffleEnabled
+                                onToggled: settings.shuffleEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Now Playing flyout")
+                                description: qsTr("Show a compact card with the next track when one auto-advances.")
+                                available: capabilities.mediaSessionAvailable
+                                unavailableNote: qsTr("Unavailable: no system media session was detected on this PC.")
+                                value: settings.nextUpEnabled
+                                onToggled: settings.nextUpEnabled = value
+                            }
+
+                            SettingSlider {
+                                width: parent.width
+                                label: qsTr("Flyout duration")
+                                description: qsTr("How long the media flyout stays on screen.")
+                                from: 1000
+                                to: 10000
+                                stepSize: 500
+                                value: settings.flyoutDuration
+                                valueText: qsTr("%1 s").arg((settings.flyoutDuration / 1000).toFixed(1))
+                                onMoved: settings.flyoutDuration = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                width: parent.width
+                                label: qsTr("Now Playing duration")
+                                description: qsTr("How long the now playing flyout stays on screen.")
+                                from: 1000
+                                to: 10000
+                                stepSize: 500
+                                value: settings.nextUpDuration
+                                valueText: qsTr("%1 s").arg((settings.nextUpDuration / 1000).toFixed(1))
+                                onMoved: settings.nextUpDuration = Math.round(value)
+                            }
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Now Playing style")
+                                description: qsTr("How the now playing flyout is laid out.")
+                                model: [qsTr("Now playing card"), qsTr("Compact pill")]
+                                currentIndex: settings.nextUpStyle
+                                onActivated: settings.nextUpStyle = index
+                                locked: entitlement.locked.nowPlayingStyles
+                            }
+                        }
+                    }
+
+                    SettingSection {
+                        id: volumeFlyoutSection
+                        width: parent.width
+                        text: qsTr("Volume")
+                        description: qsTr("Configure the volume flyout and native OSD override.")
+                        glyph: Fluent.speaker2
+                        expanded: false
                         available: capabilities.audioAvailable
                         unavailableNote: qsTr("Unavailable: no audio output device was detected.")
                         value: settings.volumeFlyoutEnabled
                         onToggled: settings.volumeFlyoutEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Override native volume OSD")
-                        description: qsTr("Replace the built-in Windows volume overlay with this one.")
-                        value: settings.overrideNativeOsd
-                        onToggled: settings.overrideNativeOsd = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("App mixer in volume flyout")
-                        description: qsTr("Show a button on the volume flyout to expand a per-app volume mixer.")
-                        value: settings.volumeFlyoutMixerEnabled
-                        onToggled: settings.volumeFlyoutMixerEnabled = value
-                        locked: entitlement.locked.perAppMixer
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Volume flyout position")
-                        description: qsTr("Place the volume flyout independently of the media flyout.")
-                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
-                        currentIndex: settings.volumeFlyoutPosition
-                        onActivated: settings.volumeFlyoutPosition = index
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Volume flyout monitor")
-                        description: qsTr("Which display the volume flyout is shown on.")
-                        model: monitors.names
-                        currentIndex: settings.volumeFlyoutMonitor
-                        onActivated: settings.volumeFlyoutMonitor = index
-                    }
-                    SettingSlider {
-                        width: parent.width
-                        label: qsTr("Volume flyout duration")
-                        description: qsTr("How long the volume flyout stays on screen.")
-                        from: 1000
-                        to: 10000
-                        stepSize: 500
-                        value: settings.volumeFlyoutDuration
-                        valueText: qsTr("%1 s").arg((settings.volumeFlyoutDuration / 1000).toFixed(1))
-                        onMoved: settings.volumeFlyoutDuration = Math.round(value)
-                    }
-                }
 
-                Column {
-                    visible: dash.currentIndex === 6
-                    width: parent.width
-                    spacing: 12
+                        Column {
+                            width: parent.width
+                            spacing: 12
 
-                    SettingRow {
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Override native volume OSD")
+                                description: qsTr("Replace the built-in Windows volume overlay with this one.")
+                                value: settings.overrideNativeOsd
+                                onToggled: settings.overrideNativeOsd = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("App mixer in volume flyout")
+                                description: qsTr("Show a button on the volume flyout to expand a per-app volume mixer.")
+                                value: settings.volumeFlyoutMixerEnabled
+                                onToggled: settings.volumeFlyoutMixerEnabled = value
+                                locked: entitlement.locked.perAppMixer
+                            }
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Volume flyout position")
+                                description: qsTr("Place the volume flyout independently of the media flyout.")
+                                model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
+                                currentIndex: settings.volumeFlyoutPosition
+                                onActivated: settings.volumeFlyoutPosition = index
+                            }
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Volume flyout monitor")
+                                description: qsTr("Which display the volume flyout is shown on.")
+                                model: monitors.names
+                                currentIndex: settings.volumeFlyoutMonitor
+                                onActivated: settings.volumeFlyoutMonitor = index
+                            }
+                            SettingSlider {
+                                width: parent.width
+                                label: qsTr("Volume flyout duration")
+                                description: qsTr("How long the volume flyout stays on screen.")
+                                from: 1000
+                                to: 10000
+                                stepSize: 500
+                                value: settings.volumeFlyoutDuration
+                                valueText: qsTr("%1 s").arg((settings.volumeFlyoutDuration / 1000).toFixed(1))
+                                onMoved: settings.volumeFlyoutDuration = Math.round(value)
+                            }
+                        }
+                    }
+
+                    SettingSection {
+                        id: lockKeysFlyoutSection
                         width: parent.width
-                        label: qsTr("Lock key indicators")
-                        description: qsTr("Show a flyout when Caps, Num, or Scroll lock is toggled.")
+                        text: qsTr("Lock Keys")
+                        description: qsTr("Caps / Num / Scroll lock indicator flyouts.")
+                        glyph: Fluent.keyboard
+                        expanded: false
                         available: capabilities.lockKeysAvailable
                         unavailableNote: qsTr("Unavailable: the keyboard hook could not be installed.")
                         value: settings.lockKeysEnabled
                         onToggled: settings.lockKeysEnabled = value
+
+                        Column {
+                            width: parent.width
+                            spacing: 12
+
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Caps Lock")
+                                value: settings.lockKeysCapsEnabled
+                                onToggled: settings.lockKeysCapsEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Num Lock")
+                                value: settings.lockKeysNumEnabled
+                                onToggled: settings.lockKeysNumEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Scroll Lock")
+                                value: settings.lockKeysScrollEnabled
+                                onToggled: settings.lockKeysScrollEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Insert")
+                                value: settings.lockKeysInsertEnabled
+                                onToggled: settings.lockKeysInsertEnabled = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Bold text")
+                                description: qsTr("Use a bold font for the key name.")
+                                value: settings.lockKeysBoldUi
+                                onToggled: settings.lockKeysBoldUi = value
+                            }
+                            SettingSlider {
+                                width: parent.width
+                                label: qsTr("Duration")
+                                description: qsTr("How long the lock keys flyout stays on screen.")
+                                from: 1000
+                                to: 10000
+                                stepSize: 500
+                                value: settings.lockKeysDuration
+                                valueText: qsTr("%1 s").arg((settings.lockKeysDuration / 1000).toFixed(1))
+                                onMoved: settings.lockKeysDuration = Math.round(value)
+                            }
+                        }
                     }
-                    SettingRow {
+
+                    SettingSection {
+                        id: peripheralFlyoutSection
                         width: parent.width
-                        label: qsTr("Caps Lock")
-                        value: settings.lockKeysCapsEnabled
-                        onToggled: settings.lockKeysCapsEnabled = value
+                        text: qsTr("Peripheral Flyout")
+                        description: qsTr("Announce peripherals as they connect, disconnect or run low on battery.")
+                        glyph: Fluent.plugConnected
+                        expanded: false
+                        value: settings.peripheralFlyoutEnabled
+                        onToggled: settings.peripheralFlyoutEnabled = value
+                        locked: entitlement.locked.peripheralBattery
+
+                        Column {
+                            width: parent.width
+                            spacing: 12
+
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("On connect")
+                                description: qsTr("Announce a peripheral when it connects.")
+                                value: settings.peripheralFlyoutOnConnect
+                                onToggled: settings.peripheralFlyoutOnConnect = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("On disconnect")
+                                description: qsTr("Announce a peripheral when it disconnects.")
+                                value: settings.peripheralFlyoutOnDisconnect
+                                onToggled: settings.peripheralFlyoutOnDisconnect = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("On low battery")
+                                description: qsTr("Warn once when a battery drops below 20%, and again below 10%.")
+                                value: settings.peripheralFlyoutOnLowBattery
+                                onToggled: settings.peripheralFlyoutOnLowBattery = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("On charging")
+                                description: qsTr("Announce when a peripheral starts or stops charging.")
+                                value: settings.peripheralFlyoutOnCharging
+                                onToggled: settings.peripheralFlyoutOnCharging = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Wired devices")
+                                description: qsTr("Announce USB peripherals as they are plugged in or removed.")
+                                value: settings.peripheralFlyoutOnWired
+                                onToggled: settings.peripheralFlyoutOnWired = value
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("Low battery notification")
+                                description: qsTr("Also show a tray notification for a low battery, so it isn't missed.")
+                                value: settings.peripheralLowBatteryToast
+                                onToggled: settings.peripheralLowBatteryToast = value
+                                locked: entitlement.locked.peripheralBattery
+                            }
+
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Peripheral flyout position")
+                                description: qsTr("Place the peripheral flyout independently of the other flyouts.")
+                                model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
+                                currentIndex: settings.peripheralFlyoutPosition
+                                onActivated: settings.peripheralFlyoutPosition = index
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Peripheral flyout monitor")
+                                description: qsTr("Which display the peripheral flyout is shown on.")
+                                model: monitors.names
+                                currentIndex: settings.peripheralFlyoutMonitor
+                                onActivated: settings.peripheralFlyoutMonitor = index
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                            SettingSlider {
+                                width: parent.width
+                                label: qsTr("Peripheral flyout duration")
+                                description: qsTr("How long the peripheral flyout stays on screen.")
+                                from: 1000
+                                to: 10000
+                                stepSize: 500
+                                value: settings.peripheralFlyoutDuration
+                                valueText: qsTr("%1 s").arg((settings.peripheralFlyoutDuration / 1000).toFixed(1))
+                                onMoved: settings.peripheralFlyoutDuration = Math.round(value)
+                                parentLocked: entitlement.locked.peripheralBattery
+                            }
+                        }
                     }
-                    SettingRow {
+
+                    SettingSection {
+                        id: chargerFlyoutSection
                         width: parent.width
-                        label: qsTr("Num Lock")
-                        value: settings.lockKeysNumEnabled
-                        onToggled: settings.lockKeysNumEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Scroll Lock")
-                        value: settings.lockKeysScrollEnabled
-                        onToggled: settings.lockKeysScrollEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Insert")
-                        value: settings.lockKeysInsertEnabled
-                        onToggled: settings.lockKeysInsertEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Bold text")
-                        description: qsTr("Use a bold font for the key name.")
-                        value: settings.lockKeysBoldUi
-                        onToggled: settings.lockKeysBoldUi = value
-                    }
-                    SettingSlider {
-                        width: parent.width
-                        label: qsTr("Duration")
-                        description: qsTr("How long the lock keys flyout stays on screen.")
-                        from: 1000
-                        to: 10000
-                        stepSize: 500
-                        value: settings.lockKeysDuration
-                        valueText: qsTr("%1 s").arg((settings.lockKeysDuration / 1000).toFixed(1))
-                        onMoved: settings.lockKeysDuration = Math.round(value)
+                        text: qsTr("Charger Flyout")
+                        description: qsTr("Announce the charger as it is plugged in or unplugged.")
+                        glyph: Fluent.charge
+                        expanded: false
+                        available: capabilities.chargerAvailable
+                        unavailableNote: qsTr("Unavailable: this PC has no battery, so it never changes power source.")
+                        value: settings.chargerFlyoutEnabled
+                        onToggled: settings.chargerFlyoutEnabled = value
+
+                        Column {
+                            width: parent.width
+                            spacing: 12
+
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("On plug in")
+                                description: qsTr("Announce when the charger is connected.")
+                                available: capabilities.chargerAvailable
+                                value: settings.chargerFlyoutOnPlug
+                                onToggled: settings.chargerFlyoutOnPlug = value
+                            }
+                            SettingRow {
+                                width: parent.width
+                                label: qsTr("On unplug")
+                                description: qsTr("Announce when the charger is disconnected.")
+                                available: capabilities.chargerAvailable
+                                value: settings.chargerFlyoutOnUnplug
+                                onToggled: settings.chargerFlyoutOnUnplug = value
+                            }
+
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Charger flyout position")
+                                description: qsTr("Place the charger flyout independently of the other flyouts.")
+                                model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
+                                currentIndex: settings.chargerFlyoutPosition
+                                onActivated: settings.chargerFlyoutPosition = index
+                            }
+                            SettingCombo {
+                                width: parent.width
+                                label: qsTr("Charger flyout monitor")
+                                description: qsTr("Which display the charger flyout is shown on.")
+                                model: monitors.names
+                                currentIndex: settings.chargerFlyoutMonitor
+                                onActivated: settings.chargerFlyoutMonitor = index
+                            }
+                            SettingSlider {
+                                width: parent.width
+                                label: qsTr("Charger flyout duration")
+                                description: qsTr("How long the charger flyout stays on screen.")
+                                from: 1000
+                                to: 10000
+                                stepSize: 500
+                                value: settings.chargerFlyoutDuration
+                                valueText: qsTr("%1 s").arg((settings.chargerFlyoutDuration / 1000).toFixed(1))
+                                onMoved: settings.chargerFlyoutDuration = Math.round(value)
+                            }
+                        }
                     }
                 }
 
                 Column {
                     id: taskbarWidgetPage
-                    visible: dash.currentIndex === 4
+                    visible: dash.currentIndex === 2
                     width: parent.width
                     spacing: 12
 
@@ -1358,18 +1560,13 @@ Window {
                         text: qsTr("Media Widget")
                         description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
                         glyph: Fluent.musicNote
+                        value: settings.taskbarWidgetEnabled
+                        onToggled: settings.taskbarWidgetEnabled = value
 
                         Column {
                             width: parent.width
                             spacing: 12
 
-                            SettingRow {
-                                width: parent.width
-                                label: qsTr("Taskbar widget")
-                                description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
-                                value: settings.taskbarWidgetEnabled
-                                onToggled: settings.taskbarWidgetEnabled = value
-                            }
                             SettingCombo {
                                 width: parent.width
                                 label: qsTr("Browser artwork")
@@ -1490,19 +1687,14 @@ Window {
                         text: qsTr("Peripheral Widget")
                         description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
                         glyph: Fluent.plugConnected
+                        value: settings.peripheralsWidgetEnabled
+                        onToggled: settings.peripheralsWidgetEnabled = value
+                        locked: entitlement.locked.peripheralBattery
 
                         Column {
                             width: parent.width
                             spacing: 12
 
-                            SettingRow {
-                                width: parent.width
-                                label: qsTr("Peripherals widget")
-                                description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
-                                value: settings.peripheralsWidgetEnabled
-                                onToggled: settings.peripheralsWidgetEnabled = value
-                                locked: entitlement.locked.peripheralBattery
-                            }
                             SettingRow {
                                 visible: settings.peripheralsWidgetEnabled
                                 width: parent.width
@@ -1595,173 +1787,7 @@ Window {
                 }
 
                 Column {
-                    visible: dash.currentIndex === 2
-                    width: parent.width
-                    spacing: 12
-
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Peripheral flyout")
-                        description: qsTr("Show a flyout when a peripheral connects, disconnects or runs low on battery.")
-                        value: settings.peripheralFlyoutEnabled
-                        onToggled: settings.peripheralFlyoutEnabled = value
-                        locked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("On connect")
-                        description: qsTr("Announce a peripheral when it connects.")
-                        value: settings.peripheralFlyoutOnConnect
-                        onToggled: settings.peripheralFlyoutOnConnect = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("On disconnect")
-                        description: qsTr("Announce a peripheral when it disconnects.")
-                        value: settings.peripheralFlyoutOnDisconnect
-                        onToggled: settings.peripheralFlyoutOnDisconnect = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("On low battery")
-                        description: qsTr("Warn once when a battery drops below 20%, and again below 10%.")
-                        value: settings.peripheralFlyoutOnLowBattery
-                        onToggled: settings.peripheralFlyoutOnLowBattery = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("On charging")
-                        description: qsTr("Announce when a peripheral starts or stops charging.")
-                        value: settings.peripheralFlyoutOnCharging
-                        onToggled: settings.peripheralFlyoutOnCharging = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Wired devices")
-                        description: qsTr("Announce USB peripherals as they are plugged in or removed.")
-                        value: settings.peripheralFlyoutOnWired
-                        onToggled: settings.peripheralFlyoutOnWired = value
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Low battery notification")
-                        description: qsTr("Also show a tray notification for a low battery, so it isn't missed.")
-                        value: settings.peripheralLowBatteryToast
-                        onToggled: settings.peripheralLowBatteryToast = value
-                        locked: entitlement.locked.peripheralBattery
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Hide during fullscreen")
-                        description: qsTr("Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.")
-                        value: settings.disableOnFullscreen
-                        onToggled: settings.disableOnFullscreen = value
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Peripheral flyout position")
-                        description: qsTr("Place the peripheral flyout independently of the other flyouts.")
-                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
-                        currentIndex: settings.peripheralFlyoutPosition
-                        onActivated: settings.peripheralFlyoutPosition = index
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Peripheral flyout monitor")
-                        description: qsTr("Which display the peripheral flyout is shown on.")
-                        model: monitors.names
-                        currentIndex: settings.peripheralFlyoutMonitor
-                        onActivated: settings.peripheralFlyoutMonitor = index
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                    SettingSlider {
-                        width: parent.width
-                        label: qsTr("Peripheral flyout duration")
-                        description: qsTr("How long the peripheral flyout stays on screen.")
-                        from: 1000
-                        to: 10000
-                        stepSize: 500
-                        value: settings.peripheralFlyoutDuration
-                        valueText: qsTr("%1 s").arg((settings.peripheralFlyoutDuration / 1000).toFixed(1))
-                        onMoved: settings.peripheralFlyoutDuration = Math.round(value)
-                        parentLocked: entitlement.locked.peripheralBattery
-                    }
-                }
-
-                Column {
                     visible: dash.currentIndex === 3
-                    width: parent.width
-                    spacing: 12
-
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Charger flyout")
-                        description: qsTr("Show a flyout when the charger is plugged in or unplugged.")
-                        available: capabilities.chargerAvailable
-                        unavailableNote: qsTr("Unavailable: this PC has no battery, so it never changes power source.")
-                        value: settings.chargerFlyoutEnabled
-                        onToggled: settings.chargerFlyoutEnabled = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("On plug in")
-                        description: qsTr("Announce when the charger is connected.")
-                        available: capabilities.chargerAvailable
-                        value: settings.chargerFlyoutOnPlug
-                        onToggled: settings.chargerFlyoutOnPlug = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("On unplug")
-                        description: qsTr("Announce when the charger is disconnected.")
-                        available: capabilities.chargerAvailable
-                        value: settings.chargerFlyoutOnUnplug
-                        onToggled: settings.chargerFlyoutOnUnplug = value
-                    }
-                    SettingRow {
-                        width: parent.width
-                        label: qsTr("Hide during fullscreen")
-                        description: qsTr("Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.")
-                        value: settings.disableOnFullscreen
-                        onToggled: settings.disableOnFullscreen = value
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Charger flyout position")
-                        description: qsTr("Place the charger flyout independently of the other flyouts.")
-                        model: [qsTr("Top left"), qsTr("Top center"), qsTr("Top right"), qsTr("Bottom left"), qsTr("Bottom center"), qsTr("Bottom right"), qsTr("Above taskbar widget")]
-                        currentIndex: settings.chargerFlyoutPosition
-                        onActivated: settings.chargerFlyoutPosition = index
-                    }
-                    SettingCombo {
-                        width: parent.width
-                        label: qsTr("Charger flyout monitor")
-                        description: qsTr("Which display the charger flyout is shown on.")
-                        model: monitors.names
-                        currentIndex: settings.chargerFlyoutMonitor
-                        onActivated: settings.chargerFlyoutMonitor = index
-                    }
-                    SettingSlider {
-                        width: parent.width
-                        label: qsTr("Charger flyout duration")
-                        description: qsTr("How long the charger flyout stays on screen.")
-                        from: 1000
-                        to: 10000
-                        stepSize: 500
-                        value: settings.chargerFlyoutDuration
-                        valueText: qsTr("%1 s").arg((settings.chargerFlyoutDuration / 1000).toFixed(1))
-                        onMoved: settings.chargerFlyoutDuration = Math.round(value)
-                    }
-                }
-
-                Column {
-                    visible: dash.currentIndex === 7
                     width: parent.width
                     spacing: 12
 
@@ -1861,7 +1887,7 @@ Window {
                 }
 
                 Column {
-                    visible: dash.currentIndex === 8
+                    visible: dash.currentIndex === 4
                     width: parent.width
                     spacing: 12
 
@@ -1991,13 +2017,13 @@ Window {
                 }
 
                 SupportPage {
-                    visible: dash.currentIndex === 9 && donate.available
+                    visible: dash.currentIndex === 5 && donate.available
                     width: parent.width
                     ownerWindow: dash
                 }
 
                 Column {
-                    visible: dash.currentIndex === 10
+                    visible: dash.currentIndex === 6
                     width: parent.width
                     spacing: 12
 

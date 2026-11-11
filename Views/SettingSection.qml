@@ -9,12 +9,20 @@ Rectangle {
     property string glyph: ""
     property string description: ""
     property alias expanded: header.checked
+    property bool value: false
+    property bool available: true
+    property string unavailableNote: ""
+    property bool locked: false
+    signal toggled(bool value)
+
+    readonly property string detail: locked ? qsTr("Pro feature. Get Pro on the Home page to use it.")
+                                           : (!available && unavailableNote.length > 0 ? unavailableNote : description)
 
     implicitHeight: header.height + (expanded ? body.implicitHeight + 36 : 0)
     radius: 12
     color: theme.card
     border.width: 1
-    border.color: header.visualFocus ? theme.accent : theme.border
+    border.color: header.visualFocus || masterToggle.visualFocus ? theme.accent : theme.border
 
     property Button _header: Button {
         id: header
@@ -39,7 +47,7 @@ Rectangle {
         }
 
         contentItem: Item {
-            implicitHeight: Math.max(36, labels.implicitHeight)
+            implicitHeight: Math.max(36, labels.implicitHeight, masterControls.implicitHeight)
 
             Rectangle {
                 id: iconTile
@@ -62,7 +70,7 @@ Rectangle {
                 id: labels
                 anchors.left: iconTile.right
                 anchors.leftMargin: 14
-                anchors.right: chevron.left
+                anchors.right: masterControls.left
                 anchors.rightMargin: 16
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 4
@@ -75,12 +83,37 @@ Rectangle {
                     elide: Text.ElideRight
                 }
                 Text {
-                    visible: section.description.length > 0
+                    visible: section.detail.length > 0
                     width: parent.width
-                    text: section.description
+                    text: section.detail
                     color: theme.textSecondary
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
+                }
+            }
+
+            Row {
+                id: masterControls
+                anchors.right: chevron.left
+                anchors.rightMargin: 16
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 10
+
+                ProBadge {
+                    objectName: "sectionProBadge"
+                    visible: section.locked
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    id: masterToggle
+                    objectName: "sectionToggle"
+                    checked: section.value
+                    enabled: section.available && !section.locked
+                    opacity: enabled ? 1.0 : 0.5
+                    Accessible.name: header.text
+                    Accessible.description: section.detail
+                    onToggled: section.toggled(checked)
                 }
             }
 

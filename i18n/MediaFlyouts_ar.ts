@@ -162,6 +162,14 @@ Unavailable: %1</source>
         <translation>تصفية التطبيقات</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>النوافذ المنبثقة</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>اضبط نوافذ الوسائط والصوت ومفاتيح القفل والأجهزة الطرفية والشاحن.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>اختيار تطبيقات الوسائط المسموح لها بعرض النوافذ المنبثقة.</translation>
     </message>
@@ -522,10 +530,6 @@ Unavailable: %1</source>
         <translation>نصيحة: اضغط مفتاح وسائط أو مستوى صوت، أو انقر أيقونة علبة النظام، لمعاينة النوافذ المنبثقة.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>إظهار نافذة «قيد التشغيل» عند الضغط على مفاتيح الوسائط.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>غير متاح: لم يتم العثور على جلسة وسائط للنظام على هذا الجهاز.</translation>
     </message>
@@ -702,10 +706,6 @@ Unavailable: %1</source>
         <translation>شريط مدمج</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>إظهار نافذة مستوى الصوت عند الضغط على مفاتيح الصوت.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>غير متاح: لم يتم العثور على جهاز إخراج صوت.</translation>
     </message>
@@ -746,14 +746,6 @@ Unavailable: %1</source>
         <translation>مدة بقاء نافذة مستوى الصوت على الشاشة.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>مؤشرات مفاتيح القفل</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>إظهار نافذة عند تبديل Caps Lock أو Num Lock أو Scroll Lock.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>غير متاح: تعذّر تثبيت خطّاف لوحة المفاتيح.</translation>
     </message>
@@ -792,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>شريط المهام في الشاشة المختارة على اليسار أو اليمين. تحتاج الأدوات إلى شريط مهام أفقي (أعلى أو أسفل) وتبقى مخفية حتى يعود.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>أداة شريط المهام</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Unavailable: %1</source>
         <translation>موصول عبر USB.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>إظهار نافذة عند اتصال جهاز طرفي أو انفصاله أو انخفاض بطاريته.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>عند الاتصال</translation>
     </message>
@@ -1022,10 +1006,6 @@ Unavailable: %1</source>
         <translation>إظهار إشعار في علبة النظام أيضًا عند انخفاض البطارية، حتى لا يفوتك.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>إيقاف النوافذ المنبثقة أثناء وجود لعبة بملء الشاشة في المقدمة. إعداد مشترك مع النوافذ الأخرى.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>موضع نافذة الأجهزة الطرفية</translation>
     </message>
@@ -1048,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>مدة بقاء نافذة الأجهزة الطرفية على الشاشة.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>إظهار نافذة عند توصيل الشاحن أو فصله.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>ميزة برو. احصل على برو من الصفحة الرئيسية لاستخدامها.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>ميزة برو. احصل على برو من الصفحة الرئيسية لاستخدامها.</translation>

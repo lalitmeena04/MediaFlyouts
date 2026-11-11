@@ -162,6 +162,14 @@ Indisponível: %1</translation>
         <translation>Filtro de apps</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>Painéis</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Configure os painéis de mídia, volume, teclas de bloqueio, periféricos e carregador.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>Escolha quais apps de mídia podem mostrar painéis.</translation>
     </message>
@@ -522,10 +530,6 @@ Indisponível: %1</translation>
         <translation>Dica: pressione uma tecla de mídia ou de volume, ou clique no ícone da bandeja, para ver os painéis.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Mostrar o painel de reprodução ao pressionar teclas de mídia.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Indisponível: nenhuma sessão de mídia do sistema foi detectada neste PC.</translation>
     </message>
@@ -702,10 +706,6 @@ Indisponível: %1</translation>
         <translation>Pílula compacta</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Mostrar o painel de volume ao pressionar as teclas de volume.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Indisponível: nenhum dispositivo de saída de áudio foi detectado.</translation>
     </message>
@@ -746,14 +746,6 @@ Indisponível: %1</translation>
         <translation>Por quanto tempo o painel de volume fica na tela.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Indicadores das teclas de bloqueio</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Mostrar um painel quando Caps Lock, Num Lock ou Scroll Lock for alternado.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Indisponível: não foi possível instalar o hook de teclado.</translation>
     </message>
@@ -792,10 +784,6 @@ Indisponível: %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>A barra de tarefas da tela escolhida está à esquerda ou à direita. Os widgets precisam de uma barra horizontal (em cima ou embaixo) e ficam ocultos até ela voltar.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Widget da barra de tarefas</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Indisponível: %1</translation>
         <translation>Conectado por USB.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Mostrar um painel quando um periférico conecta, desconecta ou fica com bateria fraca.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>Ao conectar</translation>
     </message>
@@ -1022,10 +1006,6 @@ Indisponível: %1</translation>
         <translation>Mostrar também uma notificação na bandeja quando a bateria estiver fraca, para não passar despercebida.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Suprimir os painéis enquanto um jogo em tela cheia estiver em primeiro plano. Compartilhado com os outros painéis.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Posição do painel de periféricos</translation>
     </message>
@@ -1048,10 +1028,6 @@ Indisponível: %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Por quanto tempo o painel de periféricos fica na tela.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Mostrar um painel quando o carregador for conectado ou desconectado.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Indisponível: %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Recurso Pro. Obtenha o Pro na página inicial para usá-lo.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Recurso Pro. Obtenha o Pro na página inicial para usá-lo.</translation>

@@ -162,6 +162,14 @@ Unavailable: %1</source>
         <translation>アプリのフィルター</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>フライアウト</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>メディア、音量、ロックキー、周辺機器、充電器のフライアウトを設定します。</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>フライアウトの表示を許可するメディアアプリを選びます。</translation>
     </message>
@@ -522,10 +530,6 @@ Unavailable: %1</source>
         <translation>ヒント: メディアキーや音量キーを押すか、トレイアイコンをクリックするとフライアウトをプレビューできます。</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>メディアキーを押したときに再生中フライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>利用不可: この PC でシステムのメディアセッションが検出されませんでした。</translation>
     </message>
@@ -702,10 +706,6 @@ Unavailable: %1</source>
         <translation>コンパクトなピル</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>音量キーを押したときに音量フライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>利用不可: オーディオ出力デバイスが検出されませんでした。</translation>
     </message>
@@ -746,14 +746,6 @@ Unavailable: %1</source>
         <translation>音量フライアウトを画面に表示する時間。</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>ロックキーのインジケーター</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Caps、Num、Scroll Lock を切り替えたときにフライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>利用不可: キーボードフックをインストールできませんでした。</translation>
     </message>
@@ -792,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>選択したディスプレイのタスクバーが左または右にあります。ウィジェットには水平なタスクバー（上または下）が必要で、戻されるまで非表示のままです。</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>タスクバーウィジェット</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Unavailable: %1</source>
         <translation>USB で接続。</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>周辺機器が接続、切断、またはバッテリー残量が低下したときにフライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>接続時</translation>
     </message>
@@ -1022,10 +1006,6 @@ Unavailable: %1</source>
         <translation>見逃さないように、バッテリー残量低下時にトレイ通知も表示します。</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>全画面のゲームが前面にある間はフライアウトを表示しません。他のフライアウトと共通の設定です。</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>周辺機器フライアウトの位置</translation>
     </message>
@@ -1048,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>周辺機器フライアウトを画面に表示する時間。</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>充電器の接続・取り外し時にフライアウトを表示します。</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>プロ版の機能です。ホームページでプロ版を入手するとご利用いただけます。</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>プロ版の機能です。ホームページでプロ版を入手するとご利用いただけます。</translation>

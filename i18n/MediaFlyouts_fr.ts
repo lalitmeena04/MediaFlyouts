@@ -162,6 +162,14 @@ Indisponible : %1</translation>
         <translation>Filtrage des applications</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>Volets</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Configurez les volets multimédias, de volume, de verrouillage, de périphériques et de chargeur.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>Choisir quelles applications multimédias peuvent afficher des volets.</translation>
     </message>
@@ -522,10 +530,6 @@ Indisponible : %1</translation>
         <translation>Astuce : appuyez sur une touche multimédia ou de volume, ou cliquez sur l&apos;icône de la zone de notification, pour voir les volets.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Afficher le volet de lecture à l&apos;appui sur une touche multimédia.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Indisponible : aucune session multimédia système n&apos;a été détectée sur ce PC.</translation>
     </message>
@@ -702,10 +706,6 @@ Indisponible : %1</translation>
         <translation>Pastille compacte</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Afficher le volet de volume à l&apos;appui sur une touche de volume.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Indisponible : aucun périphérique de sortie audio n&apos;a été détecté.</translation>
     </message>
@@ -746,14 +746,6 @@ Indisponible : %1</translation>
         <translation>Durée d&apos;affichage du volet de volume.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Indicateurs des touches de verrouillage</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Afficher un volet lorsque Verr Maj, Verr Num ou Arrêt défil change d&apos;état.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Indisponible : le hook clavier n&apos;a pas pu être installé.</translation>
     </message>
@@ -792,10 +784,6 @@ Indisponible : %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>La barre des tâches de l&apos;écran choisi est à gauche ou à droite. Les widgets ont besoin d&apos;une barre horizontale (en haut ou en bas) et restent masqués jusqu&apos;à ce qu&apos;elle y revienne.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Widget de la barre des tâches</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Indisponible : %1</translation>
         <translation>Branché en USB.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Afficher un volet lorsqu&apos;un périphérique se connecte, se déconnecte ou a une batterie faible.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>À la connexion</translation>
     </message>
@@ -1022,10 +1006,6 @@ Indisponible : %1</translation>
         <translation>Afficher aussi une notification dans la zone de notification en cas de batterie faible, pour ne pas la manquer.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Masquer les volets lorsqu&apos;un jeu vidéo en plein écran est au premier plan. Partagé avec les autres volets.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Position du volet des périphériques</translation>
     </message>
@@ -1048,10 +1028,6 @@ Indisponible : %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Durée d&apos;affichage du volet des périphériques.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Afficher un volet lorsque le chargeur est branché ou débranché.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Indisponible : %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fonction Pro. Obtenez Pro depuis la page d’accueil pour l’utiliser.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Fonction Pro. Obtenez Pro depuis la page d’accueil pour l’utiliser.</translation>

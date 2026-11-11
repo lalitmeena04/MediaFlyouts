@@ -162,6 +162,14 @@ Tidak tersedia: %1</translation>
         <translation>Filter Aplikasi</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>Flyout</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Atur flyout media, volume, tombol kunci, periferal, dan pengisi daya.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>Pilih aplikasi media mana yang boleh menampilkan flyout.</translation>
     </message>
@@ -522,10 +530,6 @@ Tidak tersedia: %1</translation>
         <translation>Tips: tekan tombol media atau volume, atau klik ikon baki, untuk melihat pratinjau flyout.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Tampilkan flyout sedang diputar saat tombol media ditekan.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Tidak tersedia: tidak ada sesi media sistem yang terdeteksi di PC ini.</translation>
     </message>
@@ -702,10 +706,6 @@ Tidak tersedia: %1</translation>
         <translation>Pil ringkas</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Tampilkan flyout volume saat tombol volume ditekan.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Tidak tersedia: tidak ada perangkat keluaran audio yang terdeteksi.</translation>
     </message>
@@ -746,14 +746,6 @@ Tidak tersedia: %1</translation>
         <translation>Berapa lama flyout volume tetap di layar.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Indikator tombol kunci</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Tampilkan flyout saat Caps, Num, atau Scroll Lock diubah.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Tidak tersedia: hook keyboard tidak dapat dipasang.</translation>
     </message>
@@ -792,10 +784,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>Taskbar pada layar yang dipilih berada di kiri atau kanan. Widget memerlukan taskbar horizontal (atas atau bawah) dan tetap tersembunyi sampai taskbar dikembalikan.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Widget bilah tugas</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Tidak tersedia: %1</translation>
         <translation>Tercolok melalui USB.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Tampilkan flyout saat periferal tersambung, terputus, atau baterainya lemah.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>Saat tersambung</translation>
     </message>
@@ -1022,10 +1006,6 @@ Tidak tersedia: %1</translation>
         <translation>Tampilkan juga notifikasi baki saat baterai lemah, agar tidak terlewat.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Tahan flyout saat gim layar penuh sedang di depan. Berlaku juga untuk flyout lain.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Posisi flyout periferal</translation>
     </message>
@@ -1048,10 +1028,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Berapa lama flyout periferal tetap di layar.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Tampilkan flyout saat pengisi daya dicolokkan atau dicabut.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Tidak tersedia: %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>

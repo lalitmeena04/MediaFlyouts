@@ -162,6 +162,14 @@ Unavailable: %1</source>
         <translation>应用过滤</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>弹窗</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>配置媒体、音量、锁定键、外设和充电器弹窗。</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>选择允许显示弹窗的媒体应用。</translation>
     </message>
@@ -522,10 +530,6 @@ Unavailable: %1</source>
         <translation>提示：按下媒体键或音量键，或点击托盘图标，即可预览弹窗。</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>按下媒体键时显示正在播放弹窗。</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>不可用：此电脑上未检测到系统媒体会话。</translation>
     </message>
@@ -702,10 +706,6 @@ Unavailable: %1</source>
         <translation>紧凑胶囊</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>按下音量键时显示音量弹窗。</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>不可用：未检测到音频输出设备。</translation>
     </message>
@@ -746,14 +746,6 @@ Unavailable: %1</source>
         <translation>音量弹窗在屏幕上停留的时间。</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>锁定键指示</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>切换 Caps、Num 或 Scroll Lock 时显示弹窗。</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>不可用：无法安装键盘钩子。</translation>
     </message>
@@ -792,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>所选显示器的任务栏位于左侧或右侧。小组件需要水平任务栏（顶部或底部），在任务栏移回之前将保持隐藏。</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>任务栏小组件</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Unavailable: %1</source>
         <translation>通过 USB 连接。</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>当外设连接、断开或电量不足时显示弹窗。</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>连接时</translation>
     </message>
@@ -1022,10 +1006,6 @@ Unavailable: %1</source>
         <translation>电量不足时同时显示托盘通知，以免错过。</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>当全屏游戏位于前台时不显示弹窗。此设置与其他弹窗共用。</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>外设弹窗位置</translation>
     </message>
@@ -1048,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>外设弹窗在屏幕上停留的时间。</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>充电器插入或拔出时显示弹窗。</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>专业版功能。请在主页获取专业版后使用。</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>专业版功能。请在主页获取专业版后使用。</translation>

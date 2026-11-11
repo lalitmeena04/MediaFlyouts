@@ -162,6 +162,14 @@ Unavailable: %1</source>
         <translation>앱 필터</translation>
     </message>
     <message>
+        <source>Flyouts</source>
+        <translation>플라이아웃</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>미디어, 볼륨, 잠금 키, 주변기기 및 충전기 플라이아웃을 설정합니다.</translation>
+    </message>
+    <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
         <translation>플라이아웃을 표시할 수 있는 미디어 앱을 선택합니다.</translation>
     </message>
@@ -522,10 +530,6 @@ Unavailable: %1</source>
         <translation>팁: 미디어 키나 볼륨 키를 누르거나 트레이 아이콘을 클릭하면 플라이아웃을 미리 볼 수 있습니다.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>미디어 키를 누를 때 재생 중 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>사용 불가: 이 PC에서 시스템 미디어 세션이 감지되지 않았습니다.</translation>
     </message>
@@ -702,10 +706,6 @@ Unavailable: %1</source>
         <translation>간결한 알약형</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>볼륨 키를 누를 때 볼륨 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>사용 불가: 오디오 출력 장치가 감지되지 않았습니다.</translation>
     </message>
@@ -746,14 +746,6 @@ Unavailable: %1</source>
         <translation>볼륨 플라이아웃이 화면에 유지되는 시간입니다.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>잠금 키 표시</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Caps, Num, Scroll Lock을 전환할 때 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>사용 불가: 키보드 후크를 설치할 수 없습니다.</translation>
     </message>
@@ -792,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>선택한 디스플레이의 작업 표시줄이 왼쪽 또는 오른쪽에 있습니다. 위젯은 가로 작업 표시줄(위 또는 아래)이 필요하며, 되돌릴 때까지 숨겨집니다.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>작업 표시줄 위젯</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -974,10 +962,6 @@ Unavailable: %1</source>
         <translation>USB로 연결됨.</translation>
     </message>
     <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>주변기기가 연결되거나 분리되거나 배터리가 부족할 때 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>On connect</source>
         <translation>연결 시</translation>
     </message>
@@ -1022,10 +1006,6 @@ Unavailable: %1</source>
         <translation>놓치지 않도록 배터리가 부족할 때 트레이 알림도 표시합니다.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>전체 화면 게임이 앞에 있는 동안 플라이아웃을 표시하지 않습니다. 다른 플라이아웃과 공유되는 설정입니다.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>주변기기 플라이아웃 위치</translation>
     </message>
@@ -1048,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>주변기기 플라이아웃이 화면에 유지되는 시간입니다.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>충전기가 연결되거나 분리될 때 플라이아웃을 표시합니다.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1620,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>프로 기능입니다. 홈 페이지에서 프로를 구매하면 사용할 수 있습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>프로 기능입니다. 홈 페이지에서 프로를 구매하면 사용할 수 있습니다.</translation>
