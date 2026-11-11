@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>이 브라우저의 스토어에서 확장 프로그램을 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>브라우저 연결을 설정할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>확장 프로그램 스토어를 열 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>브라우저에서 설치를 확인하세요.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>개발용 확장 프로그램을 설정할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>확장 프로그램 폴더를 열 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>브라우저의 개발자 도구를 사용하여 이 폴더에서 확장 프로그램을 불러오세요.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>반복 버튼</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>브라우저 이미지</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>미디어를 재생 중인 앱 이름을 표시합니다.</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>앨범 아트가 없으면 웹사이트 아이콘을 사용합니다.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>브라우저 확장 프로그램 설치</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>개발용 확장 프로그램 열기</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>브라우저 확장 프로그램이 아직 게시되지 않았습니다.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>브라우저 이미지</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>앨범 아트가 없으면 웹사이트 아이콘을 사용합니다.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>브라우저 확장 프로그램 설치</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>MediaFlyouts에 오신 것을 환영합니다</translation>

@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>यह एक्सटेंशन अभी इस ब्राउज़र के स्टोर में उपलब्ध नहीं है।</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>ब्राउज़र कनेक्शन सेट नहीं हो सका।</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>एक्सटेंशन स्टोर नहीं खुल सका।</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>अपने ब्राउज़र में इंस्टॉलेशन की पुष्टि करें।</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>डेवलपमेंट एक्सटेंशन सेट नहीं हो सका।</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>एक्सटेंशन फ़ोल्डर नहीं खुल सका।</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>ब्राउज़र के डेवलपर टूल से इस फ़ोल्डर का एक्सटेंशन लोड करें।</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>रिपीट बटन</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>ब्राउज़र चित्र</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>मीडिया चला रहे ऐप का नाम दिखाएँ।</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>एल्बम चित्र उपलब्ध न होने पर वेबसाइट का आइकन दिखाएँ।</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ब्राउज़र एक्सटेंशन इंस्टॉल करें</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>डेवलपमेंट एक्सटेंशन खोलें</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>ब्राउज़र एक्सटेंशन अभी प्रकाशित नहीं हुआ है।</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>ब्राउज़र चित्र</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>एल्बम चित्र उपलब्ध न होने पर वेबसाइट का आइकन दिखाएँ।</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ब्राउज़र एक्सटेंशन इंस्टॉल करें</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>MediaFlyouts में आपका स्वागत है</translation>

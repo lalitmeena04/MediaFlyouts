@@ -2,6 +2,7 @@
 
 #include <QColor>
 #include <QElapsedTimer>
+#include <QHash>
 #include <QImage>
 #include <QObject>
 #include <QString>
@@ -75,6 +76,9 @@ class NowPlaying : public QObject {
     public slots:
         void applyTrack(const mf::TrackInfo& track);
         void applyArt(const QImage& art);
+        void applyBrowserArtwork(const QString& browser, const QString& tabTitle, int audibleTabCount,
+                     const QImage& art);
+        void clearBrowserArtwork(const QString& browser);
         void noteMediaKey();
         void noteSessionsChanged();
 
@@ -89,6 +93,13 @@ class NowPlaying : public QObject {
         qint64 currentPositionMs() const;
         static QColor computeArtAccent(const QImage& art);
         void updateResumeAll();
+        void updateArtwork();
+
+        struct BrowserArtwork {
+            QString tabTitle;
+            int audibleTabCount = 0;
+            QImage art;
+        };
 
         mf::TrackInfo m_track;
         QElapsedTimer m_sinceUpdate;
@@ -97,6 +108,11 @@ class NowPlaying : public QObject {
         AlbumArtProvider* m_artProvider = nullptr;
         int m_artRevision = 0;
         bool m_hasArt = false;
+        QImage m_mediaArt;
+        QImage m_displayedArt;
+        QHash<QString, BrowserArtwork> m_browserArtwork;
+        QHash<QString, QImage> m_browserIcons;
+        QStringList m_firefoxAppIds;
         QColor m_artAccent = QColor("#4CC2FF");
         qint64 m_lastMediaKeyMs = 0;
         bool m_seenFirstUpdate = false;

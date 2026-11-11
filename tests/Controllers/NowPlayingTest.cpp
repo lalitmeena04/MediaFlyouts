@@ -4,6 +4,7 @@
 #include <QSignalSpy>
 
 #include "AlbumArtProvider.h"
+#include "BrowserArtworkImage.h"
 #include "NowPlaying.h"
 #include "PlaybackController.h"
 
@@ -312,6 +313,72 @@ TEST(NowPlayingTest, ArtAccentReflectsDominantColor) {
 
     np.applyArt(QImage());
     EXPECT_EQ(np.artAccent(), QColor("#4CC2FF"));
+}
+
+TEST(NowPlayingTest, BrowserArtworkIsOnlyUsedForMatchingMediaWithoutAlbumArt) {
+    NowPlaying np;
+    AlbumArtProvider provider;
+    np.setArtProvider(&provider);
+    TrackInfo track = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing);
+    track.sourceApp = QStringLiteral("chrome.exe");
+    np.applyTrack(track);
+
+    QImage favicon(4, 4, QImage::Format_ARGB32);
+    favicon.fill(Qt::blue);
+    np.applyBrowserArtwork(QStringLiteral("chrome"), QStringLiteral("Song - Site"), 1, favicon);
+    QSize size;
+    EXPECT_EQ(provider.requestImage(QStringLiteral("cover"), &size, QSize()).pixelColor(0, 0), QColor(Qt::blue));
+
+    QImage album(4, 4, QImage::Format_ARGB32);
+    album.fill(Qt::red);
+    np.applyArt(album);
+    EXPECT_EQ(provider.requestImage(QStringLiteral("cover"), &size, QSize()).pixelColor(0, 0), QColor(Qt::red));
+    np.applyArt(QImage());
+    EXPECT_EQ(provider.requestImage(QStringLiteral("cover"), &size, QSize()).pixelColor(0, 0), QColor(Qt::blue));
+
+    track.title = QStringLiteral("Other");
+    np.applyTrack(track);
+    EXPECT_FALSE(np.hasArt());
+    np.applyBrowserArtwork(QStringLiteral("chrome"), QStringLiteral("Other"), 2, favicon);
+    EXPECT_FALSE(np.hasArt());
+}
+
+TEST(NowPlayingTest, BrowserArtworkStaysWhenPausedAndClearsOnDisconnect) {
+    NowPlaying np;
+    TrackInfo track = makeTrack(QStringLiteral("Song"), QStringLiteral("Band"), PlaybackState::Playing);
+    track.sourceApp = QStringLiteral("firefox.exe");
+    np.applyTrack(track);
+    QImage favicon(4, 4, QImage::Format_ARGB32);
+    favicon.fill(Qt::blue);
+    np.applyBrowserArtwork(QStringLiteral("firefox"), QStringLiteral("Song"), 1, favicon);
+    EXPECT_TRUE(np.hasArt());
+    track.state = PlaybackState::Paused;
+    np.applyTrack(track);
+    np.applyBrowserArtwork(QStringLiteral("firefox"), QStringLiteral("Song"), 0, favicon);
+    EXPECT_TRUE(np.hasArt());
+    track.state = PlaybackState::Playing;
+    np.applyTrack(track);
+    EXPECT_TRUE(np.hasArt());
+    np.clearBrowserArtwork(QStringLiteral("firefox"));
+    EXPECT_FALSE(np.hasArt());
+}
+
+TEST(NowPlayingTest, BrowserArtworkReplacesOnlyMatchingBrowserIcons) {
+    QImage browserIcon(32, 32, QImage::Format_ARGB32);
+    browserIcon.fill(Qt::transparent);
+    for(int row = 8; row < 24; ++row)
+        for(int column = 8; column < 24; ++column)
+            browserIcon.setPixelColor(column, row, Qt::blue);
+    const QImage thumbnail = browserIcon.scaled(256, 256, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QImage favicon(16, 16, QImage::Format_ARGB32);
+    favicon.fill(Qt::red);
+    QImage album(256, 256, QImage::Format_ARGB32);
+    album.fill(Qt::green);
+    EXPECT_EQ(mf::chooseBrowserArtwork(thumbnail, favicon, browserIcon), favicon);
+    EXPECT_EQ(mf::chooseBrowserArtwork(album, favicon, browserIcon), album);
+    EXPECT_EQ(mf::chooseBrowserArtwork(album, favicon, QImage()), album);
+    EXPECT_EQ(mf::chooseBrowserArtwork(thumbnail, QImage(), browserIcon), thumbnail);
+    EXPECT_EQ(mf::chooseBrowserArtwork(QImage(), favicon, QImage()), favicon);
 }
 
 TEST(NowPlayingTest, SeekToFractionForwardsClampedPosition) {

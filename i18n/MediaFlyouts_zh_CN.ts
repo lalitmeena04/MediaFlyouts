@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>此浏览器的商店中尚未提供该扩展。</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>无法设置浏览器连接。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>无法打开扩展商店。</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>请在浏览器中确认安装。</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>无法设置开发版扩展。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>无法打开扩展文件夹。</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>请使用浏览器开发者工具从此文件夹加载扩展。</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>重复按钮</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>浏览器图像</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>显示正在播放媒体的应用名称。</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>没有专辑封面时使用网站图标。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>安装浏览器扩展</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>打开开发版扩展</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>浏览器扩展尚未发布。</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>浏览器图像</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>没有专辑封面时使用网站图标。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>安装浏览器扩展</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>欢迎使用 MediaFlyouts</translation>

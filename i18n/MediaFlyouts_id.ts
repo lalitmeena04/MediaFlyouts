@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>Ekstensi belum tersedia di toko browser ini.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>Koneksi browser tidak dapat disiapkan.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>Toko ekstensi tidak dapat dibuka.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>Konfirmasi pemasangan di browser Anda.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>Ekstensi pengembangan tidak dapat disiapkan.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>Folder ekstensi tidak dapat dibuka.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>Muat ekstensi dari folder ini menggunakan alat pengembang browser Anda.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Repeat button</source>
         <translation>Tombol ulangi</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Gambar browser</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>Tampilkan nama aplikasi yang memutar media.</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Gunakan ikon situs saat sampul album tidak tersedia.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Instal ekstensi browser</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>Buka ekstensi pengembangan</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>Ekstensi browser belum diterbitkan.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ Tidak tersedia: %1</translation>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Gambar browser</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Gunakan ikon situs saat sampul album tidak tersedia.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Instal ekstensi browser</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>Selamat datang di MediaFlyouts</translation>

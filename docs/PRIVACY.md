@@ -1,6 +1,6 @@
 # MediaFlyouts Privacy Policy
 
-**Effective date:** 2 November 2026
+**Effective date:** 11 November 2026
 **Applies to:** MediaFlyouts / "Media Flyouts" for Windows, all distribution
 channels (Microsoft Store, installer, portable ZIP).
 
@@ -17,12 +17,13 @@ developer.**
 
 ## 1. Data the app processes locally
 
-To do its job MediaFlyouts reads information from your PC. All of this is
-processed in memory on your device and is never transmitted anywhere.
+To do its job MediaFlyouts reads information from your PC. The following data
+is processed locally and is not sent to the developer.
 
 | Information | Why it is read | Where it goes |
 |---|---|---|
 | Now-playing metadata (track title, artist, album, album art, playback state) from the Windows System Media Transport Controls | Media and Now Playing flyouts, taskbar widget | Memory only; discarded when the track changes or the app exits |
+| Optional browser extension: the title and favicon of one audible, remembered, or active tab, and the number of audible tabs | Fallback image when a browser session has no album art | Sent locally to MediaFlyouts through a native messaging host; not saved or sent to the developer. The extension reads the favicon URL to fetch the icon as described in section 3 |
 | Master and per-application volume, mute state, running audio app names and icons | Volume flyout and per-app mixer | Memory only |
 | System audio output (WASAPI loopback) | Audio visualizer on the taskbar widget | Converted to a frequency spectrum in memory in real time; the audio is never recorded, stored or sent. Capture runs only while the visualizer is enabled and visible |
 | Media and lock-key presses (`Play/Pause`, `Next`, `Previous`, `Stop`, `Volume Up/Down/Mute`, `Caps`, `Num`, `Scroll`, `Insert`) via a low-level keyboard hook | Triggering the flyouts | Only these specific keys are inspected. No other keystrokes are read, logged or stored. MediaFlyouts is not a keylogger |
@@ -36,6 +37,13 @@ processed in memory on your device and is never transmitted anywhere.
   your user profile. "Open Config Folder" in the tray menu shows where. You can
   export, import or delete this file at any time; uninstalling the Store or
   installer version removes it.
+- **Browser integration** — when you choose to set it up, a native-host
+  manifest is saved in the app's local data folder and its path is registered
+  under your Windows user account for the chosen browser. For Chrome, Edge and
+  Brave, the app also attempts to register the extension ID and official store
+  update URL in that browser's system-wide external-install registry key. If
+  Windows denies access, the app opens the store page for a normal install.
+  These entries contain no browsing data.
 - **Pro entitlement cache** (Store version) — a small file
   (`Entitlement.dat`, next to the settings file) remembers the last answer the
   Store gave: your tier (free, trial or Pro), the trial end date and the last
@@ -75,13 +83,13 @@ processed in memory on your device and is never transmitted anywhere.
   No system details are placed in the URL. You can open and edit the report
   before posting. Once posted, it is public under GitHub's policies.
 
-Apart from error reports, nothing is written outside your user profile.
-Nothing is uploaded.
+Apart from error reports and the browser registry entry described above,
+nothing is written outside your user profile. Nothing is uploaded.
 
 ## 3. Network access
 
-MediaFlyouts makes two kinds of network request, and only in the situations
-described here:
+MediaFlyouts and its optional browser extension make network requests only in
+the situations described here:
 
 - **Microsoft Store licence check (Store version only)** — at start, after a
   purchase, and when Windows reports a licence change, the app asks the
@@ -110,6 +118,12 @@ described here:
   handled by GitHub under the
   [GitHub Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-privacy-statement).
   MediaFlyouts sends no identifiers, settings or usage data with them.
+- **Browser favicon** — when the optional extension is installed, it may fetch
+  the favicon URL of a single audible tab or, when none is audible, the last
+  identified or active tab, from the site or its icon provider. The request
+  omits credentials and can expose your IP address to that server. The URL is
+  not sent to MediaFlyouts or the developer. You can remove the extension in
+  your browser to stop these requests.
 
 Links in the tray menu or dashboard (Repository, Open new issue, release page,
 the donation page on the **Support** page) open in your default browser; those
@@ -117,8 +131,8 @@ sites have their own policies. The Support page itself shows payment details
 that are compiled into the app; it sends nothing anywhere, and **Copy** only
 writes to your clipboard.
 
-Album art is obtained from the media player through Windows, not downloaded by
-MediaFlyouts.
+Album art is obtained from the media player through Windows. Browser favicons
+are fetched separately by the optional extension as described above.
 
 ## 4. Data the developer receives
 

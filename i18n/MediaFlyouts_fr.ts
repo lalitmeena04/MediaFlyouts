@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>L&apos;extension n&apos;est pas encore disponible dans la boutique de ce navigateur.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>Impossible de configurer la connexion au navigateur.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>Impossible d&apos;ouvrir la boutique d&apos;extensions.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>Confirmez l&apos;installation dans votre navigateur.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>Impossible de configurer l&apos;extension de développement.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>Impossible d&apos;ouvrir le dossier de l&apos;extension.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>Chargez l&apos;extension depuis ce dossier avec les outils de développement du navigateur.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Indisponible : %1</translation>
     <message>
         <source>Repeat button</source>
         <translation>Bouton Répéter</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Illustration du navigateur</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -527,6 +562,22 @@ Indisponible : %1</translation>
         <translation>Afficher le nom de l&apos;application qui lit le média.</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Utiliser l&apos;icône du site lorsque la pochette est indisponible.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Installer l&apos;extension du navigateur</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>Ouvrir l&apos;extension de développement</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>L&apos;extension du navigateur n&apos;est pas encore publiée.</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>Teinter les accents du volet avec la couleur dominante de la pochette en cours.</translation>
     </message>
@@ -740,7 +791,7 @@ Indisponible : %1</translation>
     </message>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
-        <translation>La barre des tâches de l'écran choisi est à gauche ou à droite. Les widgets ont besoin d'une barre horizontale (en haut ou en bas) et restent masqués jusqu'à ce qu'elle y revienne.</translation>
+        <translation>La barre des tâches de l&apos;écran choisi est à gauche ou à droite. Les widgets ont besoin d&apos;une barre horizontale (en haut ou en bas) et restent masqués jusqu&apos;à ce qu&apos;elle y revienne.</translation>
     </message>
     <message>
         <source>Taskbar widget</source>
@@ -1354,6 +1405,18 @@ Indisponible : %1</translation>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Illustration du navigateur</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Utiliser l&apos;icône du site lorsque la pochette est indisponible.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Installer l&apos;extension du navigateur</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>Bienvenue dans MediaFlyouts</translation>

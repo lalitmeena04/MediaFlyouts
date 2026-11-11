@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "MediaFlyouts Browser Integration",
+  "version": "1.0.0",
+  "description": "Provides browser tab artwork to MediaFlyouts.",
+  "permissions": ["tabs", "nativeMessaging", "alarms"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": { "scripts": ["background.js"] },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "browser-artwork@mediaflyouts.local",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  }
+}

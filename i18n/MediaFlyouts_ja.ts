@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>このブラウザーのストアでは拡張機能をまだ利用できません。</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>ブラウザーへの接続を設定できませんでした。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>拡張機能のストアを開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>ブラウザーでインストールを確認してください。</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>開発用拡張機能を設定できませんでした。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>拡張機能のフォルダーを開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>ブラウザーの開発者ツールを使って、このフォルダーから拡張機能を読み込んでください。</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>リピートボタン</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>ブラウザーの画像</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>メディアを再生しているアプリの名前を表示します。</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>アルバムアートがない場合はサイトのアイコンを使用します。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ブラウザー拡張機能をインストール</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>開発用拡張機能を開く</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>ブラウザー拡張機能はまだ公開されていません。</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>ブラウザーの画像</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>アルバムアートがない場合はサイトのアイコンを使用します。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ブラウザー拡張機能をインストール</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>MediaFlyouts へようこそ</translation>

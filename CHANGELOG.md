@@ -12,6 +12,11 @@ All notable changes to MediaFlyouts are documented here. This project follows
   button now sweeps for a short moment after the first pause and also pauses
   tabs the browser promotes next, until the source goes quiet.
 
+### Added
+
+- **Optional browser artwork extension.** A browser extension can supply the
+  website icon when a browser media session has no album art.
+
 ## [2.0.0] — 2026-11-05
 
 The Store app becomes free and sells **MediaFlyouts Pro** as a one-time

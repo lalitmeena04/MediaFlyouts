@@ -25,6 +25,8 @@ Window {
     }
 
     property int currentIndex: 0
+    property int browserIndex: 0
+    readonly property var browserIds: ["chrome", "msedge", "firefox", "brave"]
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
     // Pages are found by their stable key, not their translated name.
     function showPage(key) {
@@ -81,6 +83,7 @@ Window {
         { "label": qsTr("Compact layout"), "page": 1 }, { "label": qsTr("Center title and artist"), "page": 1 },
         { "label": qsTr("Always display"), "page": 1 }, { "label": qsTr("Show player name"), "page": 1 },
         { "label": qsTr("Accent from album art"), "page": 1 }, { "label": qsTr("Apply accent app-wide"), "page": 1 }, { "label": qsTr("Repeat button"), "page": 1 },
+        { "label": qsTr("Browser artwork"), "page": 4 },
         { "label": qsTr("Shuffle button"), "page": 1 }, { "label": qsTr("Now Playing flyout"), "page": 1 },
         { "label": qsTr("Hide during fullscreen"), "page": 1 }, { "label": qsTr("Flyout position"), "page": 1 },
         { "label": qsTr("Monitor"), "page": 1 }, { "label": qsTr("Flyout duration"), "page": 1 },
@@ -1315,6 +1318,36 @@ Window {
                         description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
                         value: settings.taskbarWidgetEnabled
                         onToggled: settings.taskbarWidgetEnabled = value
+                    }
+                    SettingCombo {
+                        width: parent.width
+                        label: qsTr("Browser artwork")
+                        description: qsTr("Use the website icon when album art is unavailable.")
+                        model: ["Chrome", "Edge", "Firefox", "Brave"]
+                        currentIndex: dash.browserIndex
+                        onActivated: dash.browserIndex = index
+                    }
+                    Row {
+                        spacing: 12
+                        Button {
+                            text: qsTr("Install browser extension")
+                            enabled: browserIntegration.canInstall(dash.browserIds[dash.browserIndex])
+                            onClicked: browserIntegration.install(dash.browserIds[dash.browserIndex])
+                        }
+                        Button {
+                            visible: browserIntegration.developmentAvailable
+                            text: qsTr("Open development extension")
+                            onClicked: browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])
+                        }
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        color: theme.textTertiary
+                        font.pixelSize: 12
+                        text: browserIntegration.status !== "" ? browserIntegration.status
+                              : browserIntegration.canInstall(dash.browserIds[dash.browserIndex]) ? ""
+                              : qsTr("The browser extension is not published yet.")
                     }
                     SettingRow {
                         width: parent.width

@@ -2,6 +2,12 @@
 qt_add_library(mediaflyout_testlib STATIC
     ${CMAKE_SOURCE_DIR}/Controllers/NowPlaying.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/NowPlaying.h
+    ${CMAKE_SOURCE_DIR}/Controllers/BrowserArtworkBridge.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/BrowserArtworkBridge.h
+    ${CMAKE_SOURCE_DIR}/Controllers/BrowserArtworkImage.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/BrowserArtworkImage.h
+    ${CMAKE_SOURCE_DIR}/Controllers/BrowserIntegration.cpp
+    ${CMAKE_SOURCE_DIR}/Controllers/BrowserIntegration.h
     ${CMAKE_SOURCE_DIR}/Controllers/ThemeController.cpp
     ${CMAKE_SOURCE_DIR}/Controllers/ThemeController.h
     ${CMAKE_SOURCE_DIR}/Controllers/UpdateChecker.cpp
@@ -41,7 +47,7 @@ target_link_libraries(mediaflyout_testlib PUBLIC
 if(WIN32)
     # UpdateChecker calls ShellExecuteEx. PUBLIC so every executable that
     # links this static lib gets shell32 without listing it again.
-    target_link_libraries(mediaflyout_testlib PUBLIC shell32)
+    target_link_libraries(mediaflyout_testlib PUBLIC shell32 advapi32)
 endif()
 target_include_directories(mediaflyout_testlib PUBLIC
     ${CMAKE_SOURCE_DIR}/Model
@@ -68,6 +74,8 @@ add_executable(mediaflyout_gtest
     Controllers/DonationControllerTest.cpp
     Controllers/EntitlementControllerTest.cpp
     Controllers/NowPlayingTest.cpp
+    Controllers/BrowserArtworkBridgeTest.cpp
+    Controllers/BrowserIntegrationTest.cpp
     Controllers/ProGateTest.cpp
     Controllers/ThemeControllerTest.cpp
     Controllers/UpdateCheckerTest.cpp
@@ -78,6 +86,7 @@ add_executable(mediaflyout_gtest
     Model/BackdropContrastTest.cpp
     Model/BatteryAlertPolicyTest.cpp
     Model/BatteryUtilsTest.cpp
+    Model/BrowserArtworkTest.cpp
     Model/CapabilitiesTest.cpp
     Model/DonationTest.cpp
     Model/DualSenseProtocolTest.cpp
@@ -114,6 +123,10 @@ target_link_libraries(mediaflyout_gtest PRIVATE
     GTest::gmock
 )
 target_compile_definitions(mediaflyout_gtest PRIVATE MEDIAFLYOUTS_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+if(WIN32)
+    target_compile_definitions(mediaflyout_gtest PRIVATE MEDIAFLYOUTS_BROWSER_HOST_PATH="$<TARGET_FILE:MediaFlyoutsBrowserHost>")
+    add_dependencies(mediaflyout_gtest MediaFlyoutsBrowserHost)
+endif()
 target_include_directories(mediaflyout_gtest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME gtest_all COMMAND mediaflyout_gtest)
 

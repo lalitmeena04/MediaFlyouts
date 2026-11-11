@@ -64,6 +64,8 @@ visualizer. This document describes the features that ship in the app.
   including media playing in multiple browser tabs. With the follow-up option
   on, the same button becomes "Play all" whenever every source is paused, and
   resumes them.
+- Optional browser extension that supplies a browser tab's website icon when
+  its media session has no album art.
 
 ## Peripheral battery
 

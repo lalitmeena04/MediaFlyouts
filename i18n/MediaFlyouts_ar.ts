@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>الإضافة غير متاحة بعد في متجر هذا المتصفح.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>تعذر إعداد اتصال المتصفح.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>تعذر فتح متجر الإضافات.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>أكد التثبيت في المتصفح.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>تعذر إعداد إضافة التطوير.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>تعذر فتح مجلد الإضافة.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>حمّل الإضافة من هذا المجلد باستخدام أدوات المطور في المتصفح.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>زر التكرار</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>صورة المتصفح</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>إظهار اسم التطبيق الذي يشغّل الوسائط.</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>استخدام أيقونة الموقع عند عدم توفر صورة الألبوم.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>تثبيت إضافة المتصفح</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>فتح إضافة التطوير</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>لم تُنشر إضافة المتصفح بعد.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>صورة المتصفح</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>استخدام أيقونة الموقع عند عدم توفر صورة الألبوم.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>تثبيت إضافة المتصفح</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>مرحبًا بك في MediaFlyouts</translation>

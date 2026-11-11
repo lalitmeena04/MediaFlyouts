@@ -45,11 +45,17 @@ set(MEDIAFLYOUTS_PRO_ADDON_STORE_ID "" CACHE STRING "Store ID of the MediaFlyout
 set(MEDIAFLYOUTS_STORE_CUTOVER_UTC "" CACHE STRING "ISO-8601 UTC instant when the Store app went free (e.g. 2026-12-01T00:00:00Z)")
 set(MEDIAFLYOUTS_TRIAL_DAYS "15" CACHE STRING "Pro trial length in days")
 set(MEDIAFLYOUTS_TIP_ADDON_STORE_IDS "" CACHE STRING "Comma-separated Store IDs of the consumable tip add-ons")
+set(MEDIAFLYOUTS_CHROME_EXTENSION_ID "" CACHE STRING "Published Chrome extension ID")
+set(MEDIAFLYOUTS_EDGE_EXTENSION_ID "" CACHE STRING "Published Edge extension ID")
+set(MEDIAFLYOUTS_FIREFOX_EXTENSION_URL "" CACHE STRING "Published Firefox extension URL")
 add_compile_definitions(
     MEDIAFLYOUTS_PRO_ADDON_STORE_ID="${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}"
     MEDIAFLYOUTS_STORE_CUTOVER_UTC="${MEDIAFLYOUTS_STORE_CUTOVER_UTC}"
     MEDIAFLYOUTS_TRIAL_DAYS="${MEDIAFLYOUTS_TRIAL_DAYS}"
-    MEDIAFLYOUTS_TIP_ADDON_STORE_IDS="${MEDIAFLYOUTS_TIP_ADDON_STORE_IDS}")
+    MEDIAFLYOUTS_TIP_ADDON_STORE_IDS="${MEDIAFLYOUTS_TIP_ADDON_STORE_IDS}"
+    MEDIAFLYOUTS_CHROME_EXTENSION_ID="${MEDIAFLYOUTS_CHROME_EXTENSION_ID}"
+    MEDIAFLYOUTS_EDGE_EXTENSION_ID="${MEDIAFLYOUTS_EDGE_EXTENSION_ID}"
+    MEDIAFLYOUTS_FIREFOX_EXTENSION_URL="${MEDIAFLYOUTS_FIREFOX_EXTENSION_URL}")
 if(MEDIAFLYOUTS_STORE_CUTOVER_UTC STREQUAL "")
     message(STATUS "MediaFlyouts Pro gating: off (no cutover)")
 else()
@@ -124,6 +130,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/BatteryAlertPolicy.h
     Model/BatteryUtils.cpp
     Model/BatteryUtils.h
+    Model/BrowserArtwork.cpp
+    Model/BrowserArtwork.h
     Model/Capabilities.cpp
     Model/Capabilities.h
     Model/Donation.cpp
@@ -217,6 +225,12 @@ qt_add_executable(MediaFlyouts WIN32
     Controllers/MonitorMapper.h
     Controllers/NowPlaying.cpp
     Controllers/NowPlaying.h
+    Controllers/BrowserArtworkBridge.cpp
+    Controllers/BrowserArtworkBridge.h
+    Controllers/BrowserArtworkImage.cpp
+    Controllers/BrowserArtworkImage.h
+    Controllers/BrowserIntegration.cpp
+    Controllers/BrowserIntegration.h
     Controllers/QmlLogger.cpp
     Controllers/QmlLogger.h
     Controllers/SingleInstance.cpp
@@ -267,6 +281,16 @@ target_include_directories(MediaFlyouts PRIVATE
 set_target_properties(MediaFlyouts PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
+
+if(WIN32)
+    qt_add_executable(MediaFlyoutsBrowserHost tools/BrowserArtworkHost.cpp)
+    target_link_libraries(MediaFlyoutsBrowserHost PRIVATE Qt6::Core Qt6::Network)
+    set_target_properties(MediaFlyoutsBrowserHost PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    foreach(browser chromium firefox)
+        configure_file(browser-extension/background.js ${CMAKE_SOURCE_DIR}/bin/browser-extensions/${browser}/background.js COPYONLY)
+        configure_file(browser-extension/manifest.${browser}.json ${CMAKE_SOURCE_DIR}/bin/browser-extensions/${browser}/manifest.json COPYONLY)
+    endforeach()
+endif()
 
 set_source_files_properties(Views/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(Views/Anim.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
@@ -438,6 +462,7 @@ if (WIN32)
     )
     target_link_libraries(MediaFlyouts PRIVATE
         WindowsApp.lib
+        advapi32.lib
         dwmapi.lib
         shell32.lib
         shcore.lib

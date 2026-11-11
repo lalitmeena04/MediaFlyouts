@@ -3,6 +3,9 @@
 #include <QDateTime>
 
 #include "AlbumArtProvider.h"
+#include "BrowserArtwork.h"
+#include "BrowserArtworkImage.h"
+#include "Logging.h"
 
 NowPlaying::NowPlaying(QObject* parent) : QObject(parent) {
     m_sinceUpdate.start();
@@ -224,9 +227,13 @@ void NowPlaying::applyTrack(const mf::TrackInfo& track) {
     // Timeline updates must not reset the auto-hide timer.
     const bool identityChanged =
         track.title != m_track.title || track.artist != m_track.artist || track.album != m_track.album;
+    const bool artworkIdentityChanged = identityChanged || track.sourceApp != m_track.sourceApp;
     const bool stateChanged = track.state != m_track.state;
 
     m_track = track;
+    if(artworkIdentityChanged)
+        m_mediaArt = QImage();
+    updateArtwork();
     m_sinceUpdate.restart();
     emit changed();
 
@@ -258,6 +265,42 @@ void NowPlaying::noteMediaKey() {
 }
 
 void NowPlaying::applyArt(const QImage& art) {
+    m_mediaArt = art;
+    updateArtwork();
+}
+
+void NowPlaying::applyBrowserArtwork(const QString& browser, const QString& tabTitle, int audibleTabCount,
+                                     const QImage& art) {
+    if(browser == QStringLiteral("firefox") && m_firefoxAppIds.isEmpty())
+        m_firefoxAppIds = mf::firefoxAppUserModelIds();
+    TRC_DEBUG("browser artwork: candidate={} source={} playing={} match={} native_art={}", browser.toStdString(),
+              m_track.sourceApp.toStdString(), m_track.state == mf::PlaybackState::Playing,
+              mf::matchesBrowserArtwork(m_track, browser, tabTitle, audibleTabCount, m_firefoxAppIds), !m_mediaArt.isNull());
+    if(art.isNull())
+        m_browserArtwork.remove(browser);
+    else
+        m_browserArtwork.insert(browser, BrowserArtwork{tabTitle, audibleTabCount, art});
+    updateArtwork();
+}
+
+void NowPlaying::clearBrowserArtwork(const QString& browser) {
+    m_browserArtwork.remove(browser);
+    updateArtwork();
+}
+
+void NowPlaying::updateArtwork() {
+    QImage art = m_mediaArt;
+    for(auto it = m_browserArtwork.cbegin(); it != m_browserArtwork.cend(); ++it) {
+        if(mf::matchesBrowserArtwork(m_track, it.key(), it->tabTitle, it->audibleTabCount, m_firefoxAppIds)) {
+            if(!art.isNull() && !m_browserIcons.contains(it.key()))
+                m_browserIcons.insert(it.key(), mf::browserExecutableIcon(it.key()));
+            art = mf::chooseBrowserArtwork(art, it->art, m_browserIcons.value(it.key()));
+            break;
+        }
+    }
+    if(art.cacheKey() == m_displayedArt.cacheKey())
+        return;
+    m_displayedArt = art;
     if(m_artProvider)
         m_artProvider->setImage(art);
     m_hasArt = !art.isNull();

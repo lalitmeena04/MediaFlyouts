@@ -57,6 +57,24 @@ TEST(QmlContractTest, DashboardHidesTheChargerPageOnSystemsWithNoBattery) {
     expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
 }
 
+TEST(QmlContractTest, DashboardOffersBrowserArtworkSetup) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    expectContains(source, QStringLiteral("browserIntegration.canInstall(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.install(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])"));
+    const int flyoutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 1"));
+    const int taskbarPage = source.indexOf(QStringLiteral("id: mediaWidgetPage"));
+    const int browserSetting =
+        source.indexOf(QStringLiteral("label: qsTr(\"Browser artwork\")"), flyoutPage);
+    EXPECT_GT(browserSetting, taskbarPage);
+}
+
+TEST(QmlContractTest, OnboardingOffersBrowserExtensionSetup) {
+    const QString source = loadSource("Views/OnboardingWindow.qml");
+    expectContains(source, QStringLiteral("browserIntegration.canInstall(root.browserIds[root.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.install(root.browserIds[root.browserIndex])"));
+}
+
 TEST(QmlContractTest, DashboardBannerNamesUnavailableSubsystems) {
     const QString source = loadSource("Views/Dashboard.qml");
 

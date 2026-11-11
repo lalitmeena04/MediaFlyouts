@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>La extensión aún no está disponible en la tienda de este navegador.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>No se pudo configurar la conexión con el navegador.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>No se pudo abrir la tienda de extensiones.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>Confirma la instalación en el navegador.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>No se pudo configurar la extensión de desarrollo.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>No se pudo abrir la carpeta de la extensión.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>Carga la extensión desde esta carpeta con las herramientas de desarrollo del navegador.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -201,6 +232,10 @@ No disponible: %1</translation>
     <message>
         <source>Repeat button</source>
         <translation>Botón de repetir</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Imagen del navegador</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -525,6 +560,22 @@ No disponible: %1</translation>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>Mostrar el nombre de la aplicación que reproduce el contenido.</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Usar el icono del sitio cuando no haya carátula disponible.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Instalar extensión del navegador</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>Abrir extensión de desarrollo</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>La extensión del navegador aún no se ha publicado.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1354,6 +1405,18 @@ No disponible: %1</translation>
 </context>
 <context>
     <name>OnboardingWindow</name>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Imagen del navegador</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Usar el icono del sitio cuando no haya carátula disponible.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Instalar extensión del navegador</translation>
+    </message>
     <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>Bienvenido a MediaFlyouts</translation>

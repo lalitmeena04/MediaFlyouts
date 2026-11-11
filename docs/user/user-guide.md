@@ -30,6 +30,15 @@ show album art, title, artist and transport controls. The **seekbar** is
 draggable; the pin/close control keeps it on screen ("always display") until you
 dismiss it.
 
+For browser media without album art, the optional browser extension can supply
+the website's icon. In **Media Widget** settings, select Chrome, Edge, Firefox, or Brave and
+choose **Install browser extension** once it is available in that browser's
+store. Confirm the installation in the browser. The app uses the icon when a
+single audible tab, or a remembered or active tab when no tabs are audible,
+matches the selected media title. It keeps the icon while that media is paused.
+When the source cannot be identified, the usual placeholder remains. The extension
+stores are not yet published, so the install button is currently unavailable.
+
 ### Volume flyout
 Press a volume key to show the master volume slider (it replaces the native
 Windows OSD). Click the **chevron** to expand the **per-app mixer**, where each
@@ -54,9 +63,9 @@ center-aligned, right if it is left-aligned. You can:
 - dock it to the **left or right**, move it between **monitors**, and nudge it
   with an **offset**;
 - **scroll** or **swipe** across it to switch between multiple playing apps;
-- turn on the **Pause all button** to pause every playing app at once, including
-  media playing across multiple browser tabs. With **Play all after pausing**
-  on, the same button resumes them once everything is paused;
+- turn on the **Pause all button** to pause every playing app at once,
+  including media playing across multiple browser tabs. With **Play all after
+  pausing** on, the same button resumes media sessions once everything is paused;
 - pick a **Widget layout** — **Side by side** keeps the media and peripheral
   widgets next to each other, **Stack** puts them in one slot and lets you
   scroll between the media page and the 2.4 GHz, Bluetooth and wired pages;
