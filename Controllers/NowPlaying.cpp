@@ -213,6 +213,7 @@ void NowPlaying::pauseAll() {
     if(!m_controller)
         return;
     m_pausedByAll = m_controller->pauseAllSessions();
+    emit pauseAllBrowsersRequested();
     updateResumeAll();
 }
 

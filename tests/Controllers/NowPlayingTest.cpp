@@ -151,6 +151,7 @@ TEST(NowPlayingTest, PauseAllRemembersPausedSessions) {
     MockController controller;
     np.setController(&controller);
     QSignalSpy resumeAll(&np, &NowPlaying::resumeAllChanged);
+    QSignalSpy pauseBrowsers(&np, &NowPlaying::pauseAllBrowsersRequested);
 
     const QStringList paused{QStringLiteral("Spotify.exe"), QStringLiteral("chrome.exe")};
     EXPECT_CALL(controller, pauseAllSessions()).WillOnce(::testing::Return(paused));
@@ -158,6 +159,27 @@ TEST(NowPlayingTest, PauseAllRemembersPausedSessions) {
 
     EXPECT_TRUE(np.canResumeAll());
     EXPECT_EQ(resumeAll.count(), 1);
+    EXPECT_EQ(pauseBrowsers.count(), 1);
+}
+
+TEST(NowPlayingTest, PauseAllRunsWindowsFallbackBeforeBrowserExtensionCommand) {
+    NowPlaying np;
+    MockController controller;
+    np.setController(&controller);
+    QStringList calls;
+
+    EXPECT_CALL(controller, pauseAllSessions())
+        .WillOnce(::testing::Invoke([&calls] {
+            calls.push_back(QStringLiteral("windows"));
+            return QStringList{QStringLiteral("chrome.exe")};
+        }));
+    QObject::connect(&np, &NowPlaying::pauseAllBrowsersRequested, &np, [&calls] {
+        calls.push_back(QStringLiteral("browser"));
+    });
+
+    np.pauseAll();
+
+    EXPECT_EQ(calls, (QStringList{QStringLiteral("windows"), QStringLiteral("browser")}));
 }
 
 TEST(NowPlayingTest, PauseAllWithNothingPlayingLeavesNothingToResume) {

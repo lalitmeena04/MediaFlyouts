@@ -40,6 +40,25 @@ TEST(BrowserArtworkBridgeTest, ReceivesArtworkAndClearsOnDisconnect) {
     EXPECT_EQ(disconnected.at(0).at(0).toString(), QStringLiteral("brave"));
 }
 
+TEST(BrowserArtworkBridgeTest, SendsPauseCommandToConnectedExtension) {
+    BrowserArtworkBridge bridge;
+    const QString name = QStringLiteral("MediaFlyouts.test.") + QUuid::createUuid().toString(QUuid::Id128);
+    ASSERT_TRUE(bridge.start(name));
+    QSignalSpy received(&bridge, &BrowserArtworkBridge::artworkReceived);
+    QLocalSocket client;
+    client.connectToServer(name);
+    ASSERT_TRUE(client.waitForConnected(1000));
+    client.write(R"({"browser":"chrome","title":"Song","audibleCount":1})" "\n");
+    client.flush();
+    ASSERT_TRUE(received.wait(1000));
+
+    bridge.pauseAllBrowserTabs();
+    ASSERT_TRUE(client.waitForReadyRead(1000));
+    const QJsonObject command =
+        QJsonDocument::fromJson(client.readLine().trimmed()).object();
+    EXPECT_EQ(command.value(QStringLiteral("command")).toString(), QStringLiteral("pauseAudibleTabs"));
+}
+
 TEST(BrowserArtworkBridgeTest, RejectsInvalidBrowser) {
     BrowserArtworkBridge bridge;
     const QString name = QStringLiteral("MediaFlyouts.test.") + QUuid::createUuid().toString(QUuid::Id128);
@@ -110,6 +129,16 @@ TEST(BrowserArtworkBridgeTest, NativeHostForwardsBrowserMessages) {
     host.write(message);
     ASSERT_TRUE(received.wait(3000));
     EXPECT_EQ(received.at(0).at(0).toString(), QStringLiteral("firefox"));
+    bridge.pauseAllBrowserTabs();
+    ASSERT_TRUE(host.waitForReadyRead(3000));
+    QByteArray response = host.readAllStandardOutput();
+    QTRY_VERIFY_WITH_TIMEOUT(response.size() >= static_cast<qsizetype>(sizeof(quint32)), 1000);
+    const quint32 responseSize =
+        qFromLittleEndian<quint32>(reinterpret_cast<const uchar*>(response.constData()));
+    QTRY_VERIFY_WITH_TIMEOUT(response.size() >= static_cast<qsizetype>(sizeof(quint32) + responseSize), 1000);
+    const QJsonObject command =
+        QJsonDocument::fromJson(response.mid(sizeof(quint32), static_cast<qsizetype>(responseSize))).object();
+    EXPECT_EQ(command.value(QStringLiteral("command")).toString(), QStringLiteral("pauseAudibleTabs"));
     host.closeWriteChannel();
     ASSERT_TRUE(disconnected.wait(3000));
     ASSERT_TRUE(host.waitForFinished(3000));

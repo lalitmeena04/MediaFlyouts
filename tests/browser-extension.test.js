@@ -11,7 +11,9 @@ const source = fs.readFileSync(path.join(__dirname, "../browser-extension/backgr
 
 function createHarness(tabs, userAgent = "Chrome/120", brave = undefined) {
     const messages = [];
+    const scriptCalls = [];
     const listener = { addListener() {} };
+    let onNativeMessage = null;
     tabs.forEach((tab, index) => {
         if(tab.id === undefined)
             tab.id = index + 1;
@@ -35,10 +37,16 @@ function createHarness(tabs, userAgent = "Chrome/120", brave = undefined) {
                 },
                 onUpdated: listener, onRemoved: listener, onCreated: listener, onActivated: listener
             },
+            scripting: {
+                executeScript: async details => {
+                    scriptCalls.push(details);
+                }
+            },
             alarms: { onAlarm: listener, create() {} },
             runtime: {
                 connectNative: () => ({
                     onDisconnect: listener,
+                    onMessage: { addListener: callback => { onNativeMessage = callback; } },
                     postMessage: value => messages.push(value)
                 })
             }
@@ -48,7 +56,9 @@ function createHarness(tabs, userAgent = "Chrome/120", brave = undefined) {
     vm.runInContext(source, context);
     return {
         context,
-        messages
+        messages,
+        scriptCalls,
+        sendNativeMessage: message => onNativeMessage && onNativeMessage(message)
     };
 }
 
@@ -89,12 +99,11 @@ test("development manifest key matches the registered extension ID", () => {
     assert.equal(id, "pmblljpkoajpojjjeidepiddahgpilge");
 });
 
-test("both browser manifests grant native messaging permissions", () => {
+test("both browser manifests grant the scripting permission", () => {
     for(const browser of ["chromium", "firefox"]) {
         const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, `../browser-extension/manifest.${browser}.json`)));
-        assert.ok(manifest.permissions.includes("tabs"));
-        assert.ok(manifest.permissions.includes("nativeMessaging"));
-        assert.equal(manifest.version, "1.0.0");
+        assert.ok(manifest.permissions.includes("scripting"));
+        assert.equal(manifest.version, "1.1.0");
     }
 });
 
@@ -125,4 +134,20 @@ test("uses the active tab when no audible tab has been identified", async () => 
     assert.equal(harness.messages.at(-1).audibleCount, 0);
     assert.equal(harness.messages.at(-1).title, "Video");
     assert.equal(harness.messages.at(-1).icon, "aWNvbg==");
+});
+
+test("pauses media in all audible tabs concurrently", async () => {
+    const harness = createHarness([
+        { title: "First", audible: true },
+        { title: "Silent", audible: false },
+        { title: "Second", audible: true }
+    ]);
+
+    await vm.runInContext("updateArtwork()", harness.context);
+    harness.sendNativeMessage({ command: "pauseAudibleTabs" });
+    await new Promise(resolve => setImmediate(resolve));
+
+    assert.deepEqual(harness.scriptCalls.map(call => call.target.tabId), [1, 3]);
+    assert.ok(harness.scriptCalls.every(call => call.target.allFrames));
+    assert.ok(harness.scriptCalls.every(call => call.func.toString().includes("media.pause()")));
 });

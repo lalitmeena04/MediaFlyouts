@@ -86,6 +86,7 @@ class NowPlaying : public QObject {
         void changed();
         void trackUpdated();
         void nextUpRequested();
+        void pauseAllBrowsersRequested();
         void sessionsChanged();
         void resumeAllChanged();
 

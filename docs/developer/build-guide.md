@@ -108,6 +108,12 @@ that do not match the Windows media session leave the normal placeholder in
 place. Installed Chromium web apps are supported only when they expose a
 matching browser session and tab.
 
+When MediaFlyouts sends a **Pause all** command over the same connection, the
+extension finds all audible tabs and runs `pause()` on their audio and video
+elements concurrently. This uses the extension's `scripting` permission and
+the existing site access. Pages that play sound without audio or video elements
+may not be controllable this way.
+
 For release, submit the Chromium and Firefox packages to their browser stores;
 Firefox requires Mozilla signing. The Chromium manifest's `key` is for local
 development. Store-issued extension IDs may differ; use the actual IDs after

@@ -25,12 +25,36 @@ function connectHost() {
     try {
         const connection = browserApi.runtime.connectNative(hostName);
         port = connection;
+        connection.onMessage.addListener(message => {
+            if(message && message.command === "pauseAudibleTabs")
+                void pauseAudibleTabs();
+        });
         connection.onDisconnect.addListener(() => {
             if(port === connection)
                 port = null;
         });
     } catch(error) {
         console.warn("MediaFlyouts native host is unavailable", error);
+    }
+}
+
+async function pauseAudibleTabs() {
+    try {
+        const tabs = await browserApi.tabs.query({ audible: true });
+        await Promise.all(tabs.filter(tab => Number.isInteger(tab.id)).map(async tab => {
+            try {
+                await browserApi.scripting.executeScript({
+                    target: { tabId: tab.id, allFrames: true },
+                    func: () => {
+                        document.querySelectorAll("audio, video").forEach(media => media.pause());
+                    }
+                });
+            } catch(error) {
+                console.warn("MediaFlyouts could not pause media in a browser tab", error);
+            }
+        }));
+    } catch(error) {
+        console.warn("MediaFlyouts could not find audible browser tabs to pause", error);
     }
 }
 

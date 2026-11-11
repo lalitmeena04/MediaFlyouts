@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "MediaFlyouts Browser Integration",
-  "version": "1.0.0",
-  "description": "Provides browser tab artwork to MediaFlyouts.",
-  "permissions": ["tabs", "nativeMessaging", "alarms"],
+  "version": "1.1.0",
+  "description": "Provides browser tab artwork and pauses media in audible tabs when requested by MediaFlyouts.",
+  "permissions": ["tabs", "nativeMessaging", "alarms", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": { "scripts": ["background.js"] },
   "browser_specific_settings": {

@@ -28,6 +28,23 @@ bool BrowserArtworkBridge::start(const QString& name) {
     return true;
 }
 
+void BrowserArtworkBridge::pauseAllBrowserTabs() {
+    const QByteArray command = R"({"command":"pauseAudibleTabs"})" "\n";
+    int sent = 0;
+    for(auto it = m_clients.cbegin(); it != m_clients.cend(); ++it) {
+        for(QLocalSocket* socket : it.value()) {
+            if(!socket || socket->state() != QLocalSocket::ConnectedState)
+                continue;
+            if(socket->write(command) < 0) {
+                TRC_WARN("browser artwork: could not send pause command to {}", it.key().toStdString());
+                continue;
+            }
+            ++sent;
+        }
+    }
+    TRC_DEBUG("browser artwork: pause command sent to {} extension(s)", sent);
+}
+
 void BrowserArtworkBridge::acceptConnections() {
     while(m_server.hasPendingConnections()) {
         auto* socket = m_server.nextPendingConnection();

@@ -7,10 +7,10 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ### Fixed
 
-- **Pause all now pauses media in every browser tab.** Windows exposes one
-  media session per browser, so earlier only the routed tab was paused. The
-  button now sweeps for a short moment after the first pause and also pauses
-  tabs the browser promotes next, until the source goes quiet.
+- **Pause all pauses every audible browser tab.** The app first pauses the
+  Windows media sessions, then asks the optional extension to pause media in
+  all audible tabs. The existing session pause remains the fallback when the
+  extension is absent.
 
 ### Added
 

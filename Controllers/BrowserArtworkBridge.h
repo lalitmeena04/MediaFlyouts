@@ -15,6 +15,7 @@ class BrowserArtworkBridge : public QObject {
         explicit BrowserArtworkBridge(QObject* parent = nullptr);
         ~BrowserArtworkBridge() override;
         bool start(const QString& name = QStringLiteral("MediaFlyouts.browserArtwork"));
+        void pauseAllBrowserTabs();
 
     signals:
         void artworkReceived(const QString& browser, const QString& title, int audibleTabCount, const QImage& image);

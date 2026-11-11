@@ -63,9 +63,10 @@ center-aligned, right if it is left-aligned. You can:
 - dock it to the **left or right**, move it between **monitors**, and nudge it
   with an **offset**;
 - **scroll** or **swipe** across it to switch between multiple playing apps;
-- turn on the **Pause all button** to pause every playing app at once,
-  including media playing across multiple browser tabs. With **Play all after
-  pausing** on, the same button resumes media sessions once everything is paused;
+- turn on the **Pause all button** to pause every playing app at once. With the
+  optional browser extension installed, it also pauses media in all audible
+  browser tabs. With **Play all after pausing** on, the same button resumes
+  media sessions once everything is paused;
 - pick a **Widget layout** — **Side by side** keeps the media and peripheral
   widgets next to each other, **Stack** puts them in one slot and lets you
   scroll between the media page and the 2.4 GHz, Bluetooth and wired pages;

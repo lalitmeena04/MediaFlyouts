@@ -4,6 +4,7 @@
 #include <thread>
 
 #include <QCoreApplication>
+#include <QJsonDocument>
 #include <QLocalSocket>
 #include <QMetaObject>
 #include <QQueue>
@@ -25,6 +26,16 @@ bool readMessage(QByteArray& message) {
     return std::fread(message.data(), 1, length, stdin) == length && !message.contains('\n');
 }
 
+bool writeMessage(const QByteArray& message) {
+    if(message.isEmpty() || message.size() > static_cast<qsizetype>(kMaxMessageBytes))
+        return false;
+    const quint32 wireLength = qToLittleEndian(static_cast<quint32>(message.size()));
+    return std::fwrite(&wireLength, 1, sizeof(wireLength), stdout) == sizeof(wireLength) &&
+           std::fwrite(message.constData(), 1, static_cast<size_t>(message.size()), stdout) ==
+               static_cast<size_t>(message.size()) &&
+           std::fflush(stdout) == 0;
+}
+
 } // namespace
 
 int main(int argc, char* argv[]) {
@@ -37,6 +48,7 @@ int main(int argc, char* argv[]) {
     QLocalSocket socket;
     QQueue<QByteArray> pending;
     int pendingBytes = 0;
+    QByteArray responseBuffer;
 
     const auto flushPending = [&] {
         while(socket.state() == QLocalSocket::ConnectedState && !pending.isEmpty()) {
@@ -49,6 +61,27 @@ int main(int argc, char* argv[]) {
     };
 
     QObject::connect(&socket, &QLocalSocket::connected, &app, flushPending);
+    QObject::connect(&socket, &QLocalSocket::readyRead, &app, [&] {
+        responseBuffer.append(socket.readAll());
+        while(true) {
+            const qsizetype end = responseBuffer.indexOf('\n');
+            if(end < 0)
+                break;
+            if(end == 0 || end > kMaxMessageBytes ||
+               !QJsonDocument::fromJson(responseBuffer.first(end)).isObject()) {
+                socket.abort();
+                return;
+            }
+            if(!writeMessage(responseBuffer.first(end))) {
+                std::fprintf(stderr, "MediaFlyouts browser host could not write a native message\n");
+                socket.abort();
+                return;
+            }
+            responseBuffer.remove(0, end + 1);
+        }
+        if(responseBuffer.size() > static_cast<qsizetype>(kMaxMessageBytes))
+            socket.abort();
+    });
 
     QTimer reconnect;
     reconnect.setInterval(500);

@@ -24,6 +24,7 @@ is processed locally and is not sent to the developer.
 |---|---|---|
 | Now-playing metadata (track title, artist, album, album art, playback state) from the Windows System Media Transport Controls | Media and Now Playing flyouts, taskbar widget | Memory only; discarded when the track changes or the app exits |
 | Optional browser extension: the title and favicon of one audible, remembered, or active tab, and the number of audible tabs | Fallback image when a browser session has no album art | Sent locally to MediaFlyouts through a native messaging host; not saved or sent to the developer. The extension reads the favicon URL to fetch the icon as described in section 3 |
+| Optional browser extension: audio and video elements in audible tabs | Pause all browser tabs when you use MediaFlyouts' Pause all control | The extension runs a pause command in audible tabs only after you press Pause all. It does not read page text or collect page content. |
 | Master and per-application volume, mute state, running audio app names and icons | Volume flyout and per-app mixer | Memory only |
 | System audio output (WASAPI loopback) | Audio visualizer on the taskbar widget | Converted to a frequency spectrum in memory in real time; the audio is never recorded, stored or sent. Capture runs only while the visualizer is enabled and visible |
 | Media and lock-key presses (`Play/Pause`, `Next`, `Previous`, `Stop`, `Volume Up/Down/Mute`, `Caps`, `Num`, `Scroll`, `Insert`) via a low-level keyboard hook | Triggering the flyouts | Only these specific keys are inspected. No other keystrokes are read, logged or stored. MediaFlyouts is not a keylogger |
@@ -122,8 +123,11 @@ the situations described here:
   the favicon URL of a single audible tab or, when none is audible, the last
   identified or active tab, from the site or its icon provider. The request
   omits credentials and can expose your IP address to that server. The URL is
-  not sent to MediaFlyouts or the developer. You can remove the extension in
-  your browser to stop these requests.
+  not sent to MediaFlyouts or the developer. When you use **Pause all**, the
+  extension also queries which tabs are audible and runs a script in those
+  tabs to pause their audio and video elements. This uses the extension's
+  `scripting` permission and does not send page content over the network. You
+  can remove the extension in your browser to stop these requests and controls.
 
 Links in the tray menu or dashboard (Repository, Open new issue, release page,
 the donation page on the **Support** page) open in your default browser; those

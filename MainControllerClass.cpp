@@ -119,6 +119,8 @@ void MainControllerClass::buildCoreSubsystems() {
                      &NowPlaying::applyBrowserArtwork);
     QObject::connect(m_browserArtwork.get(), &BrowserArtworkBridge::browserDisconnected, m_nowPlaying.get(),
                      &NowPlaying::clearBrowserArtwork);
+    QObject::connect(m_nowPlaying.get(), &NowPlaying::pauseAllBrowsersRequested, m_browserArtwork.get(),
+                     &BrowserArtworkBridge::pauseAllBrowserTabs);
     m_browserArtwork->start();
     m_browserIntegration = std::make_unique<BrowserIntegration>();
     m_settings = std::make_unique<Settings>();
