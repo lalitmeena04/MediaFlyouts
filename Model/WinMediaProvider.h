@@ -37,7 +37,6 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         QStringList pauseAllSessions() override;
         int playingSessionCount() const override;
         void resumeAllSessions() override;
-
     signals:
         void trackChanged(const mf::TrackInfo& track);
         void artChanged(const QImage& art);
@@ -57,6 +56,8 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         void refreshSessionMeta();
         void watchAllSessions();
         void recountPlaying();
+        void runPauseSweep();
+        void cancelPauseSweep();
 
         SessionManager m_manager{nullptr};
         Session m_session{nullptr};
@@ -72,6 +73,10 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         std::mutex m_watchMutex;
         std::vector<std::pair<Session, winrt::event_token>> m_watched;
         bool m_manual = false;
+        // Pause-all sweep state. Main thread only.
+        QStringList m_pauseSweepAppIds;
+        int m_pauseSweepRoundsLeft = 0;
+        int m_pauseSweepIdleRounds = 0;
         std::mutex m_lastMutex;
         mf::TrackInfo m_lastTrack;
         QImage m_lastArt;

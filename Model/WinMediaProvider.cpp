@@ -4,9 +4,11 @@
 
 #include <QByteArray>
 #include <QImage>
+#include <QList>
 #include <QMetaObject>
 #include <QString>
 #include <QStringList>
+#include <QTimer>
 
 #include "Logging.h"
 #include "SessionSelection.h"
@@ -19,6 +21,15 @@
 using namespace winrt::Windows::Media::Control;
 using PlaybackStatus = GlobalSystemMediaTransportControlsSessionPlaybackStatus;
 namespace streams = winrt::Windows::Storage::Streams;
+
+namespace {
+// Browsers route one SMTC session per app. After a pause the browser promotes
+// the next playing tab after a short delay. Sweep re-pauses promoted sessions.
+constexpr int kPauseSweepIntervalMs = 400;
+constexpr int kPauseSweepMaxRounds = 6;
+// Promotion can lag one round. Stop after two rounds with no targets.
+constexpr int kPauseSweepMaxIdleRounds = 2;
+} // namespace
 
 WinMediaProvider::WinMediaProvider(QObject* parent) : QObject(parent) {}
 
@@ -172,6 +183,7 @@ int WinMediaProvider::playingSessionCount() const {
 }
 
 void WinMediaProvider::resumeAllSessions() {
+    cancelPauseSweep();
     if(!m_manager)
         return;
     try {
@@ -258,6 +270,7 @@ void WinMediaProvider::cycleSession(int delta) {
 
 QStringList WinMediaProvider::pauseAllSessions() {
     QStringList paused;
+    cancelPauseSweep();
     if(!m_manager)
         return paused;
     try {
@@ -274,7 +287,68 @@ QStringList WinMediaProvider::pauseAllSessions() {
         }
     } catch(...) {
     }
+    if(!paused.isEmpty()) {
+        // Browsers hide extra playing tabs behind one session. Sweep catches
+        // the tabs the browser promotes after this pause.
+        m_pauseSweepAppIds = paused;
+        m_pauseSweepRoundsLeft = kPauseSweepMaxRounds;
+        m_pauseSweepIdleRounds = 0;
+        TRC_DEBUG("media: pause-all paused {} session(s), sweep scheduled", paused.size());
+        QTimer::singleShot(kPauseSweepIntervalMs, this, [this] { runPauseSweep(); });
+    }
     return paused;
+}
+
+void WinMediaProvider::runPauseSweep() {
+    if(!m_manager || m_pauseSweepRoundsLeft <= 0 || m_pauseSweepAppIds.isEmpty())
+        return;
+    --m_pauseSweepRoundsLeft;
+    int pausedNow = 0;
+    try {
+        auto sessions = m_manager.GetSessions();
+        const int n = static_cast<int>(sessions.Size());
+        QStringList appIds;
+        QList<bool> playing;
+        appIds.reserve(n);
+        playing.reserve(n);
+        for(int i = 0; i < n; ++i) {
+            try {
+                auto s = sessions.GetAt(static_cast<uint32_t>(i));
+                appIds.append(QString::fromWCharArray(s.SourceAppUserModelId().c_str()));
+                playing.append(s.GetPlaybackInfo().PlaybackStatus() == PlaybackStatus::Playing);
+            } catch(...) {
+                appIds.append(QString());
+                playing.append(false);
+            }
+        }
+        const QList<int> targets = mf::pauseSweepTargets(appIds, playing, m_pauseSweepAppIds);
+        for(int idx : targets) {
+            try {
+                sessions.GetAt(static_cast<uint32_t>(idx)).TryPauseAsync();
+                ++pausedNow;
+            } catch(...) {
+            }
+        }
+    } catch(...) {
+        TRC_WARN("media: pause sweep round failed");
+    }
+
+    m_pauseSweepIdleRounds = pausedNow > 0 ? 0 : m_pauseSweepIdleRounds + 1;
+    if(pausedNow > 0)
+        TRC_DEBUG("media: pause sweep paused {} promoted session(s)", pausedNow);
+
+    if(m_pauseSweepRoundsLeft <= 0 || m_pauseSweepIdleRounds >= kPauseSweepMaxIdleRounds) {
+        TRC_DEBUG("media: pause sweep done");
+        cancelPauseSweep();
+        return;
+    }
+    QTimer::singleShot(kPauseSweepIntervalMs, this, [this] { runPauseSweep(); });
+}
+
+void WinMediaProvider::cancelPauseSweep() {
+    m_pauseSweepAppIds.clear();
+    m_pauseSweepRoundsLeft = 0;
+    m_pauseSweepIdleRounds = 0;
 }
 
 void WinMediaProvider::hookSession(Session session) {
@@ -465,6 +539,7 @@ WinMediaProvider::Session WinMediaProvider::currentSession() {
 }
 
 void WinMediaProvider::play() {
+    cancelPauseSweep();
     if(auto s = currentSession())
         s.TryPlayAsync();
 }

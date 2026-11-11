@@ -60,9 +60,10 @@ visualizer. This document describes the features that ship in the app.
   with source indicator dots and a slide transition.
 - Hidden automatically over fullscreen apps.
 - Optional integrated playback controls.
-- Optional "Pause all" button that pauses every playing source at once. With
-  the follow-up option on, the same button becomes "Play all" whenever every
-  source is paused, and resumes them.
+- Optional "Pause all" button that pauses every playing source at once,
+  including media playing in multiple browser tabs. With the follow-up option
+  on, the same button becomes "Play all" whenever every source is paused, and
+  resumes them.
 
 ## Peripheral battery
 

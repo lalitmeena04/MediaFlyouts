@@ -5,6 +5,13 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Pause all now pauses media in every browser tab.** Windows exposes one
+  media session per browser, so earlier only the routed tab was paused. The
+  button now sweeps for a short moment after the first pause and also pauses
+  tabs the browser promotes next, until the source goes quiet.
+
 ## [2.0.0] — 2026-11-05
 
 The Store app becomes free and sells **MediaFlyouts Pro** as a one-time
