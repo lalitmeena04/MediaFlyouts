@@ -1352,37 +1352,14 @@ Window {
                         onMoved: settings.taskbarWidgetOffset = Math.round(value)
                     }
 
-                    Column {
+                    SettingSection {
                         id: mediaWidgetSection
-                        property bool expanded: true
                         width: parent.width
-                        spacing: 8
-
-                        Button {
-                            id: mediaWidgetSectionButton
-                            width: parent.width
-                            height: 38
-                            text: qsTr("Media Widget")
-                            contentItem: Row {
-                                spacing: 8
-                                Text {
-                                    text: mediaWidgetSection.expanded ? "-" : "+"
-                                    color: theme.textSecondary
-                                    font: mediaWidgetSectionButton.font
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                                Text {
-                                    text: mediaWidgetSectionButton.text
-                                    color: theme.textPrimary
-                                    font: mediaWidgetSectionButton.font
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                            }
-                            onClicked: mediaWidgetSection.expanded = !mediaWidgetSection.expanded
-                        }
+                        text: qsTr("Media Widget")
+                        description: qsTr("Dock a compact now-playing widget on the taskbar near the tray.")
+                        glyph: Fluent.musicNote
 
                         Column {
-                            visible: mediaWidgetSection.expanded
                             width: parent.width
                             spacing: 12
 
@@ -1507,37 +1484,14 @@ Window {
                         }
                     }
 
-                    Column {
+                    SettingSection {
                         id: peripheralWidgetSection
-                        property bool expanded: true
                         width: parent.width
-                        spacing: 8
-
-                        Button {
-                            id: peripheralWidgetSectionButton
-                            width: parent.width
-                            height: 38
-                            text: qsTr("Peripheral Widget")
-                            contentItem: Row {
-                                spacing: 8
-                                Text {
-                                    text: peripheralWidgetSection.expanded ? "-" : "+"
-                                    color: theme.textSecondary
-                                    font: peripheralWidgetSectionButton.font
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                                Text {
-                                    text: peripheralWidgetSectionButton.text
-                                    color: theme.textPrimary
-                                    font: peripheralWidgetSectionButton.font
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                            }
-                            onClicked: peripheralWidgetSection.expanded = !peripheralWidgetSection.expanded
-                        }
+                        text: qsTr("Peripheral Widget")
+                        description: qsTr("Dock a battery widget for selected wireless peripherals on the taskbar.")
+                        glyph: Fluent.plugConnected
 
                         Column {
-                            visible: peripheralWidgetSection.expanded
                             width: parent.width
                             spacing: 12
 

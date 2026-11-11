@@ -332,6 +332,7 @@ qt_add_qml_module(MediaFlyouts
         Views/ScrubArea.qml
         Views/SettingCombo.qml
         Views/SettingRow.qml
+        Views/SettingSection.qml
         Views/SettingSlider.qml
         Views/SlideFade.qml
         Views/SupportPage.qml

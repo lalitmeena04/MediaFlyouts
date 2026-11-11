@@ -56,6 +56,11 @@ the **card** or **compact pill** style in Settings.
 
 ## Taskbar widget
 
+The Taskbar Widget settings page keeps shared placement controls at the top.
+Click the **Media Widget** or **Peripheral Widget** card header to expand its
+settings inside the same card. You can also focus a header with **Tab** and
+toggle it with **Space**.
+
 Enable the taskbar widget to show the current track next to the tray. On first
 run it docks to whichever edge your taskbar leaves free — left if your taskbar is
 center-aligned, right if it is left-aligned. You can:

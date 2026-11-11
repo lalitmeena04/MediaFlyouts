@@ -1,17 +1,40 @@
 #include <gtest/gtest.h>
 
+#include <memory>
+
+#include <QColor>
 #include <QDir>
 #include <QFile>
 #include <QQmlAbstractUrlInterceptor>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QQmlEngine>
+#include <QQmlPropertyMap>
+#include <QQuickItem>
+#include <QQuickWindow>
 #include <QRegularExpression>
+#include <QSignalSpy>
 #include <QString>
+#include <QTest>
 #include <QUrl>
 
 #include "AppIcon.h"
 
 namespace {
+
+class SourceUrls : public QQmlAbstractUrlInterceptor {
+    public:
+        QUrl intercept(const QUrl& url, DataType) override {
+            const QString prefix = QStringLiteral("/qt/qml/MediaFlyouts/");
+            if(url.scheme() == QStringLiteral("qrc") && url.path().startsWith(prefix)) {
+                QString relative = url.path().mid(prefix.size());
+                if(relative.startsWith(QStringLiteral("assets/")))
+                    relative.prepend(QStringLiteral("Views/"));
+                return QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/") + relative);
+            }
+            return url;
+        }
+};
 
 QString loadSource(const char* relativePath) {
     QFile file(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR) + QLatin1Char('/') + QString::fromLatin1(relativePath));
@@ -26,16 +49,7 @@ void expectContains(const QString& source, const QString& expected) {
 } // namespace
 
 TEST(QmlContractTest, DashboardCompilesWithoutQmlErrors) {
-    class SourceUrls : public QQmlAbstractUrlInterceptor {
-        public:
-            QUrl intercept(const QUrl& url, DataType) override {
-                const QString prefix = QStringLiteral("/qt/qml/MediaFlyouts/");
-                if(url.scheme() == QStringLiteral("qrc") && url.path().startsWith(prefix))
-                    return QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/") +
-                                               url.path().mid(prefix.size()));
-                return url;
-            }
-    } sourceUrls;
+    SourceUrls sourceUrls;
     QQmlEngine engine;
     engine.addUrlInterceptor(&sourceUrls);
     engine.addImportPath(QStringLiteral(MEDIAFLYOUTS_QML_IMPORT_DIR));
@@ -43,6 +57,72 @@ TEST(QmlContractTest, DashboardCompilesWithoutQmlErrors) {
                             QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/Views/Dashboard.qml")),
                             QQmlComponent::PreferSynchronous);
     ASSERT_TRUE(component.isReady()) << component.errorString().toStdString();
+}
+
+TEST(QmlContractTest, SectionExpandsControlsInsideItsCardWithKeyboardAndMouse) {
+    QQmlPropertyMap palette;
+    palette.insert(QStringLiteral("card"), QColor("#232323"));
+    palette.insert(QStringLiteral("cardHover"), QColor("#2A2A2A"));
+    palette.insert(QStringLiteral("border"), QColor("#2E2E2E"));
+    palette.insert(QStringLiteral("accent"), QColor("#FFFFFF"));
+    palette.insert(QStringLiteral("accentBadge"), QColor("#26333D"));
+    palette.insert(QStringLiteral("textPrimary"), QColor("#FFFFFF"));
+    palette.insert(QStringLiteral("textSecondary"), QColor("#B8B8B8"));
+    SourceUrls sourceUrls;
+    QQmlEngine engine;
+    engine.addUrlInterceptor(&sourceUrls);
+    engine.addImportPath(QStringLiteral(MEDIAFLYOUTS_QML_IMPORT_DIR));
+    engine.rootContext()->setContextProperty(QStringLiteral("theme"), &palette);
+    QQmlComponent component(&engine);
+    component.setData(R"(
+        import QtQuick
+        import MediaFlyouts
+        SettingSection {
+            width: 440
+            text: "Media Widget"
+            description: "Playback controls and browser artwork."
+            glyph: Fluent.musicNote
+            Rectangle {
+                objectName: "settingControl"
+                width: parent.width
+                height: 40
+            }
+        }
+    )", QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/tests/SectionTest.qml")));
+    ASSERT_TRUE(component.isReady()) << component.errorString().toStdString();
+    QQuickWindow window;
+    std::unique_ptr<QObject> object(component.create());
+    ASSERT_TRUE(object) << component.errorString().toStdString();
+    auto* section = qobject_cast<QQuickItem*>(object.get());
+    ASSERT_NE(section, nullptr);
+    auto* header = section->findChild<QQuickItem*>(QStringLiteral("sectionHeader"));
+    ASSERT_NE(header, nullptr);
+    auto* control = section->findChild<QQuickItem*>(QStringLiteral("settingControl"));
+    ASSERT_NE(control, nullptr);
+    section->setParentItem(window.contentItem());
+    window.resize(440, 200);
+    window.show();
+    ASSERT_TRUE(QTest::qWaitForWindowExposed(&window));
+    QSignalSpy toggled(header, SIGNAL(toggled()));
+    ASSERT_TRUE(toggled.isValid());
+    EXPECT_TRUE(section->property("expanded").toBool());
+    const qreal expandedHeight = section->height();
+    EXPECT_GT(expandedHeight, header->height());
+    EXPECT_TRUE(control->isVisible());
+    ASSERT_NE(control->parentItem(), nullptr);
+    EXPECT_EQ(control->parentItem()->childItems().size(), 1);
+    EXPECT_TRUE(section->boundingRect().contains(control->mapRectToItem(section, control->boundingRect())));
+
+    header->forceActiveFocus();
+    QTest::keyClick(&window, Qt::Key_Space);
+    EXPECT_FALSE(section->property("expanded").toBool());
+    EXPECT_FALSE(control->isVisible());
+    EXPECT_EQ(section->height(), header->height());
+    QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier, QPoint(220, 30));
+    EXPECT_TRUE(section->property("expanded").toBool());
+    EXPECT_TRUE(control->isVisible());
+    EXPECT_EQ(section->height(), expandedHeight);
+    EXPECT_EQ(toggled.size(), 2);
 }
 
 TEST(QmlContractTest, RegistersAndStacksThePeripheralFlyout) {
@@ -186,8 +266,10 @@ TEST(QmlContractTest, TaskbarWidgetPageKeepsSharedSettingsAboveCollapsibleSectio
     ASSERT_GE(peripheralSection, 0);
     EXPECT_LT(widgetSide, mediaSection);
     EXPECT_LT(mediaSection, peripheralSection);
-    EXPECT_TRUE(source.contains(QStringLiteral("text: mediaWidgetSection.expanded ? \"-\" : \"+\"")));
-    EXPECT_TRUE(source.contains(QStringLiteral("text: peripheralWidgetSection.expanded ? \"-\" : \"+\"")));
+    const QString section = loadSource("Views/SettingSection.qml");
+    EXPECT_EQ(source.count(QStringLiteral("SettingSection {")), 2);
+    expectContains(section, QStringLiteral("default property alias contentData: body.data"));
+    expectContains(section, QStringLiteral("visible: section.expanded"));
     EXPECT_EQ(source.count(QStringLiteral("visible: taskbarWidgetPage.verticalTaskbar")), 1);
 }
 
