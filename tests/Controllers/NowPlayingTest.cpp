@@ -1,7 +1,10 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <QFile>
+#include <QScopeGuard>
 #include <QSignalSpy>
+#include <QTemporaryDir>
 
 #include "AlbumArtProvider.h"
 #include "BrowserArtworkImage.h"
@@ -364,6 +367,21 @@ TEST(NowPlayingTest, BrowserArtworkIsOnlyUsedForMatchingMediaWithoutAlbumArt) {
     np.applyBrowserArtwork(QStringLiteral("chrome"), QStringLiteral("Other"), 2, favicon);
     EXPECT_FALSE(np.hasArt());
 }
+
+#ifdef Q_OS_WIN
+TEST(NowPlayingTest, BrowserExecutableIconWorksWithTheTestApplication) {
+    QTemporaryDir directory;
+    ASSERT_TRUE(directory.isValid());
+    QFile executable(directory.filePath(QStringLiteral("chrome.exe")));
+    ASSERT_TRUE(executable.open(QIODevice::WriteOnly));
+    executable.close();
+
+    const QByteArray path = qgetenv("PATH");
+    const auto restorePath = qScopeGuard([&path] { qputenv("PATH", path); });
+    ASSERT_TRUE(qputenv("PATH", directory.path().toLocal8Bit()));
+    EXPECT_FALSE(mf::browserExecutableIcon(QStringLiteral("chrome")).isNull());
+}
+#endif
 
 TEST(NowPlayingTest, BrowserArtworkStaysWhenPausedAndClearsOnDisconnect) {
     NowPlaying np;

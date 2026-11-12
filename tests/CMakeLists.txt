@@ -116,6 +116,13 @@ add_executable(mediaflyout_gtest
     Packaging/IconAssetsTest.cpp
     Views/QmlContractTest.cpp
 )
+# Qt 6.8 needs the resource directory to resolve implicit QML imports.
+get_target_property(mediaflyouts_qml_files MediaFlyouts QT_QML_MODULE_QML_FILES)
+qt_add_resources(mediaflyout_gtest "test_qml"
+    PREFIX "/qt/qml/MediaFlyouts"
+    BASE "${CMAKE_SOURCE_DIR}"
+    FILES ${mediaflyouts_qml_files}
+)
 target_link_libraries(mediaflyout_gtest PRIVATE
     mediaflyout_testlib
     Qt6::Test
