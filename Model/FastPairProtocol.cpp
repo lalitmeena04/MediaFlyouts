@@ -31,6 +31,7 @@ std::vector<BatteryComponent> parseBattery(const Frame& frame) {
     if(!isBatteryFrame(frame))
         return components;
 
+    components.reserve(frame.payload.size());
     for(std::uint8_t raw : frame.payload) {
         BatteryComponent component;
         component.charging = (raw & 0x80) != 0;

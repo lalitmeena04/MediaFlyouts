@@ -113,3 +113,43 @@ TEST(FftTest, FrequencyBarsGuardInvalidArguments) {
     for(double v : badRate)
         EXPECT_DOUBLE_EQ(v, 0.0);
 }
+
+TEST(FftTest, InPlaceVariantsMatchAllocatingVersions) {
+    const int n = 128;
+    std::vector<double> samples(n);
+    for(int i = 0; i < n; ++i)
+        samples[i] = std::sin(2.0 * kPi * 5 * i / n) + 0.5 * std::sin(2.0 * kPi * 17 * i / n);
+
+    const std::vector<double> mags = mf::magnitudeSpectrum(samples);
+
+    std::vector<double> re = samples;
+    std::vector<double> im(3, 1.0);
+    std::vector<double> inPlace(7, 9.0);
+    mf::magnitudeSpectrumInPlace(re, im, inPlace);
+    ASSERT_EQ(inPlace.size(), mags.size());
+    for(std::size_t i = 0; i < mags.size(); ++i)
+        EXPECT_NEAR(inPlace[i], mags[i], 1e-9);
+
+    const std::vector<double> bars = mf::frequencyBars(mags, 48000.0, n, 8);
+    std::vector<double> barsOut(3, 5.0);
+    mf::frequencyBars(mags, 48000.0, n, 8, barsOut);
+    ASSERT_EQ(barsOut.size(), bars.size());
+    for(std::size_t i = 0; i < bars.size(); ++i)
+        EXPECT_DOUBLE_EQ(barsOut[i], bars[i]);
+}
+
+TEST(FftTest, InPlaceSpectrumClearsOutputForTinyInput) {
+    std::vector<double> re{1.0};
+    std::vector<double> im;
+    std::vector<double> mags(4, 1.0);
+    mf::magnitudeSpectrumInPlace(re, im, mags);
+    EXPECT_TRUE(mags.empty());
+}
+
+TEST(FftTest, InPlaceSpectrumTruncatesToLargestPowerOfTwo) {
+    std::vector<double> re(100, 0.5);
+    std::vector<double> im;
+    std::vector<double> mags;
+    mf::magnitudeSpectrumInPlace(re, im, mags);
+    EXPECT_EQ(mags.size(), static_cast<std::size_t>(32));
+}

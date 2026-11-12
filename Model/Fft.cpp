@@ -60,17 +60,25 @@ void fft(std::vector<double>& re, std::vector<double>& im) {
 }
 
 std::vector<double> magnitudeSpectrum(const std::vector<double>& samples) {
-    if(samples.size() < 2)
-        return {};
-    const std::size_t n = largestPowerOfTwo(samples.size());
-    std::vector<double> re(samples.begin(), samples.begin() + static_cast<long>(n));
-    std::vector<double> im(n, 0.0);
+    std::vector<double> re(samples);
+    std::vector<double> im;
+    std::vector<double> mags;
+    magnitudeSpectrumInPlace(re, im, mags);
+    return mags;
+}
+
+void magnitudeSpectrumInPlace(std::vector<double>& re, std::vector<double>& im, std::vector<double>& mags) {
+    mags.clear();
+    if(re.size() < 2)
+        return;
+    const std::size_t n = largestPowerOfTwo(re.size());
+    re.resize(n);
+    im.assign(n, 0.0);
     fft(re, im);
 
-    std::vector<double> mags(n / 2);
+    mags.resize(n / 2);
     for(std::size_t i = 0; i < n / 2; ++i)
         mags[i] = std::sqrt(re[i] * re[i] + im[i] * im[i]);
-    return mags;
 }
 
 std::vector<double> spectrumBands(const std::vector<double>& magnitudes, int bands) {
@@ -104,9 +112,16 @@ std::vector<double> spectrumBands(const std::vector<double>& magnitudes, int ban
 
 std::vector<double> frequencyBars(const std::vector<double>& magnitudes, double sampleRate, int fftSize, int bars,
                                   double minFreq, double maxFreq, double minDb, double maxDb) {
-    std::vector<double> out(bars > 0 ? bars : 0, 0.0);
+    std::vector<double> out;
+    frequencyBars(magnitudes, sampleRate, fftSize, bars, out, minFreq, maxFreq, minDb, maxDb);
+    return out;
+}
+
+void frequencyBars(const std::vector<double>& magnitudes, double sampleRate, int fftSize, int bars,
+                   std::vector<double>& out, double minFreq, double maxFreq, double minDb, double maxDb) {
+    out.assign(bars > 0 ? static_cast<std::size_t>(bars) : 0, 0.0);
     if(bars <= 0 || magnitudes.empty() || sampleRate <= 0.0 || fftSize <= 0 || maxDb <= minDb)
-        return out;
+        return;
 
     const double binHz = sampleRate / static_cast<double>(fftSize);
     const int maxBin = static_cast<int>(magnitudes.size());
@@ -140,7 +155,6 @@ std::vector<double> frequencyBars(const std::vector<double>& magnitudes, double 
         double intensity = (db - minDb) / (maxDb - minDb);
         out[i] = intensity < 0.0 ? 0.0 : (intensity > 1.0 ? 1.0 : intensity);
     }
-    return out;
 }
 
 } // namespace mf

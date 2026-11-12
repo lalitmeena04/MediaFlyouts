@@ -49,6 +49,10 @@ class AudioCapture : public QObject {
         QVariantList m_bands;
         std::vector<double> m_smoothed;
         std::vector<double> m_accum;
+        std::vector<double> m_window;
+        std::vector<double> m_im;
+        std::vector<double> m_mags;
+        std::vector<double> m_raw;
 
         IMMDeviceEnumerator* m_enumerator = nullptr;
         IMMDevice* m_device = nullptr;

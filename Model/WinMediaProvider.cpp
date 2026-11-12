@@ -465,6 +465,7 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
     }
 
     QImage art;
+    QByteArray artBytes;
     if(props) {
         try {
             auto thumbRef = props.Thumbnail();
@@ -474,17 +475,24 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
                 if(size > 0) {
                     streams::Buffer buffer(size);
                     auto readBuffer = co_await stream.ReadAsync(buffer, size, streams::InputStreamOptions::None);
-                    QByteArray bytes;
-                    bytes.resize(static_cast<int>(readBuffer.Length()));
+                    artBytes.resize(static_cast<int>(readBuffer.Length()));
                     auto reader = streams::DataReader::FromBuffer(readBuffer);
                     reader.ReadBytes(
-                        winrt::array_view<uint8_t>(reinterpret_cast<uint8_t*>(bytes.data()),
-                                                   reinterpret_cast<uint8_t*>(bytes.data()) + bytes.size()));
-                    art.loadFromData(bytes);
+                        winrt::array_view<uint8_t>(reinterpret_cast<uint8_t*>(artBytes.data()),
+                                                   reinterpret_cast<uint8_t*>(artBytes.data()) + artBytes.size()));
                 }
             }
         } catch(...) {
         }
+    }
+    if(!artBytes.isEmpty()) {
+        {
+            std::lock_guard<std::mutex> lock(m_lastMutex);
+            if(artBytes == m_lastArtBytes && !m_lastArt.isNull())
+                art = m_lastArt;
+        }
+        if(art.isNull())
+            art.loadFromData(artBytes);
     }
 
     const bool freshEmpty = track.title.isEmpty() && track.artist.isEmpty() && track.album.isEmpty();
@@ -504,10 +512,14 @@ winrt::fire_and_forget WinMediaProvider::refresh(Session session, int attempt) {
                 art = m_lastArt;
         }
         m_lastTrack = track;
-        if(!art.isNull())
+        if(!art.isNull()) {
             m_lastArt = art;
-        else if(!active)
+            if(!artBytes.isEmpty())
+                m_lastArtBytes = artBytes;
+        } else if(!active) {
             m_lastArt = QImage();
+            m_lastArtBytes.clear();
+        }
     }
 
     QMetaObject::invokeMethod(

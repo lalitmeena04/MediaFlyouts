@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include <QByteArray>
 #include <QImage>
 #include <QObject>
 
@@ -80,4 +81,5 @@ class WinMediaProvider : public QObject, public mf::IPlaybackController {
         std::mutex m_lastMutex;
         mf::TrackInfo m_lastTrack;
         QImage m_lastArt;
+        QByteArray m_lastArtBytes;
 };

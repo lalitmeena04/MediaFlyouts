@@ -10,8 +10,11 @@ void AlbumArtProvider::setImage(const QImage& image) {
 }
 
 QImage AlbumArtProvider::requestImage(const QString&, QSize* size, const QSize& requestedSize) {
-    QMutexLocker lock(&m_mutex);
-    QImage image = m_image;
+    QImage image;
+    {
+        QMutexLocker lock(&m_mutex);
+        image = m_image;
+    }
     if(size)
         *size = image.size();
     if(!image.isNull() && !requestedSize.isEmpty())

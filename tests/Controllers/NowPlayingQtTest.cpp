@@ -63,6 +63,8 @@ class NowPlayingQtTest : public QObject {
         void pauseAllThenPlayAllRoundTrip();
         void manualPauseOfEverythingOffersPlayAll();
         void applyArtTogglesHasArt();
+        void applyArtEmitsChangedOncePerNewImage();
+        void trackUpdateWithArtworkEmitsChangedOnce();
 };
 
 void NowPlayingQtTest::hasMediaReflectsTrack() {
@@ -188,6 +190,29 @@ void NowPlayingQtTest::applyArtTogglesHasArt() {
     QVERIFY(np.hasArt());
     QVERIFY(!np.artSource().isEmpty());
     np.applyArt(QImage());
+    QVERIFY(!np.hasArt());
+}
+
+void NowPlayingQtTest::applyArtEmitsChangedOncePerNewImage() {
+    NowPlaying np;
+    QImage img(4, 4, QImage::Format_ARGB32);
+    img.fill(Qt::blue);
+    QSignalSpy changed(&np, &NowPlaying::changed);
+    np.applyArt(img);
+    QCOMPARE(changed.count(), 1);
+    np.applyArt(img);
+    QCOMPARE(changed.count(), 1);
+}
+
+void NowPlayingQtTest::trackUpdateWithArtworkEmitsChangedOnce() {
+    NowPlaying np;
+    np.applyTrack(makeTrack(QStringLiteral("First"), QStringLiteral("Band")));
+    QImage img(4, 4, QImage::Format_ARGB32);
+    img.fill(Qt::red);
+    np.applyArt(img);
+    QSignalSpy changed(&np, &NowPlaying::changed);
+    np.applyTrack(makeTrack(QStringLiteral("Second"), QStringLiteral("Band")));
+    QCOMPARE(changed.count(), 1);
     QVERIFY(!np.hasArt());
 }
 

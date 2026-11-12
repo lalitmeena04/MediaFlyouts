@@ -94,7 +94,7 @@ class NowPlaying : public QObject {
         qint64 currentPositionMs() const;
         static QColor computeArtAccent(const QImage& art);
         void updateResumeAll();
-        void updateArtwork();
+        bool updateArtwork();
 
         struct BrowserArtwork {
             QString tabTitle;

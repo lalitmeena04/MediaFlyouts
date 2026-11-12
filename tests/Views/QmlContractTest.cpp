@@ -904,6 +904,24 @@ TEST(QmlContractTest, TaskbarWidgetGatesAudioCaptureOnVisibility) {
     expectContains(source, QStringLiteral("audioCapture.stop()"));
 }
 
+TEST(QmlContractTest, TaskbarVisualizerRepaintsOnlyWhenNeeded) {
+    const QString source = loadSource("Views/TaskbarVisualizer.qml");
+    expectContains(source, QStringLiteral(
+        "running: viz.visible && viz.style !== 0 && (audioCapture.active || viz.particleCount > 0 || viz.bandsDirty)"));
+    expectContains(source, QStringLiteral("function onBandsChanged() { viz.bandsDirty = true }"));
+    expectContains(source, QStringLiteral("} else if(!viz.bandsDirty) {"));
+    expectContains(source, QStringLiteral("viz.bandsDirty = false"));
+    expectContains(source, QStringLiteral("viz.particleCount = arr.length"));
+}
+
+TEST(QmlContractTest, DashboardSearchUsesNormalisedIndex) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    expectContains(source, QStringLiteral("readonly property var searchIndexNorm"));
+    expectContains(source, QStringLiteral("return searchIndexNorm.filter(function(e) { return e.lower.indexOf(q) >= 0 })"));
+    EXPECT_FALSE(source.contains(QStringLiteral("e.label.toLowerCase().indexOf")))
+        << "Search must not lowercase every label per keystroke.";
+}
+
 TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     const QString widget = loadSource("Views/TaskbarWidget.qml");
     expectContains(widget, QStringLiteral("pauseAllVisible: pro.taskbarWidgetPauseAllEnabled"));

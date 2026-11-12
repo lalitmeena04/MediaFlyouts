@@ -17,6 +17,16 @@
 namespace {
 constexpr int kFftSize = 1024;
 constexpr double kPi = 3.14159265358979323846;
+
+const std::vector<double>& hannWindow() {
+    static const std::vector<double> table = [] {
+        std::vector<double> w(kFftSize);
+        for(int i = 0; i < kFftSize; ++i)
+            w[i] = 0.5 * (1.0 - std::cos(2.0 * kPi * i / (kFftSize - 1)));
+        return w;
+    }();
+    return table;
+}
 } // namespace
 
 AudioCapture::AudioCapture(int bandCount, QObject* parent)
@@ -211,17 +221,18 @@ void AudioCapture::poll() {
     if(static_cast<int>(m_accum.size()) < kFftSize)
         return;
 
-    std::vector<double> window(m_accum.end() - kFftSize, m_accum.end());
+    m_window.assign(m_accum.end() - kFftSize, m_accum.end());
     m_accum.clear();
+    const std::vector<double>& hann = hannWindow();
     for(int i = 0; i < kFftSize; ++i)
-        window[i] *= 0.5 * (1.0 - std::cos(2.0 * kPi * i / (kFftSize - 1)));
+        m_window[i] *= hann[i];
 
-    const std::vector<double> mags = mf::magnitudeSpectrum(window);
-    std::vector<double> raw = mf::frequencyBars(mags, m_sampleRate, kFftSize, m_bandCount);
+    mf::magnitudeSpectrumInPlace(m_window, m_im, m_mags);
+    mf::frequencyBars(m_mags, m_sampleRate, kFftSize, m_bandCount, m_raw);
 
     bool changed = false;
     for(int i = 0; i < m_bandCount; ++i) {
-        const double target = raw[i];
+        const double target = m_raw[i];
         if(target > m_smoothed[i])
             m_smoothed[i] = target;
         else
@@ -239,9 +250,9 @@ void AudioCapture::poll() {
     const int bassCount = std::max(1, m_bandCount / 4);
     double bass = 0.0;
     for(int i = 0; i < m_bandCount; ++i) {
-        sum += raw[i];
+        sum += m_raw[i];
         if(i < bassCount)
-            bass += raw[i];
+            bass += m_raw[i];
     }
     const double lvl = sum / m_bandCount;
     bass /= bassCount;
