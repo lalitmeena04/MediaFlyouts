@@ -5,6 +5,18 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Pause all pauses every audible browser tab.** The app first pauses the
+  Windows media sessions, then asks the optional extension to pause media in
+  all audible tabs. The existing session pause remains the fallback when the
+  extension is absent.
+
+### Added
+
+- **Optional browser artwork extension.** A browser extension can supply the
+  website icon when a browser media session has no album art.
+
 ## [2.0.0] — 2026-11-05
 
 The Store app becomes free and sells **MediaFlyouts Pro** as a one-time

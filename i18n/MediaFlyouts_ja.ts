@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>このブラウザーのストアでは拡張機能をまだ利用できません。</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>ブラウザーへの接続を設定できませんでした。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>拡張機能のストアを開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>ブラウザーでインストールを確認してください。</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>開発用拡張機能を設定できませんでした。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>拡張機能のフォルダーを開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>ブラウザーの開発者ツールを使って、このフォルダーから拡張機能を読み込んでください。</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Unavailable: %1</source>
         <translation>メディアウィジェット</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>タスクバーに固定されるコンパクトな再生中ウィジェット。</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>周辺機器ウィジェット</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>タスクバーに固定されるワイヤレス周辺機器のバッテリーリング。</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Unavailable: %1</source>
     <message>
         <source>App Filtering</source>
         <translation>アプリのフィルター</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>フライアウト</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>メディア、音量、ロックキー、周辺機器、充電器のフライアウトを設定します。</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>リピートボタン</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>ブラウザーの画像</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Unavailable: %1</source>
         <translation>ヒント: メディアキーや音量キーを押すか、トレイアイコンをクリックするとフライアウトをプレビューできます。</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>メディアキーを押したときに再生中フライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>利用不可: この PC でシステムのメディアセッションが検出されませんでした。</translation>
     </message>
@@ -527,8 +558,32 @@ Unavailable: %1</source>
         <translation>メディアを再生しているアプリの名前を表示します。</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>アルバムアートがない場合はサイトのアイコンを使用します。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ブラウザー拡張機能をインストール</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>開発用拡張機能を開く</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>ブラウザー拡張機能はまだ公開されていません。</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>現在のアルバムアートの主要な色でフライアウトのアクセントを着色します。</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>タスクバーウィジェット</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>タスクバーにドッキングされたメディアウィジェットと周辺機器ウィジェットを設定します。</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Unavailable: %1</source>
         <translation>コンパクトなピル</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>音量キーを押したときに音量フライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>利用不可: オーディオ出力デバイスが検出されませんでした。</translation>
     </message>
@@ -695,14 +746,6 @@ Unavailable: %1</source>
         <translation>音量フライアウトを画面に表示する時間。</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>ロックキーのインジケーター</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Caps、Num、Scroll Lock を切り替えたときにフライアウトを表示します。</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>利用不可: キーボードフックをインストールできませんでした。</translation>
     </message>
@@ -741,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>選択したディスプレイのタスクバーが左または右にあります。ウィジェットには水平なタスクバー（上または下）が必要で、戻されるまで非表示のままです。</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>タスクバーウィジェット</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Unavailable: %1</source>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>周辺機器のバッテリーリングは「周辺機器ウィジェット」ページで設定します。</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>選択したワイヤレス周辺機器のバッテリーウィジェットをタスクバーに固定します。</translation>
     </message>
@@ -925,14 +960,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>USB で接続。</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>接続とバッテリー残量低下の通知は「周辺機器フライアウト」ページで設定します。ウィジェットのレイアウト（横並びまたはスクロール可能なスタック）は「メディアウィジェット」ページで設定します。</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>周辺機器が接続、切断、またはバッテリー残量が低下したときにフライアウトを表示します。</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Unavailable: %1</source>
         <translation>見逃さないように、バッテリー残量低下時にトレイ通知も表示します。</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>全画面のゲームが前面にある間はフライアウトを表示しません。他のフライアウトと共通の設定です。</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>周辺機器フライアウトの位置</translation>
     </message>
@@ -1005,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>周辺機器フライアウトを画面に表示する時間。</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>充電器の接続・取り外し時にフライアウトを表示します。</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Unavailable: %1</source>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>ブラウザーの画像</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>アルバムアートがない場合はサイトのアイコンを使用します。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ブラウザー拡張機能をインストール</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>MediaFlyouts へようこそ</translation>
     </message>
@@ -1565,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>プロ版の機能です。ホームページでプロ版を入手するとご利用いただけます。</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>プロ版の機能です。ホームページでプロ版を入手するとご利用いただけます。</translation>

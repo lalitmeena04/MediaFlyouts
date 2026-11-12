@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>此浏览器的商店中尚未提供该扩展。</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>无法设置浏览器连接。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>无法打开扩展商店。</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>请在浏览器中确认安装。</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>无法设置开发版扩展。</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>无法打开扩展文件夹。</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>请使用浏览器开发者工具从此文件夹加载扩展。</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Unavailable: %1</source>
         <translation>媒体小组件</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>停靠在任务栏上的紧凑型正在播放小组件。</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>外设小组件</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>停靠在任务栏上的无线外设电量环。</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Unavailable: %1</source>
     <message>
         <source>App Filtering</source>
         <translation>应用过滤</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>弹窗</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>配置媒体、音量、锁定键、外设和充电器弹窗。</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>重复按钮</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>浏览器图像</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Unavailable: %1</source>
         <translation>提示：按下媒体键或音量键，或点击托盘图标，即可预览弹窗。</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>按下媒体键时显示正在播放弹窗。</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>不可用：此电脑上未检测到系统媒体会话。</translation>
     </message>
@@ -527,8 +558,32 @@ Unavailable: %1</source>
         <translation>显示正在播放媒体的应用名称。</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>没有专辑封面时使用网站图标。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>安装浏览器扩展</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>打开开发版扩展</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>浏览器扩展尚未发布。</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>使用当前专辑封面的主色调为弹窗强调色着色。</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>任务栏小组件</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>配置停靠在任务栏上的媒体和外设小组件。</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Unavailable: %1</source>
         <translation>紧凑胶囊</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>按下音量键时显示音量弹窗。</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>不可用：未检测到音频输出设备。</translation>
     </message>
@@ -695,14 +746,6 @@ Unavailable: %1</source>
         <translation>音量弹窗在屏幕上停留的时间。</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>锁定键指示</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>切换 Caps、Num 或 Scroll Lock 时显示弹窗。</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>不可用：无法安装键盘钩子。</translation>
     </message>
@@ -741,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>所选显示器的任务栏位于左侧或右侧。小组件需要水平任务栏（顶部或底部），在任务栏移回之前将保持隐藏。</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>任务栏小组件</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Unavailable: %1</source>
         <translation>%1 像素</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>外设电量环在“外设小组件”页面中配置。</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>在任务栏上为选定的无线外设停靠电量小组件。</translation>
     </message>
@@ -925,14 +960,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>通过 USB 连接。</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>连接和低电量提示在“外设弹窗”页面中配置。小组件布局（并排或可滚动堆叠）在“媒体小组件”页面中配置。</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>当外设连接、断开或电量不足时显示弹窗。</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Unavailable: %1</source>
         <translation>电量不足时同时显示托盘通知，以免错过。</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>当全屏游戏位于前台时不显示弹窗。此设置与其他弹窗共用。</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>外设弹窗位置</translation>
     </message>
@@ -1005,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>外设弹窗在屏幕上停留的时间。</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>充电器插入或拔出时显示弹窗。</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Unavailable: %1</source>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>浏览器图像</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>没有专辑封面时使用网站图标。</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>安装浏览器扩展</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>欢迎使用 MediaFlyouts</translation>
     </message>
@@ -1565,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>专业版功能。请在主页获取专业版后使用。</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>专业版功能。请在主页获取专业版后使用。</translation>

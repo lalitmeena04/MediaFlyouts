@@ -32,3 +32,40 @@ TEST(SessionSelectionTest, SelectsTheNewCurrentSessionWhenItArrivesSecond) {
     const QStringList appIds{"Music.App", "Video.App"};
     EXPECT_EQ(selectedSessionIndexByAppId(appIds, "Video.App"), 1);
 }
+
+TEST(SessionSelectionTest, SweepTargetsOnlyPlayingSessionsFromSweptApps) {
+    const QStringList appIds{"Browser.App", "Music.App", "Browser.App"};
+    const QList<bool> playing{true, true, false};
+    const QStringList swept{"Browser.App"};
+    EXPECT_EQ(pauseSweepTargets(appIds, playing, swept), (QList<int>{0}));
+}
+
+TEST(SessionSelectionTest, SweepTargetsPromotedBrowserTabSession) {
+    // Browser paused tab one, then promoted tab two as new playing session.
+    const QStringList appIds{"Browser.App"};
+    const QList<bool> playing{true};
+    const QStringList swept{"Browser.App", "Music.App"};
+    EXPECT_EQ(pauseSweepTargets(appIds, playing, swept), (QList<int>{0}));
+}
+
+TEST(SessionSelectionTest, SweepIgnoresAppsThatWereNotPaused) {
+    const QStringList appIds{"Other.App", "Music.App"};
+    const QList<bool> playing{true, true};
+    const QStringList swept{"Browser.App"};
+    EXPECT_TRUE(pauseSweepTargets(appIds, playing, swept).isEmpty());
+}
+
+TEST(SessionSelectionTest, SweepIgnoresEmptyAppIds) {
+    const QStringList appIds{QString(), "Browser.App"};
+    const QList<bool> playing{true, true};
+    const QStringList swept{QString(), "Browser.App"};
+    EXPECT_EQ(pauseSweepTargets(appIds, playing, swept), (QList<int>{1}));
+}
+
+TEST(SessionSelectionTest, SweepHandlesMismatchedListSizes) {
+    const QStringList appIds{"Browser.App", "Browser.App"};
+    const QList<bool> playing{true};
+    const QStringList swept{"Browser.App"};
+    EXPECT_EQ(pauseSweepTargets(appIds, playing, swept), (QList<int>{0}));
+    EXPECT_TRUE(pauseSweepTargets({}, {}, swept).isEmpty());
+}

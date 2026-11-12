@@ -1,13 +1,41 @@
 #include <gtest/gtest.h>
 
+#include <memory>
+
+#include <QColor>
 #include <QDir>
 #include <QFile>
+#include <QJSEngine>
+#include <QQmlAbstractUrlInterceptor>
+#include <QQmlComponent>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQmlPropertyMap>
+#include <QQuickItem>
+#include <QQuickWindow>
 #include <QRegularExpression>
+#include <QSignalSpy>
 #include <QString>
+#include <QTest>
+#include <QUrl>
 
 #include "AppIcon.h"
 
 namespace {
+
+class SourceUrls : public QQmlAbstractUrlInterceptor {
+    public:
+        QUrl intercept(const QUrl& url, DataType) override {
+            const QString prefix = QStringLiteral("/qt/qml/MediaFlyouts/");
+            if(url.scheme() == QStringLiteral("qrc") && url.path().startsWith(prefix)) {
+                QString relative = url.path().mid(prefix.size());
+                if(relative.startsWith(QStringLiteral("assets/")))
+                    relative.prepend(QStringLiteral("Views/"));
+                return QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/") + relative);
+            }
+            return url;
+        }
+};
 
 QString loadSource(const char* relativePath) {
     QFile file(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR) + QLatin1Char('/') + QString::fromLatin1(relativePath));
@@ -20,6 +48,180 @@ void expectContains(const QString& source, const QString& expected) {
 }
 
 } // namespace
+
+TEST(QmlContractTest, DashboardCompilesWithoutQmlErrors) {
+    SourceUrls sourceUrls;
+    QQmlEngine engine;
+    engine.addUrlInterceptor(&sourceUrls);
+    engine.addImportPath(QStringLiteral(MEDIAFLYOUTS_QML_IMPORT_DIR));
+    QQmlComponent component(&engine,
+                            QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/Views/Dashboard.qml")),
+                            QQmlComponent::PreferSynchronous);
+    ASSERT_TRUE(component.isReady()) << component.errorString().toStdString();
+}
+
+TEST(QmlContractTest, SectionSeparatesExpansionFromItsMasterToggleAndRespectsLocks) {
+    QQmlPropertyMap palette;
+    palette.insert(QStringLiteral("card"), QColor("#232323"));
+    palette.insert(QStringLiteral("cardHover"), QColor("#2A2A2A"));
+    palette.insert(QStringLiteral("border"), QColor("#2E2E2E"));
+    palette.insert(QStringLiteral("accent"), QColor("#FFFFFF"));
+    palette.insert(QStringLiteral("accentBadge"), QColor("#26333D"));
+    palette.insert(QStringLiteral("accentSoft"), QColor("#FFFFFF"));
+    palette.insert(QStringLiteral("textPrimary"), QColor("#FFFFFF"));
+    palette.insert(QStringLiteral("textSecondary"), QColor("#B8B8B8"));
+    SourceUrls sourceUrls;
+    QQmlEngine engine;
+    engine.addUrlInterceptor(&sourceUrls);
+    engine.addImportPath(QStringLiteral(MEDIAFLYOUTS_QML_IMPORT_DIR));
+    engine.rootContext()->setContextProperty(QStringLiteral("theme"), &palette);
+    QQmlComponent component(&engine);
+    component.setData(R"(
+        import QtQuick
+        import MediaFlyouts
+        SettingSection {
+            width: 440
+            text: "Media Widget"
+            description: "Playback controls and browser artwork."
+            glyph: Fluent.musicNote
+            property bool featureEnabled: true
+            value: featureEnabled
+            onToggled: featureEnabled = value
+            unavailableNote: "No media available."
+            Rectangle {
+                objectName: "settingControl"
+                width: parent.width
+                height: 40
+            }
+        }
+    )", QUrl::fromLocalFile(QStringLiteral(MEDIAFLYOUTS_SOURCE_DIR "/tests/SectionTest.qml")));
+    ASSERT_TRUE(component.isReady()) << component.errorString().toStdString();
+    QQuickWindow window;
+    std::unique_ptr<QObject> object(component.create());
+    ASSERT_TRUE(object) << component.errorString().toStdString();
+    auto* section = qobject_cast<QQuickItem*>(object.get());
+    ASSERT_NE(section, nullptr);
+    auto* header = section->findChild<QQuickItem*>(QStringLiteral("sectionHeader"));
+    ASSERT_NE(header, nullptr);
+    auto* control = section->findChild<QQuickItem*>(QStringLiteral("settingControl"));
+    ASSERT_NE(control, nullptr);
+    auto* master = section->findChild<QQuickItem*>(QStringLiteral("sectionToggle"));
+    ASSERT_NE(master, nullptr);
+    section->setParentItem(window.contentItem());
+    window.resize(440, 200);
+    window.show();
+    ASSERT_TRUE(QTest::qWaitForWindowExposed(&window));
+    QSignalSpy toggled(header, SIGNAL(toggled()));
+    ASSERT_TRUE(toggled.isValid());
+    QSignalSpy featureToggled(section, SIGNAL(toggled(bool)));
+    ASSERT_TRUE(featureToggled.isValid());
+    EXPECT_TRUE(section->property("expanded").toBool());
+    const qreal expandedHeight = section->height();
+    EXPECT_GT(expandedHeight, header->height());
+    EXPECT_TRUE(control->isVisible());
+    ASSERT_NE(control->parentItem(), nullptr);
+    EXPECT_EQ(control->parentItem()->childItems().size(), 1);
+    EXPECT_TRUE(section->boundingRect().contains(control->mapRectToItem(section, control->boundingRect())));
+
+    header->forceActiveFocus();
+    QTest::keyClick(&window, Qt::Key_Space);
+    EXPECT_FALSE(section->property("expanded").toBool());
+    EXPECT_FALSE(control->isVisible());
+    EXPECT_EQ(section->height(), header->height());
+    QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier, QPoint(220, 30));
+    EXPECT_TRUE(section->property("expanded").toBool());
+    EXPECT_TRUE(control->isVisible());
+    EXPECT_EQ(section->height(), expandedHeight);
+    EXPECT_EQ(toggled.size(), 2);
+
+    QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier,
+                     master->mapToItem(window.contentItem(), master->boundingRect().center()).toPoint());
+    EXPECT_FALSE(section->property("featureEnabled").toBool());
+    EXPECT_TRUE(section->property("expanded").toBool());
+    EXPECT_EQ(toggled.size(), 2);
+    ASSERT_EQ(featureToggled.size(), 1);
+    EXPECT_FALSE(featureToggled.last().first().toBool());
+
+    header->forceActiveFocus();
+    QTest::keyClick(&window, Qt::Key_Space);
+    ASSERT_FALSE(section->property("expanded").toBool());
+    EXPECT_TRUE(master->isVisible());
+    master->forceActiveFocus();
+    QTest::keyClick(&window, Qt::Key_Space);
+    EXPECT_TRUE(section->property("featureEnabled").toBool());
+    EXPECT_FALSE(section->property("expanded").toBool());
+    EXPECT_EQ(featureToggled.size(), 2);
+    EXPECT_EQ(toggled.size(), 3);
+    QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier,
+                     master->mapToItem(window.contentItem(), master->boundingRect().center()).toPoint());
+    EXPECT_FALSE(section->property("featureEnabled").toBool());
+    EXPECT_FALSE(section->property("expanded").toBool());
+    EXPECT_EQ(featureToggled.size(), 3);
+    EXPECT_EQ(toggled.size(), 3);
+
+    ASSERT_TRUE(section->setProperty("featureEnabled", true));
+    EXPECT_TRUE(master->property("checked").toBool());
+    EXPECT_EQ(featureToggled.size(), 3);
+    ASSERT_TRUE(section->setProperty("available", false));
+    EXPECT_FALSE(master->isEnabled());
+    EXPECT_EQ(section->property("detail").toString(), QStringLiteral("No media available."));
+    QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier,
+                     master->mapToItem(window.contentItem(), master->boundingRect().center()).toPoint());
+    EXPECT_TRUE(section->property("featureEnabled").toBool());
+    EXPECT_EQ(featureToggled.size(), 3);
+
+    ASSERT_TRUE(section->setProperty("available", true));
+    ASSERT_TRUE(section->setProperty("locked", true));
+    EXPECT_FALSE(master->isEnabled());
+    auto* badge = section->findChild<QQuickItem*>(QStringLiteral("sectionProBadge"));
+    ASSERT_NE(badge, nullptr);
+    EXPECT_TRUE(badge->isVisible());
+    EXPECT_EQ(section->property("detail").toString(),
+              QStringLiteral("Pro feature. Get Pro on the Home page to use it."));
+    QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier,
+                     master->mapToItem(window.contentItem(), master->boundingRect().center()).toPoint());
+    EXPECT_TRUE(section->property("featureEnabled").toBool());
+    EXPECT_EQ(featureToggled.size(), 3);
+    ASSERT_TRUE(section->setProperty("expanded", false));
+    header->forceActiveFocus();
+    QTest::keyClick(&window, Qt::Key_Space);
+    EXPECT_TRUE(section->property("expanded").toBool());
+    ASSERT_TRUE(section->setProperty("locked", false));
+    EXPECT_TRUE(master->isEnabled());
+    EXPECT_FALSE(badge->isVisible());
+}
+
+TEST(QmlContractTest, EverySettingsCardKeepsItsMasterSettingAndGuardsInTheHeader) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    const struct {
+        const char* section;
+        const char* setting;
+        const char* guard;
+    } cards[] = {
+        {"mediaFlyoutSection", "mediaFlyoutEnabled", "available: capabilities.mediaSessionAvailable"},
+        {"volumeFlyoutSection", "volumeFlyoutEnabled", "available: capabilities.audioAvailable"},
+        {"lockKeysFlyoutSection", "lockKeysEnabled", "available: capabilities.lockKeysAvailable"},
+        {"peripheralFlyoutSection", "peripheralFlyoutEnabled", "locked: entitlement.locked.peripheralBattery"},
+        {"chargerFlyoutSection", "chargerFlyoutEnabled", "available: capabilities.chargerAvailable"},
+        {"mediaWidgetSection", "taskbarWidgetEnabled", ""},
+        {"peripheralWidgetSection", "peripheralsWidgetEnabled", "locked: entitlement.locked.peripheralBattery"}
+    };
+    for(const auto& card : cards) {
+        const int start = dashboard.indexOf(QStringLiteral("id: ") + QLatin1String(card.section));
+        ASSERT_GE(start, 0);
+        const int body = dashboard.indexOf(QStringLiteral("Column {"), start);
+        ASSERT_GT(body, start);
+        const QString header = dashboard.mid(start, body - start);
+        const QString value = QStringLiteral("value: settings.") + QLatin1String(card.setting);
+        const QString handler = QStringLiteral("onToggled: settings.%1 = value").arg(QLatin1String(card.setting));
+        expectContains(header, value);
+        expectContains(header, handler);
+        EXPECT_EQ(dashboard.count(value), 1);
+        EXPECT_EQ(dashboard.count(handler), 1);
+        if(card.guard[0] != '\0')
+            expectContains(header, QLatin1String(card.guard));
+    }
+}
 
 TEST(QmlContractTest, RegistersAndStacksThePeripheralFlyout) {
     const QString source = loadSource("Views/App.qml");
@@ -55,6 +257,24 @@ TEST(QmlContractTest, DashboardHidesTheChargerPageOnSystemsWithNoBattery) {
 
     expectContains(source, QStringLiteral("available: capabilities.chargerAvailable"));
     expectContains(source, QStringLiteral("settings.chargerFlyoutEnabled = value"));
+}
+
+TEST(QmlContractTest, DashboardOffersBrowserArtworkSetup) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    expectContains(source, QStringLiteral("browserIntegration.canInstall(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.install(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])"));
+    const int flyoutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 1"));
+    const int taskbarPage = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
+    const int browserSetting =
+        source.indexOf(QStringLiteral("label: qsTr(\"Browser artwork\")"), flyoutPage);
+    EXPECT_GT(browserSetting, taskbarPage);
+}
+
+TEST(QmlContractTest, OnboardingOffersBrowserExtensionSetup) {
+    const QString source = loadSource("Views/OnboardingWindow.qml");
+    expectContains(source, QStringLiteral("browserIntegration.canInstall(root.browserIds[root.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.install(root.browserIds[root.browserIndex])"));
 }
 
 TEST(QmlContractTest, DashboardBannerNamesUnavailableSubsystems) {
@@ -116,10 +336,9 @@ TEST(QmlContractTest, CardUsesAlertCategoryAndTransport) {
 TEST(QmlContractTest, DashboardHasTheRequestedPagesInOrder) {
     const QString source = loadSource("Views/Dashboard.qml");
     const QStringList pages{
-        QStringLiteral("Home"), QStringLiteral("Media Flyout"), QStringLiteral("Peripheral Flyout"),
-        QStringLiteral("Charger Flyout"), QStringLiteral("Media Widget"), QStringLiteral("Peripheral Widget"),
-        QStringLiteral("Volume"), QStringLiteral("Lock Keys"), QStringLiteral("App Filtering"),
-        QStringLiteral("Additional Settings"), QStringLiteral("About")};
+        QStringLiteral("Home"), QStringLiteral("Flyouts"), QStringLiteral("Taskbar Widget"),
+        QStringLiteral("App Filtering"), QStringLiteral("Additional Settings"),
+        QStringLiteral("Support"), QStringLiteral("About")};
 
     int previous = -1;
     for(const QString& page : pages) {
@@ -128,6 +347,113 @@ TEST(QmlContractTest, DashboardHasTheRequestedPagesInOrder) {
         previous = current;
     }
     expectContains(source, QStringLiteral("property bool collapsed"));
+    EXPECT_FALSE(source.contains(QStringLiteral("\"key\": \"mediaWidget\"")));
+    EXPECT_FALSE(source.contains(QStringLiteral("\"key\": \"peripheralWidget\"")));
+    for(const char* oldPage : {"media", "peripheralFlyout", "charger", "volume", "lockKeys"})
+        EXPECT_FALSE(source.contains(QStringLiteral("\"key\": \"%1\", \"name\":").arg(QLatin1String(oldPage))));
+}
+
+TEST(QmlContractTest, FlyoutsPageKeepsSharedControlsAboveIndependentSections) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    const int page = source.indexOf(QStringLiteral("id: flyoutsPage"));
+    const int nextPage = source.indexOf(QStringLiteral("id: taskbarWidgetPage"), page);
+    ASSERT_GE(page, 0);
+    ASSERT_GT(nextPage, page);
+    const QString flyouts = source.mid(page, nextPage - page);
+    const int firstSection = flyouts.indexOf(QStringLiteral("SettingSection {"));
+    ASSERT_GT(firstSection, 0);
+    const QString shared = flyouts.first(firstSection);
+    for(const char* setting : {"disableOnFullscreen", "flyoutSwipeDismissEnabled", "flyoutPosition",
+                               "flyoutMonitor", "flyoutAnimationSpeed", "flyoutAnimationEasingStyle"})
+        expectContains(shared, QStringLiteral("settings.") + QLatin1String(setting));
+    EXPECT_EQ(flyouts.count(QStringLiteral("SettingSection {")), 5);
+    EXPECT_EQ(flyouts.count(QStringLiteral("value: settings.disableOnFullscreen")), 1);
+    const QStringList sections{QStringLiteral("mediaFlyoutSection"), QStringLiteral("volumeFlyoutSection"),
+                                QStringLiteral("lockKeysFlyoutSection"), QStringLiteral("peripheralFlyoutSection"),
+                                QStringLiteral("chargerFlyoutSection")};
+    int previous = firstSection;
+    for(qsizetype i = 0; i < sections.size(); ++i) {
+        const int start = flyouts.indexOf(QStringLiteral("id: ") + sections[i], previous);
+        ASSERT_GE(start, previous);
+        const int end = i + 1 < sections.size()
+            ? flyouts.indexOf(QStringLiteral("id: ") + sections[i + 1], start) : flyouts.size();
+        ASSERT_GT(end, start);
+        const QString block = flyouts.mid(start, end - start);
+        expectContains(block, QStringLiteral("expanded: false"));
+        const QStringList durations{QStringLiteral("flyoutDuration"), QStringLiteral("volumeFlyoutDuration"),
+                                     QStringLiteral("lockKeysDuration"), QStringLiteral("peripheralFlyoutDuration"),
+                                     QStringLiteral("chargerFlyoutDuration")};
+        expectContains(block, QStringLiteral("value: settings.") + durations[i]);
+        previous = start;
+    }
+    for(const char* prefix : {"volumeFlyout", "peripheralFlyout", "chargerFlyout"}) {
+        expectContains(flyouts, QStringLiteral("onActivated: settings.%1Position = index").arg(QLatin1String(prefix)));
+        expectContains(flyouts, QStringLiteral("onActivated: settings.%1Monitor = index").arg(QLatin1String(prefix)));
+    }
+}
+
+TEST(QmlContractTest, FlyoutNavigationExpandsItsSectionAndBoundsTheScrollPosition) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    const int start = source.indexOf(QStringLiteral("function openSettings(page, section)"));
+    const int end = source.indexOf(QStringLiteral("readonly property var wirelessDevices"), start);
+    ASSERT_GE(start, 0);
+    ASSERT_GT(end, start);
+    QJSEngine engine;
+    const QJSValue setup = engine.evaluate(QStringLiteral(R"(
+        var currentIndex = 0;
+        var Qt = { callLater: function(callback) { callback(); } };
+        var flyoutsPage = { forceLayout: function() {} };
+        var pageContent = { forceLayout: function() {} };
+        var pageScroll = { availableHeight: 200, contentItem: { contentY: 0, contentHeight: 1200 } };
+        function sectionAt(y) {
+            return { expanded: false, mapToItem: function() { return { y: y }; } };
+        }
+        var mediaFlyoutSection = sectionAt(100);
+        var volumeFlyoutSection = sectionAt(400);
+        var lockKeysFlyoutSection = sectionAt(600);
+        var peripheralFlyoutSection = sectionAt(800);
+        var chargerFlyoutSection = sectionAt(1500);
+    )") + source.mid(start, end - start));
+    ASSERT_FALSE(setup.isError()) << setup.toString().toStdString();
+    const QStringList keys{QStringLiteral("media"), QStringLiteral("volume"), QStringLiteral("lockKeys"),
+                            QStringLiteral("peripheral"), QStringLiteral("charger")};
+    const QStringList ids{QStringLiteral("mediaFlyoutSection"), QStringLiteral("volumeFlyoutSection"),
+                           QStringLiteral("lockKeysFlyoutSection"), QStringLiteral("peripheralFlyoutSection"),
+                           QStringLiteral("chargerFlyoutSection")};
+    const QList<int> positions{100, 400, 600, 800, 1000};
+    for(qsizetype i = 0; i < keys.size(); ++i) {
+        const QJSValue result = engine.evaluate(QStringLiteral("openSettings(1, \"%1\")").arg(keys[i]));
+        ASSERT_FALSE(result.isError()) << result.toString().toStdString();
+        EXPECT_EQ(engine.globalObject().property(QStringLiteral("currentIndex")).toInt(), 1);
+        EXPECT_TRUE(engine.globalObject().property(ids[i]).property(QStringLiteral("expanded")).toBool());
+        EXPECT_EQ(engine.evaluate(QStringLiteral("pageScroll.contentItem.contentY")).toInt(), positions[i]);
+    }
+    EXPECT_FALSE(engine.evaluate(QStringLiteral("openSettings(1)")).isError());
+    EXPECT_EQ(engine.evaluate(QStringLiteral("pageScroll.contentItem.contentY")).toInt(), 0);
+    EXPECT_EQ(source.count(QStringLiteral("dash.openSettings(modelData.page, modelData.section)")), 3);
+    expectContains(source, QStringLiteral("\"label\": qsTr(\"Volume flyout\"), \"page\": 1, \"section\": \"volume\""));
+    expectContains(source, QStringLiteral("\"key\": \"charger\", \"page\": 1, \"section\": \"charger\""));
+}
+
+TEST(QmlContractTest, TaskbarWidgetPageKeepsSharedSettingsAboveCollapsibleSections) {
+    const QString source = loadSource("Views/Dashboard.qml");
+    const int page = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
+    const int widgetSide = source.indexOf(QStringLiteral("label: qsTr(\"Widget side\")"), page);
+    const int mediaSection = source.indexOf(QStringLiteral("text: qsTr(\"Media Widget\")"), page);
+    const int peripheralSection = source.indexOf(QStringLiteral("text: qsTr(\"Peripheral Widget\")"), page);
+    ASSERT_GE(page, 0);
+    ASSERT_GE(widgetSide, 0);
+    ASSERT_GE(mediaSection, 0);
+    ASSERT_GE(peripheralSection, 0);
+    EXPECT_LT(widgetSide, mediaSection);
+    EXPECT_LT(mediaSection, peripheralSection);
+    const QString section = loadSource("Views/SettingSection.qml");
+    const int nextPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 3"), page);
+    ASSERT_GT(nextPage, page);
+    EXPECT_EQ(source.mid(page, nextPage - page).count(QStringLiteral("SettingSection {")), 2);
+    expectContains(section, QStringLiteral("default property alias contentData: body.data"));
+    expectContains(section, QStringLiteral("visible: section.expanded"));
+    EXPECT_EQ(source.count(QStringLiteral("visible: taskbarWidgetPage.verticalTaskbar")), 1);
 }
 
 TEST(QmlContractTest, DashboardResetsScrollPositionWhenPageChanges) {
@@ -522,12 +848,11 @@ TEST(QmlContractTest, DockableWidgetOwnsSharedDockingAndBlocking) {
     expectContains(base, QStringLiteral("|| !taskbar.widgetFits(base.dockMonitor)"));
 }
 
-TEST(QmlContractTest, DashboardExplainsAVerticalTaskbarOnBothWidgetPages) {
+TEST(QmlContractTest, DashboardExplainsAVerticalTaskbarOnTheTaskbarWidgetPage) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("property bool verticalTaskbar: false"));
-    expectContains(dashboard, QStringLiteral("mediaWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)"));
-    EXPECT_EQ(dashboard.count(QStringLiteral("visible: mediaWidgetPage.verticalTaskbar")), 2)
-        << "Media Widget and Peripheral Widget pages both carry the note";
+    expectContains(dashboard, QStringLiteral("taskbarWidgetPage.verticalTaskbar = !taskbar.widgetFits(settings.taskbarWidgetMonitor)"));
+    EXPECT_EQ(dashboard.count(QStringLiteral("visible: taskbarWidgetPage.verticalTaskbar")), 1);
 }
 
 TEST(QmlContractTest, WindowsRelayoutWhenTheMonitorLayoutChanges) {
@@ -876,7 +1201,7 @@ TEST(QmlContractTest, TaskbarWidgetsUseThePaletteInsteadOfFixedColors) {
 
 TEST(QmlContractTest, DashboardOffersAConfirmedResetToDefaults) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
-    expectContains(dashboard, QStringLiteral("{ \"label\": qsTr(\"Restore default settings\"), \"page\": 9 }"));
+    expectContains(dashboard, QStringLiteral("{ \"label\": qsTr(\"Restore default settings\"), \"page\": 4 }"));
     expectContains(dashboard, QStringLiteral("text: qsTr(\"Restore default settings…\")"));
     expectContains(dashboard, QStringLiteral("onClicked: resetConfirm.open()"));
     expectContains(dashboard, QStringLiteral("id: resetConfirm"));
@@ -1020,7 +1345,7 @@ TEST(QmlContractTest, ProIconPickerIsOnlyForLicenceHolders) {
 }
 
 TEST(QmlContractTest, SettingRowsShowAProBadgeWhenLocked) {
-    for(const char* file : {"Views/SettingRow.qml", "Views/SettingCombo.qml"}) {
+    for(const char* file : {"Views/SettingRow.qml", "Views/SettingCombo.qml", "Views/SettingSection.qml"}) {
         const QString source = loadSource(file);
         expectContains(source, QStringLiteral("property bool locked: false"));
         expectContains(source, QStringLiteral("ProBadge {"));
@@ -1096,8 +1421,8 @@ TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
     const QString dashboard = loadSource("Views/Dashboard.qml");
     expectContains(dashboard, QStringLiteral("\"key\": \"support\""));
     expectContains(dashboard, QStringLiteral("SupportPage {"));
-    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 10 && donate.available"));
-    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 11"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 5 && donate.available"));
+    expectContains(dashboard, QStringLiteral("visible: dash.currentIndex === 6"));
 }
 
 TEST(QmlContractTest, WhatsNewShowsOnceAfterAnUpdate) {

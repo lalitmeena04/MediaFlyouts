@@ -6,9 +6,9 @@ import MediaFlyouts
 Window {
     id: root
     width: 520
-    height: 460
+    height: 540
     minimumWidth: 460
-    minimumHeight: 430
+    minimumHeight: 500
     title: qsTr("Welcome to MediaFlyouts")
     color: theme.window
     flags: Qt.Dialog
@@ -17,7 +17,9 @@ Window {
     Component.onCompleted: windowEffects.setDarkFrame(root, theme.dark)
 
     property int step: 0
+    property int browserIndex: 0
     readonly property int stepCount: 5
+    readonly property var browserIds: ["chrome", "msedge", "firefox", "brave"]
 
     function finish() {
         settings.onboardingCompleted = true
@@ -203,6 +205,30 @@ Window {
                     description: qsTr("Dock a compact now-playing widget on the taskbar.")
                     value: settings.taskbarWidgetEnabled
                     onToggled: settings.taskbarWidgetEnabled = value
+                }
+                SettingCombo {
+                    width: parent.width
+                    label: qsTr("Browser artwork")
+                    description: qsTr("Use the website icon when album art is unavailable.")
+                    model: ["Chrome", "Edge", "Firefox", "Brave"]
+                    currentIndex: root.browserIndex
+                    onActivated: root.browserIndex = index
+                }
+                Row {
+                    spacing: 12
+                    Button {
+                        text: qsTr("Install browser extension")
+                        enabled: browserIntegration.canInstall(root.browserIds[root.browserIndex])
+                        onClicked: browserIntegration.install(root.browserIds[root.browserIndex])
+                    }
+                }
+                Text {
+                    width: parent.width
+                    visible: browserIntegration.status !== ""
+                    wrapMode: Text.WordWrap
+                    color: theme.textTertiary
+                    font.pixelSize: 12
+                    text: browserIntegration.status
                 }
                 SettingRow {
                     width: parent.width

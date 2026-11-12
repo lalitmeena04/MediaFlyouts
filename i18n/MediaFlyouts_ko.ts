@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>이 브라우저의 스토어에서 확장 프로그램을 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>브라우저 연결을 설정할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>확장 프로그램 스토어를 열 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>브라우저에서 설치를 확인하세요.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>개발용 확장 프로그램을 설정할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>확장 프로그램 폴더를 열 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>브라우저의 개발자 도구를 사용하여 이 폴더에서 확장 프로그램을 불러오세요.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Unavailable: %1</source>
         <translation>미디어 위젯</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>작업 표시줄에 고정되는 작은 재생 중 위젯입니다.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>주변기기 위젯</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>작업 표시줄에 고정되는 무선 주변기기의 배터리 링입니다.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Unavailable: %1</source>
     <message>
         <source>App Filtering</source>
         <translation>앱 필터</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>플라이아웃</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>미디어, 볼륨, 잠금 키, 주변기기 및 충전기 플라이아웃을 설정합니다.</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>반복 버튼</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>브라우저 이미지</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Unavailable: %1</source>
         <translation>팁: 미디어 키나 볼륨 키를 누르거나 트레이 아이콘을 클릭하면 플라이아웃을 미리 볼 수 있습니다.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>미디어 키를 누를 때 재생 중 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>사용 불가: 이 PC에서 시스템 미디어 세션이 감지되지 않았습니다.</translation>
     </message>
@@ -527,8 +558,32 @@ Unavailable: %1</source>
         <translation>미디어를 재생 중인 앱 이름을 표시합니다.</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>앨범 아트가 없으면 웹사이트 아이콘을 사용합니다.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>브라우저 확장 프로그램 설치</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>개발용 확장 프로그램 열기</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>브라우저 확장 프로그램이 아직 게시되지 않았습니다.</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>현재 앨범 아트의 주요 색으로 플라이아웃 강조 색을 입힙니다.</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>작업 표시줄 위젯</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>작업 표시줄에 고정된 미디어 및 주변 기기 위젯을 구성합니다.</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Unavailable: %1</source>
         <translation>간결한 알약형</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>볼륨 키를 누를 때 볼륨 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>사용 불가: 오디오 출력 장치가 감지되지 않았습니다.</translation>
     </message>
@@ -695,14 +746,6 @@ Unavailable: %1</source>
         <translation>볼륨 플라이아웃이 화면에 유지되는 시간입니다.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>잠금 키 표시</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Caps, Num, Scroll Lock을 전환할 때 플라이아웃을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>사용 불가: 키보드 후크를 설치할 수 없습니다.</translation>
     </message>
@@ -741,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>선택한 디스플레이의 작업 표시줄이 왼쪽 또는 오른쪽에 있습니다. 위젯은 가로 작업 표시줄(위 또는 아래)이 필요하며, 되돌릴 때까지 숨겨집니다.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>작업 표시줄 위젯</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Unavailable: %1</source>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>주변기기의 배터리 링은 &apos;주변기기 위젯&apos; 페이지에서 설정합니다.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>선택한 무선 주변기기의 배터리 위젯을 작업 표시줄에 고정합니다.</translation>
     </message>
@@ -925,14 +960,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>USB로 연결됨.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>연결 및 배터리 부족 알림은 &apos;주변기기 플라이아웃&apos; 페이지에서 설정합니다. 위젯 레이아웃(나란히 또는 스크롤 가능한 스택)은 &apos;미디어 위젯&apos; 페이지에서 설정합니다.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>주변기기가 연결되거나 분리되거나 배터리가 부족할 때 플라이아웃을 표시합니다.</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Unavailable: %1</source>
         <translation>놓치지 않도록 배터리가 부족할 때 트레이 알림도 표시합니다.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>전체 화면 게임이 앞에 있는 동안 플라이아웃을 표시하지 않습니다. 다른 플라이아웃과 공유되는 설정입니다.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>주변기기 플라이아웃 위치</translation>
     </message>
@@ -1005,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>주변기기 플라이아웃이 화면에 유지되는 시간입니다.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>충전기가 연결되거나 분리될 때 플라이아웃을 표시합니다.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Unavailable: %1</source>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>브라우저 이미지</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>앨범 아트가 없으면 웹사이트 아이콘을 사용합니다.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>브라우저 확장 프로그램 설치</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>MediaFlyouts에 오신 것을 환영합니다</translation>
     </message>
@@ -1565,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>프로 기능입니다. 홈 페이지에서 프로를 구매하면 사용할 수 있습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>프로 기능입니다. 홈 페이지에서 프로를 구매하면 사용할 수 있습니다.</translation>

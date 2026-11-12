@@ -10,6 +10,8 @@
 #include "AppIcon.h"
 #include "AppRestarter.h"
 #include "AppTranslator.h"
+#include "BrowserArtworkBridge.h"
+#include "BrowserIntegration.h"
 #include "Capabilities.h"
 #include "Donation.h"
 #include "DonationController.h"
@@ -112,6 +114,15 @@ void MainControllerClass::loadIconFont() {
 
 void MainControllerClass::buildCoreSubsystems() {
     m_nowPlaying = std::make_unique<NowPlaying>();
+    m_browserArtwork = std::make_unique<BrowserArtworkBridge>();
+    QObject::connect(m_browserArtwork.get(), &BrowserArtworkBridge::artworkReceived, m_nowPlaying.get(),
+                     &NowPlaying::applyBrowserArtwork);
+    QObject::connect(m_browserArtwork.get(), &BrowserArtworkBridge::browserDisconnected, m_nowPlaying.get(),
+                     &NowPlaying::clearBrowserArtwork);
+    QObject::connect(m_nowPlaying.get(), &NowPlaying::pauseAllBrowsersRequested, m_browserArtwork.get(),
+                     &BrowserArtworkBridge::pauseAllBrowserTabs);
+    m_browserArtwork->start();
+    m_browserIntegration = std::make_unique<BrowserIntegration>();
     m_settings = std::make_unique<Settings>();
     // Translations go in before any UI text is built.
     m_translator = std::make_unique<AppTranslator>();
@@ -273,6 +284,7 @@ void MainControllerClass::registerContextProperties() {
     QQmlContext* ctx = m_engine->rootContext();
     ctx->setContextProperty("log", m_qmlLog.get());
     ctx->setContextProperty("nowPlaying", m_nowPlaying.get());
+    ctx->setContextProperty("browserIntegration", m_browserIntegration.get());
     ctx->setContextProperty("settings", m_settings.get());
     ctx->setContextProperty("capabilities", m_capabilities.get());
     ctx->setContextProperty("entitlement", m_entitlement.get());

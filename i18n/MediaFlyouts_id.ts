@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>Ekstensi belum tersedia di toko browser ini.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>Koneksi browser tidak dapat disiapkan.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>Toko ekstensi tidak dapat dibuka.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>Konfirmasi pemasangan di browser Anda.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>Ekstensi pengembangan tidak dapat disiapkan.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>Folder ekstensi tidak dapat dibuka.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>Muat ekstensi dari folder ini menggunakan alat pengembang browser Anda.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Tidak tersedia: %1</translation>
         <translation>Widget Media</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Widget ringkas sedang diputar yang menempel di bilah tugas.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Widget Periferal</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Cincin baterai untuk periferal nirkabel Anda, menempel di bilah tugas.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Tidak tersedia: %1</translation>
     <message>
         <source>App Filtering</source>
         <translation>Filter Aplikasi</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>Flyout</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Atur flyout media, volume, tombol kunci, periferal, dan pengisi daya.</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Repeat button</source>
         <translation>Tombol ulangi</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Gambar browser</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Tidak tersedia: %1</translation>
         <translation>Tips: tekan tombol media atau volume, atau klik ikon baki, untuk melihat pratinjau flyout.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Tampilkan flyout sedang diputar saat tombol media ditekan.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Tidak tersedia: tidak ada sesi media sistem yang terdeteksi di PC ini.</translation>
     </message>
@@ -527,8 +558,32 @@ Tidak tersedia: %1</translation>
         <translation>Tampilkan nama aplikasi yang memutar media.</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Gunakan ikon situs saat sampul album tidak tersedia.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Instal ekstensi browser</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>Buka ekstensi pengembangan</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>Ekstensi browser belum diterbitkan.</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>Warnai aksen flyout dengan warna dominan sampul album saat ini.</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>Widget Taskbar</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Konfigurasikan widget media dan periferal yang ditambatkan ke taskbar.</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Tidak tersedia: %1</translation>
         <translation>Pil ringkas</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Tampilkan flyout volume saat tombol volume ditekan.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Tidak tersedia: tidak ada perangkat keluaran audio yang terdeteksi.</translation>
     </message>
@@ -695,14 +746,6 @@ Tidak tersedia: %1</translation>
         <translation>Berapa lama flyout volume tetap di layar.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Indikator tombol kunci</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Tampilkan flyout saat Caps, Num, atau Scroll Lock diubah.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Tidak tersedia: hook keyboard tidak dapat dipasang.</translation>
     </message>
@@ -741,10 +784,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>Taskbar pada layar yang dipilih berada di kiri atau kanan. Widget memerlukan taskbar horizontal (atas atau bawah) dan tetap tersembunyi sampai taskbar dikembalikan.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Widget bilah tugas</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Tidak tersedia: %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Cincin baterai untuk periferal Anda diatur di halaman Widget Periferal.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Tempelkan widget baterai untuk periferal nirkabel terpilih di bilah tugas.</translation>
     </message>
@@ -925,14 +960,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Tercolok melalui USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Pemberitahuan sambungan dan baterai lemah diatur di halaman Flyout Periferal. Tata letak widget (berdampingan atau tumpukan yang dapat digulir) diatur di halaman Widget Media.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Tampilkan flyout saat periferal tersambung, terputus, atau baterainya lemah.</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Tidak tersedia: %1</translation>
         <translation>Tampilkan juga notifikasi baki saat baterai lemah, agar tidak terlewat.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Tahan flyout saat gim layar penuh sedang di depan. Berlaku juga untuk flyout lain.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Posisi flyout periferal</translation>
     </message>
@@ -1005,10 +1028,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Berapa lama flyout periferal tetap di layar.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Tampilkan flyout saat pengisi daya dicolokkan atau dicabut.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Tidak tersedia: %1</translation>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>Gambar browser</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Gunakan ikon situs saat sampul album tidak tersedia.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Instal ekstensi browser</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>Selamat datang di MediaFlyouts</translation>
     </message>
@@ -1565,6 +1596,13 @@ Tidak tersedia: %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Fitur Pro. Dapatkan Pro di halaman Beranda untuk menggunakannya.</translation>

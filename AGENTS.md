@@ -31,7 +31,8 @@ deployment. Useful variants:
 
 ## Version Control
 
-Never commit or push agent made changes automatically.
+- Never commit or push agent made changes automatically.
+- Suggest commit message after making code changes
 
 ## Releases
 

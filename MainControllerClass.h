@@ -23,6 +23,8 @@ class AppTranslator;
 class Capabilities;
 class QmlLogger;
 class AlbumArtProvider;
+class BrowserArtworkBridge;
+class BrowserIntegration;
 class TrayController;
 class EntitlementController;
 class ProGate;
@@ -72,6 +74,8 @@ class MainControllerClass {
         // Construction order also sets teardown order.
         std::unique_ptr<SingleInstance> m_instance;
         std::unique_ptr<NowPlaying> m_nowPlaying;
+        std::unique_ptr<BrowserArtworkBridge> m_browserArtwork;
+        std::unique_ptr<BrowserIntegration> m_browserIntegration;
         std::unique_ptr<Settings> m_settings;
         std::unique_ptr<AppTranslator> m_translator;
         std::unique_ptr<MonitorMapper> m_monitors;

@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>L&apos;extension n&apos;est pas encore disponible dans la boutique de ce navigateur.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>Impossible de configurer la connexion au navigateur.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>Impossible d&apos;ouvrir la boutique d&apos;extensions.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>Confirmez l&apos;installation dans votre navigateur.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>Impossible de configurer l&apos;extension de développement.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>Impossible d&apos;ouvrir le dossier de l&apos;extension.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>Chargez l&apos;extension depuis ce dossier avec les outils de développement du navigateur.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Indisponible : %1</translation>
         <translation>Widget multimédia</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Un widget de lecture compact ancré dans la barre des tâches.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Widget des périphériques</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Anneaux de batterie de vos périphériques sans fil, ancrés dans la barre des tâches.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Indisponible : %1</translation>
     <message>
         <source>App Filtering</source>
         <translation>Filtrage des applications</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>Volets</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Configurez les volets multimédias, de volume, de verrouillage, de périphériques et de chargeur.</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Indisponible : %1</translation>
     <message>
         <source>Repeat button</source>
         <translation>Bouton Répéter</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Illustration du navigateur</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Indisponible : %1</translation>
         <translation>Astuce : appuyez sur une touche multimédia ou de volume, ou cliquez sur l&apos;icône de la zone de notification, pour voir les volets.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Afficher le volet de lecture à l&apos;appui sur une touche multimédia.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Indisponible : aucune session multimédia système n&apos;a été détectée sur ce PC.</translation>
     </message>
@@ -527,8 +558,32 @@ Indisponible : %1</translation>
         <translation>Afficher le nom de l&apos;application qui lit le média.</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Utiliser l&apos;icône du site lorsque la pochette est indisponible.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Installer l&apos;extension du navigateur</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>Ouvrir l&apos;extension de développement</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>L&apos;extension du navigateur n&apos;est pas encore publiée.</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>Teinter les accents du volet avec la couleur dominante de la pochette en cours.</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>Widget de la barre des tâches</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Configurer les widgets multimédia et périphériques ancrés à la barre des tâches.</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Indisponible : %1</translation>
         <translation>Pastille compacte</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Afficher le volet de volume à l&apos;appui sur une touche de volume.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Indisponible : aucun périphérique de sortie audio n&apos;a été détecté.</translation>
     </message>
@@ -695,14 +746,6 @@ Indisponible : %1</translation>
         <translation>Durée d&apos;affichage du volet de volume.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Indicateurs des touches de verrouillage</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Afficher un volet lorsque Verr Maj, Verr Num ou Arrêt défil change d&apos;état.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Indisponible : le hook clavier n&apos;a pas pu être installé.</translation>
     </message>
@@ -740,11 +783,7 @@ Indisponible : %1</translation>
     </message>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
-        <translation>La barre des tâches de l'écran choisi est à gauche ou à droite. Les widgets ont besoin d'une barre horizontale (en haut ou en bas) et restent masqués jusqu'à ce qu'elle y revienne.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Widget de la barre des tâches</translation>
+        <translation>La barre des tâches de l&apos;écran choisi est à gauche ou à droite. Les widgets ont besoin d&apos;une barre horizontale (en haut ou en bas) et restent masqués jusqu&apos;à ce qu&apos;elle y revienne.</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Indisponible : %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Les anneaux de batterie de vos périphériques se configurent sur la page « Widget des périphériques ».</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Ancrer un widget de batterie pour les périphériques sans fil sélectionnés dans la barre des tâches.</translation>
     </message>
@@ -925,14 +960,6 @@ Indisponible : %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Branché en USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Les annonces de connexion et de batterie faible se configurent sur la page « Volet des périphériques ». La disposition du widget (côte à côte ou pile défilante) se configure sur la page « Widget multimédia ».</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Afficher un volet lorsqu&apos;un périphérique se connecte, se déconnecte ou a une batterie faible.</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Indisponible : %1</translation>
         <translation>Afficher aussi une notification dans la zone de notification en cas de batterie faible, pour ne pas la manquer.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Masquer les volets lorsqu&apos;un jeu vidéo en plein écran est au premier plan. Partagé avec les autres volets.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Position du volet des périphériques</translation>
     </message>
@@ -1005,10 +1028,6 @@ Indisponible : %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Durée d&apos;affichage du volet des périphériques.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Afficher un volet lorsque le chargeur est branché ou débranché.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Indisponible : %1</translation>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>Illustration du navigateur</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Utiliser l&apos;icône du site lorsque la pochette est indisponible.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Installer l&apos;extension du navigateur</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>Bienvenue dans MediaFlyouts</translation>
     </message>
@@ -1565,6 +1596,13 @@ Indisponible : %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Fonction Pro. Obtenez Pro depuis la page d’accueil pour l’utiliser.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Fonction Pro. Obtenez Pro depuis la page d’accueil pour l’utiliser.</translation>

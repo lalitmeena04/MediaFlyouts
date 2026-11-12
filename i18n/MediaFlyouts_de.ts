@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>Die Erweiterung ist im Store dieses Browsers noch nicht verfügbar.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>Die Browserverbindung konnte nicht eingerichtet werden.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>Der Erweiterungsstore konnte nicht geöffnet werden.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>Bestätige die Installation im Browser.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>Die Entwicklungserweiterung konnte nicht eingerichtet werden.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>Der Erweiterungsordner konnte nicht geöffnet werden.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>Lade die Erweiterung aus diesem Ordner mit den Entwicklertools deines Browsers.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Nicht verfügbar: %1</translation>
         <translation>Medien-Widget</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>Ein kompaktes Wiedergabe-Widget in der Taskleiste.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>Peripherie-Widget</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>Akkuringe für kabellose Peripheriegeräte in der Taskleiste.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>App Filtering</source>
         <translation>App-Filter</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>Flyouts</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>Flyouts für Medien, Lautstärke, Feststelltasten, Peripheriegeräte und Ladegerät einrichten.</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Repeat button</source>
         <translation>Wiederholen-Taste</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>Browsergrafik</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Nicht verfügbar: %1</translation>
         <translation>Tipp: Eine Medien- oder Lautstärketaste drücken oder auf das Symbol im Infobereich klicken, um die Flyouts zu sehen.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>Das Wiedergabe-Flyout bei Medientasten anzeigen.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Nicht verfügbar: Auf diesem PC wurde keine System-Mediensitzung gefunden.</translation>
     </message>
@@ -527,8 +558,32 @@ Nicht verfügbar: %1</translation>
         <translation>Den Namen der App anzeigen, die die Medien abspielt.</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Das Website-Symbol verwenden, wenn kein Albumcover verfügbar ist.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Browsererweiterung installieren</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>Entwicklungserweiterung öffnen</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>Die Browsererweiterung wurde noch nicht veröffentlicht.</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>Die Flyout-Akzente mit der Hauptfarbe des aktuellen Albumcovers einfärben.</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>Taskleisten-Widget</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>Medien- und Peripherie-Widgets konfigurieren, die an die Taskleiste angedockt sind.</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Nicht verfügbar: %1</translation>
         <translation>Kompakte Pille</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>Das Lautstärke-Flyout bei Lautstärketasten anzeigen.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>Nicht verfügbar: Kein Audioausgabegerät gefunden.</translation>
     </message>
@@ -695,14 +746,6 @@ Nicht verfügbar: %1</translation>
         <translation>Wie lange das Lautstärke-Flyout auf dem Bildschirm bleibt.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>Feststelltasten-Anzeigen</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Ein Flyout anzeigen, wenn Feststell-, Num- oder Rollen-Taste umgeschaltet wird.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>Nicht verfügbar: Der Tastatur-Hook konnte nicht installiert werden.</translation>
     </message>
@@ -741,10 +784,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>Die Taskleiste des gewählten Displays liegt links oder rechts. Die Widgets brauchen eine waagerechte Taskleiste (oben oder unten) und bleiben verborgen, bis sie zurückbewegt wird.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>Taskleisten-Widget</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Nicht verfügbar: %1</translation>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>Akkuringe für Peripheriegeräte werden auf der Seite „Peripherie-Widget“ eingerichtet.</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>Ein Akku-Widget für ausgewählte kabellose Peripheriegeräte in der Taskleiste andocken.</translation>
     </message>
@@ -925,14 +960,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Plugged in over USB.</source>
         <translation>Über USB angeschlossen.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>Meldungen zu Verbindung und schwachem Akku werden auf der Seite „Peripherie-Flyout“ eingerichtet. Das Widget-Layout (nebeneinander oder scrollbarer Stapel) auf der Seite „Medien-Widget“.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>Ein Flyout anzeigen, wenn ein Peripheriegerät verbunden oder getrennt wird oder der Akku schwach ist.</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Nicht verfügbar: %1</translation>
         <translation>Zusätzlich eine Benachrichtigung im Infobereich zeigen, damit ein schwacher Akku nicht übersehen wird.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>Flyouts unterdrücken, während ein Spiel im Vollbild im Vordergrund ist. Gilt für alle Flyouts.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>Position des Peripherie-Flyouts</translation>
     </message>
@@ -1005,10 +1028,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>Wie lange das Peripherie-Flyout auf dem Bildschirm bleibt.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>Ein Flyout anzeigen, wenn das Ladegerät angeschlossen oder getrennt wird.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Nicht verfügbar: %1</translation>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>Browsergrafik</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>Das Website-Symbol verwenden, wenn kein Albumcover verfügbar ist.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>Browsererweiterung installieren</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>Willkommen bei MediaFlyouts</translation>
     </message>
@@ -1565,6 +1596,13 @@ Nicht verfügbar: %1</translation>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>Pro-Funktion. Hole dir Pro auf der Startseite, um sie zu nutzen.</translation>

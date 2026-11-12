@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>الإضافة غير متاحة بعد في متجر هذا المتصفح.</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>تعذر إعداد اتصال المتصفح.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>تعذر فتح متجر الإضافات.</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>أكد التثبيت في المتصفح.</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>تعذر إعداد إضافة التطوير.</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>تعذر فتح مجلد الإضافة.</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>حمّل الإضافة من هذا المجلد باستخدام أدوات المطور في المتصفح.</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Unavailable: %1</source>
         <translation>أداة الوسائط</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>أداة مدمجة لعرض ما يتم تشغيله، مثبّتة على شريط المهام.</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>أداة الأجهزة الطرفية</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>حلقات بطارية لأجهزتك الطرفية اللاسلكية، مثبّتة على شريط المهام.</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Unavailable: %1</source>
     <message>
         <source>App Filtering</source>
         <translation>تصفية التطبيقات</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>النوافذ المنبثقة</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>اضبط نوافذ الوسائط والصوت ومفاتيح القفل والأجهزة الطرفية والشاحن.</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>زر التكرار</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>صورة المتصفح</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Unavailable: %1</source>
         <translation>نصيحة: اضغط مفتاح وسائط أو مستوى صوت، أو انقر أيقونة علبة النظام، لمعاينة النوافذ المنبثقة.</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>إظهار نافذة «قيد التشغيل» عند الضغط على مفاتيح الوسائط.</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>غير متاح: لم يتم العثور على جلسة وسائط للنظام على هذا الجهاز.</translation>
     </message>
@@ -527,8 +558,32 @@ Unavailable: %1</source>
         <translation>إظهار اسم التطبيق الذي يشغّل الوسائط.</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>استخدام أيقونة الموقع عند عدم توفر صورة الألبوم.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>تثبيت إضافة المتصفح</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>فتح إضافة التطوير</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>لم تُنشر إضافة المتصفح بعد.</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>تلوين عناصر التمييز في النافذة باللون السائد في غلاف الألبوم الحالي.</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>أداة شريط المهام</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>إعداد أدوات الوسائط والأجهزة الطرفية المثبتة على شريط المهام.</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Unavailable: %1</source>
         <translation>شريط مدمج</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>إظهار نافذة مستوى الصوت عند الضغط على مفاتيح الصوت.</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>غير متاح: لم يتم العثور على جهاز إخراج صوت.</translation>
     </message>
@@ -695,14 +746,6 @@ Unavailable: %1</source>
         <translation>مدة بقاء نافذة مستوى الصوت على الشاشة.</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>مؤشرات مفاتيح القفل</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>إظهار نافذة عند تبديل Caps Lock أو Num Lock أو Scroll Lock.</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>غير متاح: تعذّر تثبيت خطّاف لوحة المفاتيح.</translation>
     </message>
@@ -741,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>شريط المهام في الشاشة المختارة على اليسار أو اليمين. تحتاج الأدوات إلى شريط مهام أفقي (أعلى أو أسفل) وتبقى مخفية حتى يعود.</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>أداة شريط المهام</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Unavailable: %1</source>
         <translation>%1 بكسل</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>تُضبط حلقات بطارية أجهزتك الطرفية في صفحة «أداة الأجهزة الطرفية».</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>تثبيت أداة بطارية للأجهزة الطرفية اللاسلكية المحددة على شريط المهام.</translation>
     </message>
@@ -925,14 +960,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>موصول عبر USB.</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>تُضبط تنبيهات الاتصال وانخفاض البطارية في صفحة «نافذة الأجهزة الطرفية». ويُضبط تخطيط الأداة (جنبًا إلى جنب أو مكدّس قابل للتمرير) في صفحة «أداة الوسائط».</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>إظهار نافذة عند اتصال جهاز طرفي أو انفصاله أو انخفاض بطاريته.</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Unavailable: %1</source>
         <translation>إظهار إشعار في علبة النظام أيضًا عند انخفاض البطارية، حتى لا يفوتك.</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>إيقاف النوافذ المنبثقة أثناء وجود لعبة بملء الشاشة في المقدمة. إعداد مشترك مع النوافذ الأخرى.</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>موضع نافذة الأجهزة الطرفية</translation>
     </message>
@@ -1005,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>مدة بقاء نافذة الأجهزة الطرفية على الشاشة.</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>إظهار نافذة عند توصيل الشاحن أو فصله.</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Unavailable: %1</source>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>صورة المتصفح</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>استخدام أيقونة الموقع عند عدم توفر صورة الألبوم.</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>تثبيت إضافة المتصفح</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>مرحبًا بك في MediaFlyouts</translation>
     </message>
@@ -1565,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>ميزة برو. احصل على برو من الصفحة الرئيسية لاستخدامها.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>ميزة برو. احصل على برو من الصفحة الرئيسية لاستخدامها.</translation>

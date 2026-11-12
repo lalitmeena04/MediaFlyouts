@@ -13,6 +13,37 @@
     </message>
 </context>
 <context>
+    <name>BrowserIntegration</name>
+    <message>
+        <source>The extension is not available in this browser&apos;s store yet.</source>
+        <translation>यह एक्सटेंशन अभी इस ब्राउज़र के स्टोर में उपलब्ध नहीं है।</translation>
+    </message>
+    <message>
+        <source>Could not set up the browser connection.</source>
+        <translation>ब्राउज़र कनेक्शन सेट नहीं हो सका।</translation>
+    </message>
+    <message>
+        <source>Could not open the extension store.</source>
+        <translation>एक्सटेंशन स्टोर नहीं खुल सका।</translation>
+    </message>
+    <message>
+        <source>Confirm the installation in your browser.</source>
+        <translation>अपने ब्राउज़र में इंस्टॉलेशन की पुष्टि करें।</translation>
+    </message>
+    <message>
+        <source>Could not set up the development extension.</source>
+        <translation>डेवलपमेंट एक्सटेंशन सेट नहीं हो सका।</translation>
+    </message>
+    <message>
+        <source>Could not open the extension folder.</source>
+        <translation>एक्सटेंशन फ़ोल्डर नहीं खुल सका।</translation>
+    </message>
+    <message>
+        <source>Load the extension from this folder using your browser&apos;s developer tools.</source>
+        <translation>ब्राउज़र के डेवलपर टूल से इस फ़ोल्डर का एक्सटेंशन लोड करें।</translation>
+    </message>
+</context>
+<context>
     <name>Capabilities</name>
     <message>
         <source>Audio devices</source>
@@ -107,16 +138,8 @@ Unavailable: %1</source>
         <translation>मीडिया विजेट</translation>
     </message>
     <message>
-        <source>A compact now-playing widget docked on the taskbar.</source>
-        <translation>टास्कबार पर लगा एक छोटा नाउ-प्लेइंग विजेट।</translation>
-    </message>
-    <message>
         <source>Peripheral Widget</source>
         <translation>पेरिफेरल विजेट</translation>
-    </message>
-    <message>
-        <source>Battery rings for your wireless peripherals, docked on the taskbar.</source>
-        <translation>टास्कबार पर लगे आपके वायरलेस पेरिफेरल के बैटरी रिंग।</translation>
     </message>
     <message>
         <source>Volume</source>
@@ -137,6 +160,14 @@ Unavailable: %1</source>
     <message>
         <source>App Filtering</source>
         <translation>ऐप फ़िल्टर</translation>
+    </message>
+    <message>
+        <source>Flyouts</source>
+        <translation>फ़्लाईआउट</translation>
+    </message>
+    <message>
+        <source>Configure media, volume, lock-key, peripheral and charger flyouts.</source>
+        <translation>मीडिया, वॉल्यूम, लॉक कुंजियों, बाहरी उपकरणों और चार्जर के फ़्लाईआउट कॉन्फ़िगर करें।</translation>
     </message>
     <message>
         <source>Choose which media apps are allowed to show flyouts.</source>
@@ -201,6 +232,10 @@ Unavailable: %1</source>
     <message>
         <source>Repeat button</source>
         <translation>रिपीट बटन</translation>
+    </message>
+    <message>
+        <source>Browser artwork</source>
+        <translation>ब्राउज़र चित्र</translation>
     </message>
     <message>
         <source>Shuffle button</source>
@@ -495,10 +530,6 @@ Unavailable: %1</source>
         <translation>सुझाव: फ़्लाईआउट देखने के लिए कोई मीडिया या वॉल्यूम कुंजी दबाएँ, या ट्रे आइकन पर क्लिक करें।</translation>
     </message>
     <message>
-        <source>Show the now-playing flyout on media key presses.</source>
-        <translation>मीडिया कुंजी दबाने पर नाउ-प्लेइंग फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>अनुपलब्ध: इस PC पर कोई सिस्टम मीडिया सत्र नहीं मिला।</translation>
     </message>
@@ -527,8 +558,32 @@ Unavailable: %1</source>
         <translation>मीडिया चला रहे ऐप का नाम दिखाएँ।</translation>
     </message>
     <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>एल्बम चित्र उपलब्ध न होने पर वेबसाइट का आइकन दिखाएँ।</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ब्राउज़र एक्सटेंशन इंस्टॉल करें</translation>
+    </message>
+    <message>
+        <source>Open development extension</source>
+        <translation>डेवलपमेंट एक्सटेंशन खोलें</translation>
+    </message>
+    <message>
+        <source>The browser extension is not published yet.</source>
+        <translation>ब्राउज़र एक्सटेंशन अभी प्रकाशित नहीं हुआ है।</translation>
+    </message>
+    <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
         <translation>वर्तमान एल्बम आर्ट के प्रमुख रंग से फ़्लाईआउट एक्सेंट रंगें।</translation>
+    </message>
+    <message>
+        <source>Taskbar Widget</source>
+        <translation>टास्कबार विजेट</translation>
+    </message>
+    <message>
+        <source>Configure the media and peripheral widgets docked on the taskbar.</source>
+        <translation>टास्कबार पर डॉक किए गए मीडिया और पेरिफेरल विजेट कॉन्फ़िगर करें।</translation>
     </message>
     <message>
         <source>Also tint the dashboard and other windows, not just the flyouts.</source>
@@ -651,10 +706,6 @@ Unavailable: %1</source>
         <translation>कॉम्पैक्ट पिल</translation>
     </message>
     <message>
-        <source>Show the volume flyout on volume key presses.</source>
-        <translation>वॉल्यूम कुंजी दबाने पर वॉल्यूम फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Unavailable: no audio output device was detected.</source>
         <translation>अनुपलब्ध: कोई ऑडियो आउटपुट डिवाइस नहीं मिला।</translation>
     </message>
@@ -695,14 +746,6 @@ Unavailable: %1</source>
         <translation>वॉल्यूम फ़्लाईआउट स्क्रीन पर कितनी देर रहे।</translation>
     </message>
     <message>
-        <source>Lock key indicators</source>
-        <translation>लॉक कुंजी संकेतक</translation>
-    </message>
-    <message>
-        <source>Show a flyout when Caps, Num, or Scroll lock is toggled.</source>
-        <translation>Caps, Num या Scroll Lock बदलने पर फ़्लाईआउट दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Unavailable: the keyboard hook could not be installed.</source>
         <translation>अनुपलब्ध: कीबोर्ड हुक इंस्टॉल नहीं हो सका।</translation>
     </message>
@@ -741,10 +784,6 @@ Unavailable: %1</source>
     <message>
         <source>The taskbar on the chosen display is on the left or right. The widgets need a horizontal taskbar (top or bottom) and stay hidden until it moves back.</source>
         <translation>चुने गए डिस्प्ले का टास्कबार बाएँ या दाएँ है। विजेट को क्षैतिज टास्कबार (ऊपर या नीचे) चाहिए और जब तक वह वापस नहीं आता, वे छिपे रहते हैं।</translation>
-    </message>
-    <message>
-        <source>Taskbar widget</source>
-        <translation>टास्कबार विजेट</translation>
     </message>
     <message>
         <source>Dock a compact now-playing widget on the taskbar near the tray.</source>
@@ -879,10 +918,6 @@ Unavailable: %1</source>
         <translation>%1 px</translation>
     </message>
     <message>
-        <source>Battery rings for your peripherals are configured on the Peripheral Widget page.</source>
-        <translation>आपके पेरिफेरल के बैटरी रिंग “पेरिफेरल विजेट” पेज पर सेट होते हैं।</translation>
-    </message>
-    <message>
         <source>Dock a battery widget for selected wireless peripherals on the taskbar.</source>
         <translation>चुने हुए वायरलेस पेरिफेरल के लिए टास्कबार पर बैटरी विजेट लगाएँ।</translation>
     </message>
@@ -925,14 +960,6 @@ Unavailable: %1</source>
     <message>
         <source>Plugged in over USB.</source>
         <translation>USB से जुड़ा।</translation>
-    </message>
-    <message>
-        <source>Connect and low-battery announcements are configured on the Peripheral Flyout page. The widget layout (side by side or scrollable stack) is configured on the Media Widget page.</source>
-        <translation>कनेक्ट और कम बैटरी की सूचनाएँ “पेरिफेरल फ़्लाईआउट” पेज पर सेट होती हैं। विजेट लेआउट (अगल-बगल या स्क्रॉल होने वाला स्टैक) “मीडिया विजेट” पेज पर सेट होता है।</translation>
-    </message>
-    <message>
-        <source>Show a flyout when a peripheral connects, disconnects or runs low on battery.</source>
-        <translation>पेरिफेरल के जुड़ने, हटने या बैटरी कम होने पर फ़्लाईआउट दिखाएँ।</translation>
     </message>
     <message>
         <source>On connect</source>
@@ -979,10 +1006,6 @@ Unavailable: %1</source>
         <translation>कम बैटरी पर ट्रे सूचना भी दिखाएँ, ताकि वह छूट न जाए।</translation>
     </message>
     <message>
-        <source>Suppress flyouts while a fullscreen video game is in the foreground. Shared with the other flyouts.</source>
-        <translation>फ़ुलस्क्रीन वीडियो गेम सामने होने पर फ़्लाईआउट न दिखाएँ। यह सेटिंग अन्य फ़्लाईआउट के साथ साझा है।</translation>
-    </message>
-    <message>
         <source>Peripheral flyout position</source>
         <translation>पेरिफेरल फ़्लाईआउट की स्थिति</translation>
     </message>
@@ -1005,10 +1028,6 @@ Unavailable: %1</source>
     <message>
         <source>How long the peripheral flyout stays on screen.</source>
         <translation>पेरिफेरल फ़्लाईआउट स्क्रीन पर कितनी देर रहे।</translation>
-    </message>
-    <message>
-        <source>Show a flyout when the charger is plugged in or unplugged.</source>
-        <translation>चार्जर लगाने या हटाने पर फ़्लाईआउट दिखाएँ।</translation>
     </message>
     <message>
         <source>Unavailable: this PC has no battery, so it never changes power source.</source>
@@ -1355,6 +1374,18 @@ Unavailable: %1</source>
 <context>
     <name>OnboardingWindow</name>
     <message>
+        <source>Browser artwork</source>
+        <translation>ब्राउज़र चित्र</translation>
+    </message>
+    <message>
+        <source>Use the website icon when album art is unavailable.</source>
+        <translation>एल्बम चित्र उपलब्ध न होने पर वेबसाइट का आइकन दिखाएँ।</translation>
+    </message>
+    <message>
+        <source>Install browser extension</source>
+        <translation>ब्राउज़र एक्सटेंशन इंस्टॉल करें</translation>
+    </message>
+    <message>
         <source>Welcome to MediaFlyouts</source>
         <translation>MediaFlyouts में आपका स्वागत है</translation>
     </message>
@@ -1565,6 +1596,13 @@ Unavailable: %1</source>
 </context>
 <context>
     <name>SettingRow</name>
+    <message>
+        <source>Pro feature. Get Pro on the Home page to use it.</source>
+        <translation>प्रो सुविधा। इसे उपयोग करने के लिए होम पेज से प्रो प्राप्त करें।</translation>
+    </message>
+</context>
+<context>
+    <name>SettingSection</name>
     <message>
         <source>Pro feature. Get Pro on the Home page to use it.</source>
         <translation>प्रो सुविधा। इसे उपयोग करने के लिए होम पेज से प्रो प्राप्त करें।</translation>
