@@ -164,6 +164,13 @@ if (-not $v.Tiles) {
     exit 0
 }
 
+# --- browser extension icons --------------------------------------------
+$extensionIconsDir = Join-Path $root 'browser-extension\icons'
+New-Item -ItemType Directory -Force $extensionIconsDir | Out-Null
+foreach ($s in 16, 32, 48, 96, 128) {
+    Save-Png (New-Tile $mark $s $s) (Join-Path $extensionIconsDir "icon-$s.png")
+}
+
 # --- MSIX tile logos ------------------------------------------------------
 # Tiles keep a margin. The shell paints the tile background behind them.
 $tileFill = 0.8

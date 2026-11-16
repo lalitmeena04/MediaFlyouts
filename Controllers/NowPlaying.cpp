@@ -267,7 +267,8 @@ void NowPlaying::noteMediaKey() {
 
 void NowPlaying::applyArt(const QImage& art) {
     m_mediaArt = art;
-    updateArtwork();
+    if(updateArtwork())
+        emit changed();
 }
 
 void NowPlaying::applyBrowserArtwork(const QString& browser, const QString& tabTitle, int audibleTabCount,
@@ -281,15 +282,17 @@ void NowPlaying::applyBrowserArtwork(const QString& browser, const QString& tabT
         m_browserArtwork.remove(browser);
     else
         m_browserArtwork.insert(browser, BrowserArtwork{tabTitle, audibleTabCount, art});
-    updateArtwork();
+    if(updateArtwork())
+        emit changed();
 }
 
 void NowPlaying::clearBrowserArtwork(const QString& browser) {
     m_browserArtwork.remove(browser);
-    updateArtwork();
+    if(updateArtwork())
+        emit changed();
 }
 
-void NowPlaying::updateArtwork() {
+bool NowPlaying::updateArtwork() {
     QImage art = m_mediaArt;
     for(auto it = m_browserArtwork.cbegin(); it != m_browserArtwork.cend(); ++it) {
         if(mf::matchesBrowserArtwork(m_track, it.key(), it->tabTitle, it->audibleTabCount, m_firefoxAppIds)) {
@@ -300,12 +303,12 @@ void NowPlaying::updateArtwork() {
         }
     }
     if(art.cacheKey() == m_displayedArt.cacheKey())
-        return;
+        return false;
     m_displayedArt = art;
     if(m_artProvider)
         m_artProvider->setImage(art);
     m_hasArt = !art.isNull();
     m_artAccent = computeArtAccent(art);
     ++m_artRevision;
-    emit changed();
+    return true;
 }

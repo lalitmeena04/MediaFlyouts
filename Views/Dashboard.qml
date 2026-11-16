@@ -139,11 +139,15 @@ Window {
         { "label": qsTr("Report a problem"), "page": 6 }, { "label": qsTr("Error report"), "page": 6 }
     ]
 
+    readonly property var searchIndexNorm: searchIndex.map(function(e) {
+        return { "label": e.label, "lower": e.label.toLowerCase(), "page": e.page, "section": e.section }
+    })
+
     readonly property var searchResults: {
         var q = searchQuery.toLowerCase()
         if(q.length === 0)
             return []
-        return searchIndex.filter(function(e) { return e.label.toLowerCase().indexOf(q) >= 0 })
+        return searchIndexNorm.filter(function(e) { return e.lower.indexOf(q) >= 0 })
     }
     property string searchQuery: ""
     property bool sidebarSearchOpen: false

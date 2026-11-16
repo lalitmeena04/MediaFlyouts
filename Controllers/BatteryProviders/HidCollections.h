@@ -7,6 +7,9 @@
 
 #include <QString>
 
+#include <functional>
+#include <mutex>
+#include <optional>
 #include <vector>
 
 struct HidCollection {
@@ -21,7 +24,23 @@ struct HidCollection {
         QString product;
 };
 
+class HidCollectionCache {
+    public:
+        using Loader = std::function<std::vector<HidCollection>()>;
+
+        explicit HidCollectionCache(Loader loader);
+
+        std::vector<HidCollection> forVendor(USHORT vendorId);
+        void invalidate();
+
+    private:
+        Loader m_loader;
+        std::mutex m_mutex;
+        std::optional<std::vector<HidCollection>> m_inventory;
+};
+
 std::vector<HidCollection> enumerateHidCollections(USHORT vendorId);
+void invalidateHidCollectionCache();
 
 QString categoryFromHidUsage(USAGE usagePage, USAGE usage);
 

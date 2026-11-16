@@ -10,6 +10,11 @@ Item {
     property color accent: theme.accent
     readonly property color col: settings.accentFromArt && nowPlaying.hasArt ? nowPlaying.artAccent : viz.accent
     property var particles: []
+    property bool bandsDirty: true
+    property int particleCount: 0
+
+    onColChanged: bandsDirty = true
+    onStyleChanged: bandsDirty = true
 
     Row {
         anchors.fill: parent
@@ -116,7 +121,11 @@ Item {
                 p.life -= 0.02
                 if(p.life <= 0) arr.splice(i, 1)
             }
+            viz.particleCount = arr.length
+        } else if(!viz.bandsDirty) {
+            return
         }
+        viz.bandsDirty = false
         field.requestPaint()
     }
 
@@ -135,13 +144,19 @@ Item {
                 life: 1.0
             })
         }
+        viz.particleCount = viz.particles.length
     }
 
     Timer {
-        running: viz.visible && viz.style !== 0
+        running: viz.visible && viz.style !== 0 && (audioCapture.active || viz.particleCount > 0 || viz.bandsDirty)
         interval: 33
         repeat: true
         onTriggered: viz.frame()
+    }
+
+    Connections {
+        target: audioCapture
+        function onBandsChanged() { viz.bandsDirty = true }
     }
 
     Connections {
