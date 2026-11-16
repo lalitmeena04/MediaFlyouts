@@ -10,6 +10,7 @@
 #include "BatteryProviders/BluetoothLeBatteryProvider.h"
 #include "BatteryProviders/FastPairBatteryProvider.h"
 #include "BatteryProviders/GameControllerBatteryProvider.h"
+#include "BatteryProviders/HidCollections.h"
 #include "BatteryProviders/IBatteryProvider.h"
 #include "BatteryProviders/JabraBatteryProvider.h"
 #include "BatteryProviders/LogitechBatteryProvider.h"
@@ -39,7 +40,10 @@ BatteryStatusController::BatteryStatusController(QObject* parent) : QObject(pare
 
     connect(&m_bluetoothWatcher, &BluetoothConnectionWatcher::deviceChanged, this,
             &BatteryStatusController::refresh);
-    connect(&m_hidWatcher, &HidChangeWatcher::deviceChanged, this, &BatteryStatusController::refresh);
+    connect(&m_hidWatcher, &HidChangeWatcher::deviceChanged, this, [this] {
+        invalidateHidCollectionCache();
+        refresh();
+    });
     m_bluetoothWatcher.start();
     m_hidWatcher.start();
 

@@ -1,6 +1,7 @@
 #include "MainControllerClass.h"
 
 #include <QApplication>
+#include <QElapsedTimer>
 #include <QFontDatabase>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -58,6 +59,9 @@
 #endif
 
 MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
+    QElapsedTimer startupTimer;
+    startupTimer.start();
+
     m_app.setQuitOnLastWindowClosed(false);
     QApplication::setApplicationName(QStringLiteral("MediaFlyouts"));
     QApplication::setOrganizationName(QStringLiteral("MediaFlyouts"));
@@ -80,14 +84,19 @@ MainControllerClass::MainControllerClass(QApplication& app) : m_app(app) {
     m_primary = true;
 
     loadIconFont();
+    TRC_INFO("startup: icon font loaded at {} ms", startupTimer.elapsed());
     buildCoreSubsystems();
+    TRC_INFO("startup: core subsystems built at {} ms", startupTimer.elapsed());
 #ifdef Q_OS_WIN
     buildPlatformSubsystems();
+    TRC_INFO("startup: platform subsystems built at {} ms", startupTimer.elapsed());
 #endif
     // After the platform gateway exists, so the first Store refresh runs at startup.
     m_entitlement->start();
+    TRC_INFO("startup: entitlement started at {} ms", startupTimer.elapsed());
     registerContextProperties();
     m_engine->loadFromModule("MediaFlyouts", "App");
+    TRC_INFO("startup: QML module loaded at {} ms", startupTimer.elapsed());
 }
 
 MainControllerClass::~MainControllerClass() = default;

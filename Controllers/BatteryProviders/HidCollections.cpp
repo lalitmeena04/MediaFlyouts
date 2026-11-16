@@ -1,10 +1,30 @@
 #include "HidCollections.h"
 
 #include <setupapi.h>
+#include <utility>
 
-std::vector<HidCollection> enumerateHidCollections(USHORT vendorId) {
+HidCollectionCache::HidCollectionCache(Loader loader) : m_loader(std::move(loader)) {}
+
+std::vector<HidCollection> HidCollectionCache::forVendor(USHORT vendorId) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if(!m_inventory)
+        m_inventory = m_loader();
+
     std::vector<HidCollection> collections;
+    for(const HidCollection& collection : *m_inventory)
+        if(collection.vendorId == vendorId)
+            collections.push_back(collection);
+    return collections;
+}
 
+void HidCollectionCache::invalidate() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_inventory.reset();
+}
+
+namespace {
+std::vector<HidCollection> enumerateHidCollectionsFromSystem() {
+    std::vector<HidCollection> collections;
     GUID hidGuid = {};
     HidD_GetHidGuid(&hidGuid);
     HDEVINFO set = SetupDiGetClassDevsW(&hidGuid, nullptr, nullptr, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
@@ -32,7 +52,7 @@ std::vector<HidCollection> enumerateHidCollections(USHORT vendorId) {
 
         HIDD_ATTRIBUTES attrs = {};
         attrs.Size = sizeof(attrs);
-        if(!HidD_GetAttributes(device, &attrs) || attrs.VendorID != vendorId) {
+        if(!HidD_GetAttributes(device, &attrs)) {
             CloseHandle(device);
             continue;
         }
@@ -65,6 +85,22 @@ std::vector<HidCollection> enumerateHidCollections(USHORT vendorId) {
 
     SetupDiDestroyDeviceInfoList(set);
     return collections;
+}
+} // namespace
+
+namespace {
+HidCollectionCache& collectionCache() {
+    static HidCollectionCache cache(enumerateHidCollectionsFromSystem);
+    return cache;
+}
+} // namespace
+
+std::vector<HidCollection> enumerateHidCollections(USHORT vendorId) {
+    return collectionCache().forVendor(vendorId);
+}
+
+void invalidateHidCollectionCache() {
+    collectionCache().invalidate();
 }
 
 QString categoryFromHidUsage(USAGE usagePage, USAGE usage) {

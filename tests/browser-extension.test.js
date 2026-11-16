@@ -107,6 +107,26 @@ test("both browser manifests grant the scripting permission", () => {
     }
 });
 
+test("both browser manifests include generated app icons", () => {
+    const extensionDir = path.join(__dirname, "../browser-extension");
+    const expectedSizes = {
+        chromium: ["16", "32", "48", "128"],
+        firefox: ["48", "96"]
+    };
+
+    for(const [browser, sizes] of Object.entries(expectedSizes)) {
+        const manifest = JSON.parse(fs.readFileSync(path.join(extensionDir, `manifest.${browser}.json`)));
+        for(const size of sizes) {
+            const iconPath = path.join(extensionDir, manifest.icons[size]);
+            assert.ok(fs.existsSync(iconPath), `${browser} ${size}px icon is missing`);
+            const icon = fs.readFileSync(iconPath);
+            assert.equal(icon.toString("ascii", 1, 4), "PNG");
+            assert.equal(icon.readUInt32BE(16), Number(size));
+            assert.equal(icon.readUInt32BE(20), Number(size));
+        }
+    }
+});
+
 test("identifies Brave independently from Chrome", async () => {
     const harness = createHarness([{ title: "Song" }], "Chrome/120", { isBrave: async () => true });
     await vm.runInContext("updateArtwork()", harness.context);

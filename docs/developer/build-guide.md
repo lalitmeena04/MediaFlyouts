@@ -106,8 +106,9 @@ The extension reconnects on tab events or its 30-second refresh after the app
 starts again.
 
 The extension sends the title and favicon bytes of a single audible tab over
-native messaging. When no tab is audible, it reports the last identified tab,
-or the active tab if none has been identified. A matching paused session keeps
+native messaging. Its Chromium and Firefox packages also include the generated
+MediaFlyouts app icon. When no tab is audible, it reports the last identified
+tab, or the active tab if none has been identified. A matching paused session keeps
 its favicon. Multiple profiles, multiple audible tabs, missing icons, and titles
 that do not match the Windows media session leave the normal placeholder in
 place. Installed Chromium web apps are supported only when they expose a
