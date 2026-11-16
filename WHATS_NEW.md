@@ -1,6 +1,6 @@
-Version 2.0.0
+Version 2.1.0
 
-- Bought MediaFlyouts before? Nothing changes for you. Your Microsoft account keeps every feature for good, on every PC you sign in to. If the app shows a trial instead, use "Check your license" on the Home card. Thank you for supporting the app.
-- MediaFlyouts is now free. New users get a 15-day trial of everything, then a one-time MediaFlyouts Pro purchase unlocks the audio visualizer, the per-app volume mixer, peripheral battery, Now Playing styles and the media widget options. The rest stays free.
-- Pro icon. Pro users see a Pro mark in the tray, on window frames and in the dashboard. Pick between two styles under Additional Settings > Pro icon.
-- Clearer locks. A greyed toggle with a PRO badge marks a Pro feature; controls that depend on it are disabled too, so a page reads at a glance.
+- Tidier settings. The Media, Volume, Lock Keys, Peripheral and Charger flyouts now share one Flyouts page. Each has its own expandable card with the on/off switch in the header. The Taskbar Widget page groups the Media Widget and the Peripheral Widget the same way. Search and the Home shortcuts open the right card.
+- Pause all reaches more browser tabs. A browser shows Windows one playing tab at a time. The Pause all button on the taskbar widget now keeps pausing as the browser hands over the next tab.
+- The taskbar widget follows the taskbar. With the taskbar at the top of the screen the widget now sits inside it. On a left or right taskbar the widget hides, because it does not fit there.
+- Browser artwork, coming soon. Taskbar Widget settings show a new Browser artwork option. It belongs to an optional browser extension that supplies the website icon when a tab has no album art. The extension is not in the browser stores yet, so the install button stays disabled for now.
