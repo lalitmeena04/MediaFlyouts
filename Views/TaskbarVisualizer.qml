@@ -37,7 +37,7 @@ Item {
                     y: settings.taskbarVisualizerCentered
                         ? (parent.height - height) / 2
                         : parent.height - height
-                    Behavior on height { NumberAnimation { duration: 90 } }
+                    Behavior on height { NumberAnimation { duration: settings.reduceMotion ? 0 : 90 } }
                 }
             }
         }

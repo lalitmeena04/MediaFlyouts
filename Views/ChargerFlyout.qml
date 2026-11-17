@@ -16,6 +16,8 @@ FlyoutBase {
     }
 
     function showFlyout(pluggedIn) {
+        if(settings.focusMode)
+            return
         if(!settings.onboardingCompleted)
             return
         if(!settings.chargerFlyoutEnabled || !capabilities.chargerAvailable || !eventEnabled(pluggedIn)

@@ -178,10 +178,6 @@ Unavailable: %1</source>
         <translation>其他设置</translation>
     </message>
     <message>
-        <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>语言、主题、强调色、开机启动、托盘和设置备份。</translation>
-    </message>
-    <message>
         <source>Support</source>
         <translation>支持</translation>
     </message>
@@ -334,6 +330,10 @@ Unavailable: %1</source>
         <translation>堆叠</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>小组件大小</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>暂停遮罩</translation>
     </message>
@@ -412,6 +412,46 @@ Unavailable: %1</source>
     <message>
         <source>Pro icon</source>
         <translation>专业版图标</translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation>专注模式</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>减少动态效果</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>键盘快捷键</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>播放 / 暂停</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>下一曲</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>静音</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>打开媒体弹出窗</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>显示 / 隐藏媒体小组件</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>显示 / 隐藏外围设备小组件</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>切换专注模式</translation>
     </message>
     <message>
         <source>Launch on startup</source>
@@ -556,6 +596,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>显示正在播放媒体的应用名称。</translation>
+    </message>
+    <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>任务栏空间较小时选择紧凑尺寸，需要更易阅读时选择较大尺寸。</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>紧凑</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>标准</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>大</translation>
     </message>
     <message>
         <source>Use the website icon when album art is unavailable.</source>
@@ -862,10 +918,6 @@ Unavailable: %1</source>
         <translation>读取小组件旁的任务栏颜色，并在浅色和深色文字之间切换。在透明任务栏或动态壁纸上保持小组件清晰可读。</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>在小组件后方显示系统音频的实时频谱。</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>可视化样式</translation>
     </message>
@@ -966,6 +1018,10 @@ Unavailable: %1</source>
         <translation>连接时</translation>
     </message>
     <message>
+        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
+        <translation>语言、主题、强调色、快捷键、专注模式和辅助功能。</translation>
+    </message>
+    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>外设连接时进行提示。</translation>
     </message>
@@ -1062,6 +1118,10 @@ Unavailable: %1</source>
         <translation>充电器弹窗在屏幕上停留的时间。</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>在小组件后显示系统音频频谱。启用“减少动态效果”时隐藏。</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>“关”显示所有应用。黑名单隐藏列出的应用；白名单仅显示列出的应用。</translation>
     </message>
@@ -1148,6 +1208,38 @@ Unavailable: %1</source>
     <message>
         <source>Choose color…</source>
         <translation>选择颜色…</translation>
+    </message>
+    <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>抑制自动弹出窗并隐藏任务栏小组件，直到关闭此模式。仍可手动打开媒体弹出窗。</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>使用更短的过渡效果并停止装饰性动画。默认遵循 Windows 动画设置。</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>设置一个修饰键和一个按键。MediaFlyouts 在后台运行时快捷键仍可用。若快捷键已被其他应用使用，会在下方提示。</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>未设置</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>设置 %1 快捷键</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>按下一个修饰键和一个按键。按 Escape 取消。</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>等待按键…</translation>
     </message>
     <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
@@ -1298,6 +1390,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>报告已保存，包含 %1 个文件。</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>设置按键时快捷键会暂停。</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1：不支持的快捷键</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1：快捷键已被占用</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>已启用 %1 个快捷键。</translation>
     </message>
 </context>
 <context>

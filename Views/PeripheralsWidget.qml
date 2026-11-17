@@ -5,10 +5,11 @@ import MediaFlyouts
 DockableWidget {
     id: root
     logName: "PeripheralsWidget"
-    pollActive: pro.peripheralsWidgetEnabled
+    pollActive: pro.peripheralsWidgetEnabled && !settings.focusMode && !root.userHidden
     property var mediaWidget: null
     property var stack: null
     readonly property bool stacked: root.stack !== null && root.stack.enabled
+    property bool userHidden: false
 
     readonly property var devices: {
         var picked = []
@@ -71,7 +72,10 @@ DockableWidget {
     }
 
     function sectionWidth(section) {
-        return section.devices.length * 32 + 22
+        return section.devices.length * (root.naturalHeight - 6 + 6) + 22
+    }
+    function toggleVisibility() {
+        root.userHidden = !root.userHidden
     }
     readonly property int naturalWidth: {
         var total = 0
@@ -79,7 +83,8 @@ DockableWidget {
             total += sectionWidth(shownSections[i])
         return Math.max(32, total + Math.max(0, shownSections.length - 1) * 14)
     }
-    readonly property int naturalHeight: 32
+    readonly property int naturalHeight: settings.taskbarWidgetSize === 0 ? 28
+        : (settings.taskbarWidgetSize === 2 ? 40 : 32)
     readonly property int widestSectionWidth: {
         var widest = 32
         for(var i = 0; i < deviceSections.length; i++)
@@ -89,7 +94,8 @@ DockableWidget {
     width: root.stacked ? root.stack.frameWidth : root.naturalWidth
     height: root.stacked ? root.stack.frameHeight : root.naturalHeight
 
-    readonly property bool eligible: settings.onboardingCompleted && pro.peripheralsWidgetEnabled && devices.length > 0 && !root.blocked
+    readonly property bool eligible: settings.onboardingCompleted && pro.peripheralsWidgetEnabled
+        && devices.length > 0 && !settings.focusMode && !root.userHidden && !root.blocked
     readonly property bool pageActive: !root.stacked || root.activeSection !== ""
     property bool pageShown: root.pageActive
     visible: root.eligible && root.pageShown
@@ -138,6 +144,7 @@ DockableWidget {
             + " onboardingCompleted=" + settings.onboardingCompleted
             + " enabled=" + pro.peripheralsWidgetEnabled
             + " deviceCount=" + devices.length
+            + " userHidden=" + root.userHidden
             + " blocked=" + root.blocked
             + " monitor=" + settings.taskbarWidgetMonitor)
         if(visible)
@@ -197,7 +204,7 @@ DockableWidget {
                     Rectangle {
                         visible: index > 0
                         width: 1
-                        height: 28
+                        height: root.naturalHeight - 4
                         anchors.verticalCenter: parent.verticalCenter
                         color: root.divider
                     }
@@ -209,7 +216,8 @@ DockableWidget {
                             anchors.verticalCenter: parent.verticalCenter
                             text: root.sectionGlyph(modelData.label)
                             font.family: Fluent.fontFamily
-                            font.pixelSize: 17
+                            font.pixelSize: settings.taskbarWidgetSize === 0 ? 15
+                                : (settings.taskbarWidgetSize === 2 ? 20 : 17)
                             color: root.accent
                             Behavior on color { ColorAnimation { duration: Anim.moveMs } }
                         }
@@ -219,8 +227,8 @@ DockableWidget {
                             delegate: BatteryRing {
                                     id: deviceRing
                                     required property var modelData
-                                    width: 26
-                                    height: 26
+                                    width: root.naturalHeight - 6
+                                    height: width
                                     thickness: 3
                                     percent: modelData.percent
                                     charging: modelData.charging

@@ -178,10 +178,6 @@ No disponible: %1</translation>
         <translation>Ajustes adicionales</translation>
     </message>
     <message>
-        <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>Idioma, tema, color de énfasis, inicio, bandeja y copia de seguridad de los ajustes.</translation>
-    </message>
-    <message>
         <source>Support</source>
         <translation>Apoyo</translation>
     </message>
@@ -334,6 +330,10 @@ No disponible: %1</translation>
         <translation>Apilado</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>Tamaño del widget</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>Superposición de pausa</translation>
     </message>
@@ -412,6 +412,46 @@ No disponible: %1</translation>
     <message>
         <source>Pro icon</source>
         <translation>Icono Pro</translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation>Modo de concentración</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>Reducir movimiento</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>Atajos de teclado</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>Reproducir / pausar</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>Pista siguiente</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Silenciar</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>Abrir panel multimedia</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>Mostrar / ocultar widget multimedia</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>Mostrar / ocultar widget de periféricos</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>Alternar modo de concentración</translation>
     </message>
     <message>
         <source>Launch on startup</source>
@@ -556,6 +596,22 @@ No disponible: %1</translation>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>Mostrar el nombre de la aplicación que reproduce el contenido.</translation>
+    </message>
+    <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>Elige un tamaño compacto para barras de tareas pequeñas o uno mayor para leer mejor.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>Compacto</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>Estándar</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Grande</translation>
     </message>
     <message>
         <source>Use the website icon when album art is unavailable.</source>
@@ -862,10 +918,6 @@ No disponible: %1</translation>
         <translation>Analiza la barra de tareas junto a los widgets y alterna entre texto claro y oscuro. Mantiene los widgets legibles sobre una barra transparente o un fondo animado.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>Mostrar un espectro en vivo del audio del sistema detrás del widget.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>Estilo del visualizador</translation>
     </message>
@@ -966,6 +1018,10 @@ No disponible: %1</translation>
         <translation>Al conectar</translation>
     </message>
     <message>
+        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
+        <translation>Idioma, tema, color, atajos, concentración y accesibilidad.</translation>
+    </message>
+    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Avisar cuando un periférico se conecta.</translation>
     </message>
@@ -1062,6 +1118,10 @@ No disponible: %1</translation>
         <translation>Cuánto tiempo permanece el panel del cargador en pantalla.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>Muestra el espectro de audio del sistema detrás del widget. Se oculta al reducir el movimiento.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>«Desactivado» muestra todas las aplicaciones. La lista negra oculta las aplicaciones indicadas; la lista blanca muestra solo las indicadas.</translation>
     </message>
@@ -1148,6 +1208,38 @@ No disponible: %1</translation>
     <message>
         <source>Choose color…</source>
         <translation>Elegir color…</translation>
+    </message>
+    <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>Suprime los paneles automáticos y oculta los widgets de la barra de tareas hasta desactivar el modo. El panel multimedia se puede abrir manualmente.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>Usa transiciones más cortas y detén el movimiento decorativo. De forma predeterminada, sigue la configuración de animación de Windows.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>Asigna una tecla modificadora y otra tecla. Los atajos funcionan con MediaFlyouts en segundo plano. Se indicará abajo si otra aplicación ya usa un atajo.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>Sin asignar</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Borrar</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>Establecer atajo para %1</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>Pulsa una tecla modificadora y otra tecla. Pulsa Escape para cancelar.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>Esperando una tecla…</translation>
     </message>
     <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
@@ -1298,6 +1390,25 @@ No disponible: %1</translation>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>Informe guardado con %1 archivos.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>Los atajos están en pausa mientras asignas una tecla.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: atajo no compatible</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: el atajo ya está en uso</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>Atajos activos: %1.</translation>
     </message>
 </context>
 <context>

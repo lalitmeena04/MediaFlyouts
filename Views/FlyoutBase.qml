@@ -149,21 +149,21 @@ Window {
             id: flingX
             target: base
             property: "swipeDx"
-            duration: settings.flyoutAnimationMs
+            duration: settings.reduceMotion ? 0 : settings.flyoutAnimationMs
             easing.type: Easing.OutCubic
         }
         NumberAnimation {
             id: flingY
             target: base
             property: "swipeDy"
-            duration: settings.flyoutAnimationMs
+            duration: settings.reduceMotion ? 0 : settings.flyoutAnimationMs
             easing.type: Easing.OutCubic
         }
         NumberAnimation {
             target: base
             property: "swipeScale"
             to: base.swipeExitScale
-            duration: settings.flyoutAnimationMs
+            duration: settings.reduceMotion ? 0 : settings.flyoutAnimationMs
             easing.type: Easing.OutCubic
         }
     }
@@ -173,7 +173,7 @@ Window {
         target: base
         property: "opacity"
         to: 1
-        duration: settings.flyoutAnimationMs
+        duration: settings.reduceMotion ? 0 : settings.flyoutAnimationMs
         easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
     }
 
@@ -182,7 +182,7 @@ Window {
         target: base
         property: "opacity"
         to: 0
-        duration: settings.flyoutAnimationMs
+        duration: settings.reduceMotion ? 0 : settings.flyoutAnimationMs
         easing.type: Anim.easingFor(settings.flyoutAnimationEasingStyle)
         onFinished: {
             base.visible = false

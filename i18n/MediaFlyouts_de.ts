@@ -178,10 +178,6 @@ Nicht verfügbar: %1</translation>
         <translation>Weitere Einstellungen</translation>
     </message>
     <message>
-        <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>Sprache, Design, Akzent, Autostart, Infobereich und Sicherung der Einstellungen.</translation>
-    </message>
-    <message>
         <source>Support</source>
         <translation>Unterstützen</translation>
     </message>
@@ -334,6 +330,10 @@ Nicht verfügbar: %1</translation>
         <translation>Stapel</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>Widgetgröße</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>Pause-Overlay</translation>
     </message>
@@ -412,6 +412,46 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Pro icon</source>
         <translation>Pro-Symbol</translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation>Fokusmodus</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>Bewegung reduzieren</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>Tastenkürzel</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>Wiedergabe / Pause</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>Nächster Titel</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Stummschalten</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>Medienflyout öffnen</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>Medien-Widget ein- / ausblenden</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>Peripheriegeräte-Widget ein- / ausblenden</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>Fokusmodus umschalten</translation>
     </message>
     <message>
         <source>Launch on startup</source>
@@ -556,6 +596,22 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>Den Namen der App anzeigen, die die Medien abspielt.</translation>
+    </message>
+    <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>Wähle eine kompakte Größe für kleine Taskleisten oder eine größere für bessere Lesbarkeit.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>Kompakt</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>Standard</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Groß</translation>
     </message>
     <message>
         <source>Use the website icon when album art is unavailable.</source>
@@ -862,10 +918,6 @@ Nicht verfügbar: %1</translation>
         <translation>Die Taskleiste neben den Widgets auslesen und zwischen hellem und dunklem Text wechseln. Hält die Widgets über einer transparenten Taskleiste oder einem Live-Hintergrund lesbar.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>Ein Live-Spektrum des Systemtons hinter dem Widget anzeigen.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>Visualizer-Stil</translation>
     </message>
@@ -966,6 +1018,10 @@ Nicht verfügbar: %1</translation>
         <translation>Beim Verbinden</translation>
     </message>
     <message>
+        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
+        <translation>Sprache, Design, Akzentfarbe, Tastenkürzel, Fokusmodus und Barrierefreiheit.</translation>
+    </message>
+    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Ein Peripheriegerät melden, wenn es verbunden wird.</translation>
     </message>
@@ -1062,6 +1118,10 @@ Nicht verfügbar: %1</translation>
         <translation>Wie lange das Ladegerät-Flyout auf dem Bildschirm bleibt.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>Zeigt ein Live-Spektrum des Systemtons hinter dem Widget. Bei reduzierter Bewegung ausgeblendet.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>„Aus“ zeigt alle Apps. Die Sperrliste blendet die aufgeführten Apps aus; die Erlaubnisliste zeigt nur die aufgeführten Apps.</translation>
     </message>
@@ -1148,6 +1208,38 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Choose color…</source>
         <translation>Farbe wählen…</translation>
+    </message>
+    <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>Automatische Flyouts unterdrücken und Taskleisten-Widgets ausblenden, bis der Modus beendet wird. Das Medienflyout lässt sich weiterhin manuell öffnen.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>Kürzere Übergänge verwenden und dekorative Bewegung stoppen. Standardmäßig wird die Windows-Animationseinstellung verwendet.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>Lege eine Zusatztaste und eine Taste fest. Tastenkürzel funktionieren, wenn MediaFlyouts im Hintergrund läuft. Ein von einer anderen App verwendetes Kürzel wird unten gemeldet.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>Nicht festgelegt</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>Tastenkürzel für %1 festlegen</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>Drücke eine Zusatztaste und eine Taste. Escape bricht ab.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>Warte auf eine Taste…</translation>
     </message>
     <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
@@ -1298,6 +1390,25 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>Bericht mit %1 Dateien gespeichert.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>Tastenkürzel sind während der Zuweisung pausiert.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: nicht unterstütztes Tastenkürzel</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: Tastenkürzel wird bereits verwendet</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>Aktive Tastenkürzel: %1.</translation>
     </message>
 </context>
 <context>

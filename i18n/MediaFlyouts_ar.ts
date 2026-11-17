@@ -178,10 +178,6 @@ Unavailable: %1</source>
         <translation>إعدادات إضافية</translation>
     </message>
     <message>
-        <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>اللغة والسمة ولون التمييز وبدء التشغيل وعلبة النظام والنسخ الاحتياطي للإعدادات.</translation>
-    </message>
-    <message>
         <source>Support</source>
         <translation>الدعم</translation>
     </message>
@@ -334,6 +330,10 @@ Unavailable: %1</source>
         <translation>مكدّس</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>حجم عنصر واجهة المستخدم</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>طبقة الإيقاف المؤقت</translation>
     </message>
@@ -412,6 +412,46 @@ Unavailable: %1</source>
     <message>
         <source>Pro icon</source>
         <translation>أيقونة برو</translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation>وضع التركيز</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>تقليل الحركة</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>اختصارات لوحة المفاتيح</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>تشغيل / إيقاف مؤقت</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>المقطع التالي</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>كتم الصوت</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>فتح نافذة الوسائط</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>إظهار / إخفاء عنصر الوسائط</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>إظهار / إخفاء عنصر الأجهزة الطرفية</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>تبديل وضع التركيز</translation>
     </message>
     <message>
         <source>Launch on startup</source>
@@ -556,6 +596,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>إظهار اسم التطبيق الذي يشغّل الوسائط.</translation>
+    </message>
+    <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>اختر حجماً صغيراً لأشرطة المهام الضيقة أو حجماً أكبر لقراءة أسهل.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>صغير</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>قياسي</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>كبير</translation>
     </message>
     <message>
         <source>Use the website icon when album art is unavailable.</source>
@@ -862,10 +918,6 @@ Unavailable: %1</source>
         <translation>قراءة شريط المهام بجوار الأدوات والتبديل بين النص الفاتح والداكن. يُبقي الأدوات مقروءة فوق شريط مهام شفاف أو خلفية متحركة.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>إظهار طيف مباشر لصوت النظام خلف الأداة.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>نمط المُصوِّر</translation>
     </message>
@@ -966,6 +1018,10 @@ Unavailable: %1</source>
         <translation>عند الاتصال</translation>
     </message>
     <message>
+        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
+        <translation>اللغة والمظهر واللون والاختصارات والتركيز وإمكانية الوصول.</translation>
+    </message>
+    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>التنبيه عند اتصال جهاز طرفي.</translation>
     </message>
@@ -1062,6 +1118,10 @@ Unavailable: %1</source>
         <translation>مدة بقاء نافذة الشاحن على الشاشة.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>عرض طيف مباشر لصوت النظام خلف العنصر. يُخفى عند تفعيل تقليل الحركة.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>«معطّل» يعرض كل التطبيقات. قائمة الحظر تخفي التطبيقات المدرجة؛ وقائمة السماح تعرض التطبيقات المدرجة فقط.</translation>
     </message>
@@ -1148,6 +1208,38 @@ Unavailable: %1</source>
     <message>
         <source>Choose color…</source>
         <translation>اختيار لون…</translation>
+    </message>
+    <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>إيقاف النوافذ المنبثقة التلقائية وإخفاء عناصر شريط المهام حتى إيقاف الوضع. يظل فتح نافذة الوسائط يدوياً متاحاً.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>استخدم انتقالات أقصر وأوقف الحركة الزخرفية. الإعداد الافتراضي يتبع إعداد الحركة في Windows.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>عيّن مفتاح تعديل ومفتاحاً واحداً. تعمل الاختصارات عندما يكون MediaFlyouts في الخلفية. سيظهر أدناه تنبيه إذا كان تطبيق آخر يستخدم الاختصار.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>غير معيّن</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>مسح</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>تعيين اختصار لـ %1</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>اضغط مفتاح تعديل ومفتاحاً واحداً. اضغط Escape للإلغاء.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>بانتظار مفتاح…</translation>
     </message>
     <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
@@ -1298,6 +1390,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>تم حفظ التقرير مع %1 ملفات.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>توقفت الاختصارات مؤقتاً أثناء تعيين مفتاح.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: اختصار غير مدعوم</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: الاختصار مستخدم بالفعل</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>الاختصارات النشطة: %1.</translation>
     </message>
 </context>
 <context>

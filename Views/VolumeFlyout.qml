@@ -26,7 +26,9 @@ FlyoutBase {
 
     Component.onCompleted: windowEffects.setDarkFrame(root, theme.dark)
 
-    function showFlyout() {
+    function showFlyout(force) {
+        if(settings.focusMode && force !== true)
+            return
         if(!settings.onboardingCompleted)
             return
         if(!settings.volumeFlyoutEnabled || !capabilities.audioAvailable || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.volumeFlyoutMonitor))

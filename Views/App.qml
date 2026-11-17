@@ -41,7 +41,7 @@ QtObject {
     property WhatsNewDialog whatsNewDialog: WhatsNewDialog {}
     property TaskbarWidget taskbarWidget: TaskbarWidget {
         stack: widgetStack
-        onActivated: flyout.showFlyout()
+        onActivated: flyout.showFlyout(true)
     }
     property PeripheralsWidget peripheralsWidget: PeripheralsWidget {
         mediaWidget: taskbarWidget
@@ -138,7 +138,29 @@ QtObject {
 
     property Connections settingsConnection: Connections {
         target: settings
-        function onChanged() { app.restack() }
+        property bool lastFocusMode: settings.focusMode
+        function onChanged() {
+            app.restack()
+            if(settings.focusMode && !lastFocusMode) {
+                for(var i = 0; i < app.flyoutStack.length; i++)
+                    app.flyoutStack[i].hideFlyout()
+            }
+            lastFocusMode = settings.focusMode
+        }
+    }
+
+    property Connections shortcutConnection: Connections {
+        target: globalShortcuts
+        function onActionTriggered(action) {
+            if(action === "openFlyout")
+                flyout.showFlyout(true)
+            else if(action === "toggleWidget")
+                taskbarWidget.toggleVisibility()
+            else if(action === "togglePeripheralsWidget")
+                peripheralsWidget.toggleVisibility()
+            else if(action === "toggleFocusMode")
+                settings.focusMode = !settings.focusMode
+        }
     }
 
     property Connections monitorConnection: Connections {
@@ -159,7 +181,7 @@ QtObject {
         }
 
         function onShowFlyoutRequested() {
-            flyout.showFlyout()
+            flyout.showFlyout(true)
         }
 
         function onOpenMixerRequested() {
