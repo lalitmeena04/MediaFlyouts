@@ -202,12 +202,15 @@ Then do by hand:
    listing from Partner Center (**Store listings → Export listings**), run
    `python tools\store\make_listing_csv.py <export>.csv`, and upload the
    generated `tools\store\import` folder (**Import listings → Upload
-   folder**, select the folder itself). The folder holds the CSV plus one
-   dashboard screenshot per language that has none yet; image cells carry
+   folder**, select the folder itself). The folder holds the CSV plus the
+   screenshots for slots that have no image yet; image cells carry
    the path with the root folder name (`import/dashboard-de.png`), which
-   Partner Center requires. Re-capture the screenshots when the dashboard
-   changed: `.\tools\store\capture-dashboard.ps1` (debug build, stops any
-   running MediaFlyouts). Commit the regenerated folder; it is the fallback
+   Partner Center requires. When the UI changed, retake the screenshots
+   first: `.\tools\store\capture-dashboard.ps1` (debug build, stops any
+   running MediaFlyouts) and `.\tools\store\make-screenshots.ps1`, then add
+   `--replace-screenshots` to the script run so every slot is replaced. See
+   [`packaging/README.md`](../../packaging/README.md#store-listing-text-and-screenshots).
+   Commit the regenerated folder; it is the fallback
    if Partner Center loses the listing.
 
 ## 7. Pro add-on, cutover and donations

@@ -2,24 +2,50 @@
 
 Reads the exported CSV (structure, IDs, screenshot URLs), replaces the text
 fields in every language column, and writes the import package to
-tools/store/import/: listing-import.csv plus the dashboard screenshots from
-tools/store/screenshots/ (one per language, captured by capture-dashboard.ps1).
+tools/store/import/: listing-import.csv plus the screenshots it refers to.
 Upload that folder with "Import listings > Upload folder".
 
     python tools\\store\\make_listing_csv.py listingData-<app>-<submission>.csv
+    python tools\\store\\make_listing_csv.py listingData-<app>-<submission>.csv --replace-screenshots
+    python tools\\store\\make_listing_csv.py listingData-<app>-<submission>.csv --screenshots-only
 
-Image cells must hold the path *including the root folder name*
-("import/dashboard-de.png"); a bare file name fails the import. English keeps
-the screenshots already on Partner Center (URLs); every other language gets
-DesktopScreenshot1 = its dashboard capture, because the Store requires at
-least one screenshot per listing. The import folder is committed as a fallback.
+Every language gets the same screenshot slots (SCREENSHOTS below): its
+marketing posters from make-screenshots.ps1, then its dashboard capture from
+capture-dashboard.ps1. A poster's caption is its headline in
+showcase/captions.json, the file the posters are rendered from. Image cells
+must hold the path *including the root folder name*
+("import/dashboard-de.png"); a bare file name fails the import.
+
+A normal run rewrites the text fields and fills only the screenshot slots
+that hold no image yet; a URL means the image is already on Partner Center
+and stays. --replace-screenshots also puts the screenshot files into every
+slot; use it for a release that changed the screenshots.
+--screenshots-only replaces the screenshots and their captions and leaves
+all other text as exported. An emptied image cell does not
+remove an image, so slots after the last one in SCREENSHOTS keep theirs.
+The import folder is committed as a fallback.
 """
+import argparse
 import csv
+import json
+import re
 import shutil
 import sys
 from pathlib import Path
 
-SRC = Path(sys.argv[1])
+parser = argparse.ArgumentParser(description="Builds the Partner Center listing import for all languages.")
+parser.add_argument("export", type=Path, help="CSV from Partner Center: Store listings > Export listings")
+parser.add_argument("--replace-screenshots", action="store_true",
+                    help="put the screenshot files into every slot, also where Partner Center already has an image")
+parser.add_argument("--screenshots-only", action="store_true",
+                    help="replace the screenshots and their captions in every language; keep all other text as exported")
+parser.add_argument("--languages", nargs="+", metavar="CODE", default=[],
+                    help="upload screenshot files for these Partner Center language codes only, e.g. de-de ja; "
+                         "the other languages keep the images they have. Text is still written for every language")
+ARGS = parser.parse_args()
+REPLACE_SHOTS = ARGS.replace_screenshots or ARGS.screenshots_only
+
+SRC = ARGS.export
 HERE = Path(__file__).parent
 SHOTS = HERE / "screenshots"
 OUT_DIR = HERE / "import"
@@ -27,9 +53,47 @@ OUT = OUT_DIR / "listing-import.csv"
 
 # Column order in the export. Keys are the Partner Center language codes.
 LANGS = ["en-us", "ar", "zh-hans", "fr-fr", "de-de", "hi", "id", "ja", "ko", "pt-br", "es-es"]
+unknown = [l for l in ARGS.languages if l not in LANGS]
+if unknown:
+    sys.exit(f"unknown language codes {unknown}; use: {' '.join(LANGS)}")
+# Languages whose screenshot files go into this import. Partner Center can
+# reject a large burst of image uploads, so they can be sent in batches.
+IMAGE_LANGS = ARGS.languages or LANGS
 # Partner Center code -> app language code used in the screenshot file names.
 SHOT_LANG = {"en-us": "en", "ar": "ar", "zh-hans": "zh_CN", "fr-fr": "fr", "de-de": "de", "hi": "hi",
              "id": "id", "ja": "ja", "ko": "ko", "pt-br": "pt_BR", "es-es": "es"}
+
+# Desktop screenshot slots in listing order, relative to tools/store/screenshots.
+# "{lang}" is the app language code. The Store shows at most 10.
+POSTER_DIR = "showcase"
+SCREENSHOTS = [
+    POSTER_DIR + "/{lang}/01-overview.png",
+    POSTER_DIR + "/{lang}/02-media-flyout.png",
+    POSTER_DIR + "/{lang}/03-taskbar-widget.png",
+    POSTER_DIR + "/{lang}/04-volume-mixer.png",
+    POSTER_DIR + "/{lang}/05-lock-keys.png",
+    POSTER_DIR + "/{lang}/06-peripherals.png",
+    POSTER_DIR + "/{lang}/07-now-playing.png",
+    POSTER_DIR + "/{lang}/08-personalize.png",
+    "dashboard-{lang}.png",
+]
+# App language code -> poster name -> headline, subtitle.
+POSTER_TEXT = json.loads((HERE / "showcase" / "captions.json").read_text(encoding="utf-8"))
+
+
+def import_name(shot: Path) -> str:
+    """File name in the import folder. The folder is flat, so the path is joined."""
+    return "-".join(shot.relative_to(SHOTS).parts)
+
+
+def caption_for(index: int, lang: str) -> str:
+    """Caption of a screenshot slot. Empty for a slot that is not used."""
+    if index >= len(SCREENSHOTS):
+        return ""
+    shot = Path(SCREENSHOTS[index])
+    if shot.parts[0] == POSTER_DIR:
+        return POSTER_TEXT[SHOT_LANG[lang]][shot.stem]["headline"]
+    return T[lang]["DashboardCaption"]
 
 # ---------------------------------------------------------------- content ---
 # One entry per language. Lists keep the same order as English.
@@ -70,9 +134,10 @@ Media Flyouts runs in the tray and starts with Windows if you want it to. Open t
     Pro="""MEDIA FLYOUTS PRO
 The app is free. Five features are Pro: the audio visualizer, the per-app volume mixer, peripheral battery (widget, flyout and low-battery notification), Now Playing styles and the media widget options. Everything else is free forever. Every new install gets a 15-day trial of Pro; after that a one-time in-app purchase of MediaFlyouts Pro (about USD 2.69, shown in your local currency) unlocks it for good on every PC you sign in to. No subscription. If you bought Media Flyouts while it was a paid app, you already own Pro.""",
     PrivacyHeading="PRIVACY",
-    ReleaseNotes="""- Media Flyouts is now free. Five advanced features become MediaFlyouts Pro, a one-time purchase, with a 15-day trial for every new install. Bought the paid app before? You already own Pro, nothing changes for you.
-- Pro icon. Pro users see a Pro mark in the tray, on window frames and in the dashboard. Pick between two styles under Additional Settings > Pro icon.
-- Clearer locks. A greyed toggle with a PRO badge marks a Pro feature; the controls that depend on it are disabled too.""",
+    ReleaseNotes="""- Tidier settings. The Media, Volume, Lock Keys, Peripheral and Charger flyouts now share one Flyouts page. Each has its own expandable card with the on/off switch in the header. The Taskbar Widget page groups the Media Widget and the Peripheral Widget the same way. Search and the Home shortcuts open the right card.
+- Pause all reaches more browser tabs. A browser shows Windows one playing tab at a time. The Pause all button on the taskbar widget now keeps pausing as the browser hands over the next tab.
+- The taskbar widget follows the taskbar. With the taskbar at the top of the screen the widget now sits inside it. On a left or right taskbar the widget hides, because it does not fit there.
+- Browser artwork, coming soon. Taskbar Widget settings show a new Browser artwork option. It belongs to an optional browser extension that supplies the website icon when a tab has no album art. The extension is not in the browser stores yet, so the install button stays disabled for now.""",
     Features=[
         "Fluent-style media flyout with album art, seekbar, repeat and shuffle",
         "Volume flyout that replaces the Windows overlay, with a per-app mixer",
@@ -86,14 +151,7 @@ The app is free. Five features are Pro: the audio visualizer, the per-app volume
         "Eleven languages, switched without a restart",
         "No account, no telemetry, no ads",
     ],
-    Captions=[
-        "Welcome screen on first start",
-        "Dashboard home",
-        "Media flyout on media keys",
-        "Taskbar media widget",
-        "Media and peripheral flyouts",
-        "Peripheral battery flyout",
-    ],
+    DashboardCaption="Dashboard home",
     SearchTerms=["media flyout", "volume flyout", "now playing", "taskbar widget", "audio visualizer", "battery monitor", "volume mixer"],
 )
 
@@ -131,9 +189,10 @@ Media Flyouts läuft im Tray und startet auf Wunsch mit Windows. Über das Tray-
     Pro="""MEDIA FLYOUTS PRO
 Die App ist kostenlos. Fünf Funktionen sind Pro: der Audio-Visualizer, der Lautstärkemixer pro App, der Peripherie-Akku (Widget, Flyout und Warnung bei niedrigem Akku), die Now-Playing-Stile und die Optionen des Medien-Widgets. Alles andere bleibt dauerhaft kostenlos. Jede Neuinstallation erhält 15 Tage Pro zum Testen; danach schaltet ein einmaliger In-App-Kauf von MediaFlyouts Pro (etwa 2,49 €, in deiner Währung angezeigt) alles dauerhaft frei, auf jedem PC mit deinem Konto. Kein Abo. Wer Media Flyouts als Bezahl-App gekauft hat, besitzt Pro bereits.""",
     PrivacyHeading="DATENSCHUTZ",
-    ReleaseNotes="""- Media Flyouts ist jetzt kostenlos. Fünf erweiterte Funktionen werden zu MediaFlyouts Pro, einem Einmalkauf, mit 15 Tagen Testzeit für jede Neuinstallation. Bezahl-App gekauft? Dann besitzt du Pro bereits, für dich ändert sich nichts.
-- Pro-Symbol. Pro-Nutzer sehen ein Pro-Zeichen im Infobereich, am Fensterrahmen und im Dashboard. Zwei Stile unter Weitere Einstellungen > Pro-Symbol.
-- Klarere Sperren. Ein ausgegrauter Schalter mit PRO-Abzeichen markiert eine Pro-Funktion; davon abhängige Einstellungen werden ebenfalls deaktiviert.""",
+    ReleaseNotes="""- Aufgeräumte Einstellungen. Die Flyouts für Medien, Lautstärke, Feststelltasten, Peripherie und Ladegerät teilen sich jetzt eine Seite „Flyouts“. Jedes hat eine eigene aufklappbare Karte mit dem Ein/Aus-Schalter in der Kopfzeile. Die Seite „Taskleisten-Widget“ gruppiert Medien-Widget und Peripherie-Widget genauso. Die Suche und die Verknüpfungen auf der Seite „Start“ öffnen die passende Karte.
+- „Alle pausieren“ erreicht mehr Browser-Tabs. Ein Browser zeigt Windows immer nur einen wiedergebenden Tab. Die Taste „Alle pausieren“ im Taskleisten-Widget pausiert jetzt weiter, sobald der Browser den nächsten Tab meldet.
+- Das Taskleisten-Widget folgt der Taskleiste. Liegt die Taskleiste am oberen Bildschirmrand, sitzt das Widget jetzt darin. Bei einer Taskleiste links oder rechts blendet sich das Widget aus, weil es dort nicht hineinpasst.
+- Browsergrafik, demnächst. Die Einstellungen des Taskleisten-Widgets zeigen die neue Option „Browsergrafik“. Sie gehört zu einer optionalen Browsererweiterung, die das Website-Symbol liefert, wenn ein Tab kein Albumcover hat. Die Erweiterung ist noch nicht in den Browser-Stores, daher bleibt die Installationsschaltfläche vorerst deaktiviert.""",
     Features=[
         "Medien-Flyout im Fluent-Stil mit Albumcover, Fortschrittsleiste, Wiederholen und Zufall",
         "Lautstärke-Flyout, das das Windows-Overlay ersetzt, mit App-Mixer",
@@ -147,14 +206,7 @@ Die App ist kostenlos. Fünf Funktionen sind Pro: der Audio-Visualizer, der Laut
         "Elf Sprachen, Wechsel ohne Neustart",
         "Kein Konto, keine Telemetrie, keine Werbung",
     ],
-    Captions=[
-        "Willkommensbildschirm beim ersten Start",
-        "Dashboard-Startseite",
-        "Medien-Flyout bei Medientasten",
-        "Medien-Widget in der Taskleiste",
-        "Medien- und Peripherie-Flyouts",
-        "Akku-Flyout für Peripheriegeräte",
-    ],
+    DashboardCaption="Dashboard-Startseite",
     SearchTerms=["medien flyout", "lautstärke flyout", "now playing", "taskleisten widget", "audio visualizer", "akku anzeige", "lautstärkemixer"],
 )
 
@@ -192,9 +244,10 @@ Media Flyouts tourne dans la zone de notification et démarre avec Windows si vo
     Pro="""MEDIA FLYOUTS PRO
 L'application est gratuite. Cinq fonctions sont Pro : le visualiseur audio, le mixeur de volume par application, la batterie des périphériques (widget, flyout et alerte de batterie faible), les styles Lecture en cours et les options du widget média. Tout le reste reste gratuit pour toujours. Chaque nouvelle installation profite de 15 jours d'essai de Pro ; ensuite un achat unique de MediaFlyouts Pro (environ 2,49 €, affiché dans votre devise) le débloque définitivement sur tous vos PC. Sans abonnement. Si vous avez acheté Media Flyouts quand l'application était payante, vous possédez déjà Pro.""",
     PrivacyHeading="CONFIDENTIALITÉ",
-    ReleaseNotes="""- Media Flyouts est désormais gratuit. Cinq fonctions avancées deviennent MediaFlyouts Pro, un achat unique, avec 15 jours d'essai pour chaque nouvelle installation. Vous aviez acheté l'application payante ? Vous possédez déjà Pro, rien ne change pour vous.
-- Icône Pro. Les utilisateurs Pro voient une marque Pro dans la zone de notification, sur les cadres de fenêtre et dans le tableau de bord. Deux styles sous Paramètres supplémentaires > Icône Pro.
-- Verrous plus clairs. Un interrupteur grisé avec un badge PRO signale une fonction Pro ; les réglages qui en dépendent sont désactivés aussi.""",
+    ReleaseNotes="""- Des réglages mieux rangés. Les volets Multimédia, Volume, Touches de verrouillage, Périphériques et Chargeur partagent désormais une seule page Volets. Chacun a sa propre carte dépliable, avec l'interrupteur marche/arrêt dans l'en-tête. La page Widget de la barre des tâches regroupe de la même façon le Widget multimédia et le Widget des périphériques. La recherche et les raccourcis de l'Accueil ouvrent la bonne carte.
+- « Tout mettre en pause » atteint plus d'onglets du navigateur. Un navigateur ne montre à Windows qu'un seul onglet en lecture à la fois. Le bouton « Tout mettre en pause » du widget de la barre des tâches continue maintenant de mettre en pause à mesure que le navigateur présente l'onglet suivant.
+- Le widget suit la barre des tâches. Quand la barre des tâches est en haut de l'écran, le widget s'y place désormais. Avec une barre des tâches à gauche ou à droite, le widget se masque, car il n'y tient pas.
+- Illustration du navigateur, bientôt. Les réglages du Widget de la barre des tâches affichent une nouvelle option Illustration du navigateur. Elle dépend d'une extension de navigateur facultative qui fournit l'icône du site quand un onglet n'a pas de pochette. L'extension n'est pas encore dans les boutiques des navigateurs ; le bouton d'installation reste donc désactivé pour l'instant.""",
     Features=[
         "Flyout média de style Fluent avec pochette, barre de progression, répétition et aléatoire",
         "Flyout volume qui remplace l'overlay Windows, avec mixeur par application",
@@ -208,14 +261,7 @@ L'application est gratuite. Cinq fonctions sont Pro : le visualiseur audio, le m
         "Onze langues, changement sans redémarrage",
         "Pas de compte, pas de télémétrie, pas de publicité",
     ],
-    Captions=[
-        "Écran d'accueil au premier lancement",
-        "Accueil du tableau de bord",
-        "Flyout média sur les touches média",
-        "Widget média de la barre des tâches",
-        "Flyouts média et périphériques",
-        "Flyout batterie des périphériques",
-    ],
+    DashboardCaption="Accueil du tableau de bord",
     SearchTerms=["flyout média", "flyout volume", "en lecture", "widget barre des tâches", "visualiseur audio", "batterie périphérique", "mixeur volume"],
 )
 
@@ -253,9 +299,10 @@ Media Flyouts se ejecuta en la bandeja y arranca con Windows si lo deseas. Abre 
     Pro="""MEDIA FLYOUTS PRO
 La aplicación es gratuita. Cinco funciones son Pro: el visualizador de audio, el mezclador de volumen por aplicación, la batería de periféricos (widget, flyout y aviso de batería baja), los estilos de Reproduciendo y las opciones del widget multimedia. Todo lo demás es gratis para siempre. Cada instalación nueva tiene 15 días de prueba de Pro; después, una compra única de MediaFlyouts Pro (unos 2,49 €, en tu moneda) lo desbloquea para siempre en todos tus PC. Sin suscripción. Si compraste Media Flyouts cuando era de pago, ya tienes Pro.""",
     PrivacyHeading="PRIVACIDAD",
-    ReleaseNotes="""- Media Flyouts ahora es gratis. Cinco funciones avanzadas pasan a ser MediaFlyouts Pro, una compra única, con 15 días de prueba en cada instalación nueva. ¿Compraste la versión de pago? Ya tienes Pro, nada cambia para ti.
-- Icono Pro. Los usuarios Pro ven una marca Pro en la bandeja, en los marcos de ventana y en el panel. Dos estilos en Ajustes adicionales > Icono Pro.
-- Bloqueos más claros. Un interruptor atenuado con la insignia PRO marca una función Pro; los controles que dependen de ella también se desactivan.""",
+    ReleaseNotes="""- Ajustes más ordenados. Los paneles multimedia, de volumen, de teclas de bloqueo, de periféricos y del cargador comparten ahora una sola página Paneles. Cada uno tiene su propia tarjeta desplegable, con el interruptor de encendido en la cabecera. La página Widget de la barra de tareas agrupa del mismo modo el Widget multimedia y el Widget de periféricos. La búsqueda y los accesos directos de Inicio abren la tarjeta correcta.
+- «Pausar todo» llega a más pestañas del navegador. Un navegador solo muestra a Windows una pestaña en reproducción a la vez. El botón «Pausar todo» del widget de la barra de tareas ahora sigue pausando a medida que el navegador entrega la pestaña siguiente.
+- El widget sigue a la barra de tareas. Con la barra de tareas en la parte superior de la pantalla, el widget se coloca ahora dentro de ella. Con la barra de tareas a la izquierda o a la derecha, el widget se oculta porque no cabe allí.
+- Imagen del navegador, próximamente. Los ajustes del Widget de la barra de tareas muestran una nueva opción Imagen del navegador. Pertenece a una extensión opcional del navegador que aporta el icono del sitio web cuando una pestaña no tiene carátula. La extensión aún no está en las tiendas de los navegadores, así que el botón de instalación sigue desactivado por ahora.""",
     Features=[
         "Flyout multimedia de estilo Fluent con carátula, barra de progreso, repetir y aleatorio",
         "Flyout de volumen que sustituye la superposición de Windows, con mezclador por aplicación",
@@ -269,14 +316,7 @@ La aplicación es gratuita. Cinco funciones son Pro: el visualizador de audio, e
         "Once idiomas, cambio sin reiniciar",
         "Sin cuenta, sin telemetría, sin anuncios",
     ],
-    Captions=[
-        "Pantalla de bienvenida en el primer inicio",
-        "Inicio del panel",
-        "Flyout multimedia con las teclas multimedia",
-        "Widget multimedia de la barra de tareas",
-        "Flyouts multimedia y de periféricos",
-        "Flyout de batería de periféricos",
-    ],
+    DashboardCaption="Inicio del panel",
     SearchTerms=["flyout multimedia", "flyout volumen", "reproduciendo", "widget barra de tareas", "visualizador audio", "batería periféricos", "mezclador volumen"],
 )
 
@@ -314,9 +354,10 @@ O Media Flyouts roda na bandeja e inicia com o Windows se você quiser. Abra o p
     Pro="""MEDIA FLYOUTS PRO
 O app é gratuito. Cinco recursos são Pro: o visualizador de áudio, o mixer de volume por aplicativo, a bateria de periféricos (widget, flyout e aviso de bateria fraca), os estilos de Tocando agora e as opções do widget de mídia. Todo o resto é grátis para sempre. Cada instalação nova ganha 15 dias de teste do Pro; depois, uma compra única do MediaFlyouts Pro (cerca de R$ 12,90, exibido na sua moeda) libera tudo para sempre em todos os seus PCs. Sem assinatura. Se você comprou o Media Flyouts quando ele era pago, já tem o Pro.""",
     PrivacyHeading="PRIVACIDADE",
-    ReleaseNotes="""- O Media Flyouts agora é gratuito. Cinco recursos avançados viram o MediaFlyouts Pro, uma compra única, com 15 dias de teste em cada instalação nova. Comprou o app pago? Você já tem o Pro, nada muda para você.
-- Ícone Pro. Usuários Pro veem uma marca Pro na bandeja, nas molduras de janela e no painel. Dois estilos em Configurações adicionais > Ícone Pro.
-- Bloqueios mais claros. Um botão esmaecido com o selo PRO marca um recurso Pro; os controles que dependem dele também ficam desativados.""",
+    ReleaseNotes="""- Configurações mais organizadas. Os painéis de mídia, de volume, das teclas de bloqueio, de periféricos e do carregador agora dividem uma única página Painéis. Cada um tem seu próprio cartão expansível, com o botão de ligar/desligar no cabeçalho. A página Widget da barra de tarefas agrupa do mesmo jeito o Widget de mídia e o Widget de periféricos. A busca e os atalhos do Início abrem o cartão certo.
+- "Pausar tudo" alcança mais abas do navegador. Um navegador mostra ao Windows só uma aba tocando por vez. O botão "Pausar tudo" do widget da barra de tarefas agora continua pausando conforme o navegador entrega a próxima aba.
+- O widget acompanha a barra de tarefas. Com a barra de tarefas no topo da tela, o widget agora fica dentro dela. Com a barra de tarefas à esquerda ou à direita, o widget se oculta, porque não cabe ali.
+- Imagem do navegador, em breve. As configurações do Widget da barra de tarefas mostram uma nova opção Imagem do navegador. Ela pertence a uma extensão opcional do navegador que fornece o ícone do site quando uma aba não tem capa de álbum. A extensão ainda não está nas lojas dos navegadores, então o botão de instalação fica desativado por enquanto.""",
     Features=[
         "Flyout de mídia no estilo Fluent com capa, barra de progresso, repetir e aleatório",
         "Flyout de volume que substitui a sobreposição do Windows, com mixer por aplicativo",
@@ -330,14 +371,7 @@ O app é gratuito. Cinco recursos são Pro: o visualizador de áudio, o mixer de
         "Onze idiomas, troca sem reiniciar",
         "Sem conta, sem telemetria, sem anúncios",
     ],
-    Captions=[
-        "Tela de boas-vindas no primeiro início",
-        "Início do painel",
-        "Flyout de mídia nas teclas de mídia",
-        "Widget de mídia da barra de tarefas",
-        "Flyouts de mídia e periféricos",
-        "Flyout de bateria de periféricos",
-    ],
+    DashboardCaption="Início do painel",
     SearchTerms=["flyout de mídia", "flyout de volume", "tocando agora", "widget barra de tarefas", "visualizador de áudio", "bateria periféricos", "mixer de volume"],
 )
 
@@ -375,9 +409,10 @@ Media Flyouts berjalan di tray dan dapat dimulai bersama Windows. Buka dasbor da
     Pro="""MEDIA FLYOUTS PRO
 Aplikasi ini gratis. Lima fitur adalah Pro: visualizer audio, mixer volume per aplikasi, baterai periferal (widget, flyout, dan peringatan baterai lemah), gaya Sedang Diputar, dan opsi widget media. Yang lain gratis selamanya. Setiap instalasi baru mendapat uji coba Pro 15 hari; setelah itu pembelian sekali MediaFlyouts Pro (sekitar Rp 39.000, ditampilkan dalam mata uang Anda) membukanya selamanya di semua PC Anda. Tanpa langganan. Jika Anda membeli Media Flyouts saat masih berbayar, Anda sudah memiliki Pro.""",
     PrivacyHeading="PRIVASI",
-    ReleaseNotes="""- Media Flyouts kini gratis. Lima fitur lanjutan menjadi MediaFlyouts Pro, pembelian sekali, dengan uji coba 15 hari untuk setiap instalasi baru. Pernah membeli versi berbayar? Anda sudah memiliki Pro, tidak ada yang berubah.
-- Ikon Pro. Pengguna Pro melihat tanda Pro di baki, bingkai jendela, dan dasbor. Dua gaya di Pengaturan Tambahan > Ikon Pro.
-- Kunci lebih jelas. Sakelar redup dengan lencana PRO menandai fitur Pro; kontrol yang bergantung padanya ikut dinonaktifkan.""",
+    ReleaseNotes="""- Pengaturan lebih rapi. Flyout Media, Volume, Tombol Kunci, Periferal, dan Pengisi Daya kini berada di satu halaman Flyout. Masing-masing punya kartu yang bisa dibuka, dengan sakelar aktif/nonaktif di kepala kartu. Halaman Widget Taskbar mengelompokkan Widget Media dan Widget Periferal dengan cara yang sama. Pencarian dan pintasan di Beranda membuka kartu yang tepat.
+- Jeda semua menjangkau lebih banyak tab browser. Browser hanya menampilkan satu tab yang sedang diputar kepada Windows pada satu waktu. Tombol Jeda semua di widget taskbar kini terus menjeda saat browser menyerahkan tab berikutnya.
+- Widget taskbar mengikuti taskbar. Saat taskbar berada di bagian atas layar, widget kini berada di dalamnya. Pada taskbar di kiri atau kanan, widget disembunyikan karena tidak muat di sana.
+- Gambar browser, segera hadir. Pengaturan Widget Taskbar menampilkan opsi baru Gambar browser. Opsi ini milik ekstensi browser opsional yang menyediakan ikon situs web saat tab tidak memiliki sampul album. Ekstensi belum tersedia di toko browser, jadi tombol instal tetap nonaktif untuk saat ini.""",
     Features=[
         "Flyout media bergaya Fluent dengan sampul album, bilah pencarian, ulangi, dan acak",
         "Flyout volume yang menggantikan overlay Windows, dengan mixer per aplikasi",
@@ -391,14 +426,7 @@ Aplikasi ini gratis. Lima fitur adalah Pro: visualizer audio, mixer volume per a
         "Sebelas bahasa, berganti tanpa mulai ulang",
         "Tanpa akun, tanpa telemetri, tanpa iklan",
     ],
-    Captions=[
-        "Layar sambutan saat pertama dibuka",
-        "Beranda dasbor",
-        "Flyout media pada tombol media",
-        "Widget media taskbar",
-        "Flyout media dan periferal",
-        "Flyout baterai periferal",
-    ],
+    DashboardCaption="Beranda dasbor",
     SearchTerms=["flyout media", "flyout volume", "sedang diputar", "widget taskbar", "visualizer audio", "monitor baterai", "mixer volume"],
 )
 
@@ -436,9 +464,10 @@ Media Flyouts はトレイに常駐し、必要なら Windows と一緒に起動
     Pro="""MEDIA FLYOUTS PRO
 アプリは無料です。プロ版の機能は 5 つ：オーディオビジュアライザー、アプリ別音量ミキサー、周辺機器のバッテリー（ウィジェット、フライアウト、残量低下の通知）、再生中スタイル、メディアウィジェットのオプション。それ以外はずっと無料です。新規インストールでは 15 日間プロ版をすべて試せます。その後は MediaFlyouts Pro のアプリ内買い切り（約 ¥400、お住まいの通貨で表示）で、同じアカウントのすべての PC で永久に利用できます。サブスクリプションはありません。有料アプリだった頃に Media Flyouts を購入した方は、すでにプロ版をお持ちです。""",
     PrivacyHeading="プライバシー",
-    ReleaseNotes="""- Media Flyouts は無料になりました。高度な 5 機能はプロ版（MediaFlyouts Pro、買い切り）となり、新規インストールには 15 日間の試用が付きます。有料版を購入済みの方はすでにプロ版をお持ちで、何も変わりません。
-- プロ版アイコン。プロ版ユーザーはトレイ、ウィンドウ枠、ダッシュボードにプロ版マークが表示されます。追加設定 > プロ版アイコンで 2 つのスタイルから選べます。
-- ロック表示の改善。PRO バッジ付きのグレーのスイッチがプロ版機能を示し、それに依存する設定も無効になります。""",
+    ReleaseNotes="""- 設定がすっきり。メディア、音量、ロックキー、周辺機器、充電器の各フライアウトが、ひとつの「フライアウト」ページにまとまりました。それぞれに展開できるカードがあり、ヘッダーにオン/オフのスイッチがあります。「タスクバーウィジェット」ページでも、メディアウィジェットと周辺機器ウィジェットを同じようにまとめています。検索とホームのショートカットは、該当するカードを開きます。
+- 「すべて一時停止」がより多くのブラウザー タブに届きます。ブラウザーが Windows に見せる再生中のタブは一度にひとつだけです。タスクバーウィジェットの「すべて一時停止」ボタンは、ブラウザーが次のタブを渡すたびに一時停止を続けるようになりました。
+- タスクバーウィジェットがタスクバーに追従します。タスクバーが画面の上端にある場合、ウィジェットはその中に表示されます。タスクバーが左または右にある場合は収まらないため、ウィジェットは非表示になります。
+- ブラウザーの画像（近日対応）。タスクバーウィジェットの設定に、新しい「ブラウザーの画像」オプションが表示されます。これはオプションのブラウザー拡張機能のためのもので、タブにアルバム アートがないときに Web サイトのアイコンを表示します。拡張機能はまだブラウザーのストアで公開されていないため、インストール ボタンは当面無効のままです。""",
     Features=[
         "アルバム アート、シークバー、リピート、シャッフル付きの Fluent スタイル メディア フライアウト",
         "Windows のオーバーレイを置き換える音量フライアウトとアプリ別ミキサー",
@@ -452,14 +481,7 @@ Media Flyouts はトレイに常駐し、必要なら Windows と一緒に起動
         "11 言語、再起動なしで切り替え",
         "アカウント不要、テレメトリなし、広告なし",
     ],
-    Captions=[
-        "初回起動時のようこそ画面",
-        "ダッシュボードのホーム",
-        "メディア キーで表示されるメディア フライアウト",
-        "タスクバーのメディア ウィジェット",
-        "メディアと周辺機器のフライアウト",
-        "周辺機器のバッテリー フライアウト",
-    ],
+    DashboardCaption="ダッシュボードのホーム",
     SearchTerms=["メディア フライアウト", "音量 フライアウト", "再生中", "タスクバー ウィジェット", "オーディオ ビジュアライザー", "バッテリー モニター", "音量ミキサー"],
 )
 
@@ -497,9 +519,10 @@ Media Flyouts는 트레이에서 실행되며 원하면 Windows와 함께 시작
     Pro="""MEDIA FLYOUTS PRO
 앱은 무료입니다. 프로 기능은 다섯 가지입니다: 오디오 시각화, 앱별 볼륨 믹서, 주변기기 배터리(위젯, 플라이아웃, 배터리 부족 알림), 지금 재생 중 스타일, 미디어 위젯 옵션. 나머지는 영구 무료입니다. 새로 설치하면 15일 동안 프로를 체험할 수 있고, 이후 MediaFlyouts Pro를 앱 내에서 1회 구매(약 ₩3,500, 현지 통화로 표시)하면 같은 계정의 모든 PC에서 영구히 사용할 수 있습니다. 구독 없음. 유료 앱이던 시절에 Media Flyouts를 구매했다면 이미 프로를 보유하고 있습니다.""",
     PrivacyHeading="개인정보",
-    ReleaseNotes="""- Media Flyouts가 무료가 되었습니다. 고급 기능 다섯 가지는 1회 구매 상품인 MediaFlyouts Pro가 되며, 새 설치마다 15일 체험이 제공됩니다. 유료 앱을 구매하셨다면 이미 프로를 보유하고 있으며 달라지는 것은 없습니다.
-- 프로 아이콘. 프로 사용자는 트레이, 창 테두리, 대시보드에서 프로 마크를 봅니다. 추가 설정 > 프로 아이콘에서 두 가지 스타일 중 선택할 수 있습니다.
-- 더 명확한 잠금. PRO 배지가 붙은 흐린 토글이 프로 기능을 표시하며, 그에 종속된 컨트롤도 함께 비활성화됩니다.""",
+    ReleaseNotes="""- 더 깔끔해진 설정. 미디어, 볼륨, 잠금 키, 주변기기, 충전기 플라이아웃이 이제 하나의 '플라이아웃' 페이지에 모였습니다. 각각 펼칠 수 있는 카드가 있고, 켜기/끄기 스위치는 카드 머리글에 있습니다. '작업 표시줄 위젯' 페이지도 미디어 위젯과 주변기기 위젯을 같은 방식으로 묶었습니다. 검색과 홈 바로 가기는 해당 카드를 열어 줍니다.
+- '모두 일시 정지'가 더 많은 브라우저 탭에 적용됩니다. 브라우저는 재생 중인 탭을 한 번에 하나만 Windows에 알려 줍니다. 작업 표시줄 위젯의 '모두 일시 정지' 버튼은 이제 브라우저가 다음 탭을 넘겨줄 때마다 계속 일시 정지합니다.
+- 작업 표시줄 위젯이 작업 표시줄을 따라갑니다. 작업 표시줄이 화면 위쪽에 있으면 위젯이 그 안에 표시됩니다. 작업 표시줄이 왼쪽이나 오른쪽에 있으면 위젯이 들어갈 수 없어 숨겨집니다.
+- 브라우저 이미지, 곧 제공. 작업 표시줄 위젯 설정에 새 '브라우저 이미지' 옵션이 표시됩니다. 탭에 앨범 아트가 없을 때 웹사이트 아이콘을 제공하는 선택적 브라우저 확장 프로그램을 위한 옵션입니다. 확장 프로그램이 아직 브라우저 스토어에 없어서 설치 버튼은 당분간 비활성화되어 있습니다.""",
     Features=[
         "앨범 아트, 탐색 바, 반복, 셔플이 있는 Fluent 스타일 미디어 플라이아웃",
         "Windows 오버레이를 대체하는 볼륨 플라이아웃과 앱별 믹서",
@@ -513,14 +536,7 @@ Media Flyouts는 트레이에서 실행되며 원하면 Windows와 함께 시작
         "11개 언어, 다시 시작 없이 전환",
         "계정 없음, 원격 분석 없음, 광고 없음",
     ],
-    Captions=[
-        "처음 실행 시 환영 화면",
-        "대시보드 홈",
-        "미디어 키로 표시되는 미디어 플라이아웃",
-        "작업 표시줄 미디어 위젯",
-        "미디어 및 주변기기 플라이아웃",
-        "주변기기 배터리 플라이아웃",
-    ],
+    DashboardCaption="대시보드 홈",
     SearchTerms=["미디어 플라이아웃", "볼륨 플라이아웃", "지금 재생 중", "작업 표시줄 위젯", "오디오 시각화", "배터리 모니터", "볼륨 믹서"],
 )
 
@@ -558,9 +574,10 @@ Media Flyouts 常驻托盘，可随 Windows 启动。通过托盘图标打开仪
     Pro="""MEDIA FLYOUTS PRO
 应用免费。五项功能属于专业版：音频可视化、按应用音量混音器、外设电量（小组件、弹出面板和低电量提醒）、正在播放样式以及媒体小组件选项。其余功能永久免费。每次全新安装可免费试用专业版 15 天；之后通过应用内一次性购买 MediaFlyouts Pro（约 ¥18，按您所在地区货币显示）即可在同一账户的所有电脑上永久解锁。无订阅。若您在 Media Flyouts 付费时期购买过，则已拥有专业版。""",
     PrivacyHeading="隐私",
-    ReleaseNotes="""- Media Flyouts 现已免费。五项高级功能成为一次性购买的 MediaFlyouts Pro，每次全新安装可试用 15 天。此前购买过付费版？您已拥有专业版，一切照旧。
-- 专业版图标。专业版用户会在托盘、窗口边框和仪表板中看到专业版标志。可在其他设置 > 专业版图标中选择两种样式。
-- 更清晰的锁定提示。带 PRO 徽标的灰色开关表示专业版功能，依赖它的控件也会一并禁用。""",
+    ReleaseNotes="""- 设置更整洁。媒体、音量、锁定键、外设和充电器弹窗现在共用一个“弹窗”页面。每个弹窗都有自己的可展开卡片，开关位于卡片标题栏。“任务栏小组件”页面也以同样的方式归类媒体小组件和外设小组件。搜索和主页快捷方式会打开对应的卡片。
+- “全部暂停”可暂停更多浏览器标签页。浏览器每次只向 Windows 显示一个正在播放的标签页。任务栏小组件上的“全部暂停”按钮现在会在浏览器交出下一个标签页时继续暂停。
+- 任务栏小组件跟随任务栏。任务栏位于屏幕顶部时，小组件现在会显示在其中。任务栏位于左侧或右侧时，小组件放不下，因此会隐藏。
+- 浏览器图像，即将推出。任务栏小组件设置中新增了“浏览器图像”选项。它属于一个可选的浏览器扩展，在标签页没有专辑封面时提供网站图标。该扩展尚未上架浏览器商店，因此安装按钮暂时保持禁用。""",
     Features=[
         "带专辑封面、进度条、重复和随机播放的 Fluent 风格媒体弹出面板",
         "取代 Windows 叠加层的音量弹出面板，含按应用混音器",
@@ -574,14 +591,7 @@ Media Flyouts 常驻托盘，可随 Windows 启动。通过托盘图标打开仪
         "十一种语言，无需重启即可切换",
         "无账户、无遥测、无广告",
     ],
-    Captions=[
-        "首次启动的欢迎界面",
-        "仪表板主页",
-        "按下媒体键时的媒体弹出面板",
-        "任务栏媒体小组件",
-        "媒体与外设弹出面板",
-        "外设电量弹出面板",
-    ],
+    DashboardCaption="仪表板主页",
     SearchTerms=["媒体弹窗", "音量弹窗", "正在播放", "任务栏小组件", "音频可视化", "电量监视", "音量混音器"],
 )
 
@@ -619,9 +629,10 @@ Media Flyouts ट्रे में चलता है और चाहें 
     Pro="""MEDIA FLYOUTS PRO
 ऐप मुफ़्त है। पाँच सुविधाएँ प्रो हैं: ऑडियो विज़ुअलाइज़र, प्रति-ऐप वॉल्यूम मिक्सर, पेरिफ़ेरल बैटरी (विजेट, फ्लाईआउट और कम बैटरी सूचना), नाउ प्लेइंग शैलियाँ और मीडिया विजेट विकल्प। बाकी सब हमेशा के लिए मुफ़्त है। हर नए इंस्टॉल को 15 दिन का प्रो ट्रायल मिलता है; उसके बाद MediaFlyouts Pro की एक बार की इन-ऐप ख़रीद (₹199, आपकी मुद्रा में दिखाई जाती है) इसे आपके हर PC पर हमेशा के लिए अनलॉक कर देती है। कोई सदस्यता नहीं। यदि आपने Media Flyouts को सशुल्क ऐप रहते हुए ख़रीदा था, तो प्रो आपके पास पहले से है।""",
     PrivacyHeading="गोपनीयता",
-    ReleaseNotes="""- Media Flyouts अब मुफ़्त है। पाँच उन्नत सुविधाएँ MediaFlyouts Pro बन गई हैं, जो एक बार की ख़रीद है, और हर नए इंस्टॉल को 15 दिन का ट्रायल मिलता है। पहले सशुल्क ऐप ख़रीदा था? प्रो आपके पास पहले से है, आपके लिए कुछ नहीं बदलता।
-- प्रो आइकन। प्रो उपयोगकर्ताओं को ट्रे, विंडो फ़्रेम और डैशबोर्ड में प्रो चिह्न दिखता है। अतिरिक्त सेटिंग्स > प्रो आइकन में दो शैलियों में से चुनें।
-- स्पष्ट लॉक। PRO बैज वाला धुँधला टॉगल प्रो सुविधा दर्शाता है; उस पर निर्भर नियंत्रण भी अक्षम हो जाते हैं।""",
+    ReleaseNotes="""- ज़्यादा व्यवस्थित सेटिंग्स। मीडिया, वॉल्यूम, लॉक कुंजियाँ, पेरिफेरल और चार्जर फ़्लाईआउट अब एक ही “फ़्लाईआउट” पेज पर हैं। हर एक का अपना खुलने वाला कार्ड है, जिसके हेडर में चालू/बंद स्विच है। “टास्कबार विजेट” पेज भी मीडिया विजेट और पेरिफेरल विजेट को इसी तरह समूहित करता है। खोज और होम के शॉर्टकट सही कार्ड खोलते हैं।
+- “सब रोकें” अब ज़्यादा ब्राउज़र टैब तक पहुँचता है। ब्राउज़र Windows को एक समय में चल रहा केवल एक टैब दिखाता है। टास्कबार विजेट का “सब रोकें” बटन अब ब्राउज़र के अगला टैब सामने लाने पर भी रोकता रहता है।
+- टास्कबार विजेट टास्कबार के साथ चलता है। टास्कबार स्क्रीन के ऊपर हो, तो विजेट अब उसके अंदर रहता है। टास्कबार बाएँ या दाएँ हो, तो विजेट छिप जाता है, क्योंकि वह वहाँ नहीं समाता।
+- ब्राउज़र चित्र, जल्द आ रहा है। टास्कबार विजेट की सेटिंग्स में नया “ब्राउज़र चित्र” विकल्प दिखता है। यह एक वैकल्पिक ब्राउज़र एक्सटेंशन का हिस्सा है, जो टैब में एल्बम आर्ट न होने पर वेबसाइट का आइकन देता है। एक्सटेंशन अभी ब्राउज़र स्टोर में नहीं है, इसलिए इंस्टॉल बटन फ़िलहाल अक्षम रहता है।""",
     Features=[
         "एल्बम आर्ट, सीकबार, रिपीट और शफल के साथ Fluent शैली का मीडिया फ्लाईआउट",
         "Windows ओवरले की जगह लेने वाला वॉल्यूम फ्लाईआउट, प्रति-ऐप मिक्सर के साथ",
@@ -635,14 +646,7 @@ Media Flyouts ट्रे में चलता है और चाहें 
         "ग्यारह भाषाएँ, बिना रीस्टार्ट के बदलें",
         "कोई खाता नहीं, कोई टेलीमेट्री नहीं, कोई विज्ञापन नहीं",
     ],
-    Captions=[
-        "पहली बार शुरू करने पर स्वागत स्क्रीन",
-        "डैशबोर्ड होम",
-        "मीडिया कुंजियों पर मीडिया फ्लाईआउट",
-        "टास्कबार मीडिया विजेट",
-        "मीडिया और पेरिफेरल फ्लाईआउट",
-        "पेरिफेरल बैटरी फ्लाईआउट",
-    ],
+    DashboardCaption="डैशबोर्ड होम",
     SearchTerms=["मीडिया फ्लाईआउट", "वॉल्यूम फ्लाईआउट", "नाउ प्लेइंग", "टास्कबार विजेट", "ऑडियो विज़ुअलाइज़र", "बैटरी मॉनिटर", "वॉल्यूम मिक्सर"],
 )
 
@@ -680,9 +684,10 @@ T["ar"] = dict(
     Pro="""MEDIA FLYOUTS PRO
 التطبيق مجاني. خمس ميزات هي برو: مصوّر الصوت، وخلاط الصوت لكل تطبيق، وبطارية الأجهزة الطرفية (الأداة والنافذة وتنبيه انخفاض البطارية)، وأنماط «قيد التشغيل»، وخيارات أداة الوسائط. كل ما عدا ذلك مجاني للأبد. كل تثبيت جديد يحصل على تجربة برو لمدة 15 يومًا؛ بعدها يفتح شراء MediaFlyouts Pro لمرة واحدة داخل التطبيق (نحو 9,99 ر.س، يُعرض بعملتك) كل شيء للأبد على جميع أجهزتك. بلا اشتراك. إذا اشتريت Media Flyouts عندما كان تطبيقًا مدفوعًا فأنت تملك برو بالفعل.""",
     PrivacyHeading="الخصوصية",
-    ReleaseNotes="""- أصبح Media Flyouts مجانيًا. خمس ميزات متقدمة أصبحت MediaFlyouts Pro، شراء لمرة واحدة، مع تجربة 15 يومًا لكل تثبيت جديد. هل اشتريت التطبيق المدفوع؟ أنت تملك برو بالفعل ولا يتغير شيء لديك.
-- أيقونة برو. يرى مستخدمو برو علامة برو في علبة النظام وإطارات النوافذ ولوحة التحكم. نمطان في الإعدادات الإضافية > أيقونة برو.
-- أقفال أوضح. مفتاح باهت مع شارة PRO يشير إلى ميزة برو، وتُعطَّل معه عناصر التحكم التي تعتمد عليها.""",
+    ReleaseNotes="""- إعدادات أكثر ترتيبًا. نوافذ الوسائط ومستوى الصوت ومفاتيح القفل والأجهزة الطرفية والشاحن تجتمع الآن في صفحة واحدة باسم «النوافذ المنبثقة». لكل نافذة بطاقة قابلة للتوسيع، ومفتاح التشغيل والإيقاف في رأس البطاقة. صفحة «أداة شريط المهام» تجمع أداة الوسائط وأداة الأجهزة الطرفية بالطريقة نفسها. البحث واختصارات الصفحة الرئيسية تفتح البطاقة الصحيحة.
+- «إيقاف الكل مؤقتًا» يصل إلى علامات تبويب أكثر في المتصفح. يعرض المتصفح لـ Windows علامة تبويب واحدة قيد التشغيل في كل مرة. زر «إيقاف الكل مؤقتًا» في أداة شريط المهام يواصل الآن الإيقاف كلما قدّم المتصفح علامة التبويب التالية.
+- أداة شريط المهام تتبع شريط المهام. عندما يكون شريط المهام أعلى الشاشة، تظهر الأداة الآن داخله. وعندما يكون على اليسار أو اليمين، تختفي الأداة لأنها لا تتسع هناك.
+- صورة المتصفح، قريبًا. تعرض إعدادات أداة شريط المهام خيارًا جديدًا باسم «صورة المتصفح». يتبع هذا الخيار إضافة متصفح اختيارية توفّر أيقونة الموقع عندما لا تحتوي علامة التبويب على صورة ألبوم. الإضافة غير متاحة بعد في متاجر المتصفحات، لذا يبقى زر التثبيت معطّلًا في الوقت الحالي.""",
     Features=[
         "نافذة وسائط بنمط Fluent مع صورة الألبوم وشريط التقدم والتكرار والخلط",
         "نافذة صوت تحل محل طبقة Windows، مع خلاط لكل تطبيق",
@@ -696,14 +701,7 @@ T["ar"] = dict(
         "إحدى عشرة لغة، تبديل دون إعادة تشغيل",
         "لا حساب ولا قياس عن بُعد ولا إعلانات",
     ],
-    Captions=[
-        "شاشة الترحيب عند أول تشغيل",
-        "الصفحة الرئيسية للوحة التحكم",
-        "نافذة الوسائط عند الضغط على مفاتيح الوسائط",
-        "أداة الوسائط في شريط المهام",
-        "نوافذ الوسائط والأجهزة الطرفية",
-        "نافذة بطارية الأجهزة الطرفية",
-    ],
+    DashboardCaption="الصفحة الرئيسية للوحة التحكم",
     SearchTerms=["نافذة وسائط", "نافذة صوت", "قيد التشغيل", "أداة شريط المهام", "مصوّر صوتي", "مراقب البطارية", "خلاط الصوت"],
 )
 
@@ -726,7 +724,10 @@ def value_for(field: str, lang: str) -> str | None:
         return DEV_STUDIO
     if field == "CopyrightTrademarkInformation":
         return COPYRIGHT
-    for prefix, key in (("Feature", "Features"), ("DesktopScreenshotCaption", "Captions"), ("SearchTerm", "SearchTerms")):
+    caption = re.fullmatch(r"DesktopScreenshotCaption(\d+)", field)
+    if caption:
+        return caption_for(int(caption.group(1)) - 1, lang)
+    for prefix, key in (("Feature", "Features"), ("SearchTerm", "SearchTerms")):
         if field.startswith(prefix) and field[len(prefix):].isdigit():
             idx = int(field[len(prefix):]) - 1
             items = t[key]
@@ -743,26 +744,67 @@ missing = [l for l in LANGS if l not in col]
 if missing:
     sys.exit(f"export lacks language columns: {missing}")
 
+# Partner Center limits. Checked before anything is written.
+LIMITS = {"Title": 256, "ShortDescription": 1000, "Description": 10000, "ReleaseNotes": 1500,
+          "Feature": 200, "DesktopScreenshotCaption": 200, "SearchTerm": 30}
+problems = []
+if len(SCREENSHOTS) > 10:
+    problems.append(f"{len(SCREENSHOTS)} screenshots: the Store shows at most 10")
+for lang in LANGS:
+    t = T[lang]
+    for k in ("Title", "ShortDescription", "Description", "ReleaseNotes"):
+        n = len(value_for(k, lang))
+        if n > LIMITS[k]:
+            problems.append(f"{lang} {k}: {n} > {LIMITS[k]}")
+    for k, lim in (("Features", LIMITS["Feature"]), ("SearchTerms", LIMITS["SearchTerm"])):
+        for i, s in enumerate(t[k], 1):
+            if len(s) > lim:
+                problems.append(f"{lang} {k}[{i}]: {len(s)} > {lim}: {s[:40]}")
+    for i in range(len(SCREENSHOTS)):
+        try:
+            s = caption_for(i, lang)
+        except KeyError as missing_key:
+            problems.append(f"{lang} caption {i + 1}: no entry {missing_key}")
+            continue
+        if not s or len(s) > LIMITS["DesktopScreenshotCaption"]:
+            problems.append(f"{lang} caption {i + 1}: {len(s)} characters: {s[:40]}")
+    if len(t["Features"]) > 20 or len(t["SearchTerms"]) > 7:
+        problems.append(f"{lang}: count mismatch")
+if problems:
+    sys.exit("limits exceeded, nothing written:\n  " + "\n  ".join(problems))
+
 changed = 0
-shots_used = []
+shots_used = set()
+shots_missing = set()
 for row in rows[1:]:
     if len(row) < len(header):
         row.extend([""] * (len(header) - len(row)))
     field, ftype = row[col["Field"]], row[col["Type (Type)"]]
-    if field == "DesktopScreenshot1":
-        # Languages that have no screenshot yet get the dashboard capture. Existing URLs stay.
+    slot = re.fullmatch(r"DesktopScreenshot(\d+)", field)
+    if slot:
+        index = int(slot.group(1)) - 1
+        if index >= len(SCREENSHOTS):
+            continue
         for lang in LANGS:
-            if row[col[lang]].startswith("http"):
+            if lang not in IMAGE_LANGS:
+                # An empty image cell changes nothing on Partner Center. The
+                # exported URL would put the old image back over a newer one.
+                row[col[lang]] = ""
                 continue
-            shot = SHOTS / f"dashboard-{SHOT_LANG[lang]}.png"
+            # A URL is an image already on Partner Center. It stays unless replacing.
+            if row[col[lang]].startswith("http") and not REPLACE_SHOTS:
+                continue
+            shot = SHOTS / SCREENSHOTS[index].format(lang=SHOT_LANG[lang])
             if not shot.exists():
-                print(f"warning: {shot.name} missing, {lang} listing has no screenshot")
+                shots_missing.add(shot)
                 continue
-            row[col[lang]] = f"{OUT_DIR.name}/{shot.name}"
-            shots_used.append(shot)
+            row[col[lang]] = f"{OUT_DIR.name}/{import_name(shot)}"
+            shots_used.add(shot)
             changed += 1
         continue
     if ftype != "Text":
+        continue
+    if ARGS.screenshots_only and not field.startswith("DesktopScreenshotCaption"):
         continue
     for lang in LANGS:
         v = value_for(field, lang)
@@ -772,32 +814,31 @@ for row in rows[1:]:
             row[col[lang]] = v
             changed += 1
 
+if shots_missing:
+    names = "\n  ".join(str(p.relative_to(HERE)) for p in sorted(shots_missing))
+    sys.exit(f"screenshot files missing, nothing written:\n  {names}\n"
+             "Run tools\\store\\make-screenshots.ps1 and tools\\store\\capture-dashboard.ps1 first.")
+if len({import_name(p) for p in shots_used}) != len(shots_used):
+    sys.exit("two screenshots map to one file name in the import folder")
+
 OUT_DIR.mkdir(exist_ok=True)
 for old in OUT_DIR.glob("*.png"):
     old.unlink()
-for shot in shots_used:
-    shutil.copy2(shot, OUT_DIR / shot.name)
+for shot in sorted(shots_used):
+    shutil.copy2(shot, OUT_DIR / import_name(shot))
 with OUT.open("w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f, lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL)
     w.writerows(rows)
 
-print(f"wrote {OUT_DIR.name}/: listing-import.csv ({len(rows) - 1} rows, {changed} cells updated) "
+if ARGS.screenshots_only:
+    mode = "screenshots and captions only"
+elif REPLACE_SHOTS:
+    mode = "text, and every screenshot slot"
+else:
+    mode = "text, and screenshots for empty slots"
+print(f"wrote {OUT_DIR.name}/: listing-import.csv ({len(rows) - 1} rows, {changed} cells updated; {mode}) "
       f"+ {len(shots_used)} screenshots")
-
-# Partner Center limits.
-LIMITS = {"Title": 256, "ShortDescription": 1000, "Description": 10000, "ReleaseNotes": 1500,
-          "Feature": 200, "DesktopScreenshotCaption": 200, "SearchTerm": 30}
-problems = []
-for lang in LANGS:
-    t = T[lang]
-    for k in ("Title", "ShortDescription", "Description", "ReleaseNotes"):
-        n = len(value_for(k, lang))
-        if n > LIMITS[k]:
-            problems.append(f"{lang} {k}: {n} > {LIMITS[k]}")
-    for k, lim in (("Features", 200), ("Captions", 200), ("SearchTerms", 30)):
-        for i, s in enumerate(t[k], 1):
-            if len(s) > lim:
-                problems.append(f"{lang} {k}[{i}]: {len(s)} > {lim}: {s[:40]}")
-    if len(t["Features"]) > 20 or len(t["SearchTerms"]) > 7 or len(t["Captions"]) != 6:
-        problems.append(f"{lang}: count mismatch")
-print("limits:", "OK" if not problems else "\n  " + "\n  ".join(problems))
+if ARGS.languages:
+    rest = [l for l in LANGS if l not in IMAGE_LANGS]
+    print(f"screenshots for {' '.join(IMAGE_LANGS)} only; still to send: {' '.join(rest) or 'none'}")
+print("limits: OK")

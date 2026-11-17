@@ -1,0 +1,112 @@
+{
+  "en": {
+    "01-overview": { "headline": "Flyouts for media, volume and lock keys", "subtitle": "Plus taskbar widgets for music and device battery" },
+    "02-media-flyout": { "headline": "Media controls on every key press", "subtitle": "Album art, seek bar, shuffle and repeat in one flyout" },
+    "03-taskbar-widget": { "headline": "Now playing, on your taskbar", "subtitle": "Track info, controls and a live audio visualizer" },
+    "04-volume-mixer": { "headline": "A volume mixer for every app", "subtitle": "Expand the volume flyout to set each app's level" },
+    "05-lock-keys": { "headline": "See your lock keys change", "subtitle": "Caps Lock, Num Lock, Scroll Lock and Insert" },
+    "06-peripherals": { "headline": "Battery levels at a glance", "subtitle": "Mouse, keyboard, headphones and controller on the taskbar" },
+    "07-now-playing": { "headline": "Know what just started playing", "subtitle": "A Now Playing flyout in card or compact style" },
+    "08-personalize": { "headline": "Make it yours", "subtitle": "Light or dark, full or compact, with an accent from the album art" }
+  },
+  "es": {
+    "01-overview": { "headline": "Flyouts para multimedia, volumen y teclas de bloqueo", "subtitle": "Y widgets en la barra de tareas para la música y la batería de tus dispositivos" },
+    "02-media-flyout": { "headline": "Controles multimedia con cada pulsación", "subtitle": "Carátula, barra de progreso, aleatorio y repetir en un solo flyout" },
+    "03-taskbar-widget": { "headline": "Lo que suena, en tu barra de tareas", "subtitle": "Información de la pista, controles y un visualizador de audio en vivo" },
+    "04-volume-mixer": { "headline": "Un mezclador de volumen para cada aplicación", "subtitle": "Despliega el flyout de volumen para ajustar el nivel de cada aplicación" },
+    "05-lock-keys": { "headline": "Mira cómo cambian tus teclas de bloqueo", "subtitle": "Bloq Mayús, Bloq Num, Bloq Despl e Insert" },
+    "06-peripherals": { "headline": "El nivel de batería de un vistazo", "subtitle": "Ratón, teclado, auriculares y mando en la barra de tareas" },
+    "07-now-playing": { "headline": "Entérate de lo que acaba de empezar a sonar", "subtitle": "Un flyout «Reproduciendo» en estilo tarjeta o compacto" },
+    "08-personalize": { "headline": "Hazlo tuyo", "subtitle": "Claro u oscuro, completo o compacto, con un acento tomado de la carátula" }
+  },
+  "zh_CN": {
+    "01-overview": { "headline": "媒体、音量和锁定键弹出面板", "subtitle": "还有显示音乐和设备电量的任务栏小组件" },
+    "02-media-flyout": { "headline": "每次按键，媒体控制随时出现", "subtitle": "专辑封面、进度条、随机播放和重复，尽在一个弹出面板" },
+    "03-taskbar-widget": { "headline": "正在播放，就在任务栏上", "subtitle": "曲目信息、播放控制和实时音频可视化" },
+    "04-volume-mixer": { "headline": "按应用调节的音量混音器", "subtitle": "展开音量弹出面板，分别设置每个应用的音量" },
+    "05-lock-keys": { "headline": "看得见的锁定键切换", "subtitle": "Caps Lock、Num Lock、Scroll Lock 和 Insert" },
+    "06-peripherals": { "headline": "设备电量一目了然", "subtitle": "鼠标、键盘、耳机和手柄的电量显示在任务栏上" },
+    "07-now-playing": { "headline": "第一时间知道开始播放什么", "subtitle": "“正在播放”弹出面板，可选卡片或紧凑样式" },
+    "08-personalize": { "headline": "打造你的专属风格", "subtitle": "浅色或深色，完整或紧凑，强调色取自专辑封面" }
+  },
+  "ja": {
+    "01-overview": { "headline": "メディア、音量、ロックキーのフライアウト", "subtitle": "音楽とデバイスのバッテリーを表示するタスクバー ウィジェットも" },
+    "02-media-flyout": { "headline": "キーを押すたびにメディア コントロール", "subtitle": "アルバム アート、シークバー、シャッフル、リピートをひとつのフライアウトに" },
+    "03-taskbar-widget": { "headline": "再生中の曲をタスクバーに", "subtitle": "曲情報、再生コントロール、ライブ オーディオ ビジュアライザー" },
+    "04-volume-mixer": { "headline": "アプリごとの音量ミキサー", "subtitle": "音量フライアウトを展開して、アプリごとに音量を調整" },
+    "05-lock-keys": { "headline": "ロックキーの切り替えを画面に表示", "subtitle": "Caps Lock、Num Lock、Scroll Lock、Insert" },
+    "06-peripherals": { "headline": "バッテリー残量をひと目で確認", "subtitle": "マウス、キーボード、ヘッドホン、コントローラーをタスクバーに表示" },
+    "07-now-playing": { "headline": "再生が始まった曲をすぐに確認", "subtitle": "「再生中」フライアウトはカードまたはコンパクト スタイル" },
+    "08-personalize": { "headline": "自分好みにカスタマイズ", "subtitle": "ライトまたはダーク、標準またはコンパクト、アルバム アートのアクセント カラー" }
+  },
+  "de": {
+    "01-overview": { "headline": "Flyouts für Medien, Lautstärke und Feststelltasten", "subtitle": "Dazu Taskleisten-Widgets für Musik und Geräteakku" },
+    "02-media-flyout": { "headline": "Mediensteuerung bei jedem Tastendruck", "subtitle": "Albumcover, Fortschrittsleiste, Zufall und Wiederholen in einem Flyout" },
+    "03-taskbar-widget": { "headline": "Was gerade läuft, in deiner Taskleiste", "subtitle": "Titelinfos, Steuerung und ein Live-Audio-Visualizer" },
+    "04-volume-mixer": { "headline": "Ein Lautstärkemixer für jede App", "subtitle": "Klappe das Lautstärke-Flyout auf und stelle jede App einzeln ein" },
+    "05-lock-keys": { "headline": "Sieh, wenn sich deine Feststelltasten ändern", "subtitle": "Feststelltaste, Num-Taste, Rollen-Taste und Einfg" },
+    "06-peripherals": { "headline": "Akkustände auf einen Blick", "subtitle": "Maus, Tastatur, Kopfhörer und Controller in der Taskleiste" },
+    "07-now-playing": { "headline": "Sieh sofort, was gerade startet", "subtitle": "Ein Jetzt-läuft-Flyout als Karte oder im kompakten Stil" },
+    "08-personalize": { "headline": "Ganz nach deinem Geschmack", "subtitle": "Hell oder dunkel, voll oder kompakt, mit Akzentfarbe aus dem Albumcover" }
+  },
+  "fr": {
+    "01-overview": { "headline": "Flyouts pour médias, volume et touches de verrouillage", "subtitle": "Et des widgets de barre des tâches pour la musique et la batterie des appareils" },
+    "02-media-flyout": { "headline": "Les commandes média à chaque appui de touche", "subtitle": "Pochette, barre de progression, lecture aléatoire et répétition dans un seul flyout" },
+    "03-taskbar-widget": { "headline": "Votre musique en cours, dans la barre des tâches", "subtitle": "Infos du titre, commandes et visualiseur audio en direct" },
+    "04-volume-mixer": { "headline": "Un mixeur de volume pour chaque application", "subtitle": "Dépliez le flyout de volume pour régler le niveau de chaque application" },
+    "05-lock-keys": { "headline": "Voyez vos touches de verrouillage changer", "subtitle": "Verr Maj, Verr Num, Arrêt défil et Inser" },
+    "06-peripherals": { "headline": "Les niveaux de batterie en un coup d'œil", "subtitle": "Souris, clavier, casque et manette dans la barre des tâches" },
+    "07-now-playing": { "headline": "Sachez tout de suite ce qui démarre", "subtitle": "Un flyout « En lecture » en style carte ou compact" },
+    "08-personalize": { "headline": "Adaptez-le à vos goûts", "subtitle": "Clair ou sombre, complet ou compact, avec un accent tiré de la pochette" }
+  },
+  "ko": {
+    "01-overview": { "headline": "미디어, 볼륨, 잠금 키 플라이아웃", "subtitle": "음악과 기기 배터리를 보여 주는 작업 표시줄 위젯까지" },
+    "02-media-flyout": { "headline": "키를 누를 때마다 나타나는 미디어 컨트롤", "subtitle": "앨범 아트, 탐색 바, 셔플, 반복을 하나의 플라이아웃에" },
+    "03-taskbar-widget": { "headline": "지금 재생 중인 곡을 작업 표시줄에", "subtitle": "곡 정보, 재생 컨트롤, 라이브 오디오 시각화" },
+    "04-volume-mixer": { "headline": "앱마다 조절하는 볼륨 믹서", "subtitle": "볼륨 플라이아웃을 펼쳐 앱별 볼륨을 설정하세요" },
+    "05-lock-keys": { "headline": "잠금 키 전환을 화면에서 확인", "subtitle": "Caps Lock, Num Lock, Scroll Lock, Insert" },
+    "06-peripherals": { "headline": "배터리 잔량을 한눈에", "subtitle": "마우스, 키보드, 헤드폰, 컨트롤러를 작업 표시줄에 표시" },
+    "07-now-playing": { "headline": "방금 시작된 곡을 바로 확인", "subtitle": "카드 또는 간결한 스타일의 '지금 재생 중' 플라이아웃" },
+    "08-personalize": { "headline": "내 취향대로", "subtitle": "라이트 또는 다크, 기본 또는 간결한 레이아웃, 앨범 아트에서 가져온 강조 색" }
+  },
+  "pt_BR": {
+    "01-overview": { "headline": "Flyouts para mídia, volume e teclas de bloqueio", "subtitle": "E widgets na barra de tarefas para música e bateria dos dispositivos" },
+    "02-media-flyout": { "headline": "Controles de mídia a cada tecla pressionada", "subtitle": "Capa, barra de progresso, aleatório e repetir em um só flyout" },
+    "03-taskbar-widget": { "headline": "O que está tocando, na sua barra de tarefas", "subtitle": "Informações da faixa, controles e um visualizador de áudio ao vivo" },
+    "04-volume-mixer": { "headline": "Um mixer de volume para cada aplicativo", "subtitle": "Expanda o flyout de volume para ajustar o nível de cada aplicativo" },
+    "05-lock-keys": { "headline": "Veja suas teclas de bloqueio mudarem", "subtitle": "Caps Lock, Num Lock, Scroll Lock e Insert" },
+    "06-peripherals": { "headline": "Níveis de bateria em um relance", "subtitle": "Mouse, teclado, fones de ouvido e controle na barra de tarefas" },
+    "07-now-playing": { "headline": "Saiba o que acabou de começar a tocar", "subtitle": "Um flyout \"Tocando agora\" em estilo cartão ou compacto" },
+    "08-personalize": { "headline": "Deixe do seu jeito", "subtitle": "Claro ou escuro, completo ou compacto, com destaque tirado da capa do álbum" }
+  },
+  "hi": {
+    "01-overview": { "headline": "मीडिया, वॉल्यूम और लॉक-की के लिए फ्लाईआउट", "subtitle": "साथ में संगीत और डिवाइस बैटरी के लिए टास्कबार विजेट" },
+    "02-media-flyout": { "headline": "हर कुंजी दबाने पर मीडिया नियंत्रण", "subtitle": "एल्बम आर्ट, सीकबार, शफल और रिपीट एक ही फ्लाईआउट में" },
+    "03-taskbar-widget": { "headline": "जो चल रहा है, वह आपके टास्कबार पर", "subtitle": "ट्रैक की जानकारी, नियंत्रण और लाइव ऑडियो विज़ुअलाइज़र" },
+    "04-volume-mixer": { "headline": "हर ऐप के लिए वॉल्यूम मिक्सर", "subtitle": "हर ऐप का स्तर तय करने के लिए वॉल्यूम फ्लाईआउट खोलें" },
+    "05-lock-keys": { "headline": "लॉक-की का बदलना देखें", "subtitle": "Caps Lock, Num Lock, Scroll Lock और Insert" },
+    "06-peripherals": { "headline": "बैटरी स्तर एक नज़र में", "subtitle": "माउस, कीबोर्ड, हेडफ़ोन और कंट्रोलर टास्कबार पर" },
+    "07-now-playing": { "headline": "जानें कि अभी क्या चलना शुरू हुआ", "subtitle": "कार्ड या कॉम्पैक्ट शैली में “नाउ प्लेइंग” फ्लाईआउट" },
+    "08-personalize": { "headline": "इसे अपने अनुसार बनाएँ", "subtitle": "लाइट या डार्क, पूरा या कॉम्पैक्ट, एल्बम आर्ट से लिया गया एक्सेंट" }
+  },
+  "ar": {
+    "01-overview": { "headline": "نوافذ منبثقة للوسائط والصوت ومفاتيح القفل", "subtitle": "مع أدوات شريط المهام للموسيقى وبطارية الأجهزة" },
+    "02-media-flyout": { "headline": "تحكم بالوسائط مع كل ضغطة مفتاح", "subtitle": "صورة الألبوم وشريط التقدم والخلط والتكرار في نافذة واحدة" },
+    "03-taskbar-widget": { "headline": "ما يتم تشغيله الآن على شريط المهام", "subtitle": "معلومات المقطع وأزرار التحكم ومصوّر صوتي مباشر" },
+    "04-volume-mixer": { "headline": "خلاط صوت لكل تطبيق", "subtitle": "وسّع نافذة الصوت لضبط مستوى كل تطبيق" },
+    "05-lock-keys": { "headline": "شاهد تغيّر مفاتيح القفل", "subtitle": "Caps Lock وNum Lock وScroll Lock وInsert" },
+    "06-peripherals": { "headline": "مستويات البطارية بنظرة واحدة", "subtitle": "الفأرة ولوحة المفاتيح والسماعات وذراع التحكم على شريط المهام" },
+    "07-now-playing": { "headline": "اعرف ما بدأ تشغيله للتو", "subtitle": "نافذة «قيد التشغيل» بنمط البطاقة أو النمط المدمج" },
+    "08-personalize": { "headline": "اجعله على ذوقك", "subtitle": "فاتح أو داكن، كامل أو مدمج، مع لون تمييز من صورة الألبوم" }
+  },
+  "id": {
+    "01-overview": { "headline": "Flyout untuk media, volume, dan tombol kunci", "subtitle": "Plus widget taskbar untuk musik dan baterai perangkat" },
+    "02-media-flyout": { "headline": "Kontrol media di setiap penekanan tombol", "subtitle": "Sampul album, bilah pencarian, acak, dan ulangi dalam satu flyout" },
+    "03-taskbar-widget": { "headline": "Yang sedang diputar, di taskbar Anda", "subtitle": "Info lagu, kontrol, dan visualizer audio langsung" },
+    "04-volume-mixer": { "headline": "Mixer volume untuk setiap aplikasi", "subtitle": "Perluas flyout volume untuk mengatur level tiap aplikasi" },
+    "05-lock-keys": { "headline": "Lihat perubahan tombol kunci Anda", "subtitle": "Caps Lock, Num Lock, Scroll Lock, dan Insert" },
+    "06-peripherals": { "headline": "Level baterai dalam sekilas", "subtitle": "Mouse, keyboard, headphone, dan pengontrol di taskbar" },
+    "07-now-playing": { "headline": "Ketahui apa yang baru mulai diputar", "subtitle": "Flyout Sedang Diputar dalam gaya kartu atau ringkas" },
+    "08-personalize": { "headline": "Jadikan sesuai selera Anda", "subtitle": "Terang atau gelap, penuh atau ringkas, dengan aksen dari sampul album" }
+  }
+}

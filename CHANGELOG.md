@@ -5,6 +5,31 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- **Store marketing screenshots.** `tools/store/make-screenshots.ps1` renders
+  eight 2560×1440 posters per language with enlarged flyouts and widgets, a
+  backdrop and a headline. The `MediaFlyoutsShowcase` tool
+  (`MEDIAFLYOUTS_BUILD_SHOWCASE`, off by default, not shipped) loads the real
+  QML views with demo data and the app translations and grabs them
+  offscreen. Poster texts for all eleven languages are in
+  `tools/store/showcase/captions.json`. `ShowcaseSmokeTest` checks that file
+  for every shipped language, renders English and Arabic, and fails on a QML
+  warning. Details in `packaging/README.md`.
+
+### Changed
+
+- **Store listing for 2.1.0.** `tools/store/make_listing_csv.py` carries the
+  2.1.0 release notes in all eleven languages, matching `WHATS_NEW.md`, and
+  gives every language nine screenshots: its eight posters and its dashboard
+  capture. New `--replace-screenshots` option replaces every screenshot slot;
+  `--screenshots-only` does the same and leaves the other text as exported.
+  Captions come from `captions.json`.
+  The script now checks the Partner Center limits before it writes, and
+  stops when one is exceeded or a screenshot file is missing.
+  `tools/store/import/` holds the regenerated package (99 images) and the
+  dashboard captures are retaken for the Flyouts page.
+
 ## [2.1.0] — 2026-11-16
 
 The Dashboard groups the flyout and taskbar widget settings into expandable

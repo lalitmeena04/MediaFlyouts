@@ -295,6 +295,12 @@ if(WIN32)
     endforeach()
 endif()
 
+# Store screenshot renderer (tools/store/make-screenshots.ps1). Off by default.
+option(MEDIAFLYOUTS_BUILD_SHOWCASE "Build the Store screenshot renderer" OFF)
+if(MEDIAFLYOUTS_BUILD_SHOWCASE AND WIN32)
+    add_subdirectory(tools/store/showcase)
+endif()
+
 set_source_files_properties(Views/Fluent.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(Views/Anim.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(Views/DeviceIcons.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
