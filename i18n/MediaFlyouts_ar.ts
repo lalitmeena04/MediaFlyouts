@@ -574,6 +574,14 @@ Unavailable: %1</source>
         <translation>نصيحة: اضغط مفتاح وسائط أو مستوى صوت، أو انقر أيقونة علبة النظام، لمعاينة النوافذ المنبثقة.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>استخدام الشاشة المشتركة</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>استخدام إعداد الشاشة المشتركة لجميع النوافذ المنبثقة.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>غير متاح: لم يتم العثور على جلسة وسائط للنظام على هذا الجهاز.</translation>
     </message>

@@ -574,6 +574,14 @@ Unavailable: %1</source>
         <translation>提示：按下媒体键或音量键，或点击托盘图标，即可预览弹窗。</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>使用通用显示器</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>对所有弹出窗口使用通用显示器设置。</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>不可用：此电脑上未检测到系统媒体会话。</translation>
     </message>

@@ -574,6 +574,14 @@ Unavailable: %1</source>
         <translation>सुझाव: फ़्लाईआउट देखने के लिए कोई मीडिया या वॉल्यूम कुंजी दबाएँ, या ट्रे आइकन पर क्लिक करें।</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>सामान्य मॉनिटर उपयोग करें</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>सभी फ़्लाईआउट के लिए सामान्य मॉनिटर सेटिंग उपयोग करें।</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>अनुपलब्ध: इस PC पर कोई सिस्टम मीडिया सत्र नहीं मिला।</translation>
     </message>

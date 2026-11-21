@@ -66,6 +66,7 @@ void SettingsQtTest::defaults() {
     QVERIFY(s.taskbarWidgetControlsEnabled());
     QCOMPARE(s.flyoutPosition(), 4);
     QCOMPARE(s.flyoutMonitor(), 0);
+    QVERIFY(!s.flyoutMonitorOverrideEnabled());
     QCOMPARE(s.flyoutDuration(), 4500);
     QCOMPARE(s.flyoutAnimationSpeed(), 2);
     QCOMPARE(s.flyoutAnimationMs(), 300);

@@ -574,6 +574,14 @@ Nicht verfügbar: %1</translation>
         <translation>Tipp: Eine Medien- oder Lautstärketaste drücken oder auf das Symbol im Infobereich klicken, um die Flyouts zu sehen.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>Gemeinsamen Monitor verwenden</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>Die gemeinsame Monitoreinstellung für alle Flyouts verwenden.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Nicht verfügbar: Auf diesem PC wurde keine System-Mediensitzung gefunden.</translation>
     </message>

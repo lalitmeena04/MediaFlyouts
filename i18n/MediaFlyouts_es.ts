@@ -574,6 +574,14 @@ No disponible: %1</translation>
         <translation>Consejo: pulsa una tecla multimedia o de volumen, o haz clic en el icono de la bandeja, para ver los paneles.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>Usar monitor común</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>Usar el ajuste de monitor común para todos los paneles.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>No disponible: no se detectó ninguna sesión multimedia del sistema en este equipo.</translation>
     </message>

@@ -66,6 +66,7 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.shortcutToggleFocusMode().isEmpty());
     EXPECT_EQ(s.flyoutPosition(), 4);
     EXPECT_EQ(s.flyoutMonitor(), 0);
+    EXPECT_FALSE(s.flyoutMonitorOverrideEnabled());
     EXPECT_EQ(s.flyoutDuration(), 4500);
     EXPECT_EQ(s.flyoutAnimationSpeed(), 2);
     EXPECT_EQ(s.flyoutAnimationMs(), 300);
@@ -223,6 +224,28 @@ TEST_F(SettingsTest, EachToggleIsIndependent) {
     EXPECT_TRUE(s.launchOnStartup());
     EXPECT_TRUE(s.mediaFlyoutEnabled());
     EXPECT_TRUE(s.overrideNativeOsd());
+}
+
+TEST_F(SettingsTest, FlyoutMonitorOverrideUsesCommonMonitor) {
+    Settings s;
+    s.setVolumeFlyoutMonitor(1);
+    s.setPeripheralFlyoutMonitor(2);
+    s.setChargerFlyoutMonitor(3);
+    s.setFlyoutMonitor(4);
+
+    EXPECT_EQ(s.volumeFlyoutMonitor(), 1);
+    EXPECT_EQ(s.peripheralFlyoutMonitor(), 2);
+    EXPECT_EQ(s.chargerFlyoutMonitor(), 3);
+
+    s.setFlyoutMonitorOverrideEnabled(true);
+    EXPECT_EQ(s.volumeFlyoutMonitor(), 4);
+    EXPECT_EQ(s.peripheralFlyoutMonitor(), 4);
+    EXPECT_EQ(s.chargerFlyoutMonitor(), 4);
+
+    s.setFlyoutMonitorOverrideEnabled(false);
+    EXPECT_EQ(s.volumeFlyoutMonitor(), 1);
+    EXPECT_EQ(s.peripheralFlyoutMonitor(), 2);
+    EXPECT_EQ(s.chargerFlyoutMonitor(), 3);
 }
 
 TEST_F(SettingsTest, ValuesPersistAcrossInstances) {
