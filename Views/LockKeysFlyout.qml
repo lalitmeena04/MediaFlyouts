@@ -19,7 +19,9 @@ FlyoutBase {
         return true
     }
 
-    function showFlyout() {
+    function showFlyout(force) {
+        if(settings.focusMode && force !== true)
+            return
         if(!settings.onboardingCompleted)
             return
         if(!settings.lockKeysEnabled || !capabilities.lockKeysAvailable || !keyEnabled() || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))

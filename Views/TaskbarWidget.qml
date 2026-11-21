@@ -5,12 +5,15 @@ import MediaFlyouts
 DockableWidget {
     id: root
     readonly property int pauseAllSlot: 24
-    readonly property int naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)
-    readonly property int naturalHeight: 40
+    readonly property bool compact: settings.taskbarWidgetSize === 0
+    readonly property bool large: settings.taskbarWidgetSize === 2
+    readonly property int naturalWidth: (root.compact ? 184 : (root.large ? 260 : 220))
+        + (root.pauseAllVisible ? root.pauseAllSlot : 0)
+    readonly property int naturalHeight: root.compact ? 36 : (root.large ? 44 : 40)
     width: root.stacked ? root.stack.frameWidth : root.naturalWidth
     height: root.stacked ? root.stack.frameHeight : root.naturalHeight
     logName: "TaskbarWidget"
-    pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia
+    pollActive: settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !settings.focusMode && !root.userHidden
 
     readonly property bool pauseAllVisible: pro.taskbarWidgetPauseAllEnabled
     readonly property bool showPlayAll: pro.taskbarWidgetPlayAllEnabled && nowPlaying.canResumeAll
@@ -20,10 +23,12 @@ DockableWidget {
     property var stack: null
     readonly property bool stacked: root.stack !== null && root.stack.enabled
 
-    readonly property bool eligible: settings.onboardingCompleted && settings.taskbarWidgetEnabled && nowPlaying.hasMedia && !root.blocked
+    readonly property bool eligible: settings.onboardingCompleted && settings.taskbarWidgetEnabled
+                && nowPlaying.hasMedia && !settings.focusMode && !root.userHidden && !root.blocked
                 && settings.playerAllowed(nowPlaying.playerName)
     readonly property bool pageActive: !root.stacked || root.stack.showsMedia
     property bool pageShown: root.pageActive
+    property bool userHidden: false
     visible: root.eligible && root.pageShown
 
     onPageActiveChanged: {
@@ -70,10 +75,15 @@ DockableWidget {
         if(visible)
             updatePosition()
     }
+    onWidthChanged: if(root.visible) updatePosition()
 
     signal activated()
 
-    readonly property bool visualizerLive: root.visible && pro.visualizerEnabled
+    function toggleVisibility() {
+        root.userHidden = !root.userHidden
+    }
+
+    readonly property bool visualizerLive: root.visible && pro.visualizerEnabled && !settings.reduceMotion
     onVisualizerLiveChanged: root.visualizerLive ? audioCapture.start() : audioCapture.stop()
 
     Component.onCompleted: {
@@ -139,7 +149,7 @@ DockableWidget {
 
             TaskbarVisualizer {
                 id: visualizer
-                visible: pro.visualizerEnabled
+                visible: pro.visualizerEnabled && !settings.reduceMotion
                 accent: root.accent
                 anchors.fill: parent
                 anchors.margins: 3
@@ -175,8 +185,8 @@ DockableWidget {
                 transform: Translate { x: sessionFx.offset }
 
                 Rectangle {
-                    width: 30
-                    height: 30
+                    width: root.compact ? 24 : (root.large ? 34 : 30)
+                    height: width
                     radius: 5
                     color: root.artPlaceholder
                     Behavior on color { ColorAnimation { duration: Anim.moveMs } }
@@ -196,7 +206,7 @@ DockableWidget {
                         text: Fluent.musicNote
                         font.family: Fluent.fontFamily
                         color: "#4CC2FF"
-                        font.pixelSize: 18
+                        font.pixelSize: root.compact ? 15 : (root.large ? 20 : 18)
                     }
 
                     Rectangle {
@@ -217,7 +227,8 @@ DockableWidget {
                 Column {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 0
-                    width: controlsRow.visible ? 78 : 132
+                    width: controlsRow.visible ? (root.compact ? 80 : (root.large ? 148 : 78))
+                        : (root.compact ? 120 : (root.large ? 172 : 132))
 
                     Item {
                         id: titleClip
@@ -236,8 +247,9 @@ DockableWidget {
                             text: nowPlaying.title
                             color: root.fgPrimary
                             Behavior on color { ColorAnimation { duration: Anim.moveMs } }
-                            font.pixelSize: 12
-                            property bool overflow: pro.taskbarWidgetScrollingEnabled && titleMetrics.width > titleClip.width
+                            font.pixelSize: root.large ? 13 : (root.compact ? 11 : 12)
+                            property bool overflow: !settings.reduceMotion && pro.taskbarWidgetScrollingEnabled
+                                && titleMetrics.width > titleClip.width
                             width: overflow ? titleMetrics.width : titleClip.width
                             elide: overflow ? Text.ElideNone : Text.ElideRight
                             onOverflowChanged: if(!overflow) x = 0
@@ -258,7 +270,7 @@ DockableWidget {
                         text: nowPlaying.artist
                         color: root.fgSecondary
                         Behavior on color { ColorAnimation { duration: Anim.moveMs } }
-                        font.pixelSize: 11
+                        font.pixelSize: root.large ? 12 : (root.compact ? 10 : 11)
                         elide: Text.ElideRight
                     }
                 }

@@ -401,6 +401,10 @@ qt_add_translations(
 
 if (WIN32)
     target_sources(MediaFlyouts PRIVATE
+        Controllers/GlobalShortcutController.cpp
+        Controllers/GlobalShortcutController.h
+    )
+    target_sources(MediaFlyouts PRIVATE
         Controllers/AccentWatcher.cpp
         Controllers/AccentWatcher.h
         Controllers/AudioCapture.cpp

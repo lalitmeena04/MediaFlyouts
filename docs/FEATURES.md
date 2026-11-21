@@ -60,6 +60,10 @@ visualizer. This document describes the features that ship in the app.
   with source indicator dots and a slide transition.
 - Hidden automatically over fullscreen apps.
 - Optional integrated playback controls.
+- Compact, standard and large size presets for different taskbar space and
+  readability needs.
+- A keyboard shortcut center for global play/pause, next-track, mute, media
+  flyout, individual media/peripheral widget visibility, and focus-mode actions.
 - Optional "Pause all" button that pauses every playing source at once. With
   the optional browser extension installed, it also pauses media in every
   audible browser tab. With the follow-up option on, the same button becomes
@@ -128,6 +132,10 @@ visualizer. This document describes the features that ship in the app.
 - Multiple simultaneously visible flyouts stack above each other and re-flow
   smoothly when one disappears.
 - Configurable animation speed and easing style.
+- Focus mode suppresses automatic flyouts and hides taskbar widgets until it is
+  turned off. Manual media flyout access remains available.
+- Reduced motion shortens transitions and stops decorative animation. Its
+  initial value follows the Windows animation preference.
 - Six on-screen positions plus a "dock above the taskbar widget" option, a
   monitor selector, and clamping so above-widget flyouts stay on screen.
 

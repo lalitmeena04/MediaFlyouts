@@ -6,7 +6,20 @@
 
 #include "Logging.h"
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#endif
+
 namespace {
+
+bool systemPrefersReducedMotion() {
+#ifdef Q_OS_WIN
+    BOOL animationsEnabled = TRUE;
+    if(SystemParametersInfoW(SPI_GETCLIENTAREAANIMATION, 0, &animationsEnabled, 0))
+        return animationsEnabled == FALSE;
+#endif
+    return false;
+}
 
 // Device names carry separators that an ini key would need to escape. One JSON blob avoids that.
 QVariantMap parseNameMap(const QString& json) {
@@ -75,8 +88,18 @@ void Settings::reload() {
     m_launchOnStartup = m_store.value(QStringLiteral("launchOnStartup"), true).toBool();
     m_trayIconHidden = m_store.value(QStringLiteral("trayIconHidden"), false).toBool();
     m_trayLeftClickShowsFlyout = m_store.value(QStringLiteral("trayLeftClickShowsFlyout"), true).toBool();
+    m_focusMode = m_store.value(QStringLiteral("focusMode"), false).toBool();
+    m_reduceMotion = m_store.value(QStringLiteral("reduceMotion"), systemPrefersReducedMotion()).toBool();
     m_taskbarWidgetEnabled = m_store.value(QStringLiteral("taskbarWidgetEnabled"), true).toBool();
     m_taskbarWidgetControlsEnabled = m_store.value(QStringLiteral("taskbarWidgetControlsEnabled"), true).toBool();
+    m_taskbarWidgetSize = qBound(0, m_store.value(QStringLiteral("taskbarWidgetSize"), 1).toInt(), 2);
+    m_shortcutPlayPause = m_store.value(QStringLiteral("shortcutPlayPause")).toString();
+    m_shortcutNext = m_store.value(QStringLiteral("shortcutNext")).toString();
+    m_shortcutToggleMute = m_store.value(QStringLiteral("shortcutToggleMute")).toString();
+    m_shortcutOpenFlyout = m_store.value(QStringLiteral("shortcutOpenFlyout")).toString();
+    m_shortcutToggleWidget = m_store.value(QStringLiteral("shortcutToggleWidget")).toString();
+    m_shortcutTogglePeripheralsWidget = m_store.value(QStringLiteral("shortcutTogglePeripheralsWidget")).toString();
+    m_shortcutToggleFocusMode = m_store.value(QStringLiteral("shortcutToggleFocusMode")).toString();
     // Indexes mf::FlyoutPosition. 4 = BottomCenter.
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
@@ -208,6 +231,14 @@ void Settings::assignInt(const char* key, int& field, int v) {
     emit changed();
 }
 
+void Settings::assignString(const char* key, QString& field, const QString& v) {
+    if(field == v)
+        return;
+    field = v;
+    m_store.setValue(QString::fromLatin1(key), v);
+    emit changed();
+}
+
 void Settings::assign(const char* key, bool& field, bool v) {
     if(field == v)
         return;
@@ -291,11 +322,41 @@ bool Settings::trayIconHidden() const {
 bool Settings::trayLeftClickShowsFlyout() const {
     return m_trayLeftClickShowsFlyout;
 }
+bool Settings::focusMode() const {
+    return m_focusMode;
+}
+bool Settings::reduceMotion() const {
+    return m_reduceMotion;
+}
 bool Settings::taskbarWidgetEnabled() const {
     return m_taskbarWidgetEnabled;
 }
 bool Settings::taskbarWidgetControlsEnabled() const {
     return m_taskbarWidgetControlsEnabled;
+}
+int Settings::taskbarWidgetSize() const {
+    return m_taskbarWidgetSize;
+}
+QString Settings::shortcutPlayPause() const {
+    return m_shortcutPlayPause;
+}
+QString Settings::shortcutNext() const {
+    return m_shortcutNext;
+}
+QString Settings::shortcutToggleMute() const {
+    return m_shortcutToggleMute;
+}
+QString Settings::shortcutOpenFlyout() const {
+    return m_shortcutOpenFlyout;
+}
+QString Settings::shortcutToggleWidget() const {
+    return m_shortcutToggleWidget;
+}
+QString Settings::shortcutTogglePeripheralsWidget() const {
+    return m_shortcutTogglePeripheralsWidget;
+}
+QString Settings::shortcutToggleFocusMode() const {
+    return m_shortcutToggleFocusMode;
 }
 int Settings::flyoutPosition() const {
     return m_flyoutPosition;
@@ -610,11 +671,41 @@ void Settings::setTrayIconHidden(bool v) {
 void Settings::setTrayLeftClickShowsFlyout(bool v) {
     assign("trayLeftClickShowsFlyout", m_trayLeftClickShowsFlyout, v);
 }
+void Settings::setFocusMode(bool v) {
+    assign("focusMode", m_focusMode, v);
+}
+void Settings::setReduceMotion(bool v) {
+    assign("reduceMotion", m_reduceMotion, v);
+}
 void Settings::setTaskbarWidgetEnabled(bool v) {
     assign("taskbarWidgetEnabled", m_taskbarWidgetEnabled, v);
 }
 void Settings::setTaskbarWidgetControlsEnabled(bool v) {
     assign("taskbarWidgetControlsEnabled", m_taskbarWidgetControlsEnabled, v);
+}
+void Settings::setTaskbarWidgetSize(int v) {
+    assignInt("taskbarWidgetSize", m_taskbarWidgetSize, qBound(0, v, 2));
+}
+void Settings::setShortcutPlayPause(const QString& v) {
+    assignString("shortcutPlayPause", m_shortcutPlayPause, v.trimmed());
+}
+void Settings::setShortcutNext(const QString& v) {
+    assignString("shortcutNext", m_shortcutNext, v.trimmed());
+}
+void Settings::setShortcutToggleMute(const QString& v) {
+    assignString("shortcutToggleMute", m_shortcutToggleMute, v.trimmed());
+}
+void Settings::setShortcutOpenFlyout(const QString& v) {
+    assignString("shortcutOpenFlyout", m_shortcutOpenFlyout, v.trimmed());
+}
+void Settings::setShortcutToggleWidget(const QString& v) {
+    assignString("shortcutToggleWidget", m_shortcutToggleWidget, v.trimmed());
+}
+void Settings::setShortcutTogglePeripheralsWidget(const QString& v) {
+    assignString("shortcutTogglePeripheralsWidget", m_shortcutTogglePeripheralsWidget, v.trimmed());
+}
+void Settings::setShortcutToggleFocusMode(const QString& v) {
+    assignString("shortcutToggleFocusMode", m_shortcutToggleFocusMode, v.trimmed());
 }
 void Settings::setFlyoutPosition(int v) {
     assignInt("flyoutPosition", m_flyoutPosition, v);

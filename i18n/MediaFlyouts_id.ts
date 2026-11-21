@@ -178,10 +178,6 @@ Tidak tersedia: %1</translation>
         <translation>Pengaturan Tambahan</translation>
     </message>
     <message>
-        <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>Bahasa, tema, warna aksen, mulai otomatis, baki, dan cadangan pengaturan.</translation>
-    </message>
-    <message>
         <source>Support</source>
         <translation>Dukungan</translation>
     </message>
@@ -334,6 +330,10 @@ Tidak tersedia: %1</translation>
         <translation>Tumpuk</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>Ukuran widget</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>Lapisan jeda</translation>
     </message>
@@ -412,6 +412,46 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Pro icon</source>
         <translation>Ikon Pro</translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation>Mode fokus</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>Kurangi gerakan</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>Pintasan keyboard</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>Putar / jeda</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>Lagu berikutnya</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Bisukan</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>Buka flyout media</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>Tampilkan / sembunyikan widget media</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>Tampilkan / sembunyikan widget periferal</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>Alihkan mode fokus</translation>
     </message>
     <message>
         <source>Launch on startup</source>
@@ -556,6 +596,22 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>Tampilkan nama aplikasi yang memutar media.</translation>
+    </message>
+    <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>Pilih ukuran ringkas untuk taskbar kecil atau ukuran lebih besar agar mudah dibaca.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>Ringkas</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>Standar</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Besar</translation>
     </message>
     <message>
         <source>Use the website icon when album art is unavailable.</source>
@@ -862,10 +918,6 @@ Tidak tersedia: %1</translation>
         <translation>Baca bilah tugas di sebelah widget dan beralih antara teks terang dan gelap. Menjaga widget tetap terbaca di atas bilah tugas transparan atau wallpaper bergerak.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>Tampilkan spektrum langsung audio sistem di belakang widget.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>Gaya visualizer</translation>
     </message>
@@ -966,6 +1018,10 @@ Tidak tersedia: %1</translation>
         <translation>Saat tersambung</translation>
     </message>
     <message>
+        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
+        <translation>Bahasa, tema, aksen, pintasan, mode fokus, dan aksesibilitas.</translation>
+    </message>
+    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Beri tahu saat periferal tersambung.</translation>
     </message>
@@ -1062,6 +1118,10 @@ Tidak tersedia: %1</translation>
         <translation>Berapa lama flyout pengisi daya tetap di layar.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>Tampilkan spektrum audio sistem di belakang widget. Disembunyikan saat Kurangi gerakan aktif.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>Nonaktif menampilkan semua aplikasi. Daftar hitam menyembunyikan aplikasi yang tercantum; daftar putih hanya menampilkan aplikasi yang tercantum.</translation>
     </message>
@@ -1148,6 +1208,38 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Choose color…</source>
         <translation>Pilih warna…</translation>
+    </message>
+    <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>Bungkam flyout otomatis dan sembunyikan widget taskbar hingga mode dimatikan. Flyout media tetap dapat dibuka secara manual.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>Gunakan transisi yang lebih singkat dan hentikan gerakan dekoratif. Secara default, ikuti pengaturan animasi Windows.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>Tetapkan satu tombol pengubah dan satu tombol. Pintasan berfungsi saat MediaFlyouts berjalan di latar belakang. Pintasan yang digunakan aplikasi lain akan dilaporkan di bawah.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>Belum diatur</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Hapus</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>Atur pintasan untuk %1</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>Tekan satu tombol pengubah dan satu tombol. Tekan Escape untuk membatalkan.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>Menunggu tombol…</translation>
     </message>
     <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
@@ -1298,6 +1390,25 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>Laporan disimpan dengan %1 berkas.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>Pintasan dijeda saat menetapkan tombol.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: pintasan tidak didukung</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: pintasan sudah digunakan</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>Pintasan aktif: %1.</translation>
     </message>
 </context>
 <context>

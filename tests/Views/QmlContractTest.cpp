@@ -932,7 +932,8 @@ TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     expectContains(widget, QStringLiteral("id: pauseAllButton"));
     expectContains(widget, QStringLiteral("anchors.right: parent.right"));
     expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
-    expectContains(widget, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(widget, QStringLiteral("(root.compact ? 184 : (root.large ? 260 : 220))"));
+    expectContains(widget, QStringLiteral("+ (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     expectContains(widget, QStringLiteral("pauseAllButtonShown: root.pauseAllVisible"));
     expectContains(widget, QStringLiteral("&& (pro.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
     expectContains(widget, QStringLiteral("opacity: root.pauseAllButtonShown ? 1 : 0"));
@@ -991,10 +992,38 @@ TEST(QmlContractTest, WidgetStackUsesOneFrameSizedToTheLargestWidget) {
     }
 
     const QString media = loadSource("Views/TaskbarWidget.qml");
-    expectContains(media, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(media, QStringLiteral("(root.compact ? 184 : (root.large ? 260 : 220))"));
+    expectContains(media, QStringLiteral("+ (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
     expectContains(peripherals, QStringLiteral("function sectionWidth(section)"));
     expectContains(peripherals, QStringLiteral("widest = Math.max(widest, sectionWidth(deviceSections[i]))"));
+}
+
+TEST(QmlContractTest, PhaseOneControlsWireFocusMotionSizingAndGlobalShortcuts) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("onToggled: settings.focusMode = value"));
+    expectContains(dashboard, QStringLiteral("onToggled: settings.reduceMotion = value"));
+    expectContains(dashboard, QStringLiteral("onActivated: settings.taskbarWidgetSize = index"));
+    expectContains(dashboard, QStringLiteral("globalShortcuts.setCaptureMode(true)"));
+    expectContains(dashboard, QStringLiteral("settings[shortcutDialog.settingName] = parts.join(\"+\")"));
+    expectContains(dashboard, QStringLiteral("shortcutTogglePeripheralsWidget"));
+    expectContains(dashboard, QStringLiteral("shortcutToggleFocusMode"));
+
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("flyout.showFlyout(true)"));
+    expectContains(app, QStringLiteral("taskbarWidget.toggleVisibility()"));
+    expectContains(app, QStringLiteral("peripheralsWidget.toggleVisibility()"));
+    expectContains(app, QStringLiteral("settings.focusMode = !settings.focusMode"));
+
+    const QString taskbar = loadSource("Views/TaskbarWidget.qml");
+    expectContains(taskbar, QStringLiteral("nowPlaying.hasMedia && !settings.focusMode && !root.userHidden"));
+    expectContains(taskbar, QStringLiteral("&& !root.userHidden && !root.blocked"));
+    expectContains(taskbar, QStringLiteral("settings.taskbarWidgetSize === 0"));
+    expectContains(taskbar, QStringLiteral("!settings.reduceMotion && pro.taskbarWidgetScrollingEnabled"));
+
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("&& devices.length > 0 && !settings.focusMode && !root.userHidden"));
+    expectContains(peripherals, QStringLiteral("function toggleVisibility()"));
 }
 
 TEST(QmlContractTest, WidgetTransitionsSlideAndFade) {

@@ -14,7 +14,9 @@ FlyoutBase {
 
     property bool prevAlwaysDisplay: settings.mediaFlyoutAlwaysDisplay
 
-    function showFlyout() {
+    function showFlyout(force) {
+        if(settings.focusMode && force !== true)
+            return
         if(!settings.onboardingCompleted)
             return
         if(!settings.mediaFlyoutEnabled || !capabilities.mediaSessionAvailable || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))

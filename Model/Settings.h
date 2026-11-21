@@ -37,9 +37,21 @@ class Settings : public QObject {
         Q_PROPERTY(bool trayIconHidden READ trayIconHidden WRITE setTrayIconHidden NOTIFY changed)
         Q_PROPERTY(bool trayLeftClickShowsFlyout READ trayLeftClickShowsFlyout WRITE setTrayLeftClickShowsFlyout NOTIFY
                        changed)
+        Q_PROPERTY(bool focusMode READ focusMode WRITE setFocusMode NOTIFY changed)
+        Q_PROPERTY(bool reduceMotion READ reduceMotion WRITE setReduceMotion NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetEnabled READ taskbarWidgetEnabled WRITE setTaskbarWidgetEnabled NOTIFY changed)
         Q_PROPERTY(bool taskbarWidgetControlsEnabled READ taskbarWidgetControlsEnabled WRITE
                        setTaskbarWidgetControlsEnabled NOTIFY changed)
+        Q_PROPERTY(int taskbarWidgetSize READ taskbarWidgetSize WRITE setTaskbarWidgetSize NOTIFY changed)
+        Q_PROPERTY(QString shortcutPlayPause READ shortcutPlayPause WRITE setShortcutPlayPause NOTIFY changed)
+        Q_PROPERTY(QString shortcutNext READ shortcutNext WRITE setShortcutNext NOTIFY changed)
+        Q_PROPERTY(QString shortcutToggleMute READ shortcutToggleMute WRITE setShortcutToggleMute NOTIFY changed)
+        Q_PROPERTY(QString shortcutOpenFlyout READ shortcutOpenFlyout WRITE setShortcutOpenFlyout NOTIFY changed)
+        Q_PROPERTY(QString shortcutToggleWidget READ shortcutToggleWidget WRITE setShortcutToggleWidget NOTIFY changed)
+        Q_PROPERTY(QString shortcutTogglePeripheralsWidget READ shortcutTogglePeripheralsWidget WRITE
+                       setShortcutTogglePeripheralsWidget NOTIFY changed)
+        Q_PROPERTY(QString shortcutToggleFocusMode READ shortcutToggleFocusMode WRITE setShortcutToggleFocusMode NOTIFY
+                       changed)
         Q_PROPERTY(int flyoutPosition READ flyoutPosition WRITE setFlyoutPosition NOTIFY changed)
         Q_PROPERTY(int flyoutMonitor READ flyoutMonitor WRITE setFlyoutMonitor NOTIFY changed)
         Q_PROPERTY(int volumeFlyoutPosition READ volumeFlyoutPosition WRITE setVolumeFlyoutPosition NOTIFY changed)
@@ -154,8 +166,18 @@ class Settings : public QObject {
         bool launchOnStartup() const;
         bool trayIconHidden() const;
         bool trayLeftClickShowsFlyout() const;
+        bool focusMode() const;
+        bool reduceMotion() const;
         bool taskbarWidgetEnabled() const;
         bool taskbarWidgetControlsEnabled() const;
+        int taskbarWidgetSize() const;
+        QString shortcutPlayPause() const;
+        QString shortcutNext() const;
+        QString shortcutToggleMute() const;
+        QString shortcutOpenFlyout() const;
+        QString shortcutToggleWidget() const;
+        QString shortcutTogglePeripheralsWidget() const;
+        QString shortcutToggleFocusMode() const;
         int flyoutPosition() const;
         int flyoutMonitor() const;
         int volumeFlyoutPosition() const;
@@ -244,8 +266,18 @@ class Settings : public QObject {
         void setLaunchOnStartup(bool v);
         void setTrayIconHidden(bool v);
         void setTrayLeftClickShowsFlyout(bool v);
+        void setFocusMode(bool v);
+        void setReduceMotion(bool v);
         void setTaskbarWidgetEnabled(bool v);
         void setTaskbarWidgetControlsEnabled(bool v);
+        void setTaskbarWidgetSize(int v);
+        void setShortcutPlayPause(const QString& v);
+        void setShortcutNext(const QString& v);
+        void setShortcutToggleMute(const QString& v);
+        void setShortcutOpenFlyout(const QString& v);
+        void setShortcutToggleWidget(const QString& v);
+        void setShortcutTogglePeripheralsWidget(const QString& v);
+        void setShortcutToggleFocusMode(const QString& v);
         void setFlyoutPosition(int v);
         void setFlyoutMonitor(int v);
         void setVolumeFlyoutPosition(int v);
@@ -308,6 +340,7 @@ class Settings : public QObject {
     private:
         void assign(const char* key, bool& field, bool v);
         void assignInt(const char* key, int& field, int v);
+        void assignString(const char* key, QString& field, const QString& v);
         void reload();
 
         QSettings m_store;
@@ -336,8 +369,18 @@ class Settings : public QObject {
         bool m_launchOnStartup;
         bool m_trayIconHidden;
         bool m_trayLeftClickShowsFlyout;
+        bool m_focusMode;
+        bool m_reduceMotion;
         bool m_taskbarWidgetEnabled;
         bool m_taskbarWidgetControlsEnabled;
+        int m_taskbarWidgetSize;
+        QString m_shortcutPlayPause;
+        QString m_shortcutNext;
+        QString m_shortcutToggleMute;
+        QString m_shortcutOpenFlyout;
+        QString m_shortcutToggleWidget;
+        QString m_shortcutTogglePeripheralsWidget;
+        QString m_shortcutToggleFocusMode;
         int m_flyoutPosition;
         int m_flyoutMonitor;
         int m_volumeFlyoutPosition;

@@ -22,7 +22,7 @@ Item {
     default property alias content: contentItem.children
 
     NumberAnimation on sweep {
-        running: ring.chargingShown && ring.visible
+        running: ring.chargingShown && ring.visible && !settings.reduceMotion
         loops: Animation.Infinite
         from: 0
         to: 1

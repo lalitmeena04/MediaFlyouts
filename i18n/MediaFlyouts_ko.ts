@@ -178,10 +178,6 @@ Unavailable: %1</source>
         <translation>추가 설정</translation>
     </message>
     <message>
-        <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>언어, 테마, 강조 색, 시작 프로그램, 트레이, 설정 백업입니다.</translation>
-    </message>
-    <message>
         <source>Support</source>
         <translation>후원</translation>
     </message>
@@ -334,6 +330,10 @@ Unavailable: %1</source>
         <translation>스택</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>위젯 크기</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>일시 정지 오버레이</translation>
     </message>
@@ -412,6 +412,46 @@ Unavailable: %1</source>
     <message>
         <source>Pro icon</source>
         <translation>프로 아이콘</translation>
+    </message>
+    <message>
+        <source>Focus mode</source>
+        <translation>집중 모드</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>동작 줄이기</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>키보드 바로 가기</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>재생 / 일시 정지</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>다음 트랙</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>음소거</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>미디어 플라이아웃 열기</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>미디어 위젯 표시 / 숨기기</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>주변 장치 위젯 표시 / 숨기기</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>집중 모드 전환</translation>
     </message>
     <message>
         <source>Launch on startup</source>
@@ -556,6 +596,22 @@ Unavailable: %1</source>
     <message>
         <source>Show the name of the app playing the media.</source>
         <translation>미디어를 재생 중인 앱 이름을 표시합니다.</translation>
+    </message>
+    <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>작업 표시줄이 좁으면 작은 크기를, 읽기 편하게 하려면 큰 크기를 선택하세요.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>작게</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>표준</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>크게</translation>
     </message>
     <message>
         <source>Use the website icon when album art is unavailable.</source>
@@ -862,10 +918,6 @@ Unavailable: %1</source>
         <translation>위젯 옆 작업 표시줄을 읽어 밝은 텍스트와 어두운 텍스트를 전환합니다. 투명한 작업 표시줄이나 움직이는 배경화면 위에서도 위젯을 읽기 쉽게 유지합니다.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>위젯 뒤에 시스템 오디오의 실시간 스펙트럼을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>시각화 스타일</translation>
     </message>
@@ -966,6 +1018,10 @@ Unavailable: %1</source>
         <translation>연결 시</translation>
     </message>
     <message>
+        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
+        <translation>언어, 테마, 강조 색, 바로 가기, 집중 모드 및 접근성.</translation>
+    </message>
+    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>주변기기가 연결되면 알립니다.</translation>
     </message>
@@ -1062,6 +1118,10 @@ Unavailable: %1</source>
         <translation>충전기 플라이아웃이 화면에 유지되는 시간입니다.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>위젯 뒤에 시스템 오디오 스펙트럼을 표시합니다. 동작 줄이기가 켜져 있으면 숨깁니다.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>&apos;꺼짐&apos;은 모든 앱을 표시합니다. 차단 목록은 나열된 앱을 숨기고, 허용 목록은 나열된 앱만 표시합니다.</translation>
     </message>
@@ -1148,6 +1208,38 @@ Unavailable: %1</source>
     <message>
         <source>Choose color…</source>
         <translation>색 선택…</translation>
+    </message>
+    <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>자동 플라이아웃을 억제하고 모드를 끌 때까지 작업 표시줄 위젯을 숨깁니다. 미디어 플라이아웃은 직접 열 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>짧은 전환을 사용하고 장식 동작을 중지합니다. 기본값은 Windows 애니메이션 설정을 따릅니다.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>보조 키 하나와 일반 키 하나를 지정하세요. MediaFlyouts가 백그라운드에 있어도 바로 가기가 작동합니다. 다른 앱에서 사용 중인 바로 가기는 아래에 표시됩니다.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>설정 안 됨</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>지우기</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>%1 바로 가기 설정</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>보조 키 하나와 일반 키 하나를 누르세요. 취소하려면 Escape를 누르세요.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>키 입력 대기 중…</translation>
     </message>
     <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
@@ -1298,6 +1390,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>파일 %1개와 함께 보고서를 저장했습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>키를 지정하는 동안 바로 가기가 일시 중지됩니다.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: 지원되지 않는 바로 가기</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: 바로 가기가 이미 사용 중입니다</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>활성 바로 가기: %1.</translation>
     </message>
 </context>
 <context>

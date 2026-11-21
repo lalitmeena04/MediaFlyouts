@@ -84,6 +84,12 @@ center-aligned, right if it is left-aligned. You can:
 - pick a **Widget layout** — **Side by side** keeps the media and peripheral
   widgets next to each other, **Stack** puts them in one slot and lets you
   scroll between the media page and the 2.4 GHz, Bluetooth and wired pages;
+- choose **Compact**, **Standard** or **Large** widget sizing;
+- assign global **Keyboard shortcuts** for play/pause, next track, mute,
+  opening the media flyout, showing or hiding the media or peripheral widget,
+  and toggling focus mode. Shortcuts need a modifier and one key. The dashboard
+  reports shortcuts that Windows cannot register because another app already
+  uses them;
 - turn on the **audio visualizer** and pick a style — **Bars**, **Radial**,
   **Waveform** or **Particles**.
 
@@ -130,6 +136,10 @@ box** to jump to any setting. Highlights:
   accent (or tint it from album art).
 - **Placement & animation** — flyout position, target monitor, duration,
   animation speed and easing.
+- **Focus mode** — suppress automatic flyouts and hide taskbar widgets while
+  you work. Manual media flyout access remains available.
+- **Reduce motion** — shorten transitions and stop decorative motion. The
+  default follows the Windows animation setting.
 - **App filtering** — blacklist or whitelist which players may trigger flyouts.
 - **Backup / restore** — export and import all settings.
 
