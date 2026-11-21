@@ -89,9 +89,7 @@ TEST(IconAssetsTest, IcoFramesCarryAlphaAndFillTheCanvas) {
         ++frames;
         EXPECT_TRUE(frame.hasAlphaChannel()) << frame.width() << " px frame has no alpha";
         EXPECT_TRUE(hasClearPixels(frame)) << frame.width() << " px frame is flattened onto a background";
-        // Corner pixels are a safe check only once they are smaller than the mark's corner radius.
-        if(frame.width() >= 64)
-            EXPECT_TRUE(cornersAreTransparent(frame)) << frame.width() << " px frame has an opaque corner";
+        EXPECT_TRUE(cornersAreTransparent(frame)) << frame.width() << " px frame has an opaque corner";
         // Mark is cropped tight. The middle row must hit ink.
         bool inkOnMiddleRow = false;
         for(int x = 0; x < frame.width() && !inkOnMiddleRow; ++x)
@@ -133,6 +131,16 @@ TEST(IconAssetsTest, ProVariantsMirrorTheBaseIcon) {
         const QList<QSize> sizes = frameSizes(assetPath(v.ico));
         for(int side : {16, 20, 24, 32, 48, 64, 128, 256})
             EXPECT_TRUE(sizes.contains(QSize(side, side))) << v.ico << " missing " << side << " px frame";
+
+        QImageReader reader(assetPath(v.ico));
+        do {
+            const QImage frame = reader.read();
+            if(frame.isNull())
+                break;
+            EXPECT_TRUE(frame.hasAlphaChannel()) << v.ico << " " << frame.width() << " px frame has no alpha";
+            EXPECT_TRUE(cornersAreTransparent(frame))
+                << v.ico << " " << frame.width() << " px frame has an opaque corner";
+        } while(reader.jumpToNextImage());
 
         const QImage logo(assetPath(v.logo));
         ASSERT_FALSE(logo.isNull()) << v.logo;

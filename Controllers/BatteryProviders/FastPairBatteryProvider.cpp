@@ -55,49 +55,36 @@ bool addressFromServiceId(const std::wstring& id, quint64& out) {
 }
 
 std::vector<FastPairDevice> enumerateFastPairDevices() {
-    ULONG listSize = 0;
-    if(CM_Get_Device_ID_List_SizeW(&listSize, L"BTHENUM", CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS
-       || listSize == 0)
-        return {};
-
-    std::vector<wchar_t> list(listSize);
-    if(CM_Get_Device_ID_ListW(L"BTHENUM", list.data(), listSize, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS)
-        return {};
-
     std::vector<FastPairDevice> devices;
 
-    for(const wchar_t* id = list.data(); *id; id += wcslen(id) + 1) {
-        std::wstring text(id);
+    forEachDevNode(L"BTHENUM", [&](DEVINST devInst, const QString& instanceId) {
+        std::wstring text = instanceId.toStdWString();
         for(wchar_t& c : text)
             c = towupper(c);
         if(text.find(kFastPairUuidText) == std::wstring::npos)
-            continue;
+            return;
 
         quint64 address = 0;
         if(!addressFromServiceId(text, address) || address == 0)
-            continue;
+            return;
         bool seen = false;
         for(const FastPairDevice& existing : devices)
             if(existing.address == address)
                 seen = true;
         if(seen)
-            continue;
-
-        DEVINST devInst = 0;
-        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
-            continue;
+            return;
 
         QString name;
         QString category;
         if(!connectedDeviceInfo(address, name, category))
-            continue;
+            return;
 
         FastPairDevice device;
         device.address = address;
         device.name = name;
         device.category = category;
         devices.push_back(device);
-    }
+    });
     return devices;
 }
 

@@ -7,6 +7,13 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ### Added
 
+- **Global shortcut center.** Additional Settings gains configurable system-wide
+  shortcuts for play/pause, next track, mute, opening the media flyout,
+  toggling the media or peripheral widget, and toggling focus mode. Invalid,
+  unsupported or already-used bindings are reported in the settings page.
+- **In-app guides.** About now opens the bundled user guide inside the app.
+  Taskbar Widget also has a browser-extension setup guide for Chromium-based
+  browsers and Firefox.
 - **Store marketing screenshots.** `tools/store/make-screenshots.ps1` renders
   eight 2560×1440 posters per language with enlarged flyouts and widgets, a
   backdrop and a headline. The `MediaFlyoutsShowcase` tool
@@ -19,6 +26,14 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ### Changed
 
+- **Peripheral and Windows helper consolidation.** Battery providers share
+  PnP, HID and device-node helpers, and the PlayStation provider uses the
+  cached HID inventory. Shared Win32 window, COM and handle helpers reduce
+  duplicate platform code. Capability availability setters and source wiring
+  now use shared update and binding paths.
+- **Support and Store links.** The Microsoft Store consumable-tip flow is
+  removed. The Support page now leads only to voluntary donations or direct
+  web support, and the app no longer exposes Store tip purchase controls.
 - **Store listing for 2.1.0.** `tools/store/make_listing_csv.py` carries the
   2.1.0 release notes in all eleven languages, matching `WHATS_NEW.md`, and
   gives every language nine screenshots: its eight posters and its dashboard

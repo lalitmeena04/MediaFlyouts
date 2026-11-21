@@ -4,7 +4,14 @@
 
 #include <cfgmgr32.h>
 
+#include <functional>
 #include <QString>
+
+using DevNodeVisitor = std::function<void(DEVINST devInst, const QString& instanceId)>;
+using DeviceIdVisitor = std::function<void(const QString& instanceId)>;
+
+bool forEachDevNode(const wchar_t* enumerator, const DevNodeVisitor& visitor);
+void forEachDeviceIdList(const wchar_t* ids, const DeviceIdVisitor& visitor);
 
 QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key);
 
