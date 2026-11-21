@@ -1584,12 +1584,19 @@ Window {
                                 Button {
                                     text: qsTr("Install browser extension")
                                     enabled: browserIntegration.canInstall(dash.browserIds[dash.browserIndex])
-                                    onClicked: browserIntegration.install(dash.browserIds[dash.browserIndex])
+                                        || (!browserIntegration.developmentAvailable
+                                            && browserIntegration.manualSetupAvailable(dash.browserIds[dash.browserIndex]))
+                                    onClicked: {
+                                        if(browserIntegration.canInstall(dash.browserIds[dash.browserIndex]))
+                                            browserIntegration.install(dash.browserIds[dash.browserIndex])
+                                        else
+                                            browserIntegration.openExtensionSetup(dash.browserIds[dash.browserIndex])
+                                    }
                                 }
                                 Button {
                                     visible: browserIntegration.developmentAvailable
                                     text: qsTr("Open development extension")
-                                    onClicked: browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])
+                                    onClicked: browserIntegration.openExtensionSetup(dash.browserIds[dash.browserIndex])
                                 }
                             }
                             Text {
@@ -1598,7 +1605,8 @@ Window {
                                 color: theme.textTertiary
                                 font.pixelSize: 12
                                 text: browserIntegration.status !== "" ? browserIntegration.status
-                                      : browserIntegration.canInstall(dash.browserIds[dash.browserIndex]) ? ""
+                                      : (browserIntegration.canInstall(dash.browserIds[dash.browserIndex])
+                                         || browserIntegration.manualSetupAvailable(dash.browserIds[dash.browserIndex])) ? ""
                                       : qsTr("The browser extension is not published yet.")
                             }
                             SettingRow {

@@ -263,7 +263,8 @@ TEST(QmlContractTest, DashboardOffersBrowserArtworkSetup) {
     const QString source = loadSource("Views/Dashboard.qml");
     expectContains(source, QStringLiteral("browserIntegration.canInstall(dash.browserIds[dash.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.install(dash.browserIds[dash.browserIndex])"));
-    expectContains(source, QStringLiteral("browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.manualSetupAvailable(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.openExtensionSetup(dash.browserIds[dash.browserIndex])"));
     const int flyoutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 1"));
     const int taskbarPage = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
     const int browserSetting =
@@ -275,6 +276,8 @@ TEST(QmlContractTest, OnboardingOffersBrowserExtensionSetup) {
     const QString source = loadSource("Views/OnboardingWindow.qml");
     expectContains(source, QStringLiteral("browserIntegration.canInstall(root.browserIds[root.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.install(root.browserIds[root.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.manualSetupAvailable(root.browserIds[root.browserIndex])"));
+    expectContains(source, QStringLiteral("browserIntegration.openExtensionSetup(root.browserIds[root.browserIndex])"));
 }
 
 TEST(QmlContractTest, DashboardBannerNamesUnavailableSubsystems) {

@@ -14,9 +14,10 @@ class BrowserIntegration : public QObject {
         explicit BrowserIntegration(QObject* parent = nullptr);
         QString status() const;
         bool developmentAvailable() const;
+        Q_INVOKABLE bool manualSetupAvailable(const QString& browser) const;
         Q_INVOKABLE bool canInstall(const QString& browser) const;
         Q_INVOKABLE void install(const QString& browser);
-        Q_INVOKABLE void openDevelopmentPackage(const QString& browser);
+        Q_INVOKABLE void openExtensionSetup(const QString& browser);
 
         static QJsonObject nativeManifest(const QString& browser, const QString& hostPath,
                                           const QString& chromiumId);

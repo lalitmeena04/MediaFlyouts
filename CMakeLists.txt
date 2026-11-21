@@ -47,7 +47,7 @@ set(MEDIAFLYOUTS_TRIAL_DAYS "15" CACHE STRING "Pro trial length in days")
 set(MEDIAFLYOUTS_TIP_ADDON_STORE_IDS "" CACHE STRING "Comma-separated Store IDs of the consumable tip add-ons")
 set(MEDIAFLYOUTS_CHROME_EXTENSION_ID "" CACHE STRING "Published Chrome extension ID")
 set(MEDIAFLYOUTS_EDGE_EXTENSION_ID "" CACHE STRING "Published Edge extension ID")
-set(MEDIAFLYOUTS_FIREFOX_EXTENSION_URL "" CACHE STRING "Published Firefox extension URL")
+set(MEDIAFLYOUTS_FIREFOX_EXTENSION_URL "https://addons.mozilla.org/en-US/firefox/addon/mediaflyoutsbrowserintegration/" CACHE STRING "Published Firefox extension URL")
 add_compile_definitions(
     MEDIAFLYOUTS_PRO_ADDON_STORE_ID="${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}"
     MEDIAFLYOUTS_STORE_CUTOVER_UTC="${MEDIAFLYOUTS_STORE_CUTOVER_UTC}"

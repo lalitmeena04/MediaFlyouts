@@ -219,7 +219,14 @@ Window {
                     Button {
                         text: qsTr("Install browser extension")
                         enabled: browserIntegration.canInstall(root.browserIds[root.browserIndex])
-                        onClicked: browserIntegration.install(root.browserIds[root.browserIndex])
+                            || (!browserIntegration.developmentAvailable
+                                && browserIntegration.manualSetupAvailable(root.browserIds[root.browserIndex]))
+                        onClicked: {
+                            if(browserIntegration.canInstall(root.browserIds[root.browserIndex]))
+                                browserIntegration.install(root.browserIds[root.browserIndex])
+                            else
+                                browserIntegration.openExtensionSetup(root.browserIds[root.browserIndex])
+                        }
                     }
                 }
                 Text {

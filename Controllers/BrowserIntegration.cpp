@@ -36,6 +36,25 @@ bool validChromiumId(const QString& id) {
     static const QRegularExpression pattern(QStringLiteral("^[a-p]{32}$"));
     return pattern.match(id).hasMatch();
 }
+
+bool isChromiumBrowser(const QString& browser) {
+    return browser == QStringLiteral("chrome") || browser == QStringLiteral("msedge") ||
+           browser == QStringLiteral("brave");
+}
+
+bool openBrowserUrl(const QString& browser, const QUrl& url) {
+#ifdef Q_OS_WIN
+    const QString executable = browser + QStringLiteral(".exe");
+    const QString parameters = url.toString(QUrl::FullyEncoded);
+    const auto result = reinterpret_cast<INT_PTR>(
+        ShellExecuteW(nullptr, L"open", reinterpret_cast<LPCWSTR>(executable.utf16()),
+                      reinterpret_cast<LPCWSTR>(parameters.utf16()), nullptr, SW_SHOWNORMAL));
+    return result > 32;
+#else
+    Q_UNUSED(browser);
+    return QDesktopServices::openUrl(url);
+#endif
+}
 }
 
 BrowserIntegration::BrowserIntegration(QObject* parent) : QObject(parent) {}
@@ -50,6 +69,10 @@ bool BrowserIntegration::developmentAvailable() const {
 #else
     return true;
 #endif
+}
+
+bool BrowserIntegration::manualSetupAvailable(const QString& browser) const {
+    return isChromiumBrowser(browser);
 }
 
 bool BrowserIntegration::canInstall(const QString& browser) const {
@@ -206,17 +229,7 @@ void BrowserIntegration::install(const QString& browser) {
     const bool externallyRegistered = browser == QStringLiteral("firefox") ||
                                       registerExternalExtension(browser, storeId(browser));
     const QUrl url = storeUrl(browser, storeId(browser), QStringLiteral(MEDIAFLYOUTS_FIREFOX_EXTENSION_URL));
-#ifdef Q_OS_WIN
-    const QString executable = browser + QStringLiteral(".exe");
-    const QString parameters = url.toString(QUrl::FullyEncoded);
-    const auto result = reinterpret_cast<INT_PTR>(ShellExecuteW(nullptr, L"open", reinterpret_cast<LPCWSTR>(executable.utf16()),
-                                                               reinterpret_cast<LPCWSTR>(parameters.utf16()), nullptr,
-                                                               SW_SHOWNORMAL));
-    const bool opened = result > 32;
-#else
-    const bool opened = QDesktopServices::openUrl(url);
-#endif
-    if(!opened) {
+    if(!openBrowserUrl(browser, url)) {
         TRC_WARN("browser integration: could not open store for {}", browser.toStdString());
         setStatus(tr("Could not open the extension store."));
         return;
@@ -226,21 +239,50 @@ void BrowserIntegration::install(const QString& browser) {
     setStatus(tr("Confirm the installation in your browser."));
 }
 
-void BrowserIntegration::openDevelopmentPackage(const QString& browser) {
-    if(!developmentAvailable())
+void BrowserIntegration::openExtensionSetup(const QString& browser) {
+    const bool firefox = browser == QStringLiteral("firefox");
+    const bool chromium = isChromiumBrowser(browser);
+#ifdef QT_NO_DEBUG
+    if(!chromium) {
+        TRC_WARN("browser integration: manual extension setup is not available for {}", browser.toStdString());
+        setStatus(tr("The extension is not available in this browser's store yet."));
         return;
-    const QString folder = QDir(QCoreApplication::applicationDirPath())
-                               .filePath(browser == QStringLiteral("firefox")
-                                             ? QStringLiteral("browser-extensions/firefox")
-                                             : QStringLiteral("browser-extensions/chromium"));
+    }
+#else
+    if(!firefox && !chromium) {
+        TRC_WARN("browser integration: unsupported browser setup requested for {}", browser.toStdString());
+        setStatus(tr("Could not set up the development extension."));
+        return;
+    }
+#endif
+
+    if(!developmentAvailable() && canInstall(browser)) {
+        setStatus(tr("Confirm the installation in your browser."));
+        return;
+    }
+
+    const QString folder =
+        QDir(QCoreApplication::applicationDirPath())
+            .filePath(firefox ? QStringLiteral("browser-extensions/firefox")
+                              : QStringLiteral("browser-extensions/chromium"));
+    const QString extensionId = firefox ? QString() : kDevelopmentId;
     if(!QFileInfo::exists(QDir(folder).filePath(QStringLiteral("manifest.json"))) ||
-       !registerHost(browser, kDevelopmentId)) {
+       !registerHost(browser, extensionId)) {
         setStatus(tr("Could not set up the development extension."));
         return;
     }
     if(!QDesktopServices::openUrl(QUrl::fromLocalFile(folder))) {
+        TRC_WARN("browser integration: could not open package folder for {}", browser.toStdString());
         setStatus(tr("Could not open the extension folder."));
         return;
+    }
+    if(chromium) {
+        const QUrl extensionsUrl(QStringLiteral("%1://extensions").arg(browser));
+        if(!openBrowserUrl(browser, extensionsUrl)) {
+            TRC_WARN("browser integration: could not open extension settings for {}", browser.toStdString());
+            setStatus(tr("Could not open the extension store."));
+            return;
+        }
     }
     setStatus(tr("Load the extension from this folder using your browser's developer tools."));
 }

@@ -40,6 +40,15 @@ TEST(BrowserIntegrationTest, UnknownBrowsersCannotInstallExtensions) {
     EXPECT_FALSE(integration.status().isEmpty());
 }
 
+TEST(BrowserIntegrationTest, ManualSetupIsAvailableOnlyForChromiumBrowsers) {
+    BrowserIntegration integration;
+    EXPECT_TRUE(integration.manualSetupAvailable(QStringLiteral("chrome")));
+    EXPECT_TRUE(integration.manualSetupAvailable(QStringLiteral("msedge")));
+    EXPECT_TRUE(integration.manualSetupAvailable(QStringLiteral("brave")));
+    EXPECT_FALSE(integration.manualSetupAvailable(QStringLiteral("firefox")));
+    EXPECT_FALSE(integration.manualSetupAvailable(QStringLiteral("unknown")));
+}
+
 TEST(BrowserIntegrationTest, StoreUrlsAreRestrictedToTheSelectedBrowser) {
     const QString id = QStringLiteral("pmblljpkoajpojjjeidepiddahgpilge");
     EXPECT_EQ(BrowserIntegration::storeUrl(QStringLiteral("chrome"), id, {}).host(),
