@@ -18,11 +18,10 @@ DonationConfig full() {
 }
 } // namespace
 
-TEST(DonationControllerTest, InstallerShowsDirectPaymentsAndNoStoreTips) {
-    DonationController c(full(), InstallKind::Installer, true);
+TEST(DonationControllerTest, InstallerShowsDirectPayments) {
+    DonationController c(full(), InstallKind::Installer);
     EXPECT_TRUE(c.available());
     EXPECT_TRUE(c.showDirect());
-    EXPECT_FALSE(c.showStoreTips());
     EXPECT_TRUE(c.hasPage());
     EXPECT_TRUE(c.hasUpi());
     EXPECT_TRUE(c.hasBank());
@@ -30,23 +29,15 @@ TEST(DonationControllerTest, InstallerShowsDirectPaymentsAndNoStoreTips) {
     EXPECT_EQ(c.bankIfsc(), QStringLiteral("ABCD0001234"));
 }
 
-TEST(DonationControllerTest, StoreShowsLinkAndTipsButNoDirectPayments) {
-    DonationController c(full(), InstallKind::Store, true);
+TEST(DonationControllerTest, StoreShowsLinkButNoDirectPayments) {
+    DonationController c(full(), InstallKind::Store);
     EXPECT_TRUE(c.available());
     EXPECT_FALSE(c.showDirect());
-    EXPECT_TRUE(c.showStoreTips());
     EXPECT_TRUE(c.hasPage());
 }
 
-TEST(DonationControllerTest, StoreWithoutTipIdsHasOnlyTheLink) {
-    DonationController c(full(), InstallKind::Store, false);
-    EXPECT_TRUE(c.available());
-    EXPECT_FALSE(c.showDirect());
-    EXPECT_FALSE(c.showStoreTips());
-}
-
 TEST(DonationControllerTest, NothingConfiguredMeansUnavailable) {
-    DonationController c(mf::parseDonationConfig({}, {}, {}, {}, {}, {}, {}), InstallKind::Portable, false);
+    DonationController c(mf::parseDonationConfig({}, {}, {}, {}, {}, {}, {}), InstallKind::Portable);
     EXPECT_FALSE(c.available());
     EXPECT_FALSE(c.showDirect());
     EXPECT_FALSE(c.openPage());
@@ -54,7 +45,7 @@ TEST(DonationControllerTest, NothingConfiguredMeansUnavailable) {
 }
 
 TEST(DonationControllerTest, UpiUriAndQrSourceComeFromTheConfig) {
-    DonationController c(full(), InstallKind::Portable, false);
+    DonationController c(full(), InstallKind::Portable);
     EXPECT_EQ(c.upiUri(), QStringLiteral("upi://pay?pa=dev@upi&pn=Dev%20Name&cu=INR&tn=MediaFlyouts%20donation"));
     EXPECT_TRUE(c.upiQrSource().startsWith(QStringLiteral("image://qr/")));
     EXPECT_EQ(c.upiQrSource(), DonationController::qrSourceFor(c.upiUri()));
@@ -66,7 +57,7 @@ TEST(DonationControllerTest, UpiUriAndQrSourceComeFromTheConfig) {
 }
 
 TEST(DonationControllerTest, CopyToClipboardWritesTheText) {
-    DonationController c(full(), InstallKind::Portable, false);
+    DonationController c(full(), InstallKind::Portable);
     QClipboard* clipboard = QGuiApplication::clipboard();
     if(!clipboard)
         GTEST_SKIP() << "No clipboard on this host.";

@@ -44,7 +44,6 @@ add_compile_definitions(MEDIAFLYOUTS_VERSION="${MEDIAFLYOUTS_VERSION}")
 set(MEDIAFLYOUTS_PRO_ADDON_STORE_ID "" CACHE STRING "Store ID of the MediaFlyouts Pro durable add-on (9N...)")
 set(MEDIAFLYOUTS_STORE_CUTOVER_UTC "" CACHE STRING "ISO-8601 UTC instant when the Store app went free (e.g. 2026-12-01T00:00:00Z)")
 set(MEDIAFLYOUTS_TRIAL_DAYS "15" CACHE STRING "Pro trial length in days")
-set(MEDIAFLYOUTS_TIP_ADDON_STORE_IDS "" CACHE STRING "Comma-separated Store IDs of the consumable tip add-ons")
 set(MEDIAFLYOUTS_CHROME_EXTENSION_ID "" CACHE STRING "Published Chrome extension ID")
 set(MEDIAFLYOUTS_EDGE_EXTENSION_ID "" CACHE STRING "Published Edge extension ID")
 set(MEDIAFLYOUTS_FIREFOX_EXTENSION_URL "" CACHE STRING "Published Firefox extension URL")
@@ -52,7 +51,6 @@ add_compile_definitions(
     MEDIAFLYOUTS_PRO_ADDON_STORE_ID="${MEDIAFLYOUTS_PRO_ADDON_STORE_ID}"
     MEDIAFLYOUTS_STORE_CUTOVER_UTC="${MEDIAFLYOUTS_STORE_CUTOVER_UTC}"
     MEDIAFLYOUTS_TRIAL_DAYS="${MEDIAFLYOUTS_TRIAL_DAYS}"
-    MEDIAFLYOUTS_TIP_ADDON_STORE_IDS="${MEDIAFLYOUTS_TIP_ADDON_STORE_IDS}"
     MEDIAFLYOUTS_CHROME_EXTENSION_ID="${MEDIAFLYOUTS_CHROME_EXTENSION_ID}"
     MEDIAFLYOUTS_EDGE_EXTENSION_ID="${MEDIAFLYOUTS_EDGE_EXTENSION_ID}"
     MEDIAFLYOUTS_FIREFOX_EXTENSION_URL="${MEDIAFLYOUTS_FIREFOX_EXTENSION_URL}")
@@ -178,6 +176,8 @@ qt_add_library(mediaflyout_core STATIC
     Model/WiredPeripheralRules.h
     Model/WhatsNew.cpp
     Model/WhatsNew.h
+    Model/UserGuide.cpp
+    Model/UserGuide.h
     Model/WindowScalePolicy.cpp
     Model/WindowScalePolicy.h
 )
@@ -189,6 +189,14 @@ target_link_libraries(mediaflyout_core PUBLIC
 qt_add_resources(mediaflyout_core "whatsnew"
     PREFIX "/whatsnew"
     FILES WHATS_NEW.md
+)
+qt_add_resources(mediaflyout_core "user_guide"
+    PREFIX "/docs"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/docs"
+    FILES docs/user/user-guide.md
+)
+set_property(TARGET mediaflyout_core APPEND PROPERTY QT_EXCLUDE_SOURCES_FROM_TRANSLATION
+    "${CMAKE_CURRENT_SOURCE_DIR}/docs/user/user-guide.md"
 )
 if(WIN32)
     # EntitlementStore seals its cache with DPAPI.

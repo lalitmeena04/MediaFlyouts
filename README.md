@@ -106,7 +106,6 @@ proprietary, so external pull requests are not accepted.
 If MediaFlyouts has earned a place on your taskbar, you can say thanks on the
 [donation page](https://lalitmeena04.github.io/MediaFlyouts-Releases/donate/)
 (UPI or bank transfer). Donations are voluntary and unlock nothing; the Store
-version offers one-time tips through the Microsoft Store instead.
 
 ## License
 

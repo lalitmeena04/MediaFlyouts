@@ -226,7 +226,6 @@ workflow fills from **repository variables**. Nothing is hard-coded.
 | `PRO_STORE_CUTOVER_UTC` | `MEDIAFLYOUTS_STORE_CUTOVER_UTC` | Instant the Store app became free, ISO-8601 UTC. **Unset = gating off, everything unlocked.** |
 | `PRO_ADDON_STORE_ID` | `MEDIAFLYOUTS_PRO_ADDON_STORE_ID` | Store ID of the Pro add-on (`9N…`). Unset = no purchase button. |
 | `PRO_TRIAL_DAYS` | `MEDIAFLYOUTS_TRIAL_DAYS` | Trial length. Default 15. |
-| `PRO_TIP_ADDON_STORE_IDS` | `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS` | Comma-separated consumable tip add-on IDs. |
 | `DONATE_URL`, `DONATE_UPI_ID`, `DONATE_PAYEE_NAME`, `DONATE_BANK_NAME`, `DONATE_BANK_ACCOUNT`, `DONATE_BANK_IFSC`, `DONATE_BANK_HOLDER` | `MEDIAFLYOUTS_DONATE_*` | Support page details. All optional. |
 
 Locally, pass the same values with `-Define`:
@@ -253,9 +252,6 @@ upload: a Store build that says `off (no cutover)` sells nothing.
    add-on before cutover*), discoverability *Available for purchase from
    within the parent product only*, and publish. Copy its **Store ID** into
    `PRO_ADDON_STORE_ID`.
-2. **Create the tips** (optional): one or more *Consumable* (developer-managed)
-   add-ons, e.g. "Tip ₹100", "Tip ₹300". Publish. Copy the IDs, comma-separated,
-   into `PRO_TIP_ADDON_STORE_IDS`.
 3. **Promotional codes**: once the Pro add-on is published, **Attract →
    Promotional codes** lets you generate single-use or capped multi-use codes
    (1,600 redemptions per 6 months, 6-month expiry). A redeemed code appears in
@@ -327,8 +323,7 @@ audience.
    `store: no associated add-on products` means the add-on is not published
    yet or your account is outside its audience. Pro toggles in the Dashboard
    must be greyed with the Pro badge and the upgrade card must show the price.
-6. **Buy or redeem.** Click the upgrade card (or a Support page tip for the
-   consumable path). After the Store dialog closes the log shows
+6. **Buy or redeem.** Click the upgrade card. After the Store dialog closes the log shows
    `store: purchase 9NXXXXXXXXXX -> succeeded`, `store: offline licenses
    changed`, `store: add-on license key=9NXXXXXXXXXX ... active=true`,
    `snapshot ... addOn=true` and `entitlement: tier=pro source=addOn`. The
@@ -357,8 +352,7 @@ installed copy to the flight.
    Anyone who *buys* the paid app before the cutover is grandfathered; anyone
    who installs the free app before it gets Pro too. The margin protects the
    buyers, that is the right trade.
-2. Set `PRO_ADDON_STORE_ID` (`9PM4LNF0XX1M`; tips are optional and can follow
-   in a later release). Check the workflow's configure log says
+2. Set `PRO_ADDON_STORE_ID` (`9PM4LNF0XX1M`). Check the workflow's configure log says
    `MediaFlyouts Pro gating: cutover ...`. Tag and build as usual.
 3. In the same submission change the price to **Free**, upload the MSIX, and
    import `tools/store/import/` (the Description now carries the

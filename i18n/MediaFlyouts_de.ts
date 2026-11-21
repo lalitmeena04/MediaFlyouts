@@ -162,6 +162,10 @@ Nicht verfügbar: %1</translation>
         <translation>App-Filter</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>Benutzerhandbuch konnte nicht geladen werden.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>Flyouts</translation>
     </message>
@@ -178,11 +182,15 @@ Nicht verfügbar: %1</translation>
         <translation>Weitere Einstellungen</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>Sprache, Design, Akzentfarbe, Start, Infobereich und Einstellungssicherung.</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>Unterstützen</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>Sag Danke mit einer Spende oder einem Trinkgeld.</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Nicht verfügbar: %1</translation>
         <translation>Spenden</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>Trinkgeld</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>Nach Updates suchen</translation>
     </message>
@@ -626,8 +630,36 @@ Nicht verfügbar: %1</translation>
         <translation>Entwicklungserweiterung öffnen</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>Installationsanleitung</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>Die Browsererweiterung wurde noch nicht veröffentlicht.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>Benutzerhandbuch</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge und Brave (manuelle Einrichtung)
+1. Wähle unter Taskleisten-Widget &gt; Browserbild dein Browser aus und klicke auf Browsererweiterung installieren.
+2. Aktiviere auf der Erweiterungsseite des Browsers den Entwicklermodus.
+3. Klicke auf Entpackte Erweiterung laden und wähle den geöffneten Ordner „chromium“ (nicht manifest.json).
+4. Bestätige die Warnung. Lass MediaFlyouts im selben Ordner; wiederhole diese Schritte, wenn du den Ordner verschiebst.
+
+Firefox: Wähle Firefox und klicke auf Browsererweiterung installieren. Bestätige dann das Add-on bei Mozilla Add-ons.
+
+Die Erweiterung zeigt das Website-Symbol, wenn das Mediencover fehlt, und kann mit „Alle pausieren“ hörbare Tabs anhalten. Tabtitel und Favicons werden nur lokal an MediaFlyouts, nicht an den Entwickler, gesendet.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Nicht verfügbar: %1</translation>
         <translation>Beim Verbinden</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>Sprache, Design, Akzentfarbe, Tastenkürzel, Fokusmodus und Barrierefreiheit.</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Ein Peripheriegerät melden, wenn es verbunden wird.</translation>
     </message>
@@ -1288,6 +1316,10 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Get %1</source>
         <translation>%1 holen</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>Anleitung für Browsererweiterungen</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Nicht verfügbar: %1</translation>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>Danke für das Trinkgeld!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>Das Trinkgeld konnte nicht abgeschlossen werden. Versuche es später erneut.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts unterstützen</translation>
     </message>
@@ -1784,22 +1808,6 @@ Nicht verfügbar: %1</translation>
     <message>
         <source>Copy</source>
         <translation>Kopieren</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Trinkgeld über den Microsoft Store geben</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>Trinkgelder sind einmalige Käufe im Microsoft Store. Die Zahlung wickelt Microsoft ab.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 Trinkgeld</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Trinkgeld</translation>
     </message>
 </context>
 <context>

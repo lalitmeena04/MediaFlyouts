@@ -26,6 +26,7 @@ Window {
 
     property int currentIndex: 0
     property int browserIndex: 0
+    property string userGuideContent: ""
     readonly property var browserIds: ["chrome", "msedge", "firefox", "brave"]
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
     // Pages are found by their stable key, not their translated name.
@@ -67,6 +68,14 @@ Window {
                 pageScroll.contentItem.contentHeight - pageScroll.availableHeight))
         })
     }
+    function showUserGuide() {
+        userGuideContent = userGuideText
+        if(userGuideContent === "") {
+            console.warn("Could not load the bundled user guide.")
+            userGuideContent = qsTr("Could not load the user guide.")
+        }
+        userGuideDialog.open()
+    }
     readonly property var wirelessDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind !== "usb"
     })
@@ -95,8 +104,8 @@ Window {
         { "icon": Fluent.play,      "key": "flyouts",     "name": qsTr("Flyouts"), "desc": qsTr("Configure media, volume, lock-key, peripheral and charger flyouts.") },
         { "icon": Fluent.musicNote, "key": "taskbarWidget", "name": qsTr("Taskbar Widget"), "desc": qsTr("Configure the media and peripheral widgets docked on the taskbar.") },
         { "icon": Fluent.filter,    "key": "filtering",   "name": qsTr("App Filtering"), "desc": qsTr("Choose which media apps are allowed to show flyouts.") },
-        { "icon": Fluent.settings,  "key": "additional",  "name": qsTr("Additional Settings"), "desc": qsTr("Language, theme, accent, shortcuts, focus mode and accessibility.") },
-        { "icon": Fluent.flash,     "key": "support",     "name": qsTr("Support"),      "desc": qsTr("Say thanks with a donation or a tip.") },
+        { "icon": Fluent.settings,  "key": "additional",  "name": qsTr("Additional Settings"), "desc": qsTr("Language, theme, accent, startup, tray and settings backup.") },
+        { "icon": Fluent.flash,     "key": "support",     "name": qsTr("Support"),      "desc": qsTr("Say thanks with a donation.") },
         { "icon": Fluent.info,      "key": "about",       "name": qsTr("About"),        "desc": qsTr("App info, updates and error reports.") }
     ]
 
@@ -141,7 +150,7 @@ Window {
         { "label": qsTr("Launch on startup"), "page": 4 }, { "label": qsTr("Hide tray icon"), "page": 4 },
         { "label": qsTr("Export settings"), "page": 4 }, { "label": qsTr("Import settings"), "page": 4 },
         { "label": qsTr("Restore default settings"), "page": 4 },
-        { "label": qsTr("Donate"), "page": 5 }, { "label": qsTr("Tip"), "page": 5 },
+        { "label": qsTr("Donate"), "page": 5 },
         { "label": qsTr("Check for updates"), "page": 6 }, { "label": qsTr("Version"), "page": 6 },
         { "label": qsTr("What's new"), "page": 6 },
         { "label": qsTr("Report a problem"), "page": 6 }, { "label": qsTr("Error report"), "page": 6 }
@@ -1608,6 +1617,10 @@ Window {
                                     onClicked: browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])
                                 }
                             }
+                            Button {
+                                text: qsTr("How to install")
+                                onClicked: browserGuideDialog.open()
+                            }
                             Text {
                                 width: parent.width
                                 wrapMode: Text.WordWrap
@@ -2274,6 +2287,11 @@ Window {
                         }
                     }
 
+                    Button {
+                        text: qsTr("User guide")
+                        onClicked: dash.showUserGuide()
+                    }
+
                     Text {
                         visible: updateChecker.updateAvailable
                         width: parent.width
@@ -2415,6 +2433,111 @@ Window {
         id: accentDialog
         title: qsTr("Choose accent color")
         onAccepted: settings.customAccent = selectedColor
+    }
+
+    Popup {
+        id: browserGuideDialog
+        anchors.centerIn: parent
+        width: Math.min(580, dash.width - 40)
+        height: Math.min(500, dash.height - 40)
+        modal: true
+        focus: true
+        padding: 20
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 12
+
+            Text {
+                text: qsTr("Browser extension guide")
+                color: theme.textPrimary
+                font.pixelSize: 17
+                font.bold: true
+            }
+            ScrollView {
+                id: browserGuideScroll
+                width: parent.width
+                height: browserGuideDialog.height - 116
+                clip: true
+
+                Text {
+                    width: browserGuideScroll.availableWidth
+                    wrapMode: Text.WordWrap
+                    text: qsTr("Chrome, Edge, and Brave (manual setup)\n1. Under Taskbar Widget > Browser artwork, select your browser and click Install browser extension.\n2. Turn on Developer mode on the browser extensions page.\n3. Click Load unpacked and select the opened chromium folder (not manifest.json).\n4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.\n\nFirefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.\n\nThe extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.")
+                    color: theme.textSecondary
+                    font.pixelSize: 13
+                }
+            }
+            Item {
+                width: parent.width
+                height: guideClose.implicitHeight
+                Button {
+                    id: guideClose
+                    text: qsTr("Cancel")
+                    anchors.right: parent.right
+                    onClicked: browserGuideDialog.close()
+                }
+            }
+        }
+    }
+
+    Popup {
+        id: userGuideDialog
+        anchors.centerIn: parent
+        width: Math.min(700, dash.width - 40)
+        height: Math.min(560, dash.height - 40)
+        modal: true
+        focus: true
+        padding: 20
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 12
+
+            Text {
+                text: qsTr("User guide")
+                color: theme.textPrimary
+                font.pixelSize: 17
+                font.bold: true
+            }
+            ScrollView {
+                id: userGuideScroll
+                width: parent.width
+                height: userGuideDialog.height - 116
+                clip: true
+
+                Text {
+                    width: userGuideScroll.availableWidth
+                    wrapMode: Text.WordWrap
+                    textFormat: Text.MarkdownText
+                    text: dash.userGuideContent
+                    color: theme.textSecondary
+                    font.pixelSize: 13
+                    onLinkActivated: function(link) {
+                        if(link.startsWith("https://") || link.startsWith("http://"))
+                            Qt.openUrlExternally(link)
+                    }
+                }
+            }
+            Item {
+                width: parent.width
+                height: userGuideClose.implicitHeight
+                Button {
+                    id: userGuideClose
+                    text: qsTr("Cancel")
+                    anchors.right: parent.right
+                    onClicked: userGuideDialog.close()
+                }
+            }
+        }
     }
 
     property string resetStatus: ""

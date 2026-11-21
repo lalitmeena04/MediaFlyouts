@@ -74,7 +74,6 @@ configured at build time. All four are CMake cache variables and default to
 | `MEDIAFLYOUTS_STORE_CUTOVER_UTC` | ISO-8601 UTC instant when the Store app went free. **Empty = gating off, everything unlocked.** |
 | `MEDIAFLYOUTS_PRO_ADDON_STORE_ID` | Store ID of the "MediaFlyouts Pro" durable add-on. Empty = no purchase button. |
 | `MEDIAFLYOUTS_TRIAL_DAYS` | Trial length (default `15`). |
-| `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS` | Comma-separated consumable tip add-on IDs. |
 
 ```powershell
 cmake --preset msvc-release -D "MEDIAFLYOUTS_STORE_CUTOVER_UTC=2026-12-04T12:00:00Z" `
@@ -154,8 +153,7 @@ only the page URL has a default.
 | `MEDIAFLYOUTS_DONATE_BANK_NAME`, `…_BANK_ACCOUNT`, `…_BANK_IFSC`, `…_BANK_HOLDER` | NEFT / IMPS details. Account and IFSC are both required for the block to show. |
 
 The Store build never shows UPI or bank details in-app (Store policy
-§10.8.2); it shows the page link and, when `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`
-is set, the consumable tip add-ons.
+§10.8.2); it shows the configured donation page link.
 
 ## Release artifacts
 
