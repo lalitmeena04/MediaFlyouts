@@ -4,6 +4,7 @@
 
 #include <initguid.h>
 #include <devpkey.h>
+#include <QStringList>
 
 TEST(DevNodeHelpersTest, ParsesTwelveDigitHexAddress) {
     quint64 out = 0;
@@ -43,4 +44,25 @@ TEST(DevNodeHelpersTest, InvalidDevInstFailsClosed) {
     EXPECT_TRUE(devNodeStringProperty(kBogus, DEVPKEY_Device_FriendlyName).isEmpty());
     EXPECT_TRUE(devNodeContainerId(kBogus).isEmpty());
     EXPECT_FALSE(devNodeIsActive(kBogus));
+}
+
+TEST(DevNodeHelpersTest, DeviceIdListStopsAtDoubleNull) {
+    const wchar_t ids[] = L"USB\\VID_046D&PID_C52B\0USB\\VID_045E&PID_07A5\0";
+    QStringList visited;
+    forEachDeviceIdList(ids, [&](const QString& instanceId) {
+        visited.append(instanceId);
+    });
+
+    EXPECT_EQ(visited, (QStringList{
+        QStringLiteral("USB\\VID_046D&PID_C52B"),
+        QStringLiteral("USB\\VID_045E&PID_07A5"),
+    }));
+}
+
+TEST(DevNodeHelpersTest, DeviceIdListIgnoresNullInput) {
+    int calls = 0;
+    forEachDeviceIdList(nullptr, [&calls](const QString&) {
+        ++calls;
+    });
+    EXPECT_EQ(calls, 0);
 }

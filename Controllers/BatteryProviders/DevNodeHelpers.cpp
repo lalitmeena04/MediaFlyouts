@@ -9,6 +9,35 @@
 #include <iterator>
 #include <vector>
 
+void forEachDeviceIdList(const wchar_t* ids, const DeviceIdVisitor& visitor) {
+    if(!ids)
+        return;
+    for(const wchar_t* id = ids; *id; id += wcslen(id) + 1)
+        visitor(QString::fromWCharArray(id));
+}
+
+bool forEachDevNode(const wchar_t* enumerator, const DevNodeVisitor& visitor) {
+    if(!enumerator)
+        return false;
+
+    ULONG size = 0;
+    if(CM_Get_Device_ID_List_SizeW(&size, enumerator, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS || size < 2)
+        return false;
+
+    std::vector<wchar_t> ids(size);
+    if(CM_Get_Device_ID_ListW(enumerator, ids.data(), size, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS)
+        return false;
+
+    for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
+        DEVINST devInst = 0;
+        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL)
+           != CR_SUCCESS)
+            continue;
+        visitor(devInst, QString::fromWCharArray(id));
+    }
+    return true;
+}
+
 QString devNodeStringProperty(DEVINST devInst, const DEVPROPKEY& key) {
     DEVPROPTYPE type = 0;
     ULONG size = 0;

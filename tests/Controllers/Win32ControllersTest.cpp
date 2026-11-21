@@ -21,6 +21,11 @@
 #include "VolumeMixer.h"
 #include "WindowEffects.h"
 #include "WiredPeripheralRules.h"
+#include "Win32Util.h"
+
+TEST(Win32ControllersTest, WindowRectToleratesNullWindow) {
+    EXPECT_TRUE(mf::windowRect(nullptr).isNull());
+}
 
 TEST(Win32ControllersTest, AudioCaptureStartsSilentAndInactive) {
     AudioCapture capture(24);

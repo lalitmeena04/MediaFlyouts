@@ -39,6 +39,20 @@
 #include "WhatsNewController.h"
 #include "WindowScaleRefresher.h"
 
+namespace {
+
+template<typename Source>
+void bindCapability(Source* source, bool (Source::*available)() const,
+                     void (Capabilities::*setAvailable)(bool), void (Source::*availabilityChanged)(),
+                     Capabilities* capabilities) {
+    (capabilities->*setAvailable)((source->*available)());
+    QObject::connect(source, availabilityChanged, capabilities, [=] {
+        (capabilities->*setAvailable)((source->*available)());
+    });
+}
+
+} // namespace
+
 #ifdef Q_OS_WIN
 #include "AccentWatcher.h"
 #include "AudioCapture.h"
@@ -199,15 +213,13 @@ void MainControllerClass::buildPlatformSubsystems() {
     QObject::connect(m_provider.get(), &WinMediaProvider::sessionsChanged, m_nowPlaying.get(),
                      &NowPlaying::noteSessionsChanged);
     m_provider->start();
-    m_capabilities->setMediaSessionAvailable(m_provider->available());
-    QObject::connect(m_provider.get(), &WinMediaProvider::availabilityChanged, m_capabilities.get(),
-                     [this] { m_capabilities->setMediaSessionAvailable(m_provider->available()); });
+    bindCapability(m_provider.get(), &WinMediaProvider::available, &Capabilities::setMediaSessionAvailable,
+                   &WinMediaProvider::availabilityChanged, m_capabilities.get());
 
     m_volumeController = std::make_unique<VolumeController>();
     m_volumeController->start();
-    m_capabilities->setAudioAvailable(m_volumeController->available());
-    QObject::connect(m_volumeController.get(), &VolumeController::availabilityChanged, m_capabilities.get(),
-                     [this] { m_capabilities->setAudioAvailable(m_volumeController->available()); });
+    bindCapability(m_volumeController.get(), &VolumeController::available, &Capabilities::setAudioAvailable,
+                   &VolumeController::availabilityChanged, m_capabilities.get());
 
     m_nativeSuppressor = std::make_unique<NativeFlyoutSuppressor>();
     if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted() && !m_settings->focusMode())
@@ -231,9 +243,8 @@ void MainControllerClass::buildPlatformSubsystems() {
 
     m_lockKeys = std::make_unique<LockKeysController>();
     m_lockKeys->start();
-    m_capabilities->setLockKeysAvailable(m_lockKeys->available());
-    QObject::connect(m_lockKeys.get(), &LockKeysController::availabilityChanged, m_capabilities.get(),
-                     [this] { m_capabilities->setLockKeysAvailable(m_lockKeys->available()); });
+    bindCapability(m_lockKeys.get(), &LockKeysController::available, &Capabilities::setLockKeysAvailable,
+                   &LockKeysController::availabilityChanged, m_capabilities.get());
 
     m_startup = std::make_unique<StartupController>();
     m_startup->setEnabled(m_settings->launchOnStartup());
@@ -261,9 +272,8 @@ void MainControllerClass::buildPlatformSubsystems() {
                      &NowPlaying::noteMediaKey);
     QObject::connect(m_mediaKeys.get(), &MediaKeyController::volumeKeyPressed, m_volumeController.get(),
                      &VolumeController::handleVolumeKey);
-    m_capabilities->setMediaKeysAvailable(m_mediaKeys->available());
-    QObject::connect(m_mediaKeys.get(), &MediaKeyController::availabilityChanged, m_capabilities.get(),
-                     [this] { m_capabilities->setMediaKeysAvailable(m_mediaKeys->available()); });
+    bindCapability(m_mediaKeys.get(), &MediaKeyController::available, &Capabilities::setMediaKeysAvailable,
+                   &MediaKeyController::availabilityChanged, m_capabilities.get());
 
     m_globalShortcuts = std::make_unique<GlobalShortcutController>(m_settings.get());
     QObject::connect(m_globalShortcuts.get(), &GlobalShortcutController::actionTriggered, m_globalShortcuts.get(),
@@ -296,9 +306,8 @@ void MainControllerClass::buildPlatformSubsystems() {
 
     m_powerStatus = std::make_unique<PowerStatusController>();
     m_powerStatus->start();
-    m_capabilities->setChargerAvailable(m_powerStatus->available());
-    QObject::connect(m_powerStatus.get(), &PowerStatusController::availabilityChanged, m_capabilities.get(),
-                     [this] { m_capabilities->setChargerAvailable(m_powerStatus->available()); });
+    bindCapability(m_powerStatus.get(), &PowerStatusController::available, &Capabilities::setChargerAvailable,
+                   &PowerStatusController::availabilityChanged, m_capabilities.get());
 }
 #endif
 

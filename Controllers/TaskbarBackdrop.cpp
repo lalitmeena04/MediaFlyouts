@@ -4,6 +4,7 @@
 #include <windows.h>
 
 #include "Logging.h"
+#include "Win32Util.h"
 
 namespace {
 
@@ -11,10 +12,7 @@ constexpr int kStripWidth = 24; // Logical pixels.
 constexpr int kStripGap = 6;    // Logical pixels.
 
 QRect nativeRect(HWND hwnd) {
-    RECT r{};
-    if(!hwnd || !GetWindowRect(hwnd, &r))
-        return QRect();
-    return QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
+    return mf::windowRect(hwnd);
 }
 
 QRect monitorRect(HWND hwnd) {
