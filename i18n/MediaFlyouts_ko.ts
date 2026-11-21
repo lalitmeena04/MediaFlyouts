@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>앱 필터</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>사용자 가이드를 불러올 수 없습니다.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>플라이아웃</translation>
     </message>
@@ -178,11 +182,15 @@ Unavailable: %1</source>
         <translation>추가 설정</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>언어, 테마, 강조 색상, 시작 프로그램, 시스템 트레이 및 설정 백업.</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>후원</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>기부나 팁으로 감사를 전하세요.</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Unavailable: %1</source>
         <translation>기부</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>팁</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>업데이트 확인</translation>
     </message>
@@ -626,8 +630,36 @@ Unavailable: %1</source>
         <translation>개발용 확장 프로그램 열기</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>설치 방법</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>브라우저 확장 프로그램이 아직 게시되지 않았습니다.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>사용자 가이드</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge, Brave (수동 설정)
+1. 작업 표시줄 위젯 &gt; 브라우저 아트워크에서 브라우저를 선택하고 브라우저 확장 프로그램 설치를 누릅니다.
+2. 브라우저 확장 프로그램 페이지에서 개발자 모드를 켭니다.
+3. 압축해제된 확장 프로그램 로드를 누르고 열린 chromium 폴더를 선택합니다(manifest.json은 선택하지 마세요).
+4. 브라우저 경고를 확인합니다. MediaFlyouts 폴더를 이동하면 이 단계를 다시 수행하세요.
+
+Firefox: Firefox를 선택하고 브라우저 확장 프로그램 설치를 누른 다음 Mozilla Add-ons에서 추가를 확인합니다.
+
+미디어 아트워크가 없을 때 확장 프로그램은 탭의 사이트 아이콘을 표시합니다. 모두 일시 중지를 사용하면 소리가 나는 탭도 일시 중지할 수 있습니다. 탭 제목과 파비콘은 개발자가 아닌 기기의 MediaFlyouts에만 전송됩니다.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Unavailable: %1</source>
         <translation>연결 시</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>언어, 테마, 강조 색, 바로 가기, 집중 모드 및 접근성.</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>주변기기가 연결되면 알립니다.</translation>
     </message>
@@ -1288,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>%1 받기</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>브라우저 확장 프로그램 안내</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>팁 감사합니다!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>팁을 완료하지 못했습니다. 나중에 다시 시도하세요.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts 후원하기</translation>
     </message>
@@ -1784,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>복사</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Microsoft Store를 통해 팁 남기기</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>팁은 Microsoft Store의 일회성 구매입니다. 결제는 Microsoft가 처리합니다.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 팁</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>팁</translation>
     </message>
 </context>
 <context>

@@ -1,12 +1,10 @@
 import QtQuick
 import QtQuick.Controls.Basic
 
-// Dashboard "Support" page. Shows what the install kind allows: direct
-// payment details for installer/portable, a web link and Store tips for the Store build.
+// Dashboard "Support" page. Shows direct payment details or a web link.
 Column {
     id: page
     property var ownerWindow: null
-    property string tipStatus: ""
     property string copiedText: ""
     spacing: 12
 
@@ -19,20 +17,6 @@ Column {
         id: copiedTimer
         interval: 1800
         onTriggered: page.copiedText = ""
-    }
-
-    Connections {
-        target: entitlement
-        function onPurchaseFinished(ok, statusId, storeId) {
-            if(entitlement.tipAddOnStoreIds.indexOf(storeId) < 0)
-                return
-            if(statusId === "succeeded")
-                page.tipStatus = qsTr("Thank you for the tip!")
-            else if(statusId === "notPurchased" || statusId === "busy")
-                page.tipStatus = ""
-            else
-                page.tipStatus = qsTr("The tip could not be completed. Try again later.")
-        }
     }
 
     Text {
@@ -187,49 +171,4 @@ Column {
         }
     }
 
-    Column {
-        width: parent.width
-        spacing: 8
-        visible: donate.showStoreTips
-
-        Text {
-            text: qsTr("Leave a tip through the Microsoft Store")
-            color: theme.textPrimary
-            font.pixelSize: 15
-            font.bold: true
-            topPadding: 8
-        }
-        Text {
-            width: parent.width
-            wrapMode: Text.WordWrap
-            text: qsTr("Tips are one-time Microsoft Store purchases. Microsoft handles the payment.")
-            color: theme.textSecondary
-            font.pixelSize: 13
-        }
-        Flow {
-            width: parent.width
-            spacing: 8
-            Repeater {
-                model: entitlement.tipAddOnStoreIds
-                delegate: Button {
-                    required property string modelData
-                    readonly property string price: entitlement.addOnPrices[modelData] || ""
-                    text: price.length > 0 ? qsTr("Tip %1").arg(price) : qsTr("Tip")
-                    enabled: entitlement.storeAvailable && !entitlement.purchasing
-                    onClicked: {
-                        page.tipStatus = ""
-                        entitlement.purchaseAddOn(modelData, page.ownerWindow)
-                    }
-                }
-            }
-        }
-        Text {
-            visible: page.tipStatus.length > 0
-            width: parent.width
-            wrapMode: Text.WordWrap
-            text: page.tipStatus
-            color: theme.textTertiary
-            font.pixelSize: 12
-        }
-    }
 }

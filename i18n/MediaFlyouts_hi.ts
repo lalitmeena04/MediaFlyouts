@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>ऐप फ़िल्टर</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>उपयोगकर्ता मार्गदर्शिका लोड नहीं हो सकी।</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>फ़्लाईआउट</translation>
     </message>
@@ -178,11 +182,15 @@ Unavailable: %1</source>
         <translation>अतिरिक्त सेटिंग्स</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>भाषा, थीम, एक्सेंट, स्टार्टअप, ट्रे और सेटिंग्स बैकअप।</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>सहयोग</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>दान या टिप देकर धन्यवाद कहें।</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Unavailable: %1</source>
         <translation>दान करें</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>टिप</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>अपडेट जाँचें</translation>
     </message>
@@ -626,8 +630,36 @@ Unavailable: %1</source>
         <translation>डेवलपमेंट एक्सटेंशन खोलें</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>इंस्टॉल करने का तरीका</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>ब्राउज़र एक्सटेंशन अभी प्रकाशित नहीं हुआ है।</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>उपयोगकर्ता मार्गदर्शिका</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge और Brave (मैन्युअल सेटअप)
+1. टास्कबार विजेट &gt; ब्राउज़र आर्टवर्क में ब्राउज़र चुनें और ब्राउज़र एक्सटेंशन इंस्टॉल करें पर क्लिक करें।
+2. ब्राउज़र के एक्सटेंशन पेज पर डेवलपर मोड चालू करें।
+3. अनपैक्ड एक्सटेंशन लोड करें पर क्लिक करें और खुला हुआ chromium फ़ोल्डर चुनें (manifest.json नहीं)।
+4. ब्राउज़र की चेतावनी स्वीकार करें। MediaFlyouts फ़ोल्डर को न बदलें; बदलने पर ये चरण फिर करें।
+
+Firefox: Firefox चुनें, ब्राउज़र एक्सटेंशन इंस्टॉल करें पर क्लिक करें और Mozilla Add-ons में पुष्टि करें।
+
+कवर आर्ट न होने पर एक्सटेंशन टैब का वेबसाइट आइकन दिखाता है और Pause all से आवाज़ वाले टैब रोके जा सकते हैं। टैब शीर्षक और फ़ेविकॉन केवल आपके डिवाइस पर MediaFlyouts को भेजे जाते हैं, डेवलपर को नहीं।</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Unavailable: %1</source>
         <translation>जुड़ने पर</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>भाषा, थीम, रंग, शॉर्टकट, फोकस मोड और सुलभता।</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>पेरिफेरल जुड़ने पर सूचना दें।</translation>
     </message>
@@ -1288,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>%1 प्राप्त करें</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>ब्राउज़र एक्सटेंशन गाइड</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>टिप के लिए धन्यवाद!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>टिप पूरी नहीं हो सकी। बाद में पुनः प्रयास करें।</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts का सहयोग करें</translation>
     </message>
@@ -1784,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>कॉपी करें</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Microsoft Store के माध्यम से टिप दें</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>टिप Microsoft Store की एकमुश्त खरीदारी है। भुगतान Microsoft संभालता है।</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 टिप</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>टिप</translation>
     </message>
 </context>
 <context>

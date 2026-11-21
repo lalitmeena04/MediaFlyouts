@@ -162,6 +162,10 @@ Indisponível: %1</translation>
         <translation>Filtro de apps</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>Não foi possível carregar o guia do usuário.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>Painéis</translation>
     </message>
@@ -178,11 +182,15 @@ Indisponível: %1</translation>
         <translation>Configurações adicionais</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>Idioma, tema, cor de destaque, inicialização, bandeja do sistema e backup das configurações.</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>Apoiar</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>Agradeça com uma doação ou uma gorjeta.</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Indisponível: %1</translation>
         <translation>Doar</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>Gorjeta</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>Verificar atualizações</translation>
     </message>
@@ -626,8 +630,36 @@ Indisponível: %1</translation>
         <translation>Abrir extensão de desenvolvimento</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>Como instalar</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>A extensão do navegador ainda não foi publicada.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>Guia do usuário</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge e Brave (configuração manual)
+1. Em Configurações do widget da barra de tarefas &gt; Imagem do navegador, escolha o navegador e clique em Instalar extensão do navegador.
+2. Ative o modo de desenvolvedor na página de extensões do navegador.
+3. Clique em Carregar sem compactação e selecione a pasta chromium aberta (não manifest.json).
+4. Confirme o aviso. Mantenha o MediaFlyouts na mesma pasta; repita estas etapas se movê-lo.
+
+Firefox: selecione Firefox e clique em Instalar extensão do navegador; depois confirme no Mozilla Add-ons.
+
+A extensão mostra o ícone do site quando a capa está ausente e permite que Pausar tudo pause abas com áudio. Títulos das abas e favicons são enviados somente ao MediaFlyouts no seu dispositivo, não ao desenvolvedor.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Indisponível: %1</translation>
         <translation>Ao conectar</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>Idioma, tema, cor de destaque, atalhos, foco e acessibilidade.</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Avisar quando um periférico conectar.</translation>
     </message>
@@ -1288,6 +1316,10 @@ Indisponível: %1</translation>
     <message>
         <source>Get %1</source>
         <translation>Obter %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>Guia da extensão do navegador</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Indisponível: %1</translation>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>Obrigado pela gorjeta!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>Não foi possível concluir a gorjeta. Tente novamente mais tarde.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>Apoie o MediaFlyouts</translation>
     </message>
@@ -1784,22 +1808,6 @@ Indisponível: %1</translation>
     <message>
         <source>Copy</source>
         <translation>Copiar</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Deixe uma gorjeta pela Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>Gorjetas são compras únicas na Microsoft Store. A Microsoft processa o pagamento.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>Gorjeta de %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Gorjeta</translation>
     </message>
 </context>
 <context>

@@ -264,11 +264,26 @@ TEST(QmlContractTest, DashboardOffersBrowserArtworkSetup) {
     expectContains(source, QStringLiteral("browserIntegration.canInstall(dash.browserIds[dash.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.install(dash.browserIds[dash.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.openDevelopmentPackage(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("text: qsTr(\"How to install\")"));
+    expectContains(source, QStringLiteral("onClicked: browserGuideDialog.open()"));
     const int flyoutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 1"));
     const int taskbarPage = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
     const int browserSetting =
         source.indexOf(QStringLiteral("label: qsTr(\"Browser artwork\")"), flyoutPage);
     EXPECT_GT(browserSetting, taskbarPage);
+    expectContains(source, QStringLiteral("text: qsTr(\"Browser extension guide\")"));
+    expectContains(source, QStringLiteral("text: qsTr(\"Chrome, Edge, and Brave (manual setup)"));
+    expectContains(source, QStringLiteral("Firefox"));
+    const int aboutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 6"));
+    const int aboutGuideButton = source.indexOf(QStringLiteral("text: qsTr(\"User guide\")"), aboutPage);
+    EXPECT_GT(aboutGuideButton, aboutPage);
+    expectContains(source, QStringLiteral("id: browserGuideDialog"));
+    expectContains(source, QStringLiteral("modal: true"));
+    expectContains(source, QStringLiteral("id: userGuideDialog"));
+    expectContains(source, QStringLiteral("userGuideContent = userGuideText"));
+    expectContains(source, QStringLiteral("Could not load the bundled user guide."));
+    EXPECT_EQ(source.count(QStringLiteral("XMLHttpRequest")), 0);
+    expectContains(source, QStringLiteral("textFormat: Text.MarkdownText"));
 }
 
 TEST(QmlContractTest, OnboardingOffersBrowserExtensionSetup) {
@@ -1455,13 +1470,10 @@ TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
 TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
     const QString page = loadSource("Views/SupportPage.qml");
     expectContains(page, QStringLiteral("visible: donate.showDirect"));
-    expectContains(page, QStringLiteral("visible: donate.showStoreTips"));
     expectContains(page, QStringLiteral("visible: donate.hasPage"));
     expectContains(page, QStringLiteral("source: donate.upiQrSource"));
     expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
     expectContains(page, QStringLiteral("page.copy(donate.upiId)"));
-    expectContains(page, QStringLiteral("model: entitlement.tipAddOnStoreIds"));
-    expectContains(page, QStringLiteral("entitlement.purchaseAddOn(modelData, page.ownerWindow)"));
     expectContains(page, QStringLiteral("Microsoft is not the fundraiser or sponsor"));
     expectContains(page, QStringLiteral("Donations are voluntary and unlock nothing."));
 

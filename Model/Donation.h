@@ -48,10 +48,10 @@ DonationConfig parseDonationConfig(const QString& pageUrl, const QString& upiId,
                                    const QString& bankHolder);
 DonationConfig donationConfig();
 
-// Which surfaces an install shows. Store policy allows only a link and Store add-ons in the Store build.
+// Which surfaces an install shows. Store builds show the web page only.
 enum class DonationLayout {
     Direct,    // UPI QR, NEFT details and the page link
-    StoreLink, // page link and consumable tip add-ons
+    StoreLink, // page link
 };
 DonationLayout donationLayoutFor(InstallKind kind);
 

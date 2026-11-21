@@ -162,6 +162,10 @@ Indisponible : %1</translation>
         <translation>Filtrage des applications</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>Impossible de charger le guide de l’utilisateur.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>Volets</translation>
     </message>
@@ -178,11 +182,15 @@ Indisponible : %1</translation>
         <translation>Paramètres supplémentaires</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>Langue, thème, couleur d’accentuation, démarrage, zone de notification et sauvegarde des paramètres.</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>Soutenir</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>Dites merci avec un don ou un pourboire.</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Indisponible : %1</translation>
         <translation>Faire un don</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>Pourboire</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>Rechercher des mises à jour</translation>
     </message>
@@ -626,8 +630,36 @@ Indisponible : %1</translation>
         <translation>Ouvrir l&apos;extension de développement</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>Comment installer</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>L&apos;extension du navigateur n&apos;est pas encore publiée.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>Guide de l’utilisateur</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge et Brave (installation manuelle)
+1. Dans Paramètres du widget de la barre des tâches &gt; Illustration du navigateur, choisissez votre navigateur et cliquez sur Installer l’extension de navigateur.
+2. Activez le mode développeur sur la page des extensions du navigateur.
+3. Cliquez sur Charger l’extension non empaquetée et sélectionnez le dossier chromium ouvert (pas manifest.json).
+4. Confirmez l’avertissement. Gardez MediaFlyouts dans le même dossier ; répétez ces étapes si vous le déplacez.
+
+Firefox : sélectionnez Firefox et cliquez sur Installer l’extension de navigateur, puis confirmez sur Mozilla Add-ons.
+
+L’extension affiche l’icône du site quand la pochette est absente et permet à Tout mettre en pause d’arrêter les onglets audibles. Les titres des onglets et les favicons sont envoyés uniquement à MediaFlyouts sur votre appareil, pas au développeur.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Indisponible : %1</translation>
         <translation>À la connexion</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>Langue, thème, couleur, raccourcis, concentration et accessibilité.</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Signaler un périphérique lorsqu&apos;il se connecte.</translation>
     </message>
@@ -1288,6 +1316,10 @@ Indisponible : %1</translation>
     <message>
         <source>Get %1</source>
         <translation>Obtenir %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>Guide de l’extension de navigateur</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Indisponible : %1</translation>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>Merci pour le pourboire !</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>Le pourboire n’a pas pu être finalisé. Réessayez plus tard.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>Soutenir MediaFlyouts</translation>
     </message>
@@ -1784,22 +1808,6 @@ Indisponible : %1</translation>
     <message>
         <source>Copy</source>
         <translation>Copier</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Laisser un pourboire via le Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>Les pourboires sont des achats uniques sur le Microsoft Store. Microsoft gère le paiement.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>Pourboire de %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Pourboire</translation>
     </message>
 </context>
 <context>

@@ -34,6 +34,7 @@
 #include "ThemeController.h"
 #include "TrayController.h"
 #include "UpdateChecker.h"
+#include "UserGuide.h"
 #include "Version.h"
 #include "WhatsNewController.h"
 #include "WindowScaleRefresher.h"
@@ -153,8 +154,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_entitlement = std::make_unique<EntitlementController>(mf::detectInstallKind(), mf::proBuildConfig(),
                                                             std::make_unique<mf::EntitlementStore>());
     m_proGate = std::make_unique<ProGate>(m_settings.get(), m_entitlement.get());
-    m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind(),
-                                                      !mf::proBuildConfig().tipAddOnStoreIds.isEmpty());
+    m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind());
     m_whatsNew = std::make_unique<WhatsNewController>(m_settings.get());
     m_whatsNew->start();
 
@@ -189,8 +189,7 @@ void MainControllerClass::buildCoreSubsystems() {
 
 #ifdef Q_OS_WIN
 void MainControllerClass::buildPlatformSubsystems() {
-    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId,
-                                                        mf::proBuildConfig().tipAddOnStoreIds);
+    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId);
     m_entitlement->setGateway(m_storeLicensing.get());
 
     m_provider = std::make_unique<WinMediaProvider>();
@@ -305,6 +304,7 @@ void MainControllerClass::buildPlatformSubsystems() {
 
 void MainControllerClass::registerContextProperties() {
     QQmlContext* ctx = m_engine->rootContext();
+    ctx->setContextProperty("userGuideText", mf::userGuideText());
     ctx->setContextProperty("log", m_qmlLog.get());
     ctx->setContextProperty("nowPlaying", m_nowPlaying.get());
     ctx->setContextProperty("browserIntegration", m_browserIntegration.get());

@@ -37,7 +37,6 @@ class EntitlementController : public QObject {
         Q_PROPERTY(bool purchasing READ purchasing NOTIFY changed)
         Q_PROPERTY(bool refreshing READ refreshing NOTIFY changed)
         Q_PROPERTY(QString lastPurchaseStatus READ lastPurchaseStatus NOTIFY changed)
-        Q_PROPERTY(QStringList tipAddOnStoreIds READ tipAddOnStoreIds CONSTANT)
         Q_PROPERTY(QString proAddOnStoreId READ proAddOnStoreId CONSTANT)
         Q_PROPERTY(QStringList featureIds READ featureIds CONSTANT)
         // Feature id -> locked. Bindings on this re-evaluate when the tier changes;
@@ -78,7 +77,6 @@ class EntitlementController : public QObject {
         bool purchasing() const;
         bool refreshing() const;
         QString lastPurchaseStatus() const;
-        QStringList tipAddOnStoreIds() const;
         QString proAddOnStoreId() const;
         QStringList featureIds() const;
         QVariantMap lockedFeatures() const;
@@ -87,7 +85,6 @@ class EntitlementController : public QObject {
         Q_INVOKABLE bool isUnlocked(const QString& featureId) const;
         // `ownerWindow` is the QML Window that owns the Store dialog.
         Q_INVOKABLE void purchase(QObject* ownerWindow = nullptr);
-        Q_INVOKABLE void purchaseAddOn(const QString& storeId, QObject* ownerWindow = nullptr);
         Q_INVOKABLE void refresh();
         // Re-resolves from the current snapshot. Asks the Store again while
         // the last answer did not settle the tier, with a growing delay.

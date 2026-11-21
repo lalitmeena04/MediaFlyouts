@@ -155,10 +155,6 @@ QString EntitlementController::lastPurchaseStatus() const {
     return m_lastPurchaseStatus;
 }
 
-QStringList EntitlementController::tipAddOnStoreIds() const {
-    return m_config.tipAddOnStoreIds;
-}
-
 QString EntitlementController::proAddOnStoreId() const {
     return m_config.proAddOnStoreId;
 }
@@ -189,10 +185,6 @@ void EntitlementController::purchase(QObject* ownerWindow) {
         return;
     }
     beginPurchase(m_config.proAddOnStoreId, ownerWindow);
-}
-
-void EntitlementController::purchaseAddOn(const QString& storeId, QObject* ownerWindow) {
-    beginPurchase(storeId, ownerWindow);
 }
 
 bool EntitlementController::beginPurchase(const QString& storeId, QObject* ownerWindow) {

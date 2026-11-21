@@ -191,14 +191,13 @@ entitlement layer for MediaFlyouts Pro (not enabled in this release).
   a clock-rollback guard (`Model/Entitlement*`, `Controllers/StoreLicensing`,
   `Controllers/EntitlementController`, `Controllers/ProGate`). Build-time
   variables `MEDIAFLYOUTS_STORE_CUTOVER_UTC`, `MEDIAFLYOUTS_PRO_ADDON_STORE_ID`,
-  `MEDIAFLYOUTS_TRIAL_DAYS`, `MEDIAFLYOUTS_TIP_ADDON_STORE_IDS`; debug builds
+  `MEDIAFLYOUTS_TRIAL_DAYS`; debug builds
   honour `MEDIAFLYOUTS_ENTITLEMENT=free|trial|pro`. See
   `docs/developer/release-guide.md` §7. Gating is off unless a build carries
   a cutover; 1.7.0 does not.
 - **Support page.** A new dashboard page for donations: a link to the donation
   web page in every build, a UPI QR code and NEFT details with Copy buttons in
-  installer/portable builds, and one-time tip add-ons through the Microsoft
-  Store in the Store build. Payee details are stamped at build time
+  installer/portable builds. Payee details are stamped at build time
   (`MEDIAFLYOUTS_DONATE_*`). QR codes use Nayuki's qrcodegen (MIT, fetched by
   CMake). Donations unlock nothing.
 - **What's new after an update.** The first launch after an update shows a

@@ -111,6 +111,7 @@ add_executable(mediaflyout_gtest
     Model/TaskbarLayoutTest.cpp
     Model/TrackInfoTest.cpp
     Model/WhatsNewTest.cpp
+    Model/UserGuideTest.cpp
     Model/WiredPeripheralRulesTest.cpp
     Model/WindowScalePolicyTest.cpp
     Packaging/IconAssetsTest.cpp
