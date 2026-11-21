@@ -574,6 +574,14 @@ Unavailable: %1</source>
         <translation>ヒント: メディアキーや音量キーを押すか、トレイアイコンをクリックするとフライアウトをプレビューできます。</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>共通モニターを使用</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>すべてのフライアウトに共通モニター設定を使用します。</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>利用不可: この PC でシステムのメディアセッションが検出されませんでした。</translation>
     </message>

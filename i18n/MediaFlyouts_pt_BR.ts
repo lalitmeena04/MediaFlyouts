@@ -574,6 +574,14 @@ Indisponível: %1</translation>
         <translation>Dica: pressione uma tecla de mídia ou de volume, ou clique no ícone da bandeja, para ver os painéis.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>Usar monitor comum</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>Usar a configuração de monitor comum para todos os painéis.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Indisponível: nenhuma sessão de mídia do sistema foi detectada neste PC.</translation>
     </message>

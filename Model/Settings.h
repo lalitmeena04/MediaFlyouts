@@ -54,6 +54,8 @@ class Settings : public QObject {
                        changed)
         Q_PROPERTY(int flyoutPosition READ flyoutPosition WRITE setFlyoutPosition NOTIFY changed)
         Q_PROPERTY(int flyoutMonitor READ flyoutMonitor WRITE setFlyoutMonitor NOTIFY changed)
+        Q_PROPERTY(bool flyoutMonitorOverrideEnabled READ flyoutMonitorOverrideEnabled WRITE
+                       setFlyoutMonitorOverrideEnabled NOTIFY changed)
         Q_PROPERTY(int volumeFlyoutPosition READ volumeFlyoutPosition WRITE setVolumeFlyoutPosition NOTIFY changed)
         Q_PROPERTY(int volumeFlyoutMonitor READ volumeFlyoutMonitor WRITE setVolumeFlyoutMonitor NOTIFY changed)
         Q_PROPERTY(int flyoutDuration READ flyoutDuration WRITE setFlyoutDuration NOTIFY changed)
@@ -180,6 +182,7 @@ class Settings : public QObject {
         QString shortcutToggleFocusMode() const;
         int flyoutPosition() const;
         int flyoutMonitor() const;
+        bool flyoutMonitorOverrideEnabled() const;
         int volumeFlyoutPosition() const;
         int volumeFlyoutMonitor() const;
         int flyoutDuration() const;
@@ -280,6 +283,7 @@ class Settings : public QObject {
         void setShortcutToggleFocusMode(const QString& v);
         void setFlyoutPosition(int v);
         void setFlyoutMonitor(int v);
+        void setFlyoutMonitorOverrideEnabled(bool v);
         void setVolumeFlyoutPosition(int v);
         void setVolumeFlyoutMonitor(int v);
         void setFlyoutDuration(int v);
@@ -383,6 +387,7 @@ class Settings : public QObject {
         QString m_shortcutToggleFocusMode;
         int m_flyoutPosition;
         int m_flyoutMonitor;
+        bool m_flyoutMonitorOverrideEnabled;
         int m_volumeFlyoutPosition;
         int m_volumeFlyoutMonitor;
         int m_flyoutDuration;

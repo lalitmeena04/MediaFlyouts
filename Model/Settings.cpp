@@ -103,6 +103,8 @@ void Settings::reload() {
     // Indexes mf::FlyoutPosition. 4 = BottomCenter.
     m_flyoutPosition = m_store.value(QStringLiteral("flyoutPosition"), 4).toInt();
     m_flyoutMonitor = m_store.value(QStringLiteral("flyoutMonitor"), 0).toInt();
+    m_flyoutMonitorOverrideEnabled =
+        m_store.value(QStringLiteral("flyoutMonitorOverrideEnabled"), false).toBool();
     // -1 keeps volume flyout with media flyout.
     m_volumeFlyoutPosition = m_store.value(QStringLiteral("volumeFlyoutPosition"), 4).toInt();
     m_volumeFlyoutMonitor = m_store.value(QStringLiteral("volumeFlyoutMonitor"), 0).toInt();
@@ -364,11 +366,14 @@ int Settings::flyoutPosition() const {
 int Settings::flyoutMonitor() const {
     return m_flyoutMonitor;
 }
+bool Settings::flyoutMonitorOverrideEnabled() const {
+    return m_flyoutMonitorOverrideEnabled;
+}
 int Settings::volumeFlyoutPosition() const {
     return m_volumeFlyoutPosition;
 }
 int Settings::volumeFlyoutMonitor() const {
-    return m_volumeFlyoutMonitor;
+    return m_flyoutMonitorOverrideEnabled ? m_flyoutMonitor : m_volumeFlyoutMonitor;
 }
 int Settings::flyoutDuration() const {
     return m_flyoutDuration;
@@ -542,7 +547,7 @@ int Settings::peripheralFlyoutPosition() const {
     return m_peripheralFlyoutPosition;
 }
 int Settings::peripheralFlyoutMonitor() const {
-    return m_peripheralFlyoutMonitor;
+    return m_flyoutMonitorOverrideEnabled ? m_flyoutMonitor : m_peripheralFlyoutMonitor;
 }
 bool Settings::peripheralFlyoutOnConnect() const {
     return m_peripheralFlyoutOnConnect;
@@ -578,7 +583,7 @@ int Settings::chargerFlyoutPosition() const {
     return m_chargerFlyoutPosition;
 }
 int Settings::chargerFlyoutMonitor() const {
-    return m_chargerFlyoutMonitor;
+    return m_flyoutMonitorOverrideEnabled ? m_flyoutMonitor : m_chargerFlyoutMonitor;
 }
 bool Settings::onboardingCompleted() const {
     return m_onboardingCompleted;
@@ -712,6 +717,9 @@ void Settings::setFlyoutPosition(int v) {
 }
 void Settings::setFlyoutMonitor(int v) {
     assignInt("flyoutMonitor", m_flyoutMonitor, v);
+}
+void Settings::setFlyoutMonitorOverrideEnabled(bool v) {
+    assign("flyoutMonitorOverrideEnabled", m_flyoutMonitorOverrideEnabled, v);
 }
 void Settings::setVolumeFlyoutPosition(int v) {
     assignInt("volumeFlyoutPosition", m_volumeFlyoutPosition, v);

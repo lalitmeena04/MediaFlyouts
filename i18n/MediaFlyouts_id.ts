@@ -574,6 +574,14 @@ Tidak tersedia: %1</translation>
         <translation>Tips: tekan tombol media atau volume, atau klik ikon baki, untuk melihat pratinjau flyout.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>Gunakan monitor umum</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>Gunakan pengaturan monitor umum untuk semua flyout.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Tidak tersedia: tidak ada sesi media sistem yang terdeteksi di PC ini.</translation>
     </message>

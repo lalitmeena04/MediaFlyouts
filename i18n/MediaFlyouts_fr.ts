@@ -574,6 +574,14 @@ Indisponible : %1</translation>
         <translation>Astuce : appuyez sur une touche multimédia ou de volume, ou cliquez sur l&apos;icône de la zone de notification, pour voir les volets.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>Utiliser l&apos;écran commun</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>Utiliser le réglage d&apos;écran commun pour tous les volets.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>Indisponible : aucune session multimédia système n&apos;a été détectée sur ce PC.</translation>
     </message>

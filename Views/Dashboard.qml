@@ -1056,6 +1056,13 @@ Window {
                         currentIndex: settings.flyoutPosition
                         onActivated: settings.flyoutPosition = index
                     }
+                    SettingRow {
+                        width: parent.width
+                        label: qsTr("Use common monitor")
+                        description: qsTr("Use the common monitor setting for all flyouts.")
+                        value: settings.flyoutMonitorOverrideEnabled
+                        onToggled: settings.flyoutMonitorOverrideEnabled = value
+                    }
                     SettingCombo {
                         width: parent.width
                         label: qsTr("Monitor")
@@ -1259,6 +1266,7 @@ Window {
                                 width: parent.width
                                 label: qsTr("Volume flyout monitor")
                                 description: qsTr("Which display the volume flyout is shown on.")
+                                visible: !settings.flyoutMonitorOverrideEnabled
                                 model: monitors.names
                                 currentIndex: settings.volumeFlyoutMonitor
                                 onActivated: settings.volumeFlyoutMonitor = index
@@ -1415,6 +1423,7 @@ Window {
                                 width: parent.width
                                 label: qsTr("Peripheral flyout monitor")
                                 description: qsTr("Which display the peripheral flyout is shown on.")
+                                visible: !settings.flyoutMonitorOverrideEnabled
                                 model: monitors.names
                                 currentIndex: settings.peripheralFlyoutMonitor
                                 onActivated: settings.peripheralFlyoutMonitor = index
@@ -1480,6 +1489,7 @@ Window {
                                 width: parent.width
                                 label: qsTr("Charger flyout monitor")
                                 description: qsTr("Which display the charger flyout is shown on.")
+                                visible: !settings.flyoutMonitorOverrideEnabled
                                 model: monitors.names
                                 currentIndex: settings.chargerFlyoutMonitor
                                 onActivated: settings.chargerFlyoutMonitor = index

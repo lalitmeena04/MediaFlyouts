@@ -574,6 +574,14 @@ Unavailable: %1</source>
         <translation>팁: 미디어 키나 볼륨 키를 누르거나 트레이 아이콘을 클릭하면 플라이아웃을 미리 볼 수 있습니다.</translation>
     </message>
     <message>
+        <source>Use common monitor</source>
+        <translation>공통 모니터 사용</translation>
+    </message>
+    <message>
+        <source>Use the common monitor setting for all flyouts.</source>
+        <translation>모든 플라이아웃에 공통 모니터 설정을 사용합니다.</translation>
+    </message>
+    <message>
         <source>Unavailable: no system media session was detected on this PC.</source>
         <translation>사용 불가: 이 PC에서 시스템 미디어 세션이 감지되지 않았습니다.</translation>
     </message>
