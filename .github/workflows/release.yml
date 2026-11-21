@@ -87,7 +87,6 @@ jobs:
             MEDIAFLYOUTS_STORE_CUTOVER_UTC   = "${{ vars.PRO_STORE_CUTOVER_UTC }}"
             MEDIAFLYOUTS_PRO_ADDON_STORE_ID  = "${{ vars.PRO_ADDON_STORE_ID }}"
             MEDIAFLYOUTS_TRIAL_DAYS          = "${{ vars.PRO_TRIAL_DAYS }}"
-            MEDIAFLYOUTS_TIP_ADDON_STORE_IDS = "${{ vars.PRO_TIP_ADDON_STORE_IDS }}"
             MEDIAFLYOUTS_DONATE_URL          = "${{ vars.DONATE_URL }}"
             MEDIAFLYOUTS_DONATE_UPI_ID       = "${{ vars.DONATE_UPI_ID }}"
             MEDIAFLYOUTS_DONATE_PAYEE_NAME   = "${{ vars.DONATE_PAYEE_NAME }}"

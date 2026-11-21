@@ -188,8 +188,6 @@ visualizer. This document describes the features that ship in the app.
 - Every build links to the donation web page.
 - Installer and portable builds also show a UPI QR code and ID and the NEFT /
   IMPS bank details, each with a Copy button.
-- The Store build offers one-time **tip** add-ons bought through the
-  Microsoft Store instead.
 
 ## System tray & single instance
 

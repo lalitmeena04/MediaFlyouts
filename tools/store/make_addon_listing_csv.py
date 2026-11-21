@@ -1,23 +1,22 @@
-"""Builds the Partner Center listing import for an add-on in all 11 languages.
+"""Builds a Partner Center listing import for an add-on in all 11 languages.
 
 An add-on listing has three fields: Title (required), Description (200 chars)
 and StoreLogo300x300. The first export of a new add-on has only the "default"
 column; this script adds one column per language (the import creates those
 listings), fills Title and Description, and points the icon row at the PNG in
-tools/store/addon-import/. Upload that folder with
+the add-on's import folder. Upload that folder with
 "Import listings > Upload folder" on the add-on's submission page.
 
     python tools\\store\\make_addon_listing_csv.py pro listingData-<addon>-<submission>.csv
 
-The first argument picks the add-on text below. Image cells must hold the path
-including the root folder name ("addon-import/pro-icon.png").
+The first argument picks the add-on text below. Image cells include the import
+folder name, such as "addon-import/pro-icon.png".
 """
 import csv
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
-OUT_DIR = HERE / "addon-import"
 LANGS = ["en-us", "ar", "zh-hans", "fr-fr", "de-de", "hi", "id", "ja", "ko", "pt-br", "es-es"]
 LIMITS = {"Title": 100, "Description": 200}
 
@@ -26,6 +25,7 @@ LIMITS = {"Title": 100, "Description": 200}
 ADDONS = {}
 
 ADDONS["pro"] = dict(
+    import_dir="addon-import",
     icon="pro-icon.png",
     text={
         "en-us": dict(
@@ -79,9 +79,11 @@ ADDONS["pro"] = dict(
 
 if len(sys.argv) != 3 or sys.argv[1] not in ADDONS:
     sys.exit(f"usage: {Path(sys.argv[0]).name} <{'|'.join(ADDONS)}> <export.csv>")
-addon = ADDONS[sys.argv[1]]
+addon_key = sys.argv[1]
+addon = ADDONS[addon_key]
+out_dir = HERE / addon["import_dir"]
 src = Path(sys.argv[2])
-out = OUT_DIR / f"{sys.argv[1]}-listing-import.csv"
+out = out_dir / f"{addon_key}-listing-import.csv"
 
 missing = [l for l in LANGS if l not in addon["text"]]
 if missing:
@@ -100,7 +102,7 @@ for lang in LANGS:
         header.append(lang)
 col = {name: i for i, name in enumerate(header)}
 
-icon = OUT_DIR / addon["icon"]
+icon = out_dir / addon["icon"]
 if not icon.exists():
     sys.exit(f"icon missing: {icon}")
 
@@ -112,15 +114,15 @@ for row in rows[1:]:
         if field in LIMITS:
             v = addon["text"][lang][field]
         elif field == "StoreLogo300x300":
-            v = f"{OUT_DIR.name}/{icon.name}"
+            v = f"{out_dir.name}/{icon.name}"
         else:
             continue
         if row[col[lang]] != v:
             row[col[lang]] = v
             changed += 1
 
-OUT_DIR.mkdir(exist_ok=True)
+out_dir.mkdir(exist_ok=True)
 with out.open("w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f, lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL)
     w.writerows(rows)
-print(f"wrote {OUT_DIR.name}/{out.name} ({len(rows) - 1} rows, {len(LANGS)} languages, {changed} cells) + {icon.name}")
+print(f"wrote {out_dir.name}/{out.name} ({len(rows) - 1} rows, {len(LANGS)} languages, {changed} cells) + {icon.name}")

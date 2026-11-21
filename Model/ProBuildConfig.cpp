@@ -14,8 +14,7 @@ bool ProBuildConfig::purchaseConfigured() const {
     return !proAddOnStoreId.isEmpty();
 }
 
-ProBuildConfig parseProBuildConfig(const QString& proAddOnStoreId, const QString& cutoverUtc, const QString& trialDays,
-                                   const QString& tipAddOnStoreIds) {
+ProBuildConfig parseProBuildConfig(const QString& proAddOnStoreId, const QString& cutoverUtc, const QString& trialDays) {
     ProBuildConfig c;
     c.proAddOnStoreId = proAddOnStoreId.trimmed();
 
@@ -42,12 +41,6 @@ ProBuildConfig parseProBuildConfig(const QString& proAddOnStoreId, const QString
         c.policy.trialDays = kDefaultTrialDays;
     }
 
-    const QStringList rawTips = tipAddOnStoreIds.split(QLatin1Char(','), Qt::SkipEmptyParts);
-    for(const QString& id : rawTips) {
-        const QString clean = id.trimmed();
-        if(!clean.isEmpty() && !c.tipAddOnStoreIds.contains(clean))
-            c.tipAddOnStoreIds << clean;
-    }
     return c;
 }
 
@@ -55,10 +48,10 @@ ProBuildConfig proBuildConfig() {
     static const ProBuildConfig config = [] {
         const ProBuildConfig c = parseProBuildConfig(
             QString::fromLatin1(MEDIAFLYOUTS_PRO_ADDON_STORE_ID), QString::fromLatin1(MEDIAFLYOUTS_STORE_CUTOVER_UTC),
-            QString::fromLatin1(MEDIAFLYOUTS_TRIAL_DAYS), QString::fromLatin1(MEDIAFLYOUTS_TIP_ADDON_STORE_IDS));
-        TRC_INFO("pro config: addOn='{}' cutover={} trialDays={} tips={}", c.proAddOnStoreId.toStdString(),
+            QString::fromLatin1(MEDIAFLYOUTS_TRIAL_DAYS));
+        TRC_INFO("pro config: addOn='{}' cutover={} trialDays={}", c.proAddOnStoreId.toStdString(),
                  c.policy.cutover.isValid() ? c.policy.cutover.toString(Qt::ISODate).toStdString() : "none",
-                 c.policy.trialDays, c.tipAddOnStoreIds.size());
+                 c.policy.trialDays);
         return c;
     }();
     return config;

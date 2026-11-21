@@ -40,13 +40,61 @@ draggable; the pin/close control keeps it on screen ("always display") until you
 dismiss it.
 
 For browser media without album art, the optional browser extension can supply
-the website's icon. In **Taskbar Widget** settings, select Chrome, Edge,
-Firefox, or Brave, then choose **Install browser extension** when its listing is
-available in that browser's store. Confirm the installation in the browser. The app uses the icon when a
-single audible tab, or a remembered or active tab when no tabs are audible,
-matches the selected media title. It keeps the icon while that media is paused.
-When the source cannot be identified, the usual placeholder remains. The extension
-stores are not yet published, so the install button is currently unavailable.
+the website's icon. See
+[Install the browser extension](#install-the-browser-extension) for setup steps.
+The app uses the icon when a single audible tab, or a remembered or active tab
+when no tabs are audible, matches the selected media title. It keeps the icon
+while that media is paused. When the source cannot be identified, the usual
+placeholder remains.
+
+## Install the browser extension
+
+The browser extension is optional. It connects your browser to MediaFlyouts so
+the app can show a website icon when browser media has no album art. Keep
+MediaFlyouts installed; the app includes the extension and the native messaging
+host it needs. Open the full user guide from **About → User guide**. For the
+short browser setup instructions, use **How to install** beside the browser
+extension controls.
+
+### Chrome, Edge, and Brave
+
+These browsers use a manual unpacked-extension setup when no store listing is
+configured. The app opens the browser's extension page and the extension folder
+for you.
+
+1. Open **Settings → Taskbar Widget**. Under **Browser artwork**, select
+   **Chrome**, **Edge**, or **Brave**.
+2. Click **Install browser extension**. MediaFlyouts registers its browser
+   connection and opens the browser's extensions page and the bundled extension
+   folder.
+3. On the extensions page, turn on **Developer mode**.
+4. Click **Load unpacked**.
+5. In the folder picker, select the `chromium` folder that MediaFlyouts opened.
+   Select the folder itself, not `manifest.json`.
+6. Confirm any browser warning and check that **MediaFlyouts Browser
+   Integration** appears enabled in the extensions list.
+
+The app may show a brief instruction after opening the folder. The extension is
+not installed from the Chrome Web Store in this flow. Chrome and other
+Chromium-based browsers require this manual step for unpacked extensions, and a
+work or school policy may block Developer mode.
+
+Keep the MediaFlyouts app in the same folder after setup. If you move or
+reinstall the app, run **Install browser extension** again and load the
+extension from its new `chromium` folder. Repeat the setup for each Chromium
+browser you use.
+
+To check that it works, play media in a browser tab and enable the taskbar
+widget. When the browser media session matches the tab, its website icon can be
+used if album art is unavailable. The extension also lets **Pause all** pause
+audio and video in audible browser tabs.
+
+### Firefox
+
+In **Settings → Taskbar Widget**, select **Firefox** and click **Install browser
+extension**. Firefox opens the MediaFlyouts listing in Mozilla Add-ons; confirm
+the installation there. The extension also requires the native messaging host
+included with MediaFlyouts.
 
 ### Volume flyout
 Press a volume key to show the master volume slider (it replaces the native
@@ -163,7 +211,7 @@ installer and portable builds are not gated.
 The **Support** page in the dashboard is where to say thanks. Every build links
 to the donation page; the installer and portable builds also show a UPI QR
 code and bank transfer details with Copy buttons, and the Store build offers
-one-time tips through the Microsoft Store. Donations unlock nothing.
+donations through the web page. Donations unlock nothing.
 
 ## Startup & updates
 

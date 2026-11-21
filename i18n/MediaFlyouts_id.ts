@@ -162,6 +162,10 @@ Tidak tersedia: %1</translation>
         <translation>Filter Aplikasi</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>Panduan pengguna tidak dapat dimuat.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>Flyout</translation>
     </message>
@@ -178,12 +182,16 @@ Tidak tersedia: %1</translation>
         <translation>Pengaturan Tambahan</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>Bahasa, tema, aksen, startup, baki sistem, dan pencadangan pengaturan.</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>Dukungan</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
-        <translation>Ucapkan terima kasih dengan donasi atau tip.</translation>
+        <source>Say thanks with a donation.</source>
+        <translation>Ucapkan terima kasih dengan donasi.</translation>
     </message>
     <message>
         <source>About</source>
@@ -478,10 +486,6 @@ Tidak tersedia: %1</translation>
         <translation>Donasi</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>Tip</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>Periksa pembaruan</translation>
     </message>
@@ -626,8 +630,36 @@ Tidak tersedia: %1</translation>
         <translation>Buka ekstensi pengembangan</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>Cara memasang</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>Ekstensi browser belum diterbitkan.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>Panduan pengguna</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge, dan Brave (penyiapan manual)
+1. Di Pengaturan Widget Taskbar &gt; Artwork browser, pilih browser lalu klik Instal ekstensi browser.
+2. Aktifkan Mode pengembang di halaman ekstensi browser.
+3. Klik Muat yang belum dipaketkan dan pilih folder chromium yang terbuka (bukan manifest.json).
+4. Konfirmasi peringatan browser. Biarkan MediaFlyouts di folder yang sama; ulangi langkah ini jika dipindahkan.
+
+Firefox: pilih Firefox dan klik Instal ekstensi browser, lalu konfirmasi di Mozilla Add-ons.
+
+Ekstensi menampilkan ikon situs saat artwork media tidak tersedia dan memungkinkan Jeda semua menghentikan tab yang bersuara. Judul tab dan favicon hanya dikirim ke MediaFlyouts di perangkat Anda, bukan ke pengembang.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Tidak tersedia: %1</translation>
         <translation>Saat tersambung</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>Bahasa, tema, aksen, pintasan, mode fokus, dan aksesibilitas.</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>Beri tahu saat periferal tersambung.</translation>
     </message>
@@ -1288,6 +1316,10 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Get %1</source>
         <translation>Dapatkan %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>Panduan ekstensi browser</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Tidak tersedia: %1</translation>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>Terima kasih atas tipnya!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>Tip tidak dapat diselesaikan. Coba lagi nanti.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>Dukung MediaFlyouts</translation>
     </message>
@@ -1784,22 +1808,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Copy</source>
         <translation>Salin</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Beri tip melalui Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>Tip adalah pembelian sekali bayar di Microsoft Store. Pembayaran ditangani oleh Microsoft.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>Tip %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Tip</translation>
     </message>
 </context>
 <context>

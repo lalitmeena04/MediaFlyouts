@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>تصفية التطبيقات</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>تعذر تحميل دليل المستخدم.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>النوافذ المنبثقة</translation>
     </message>
@@ -178,11 +182,15 @@ Unavailable: %1</source>
         <translation>إعدادات إضافية</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>اللغة والمظهر واللون المميز وبدء التشغيل وعلبة النظام ونسخ الإعدادات احتياطيًا.</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>الدعم</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>قل شكرًا بتبرع أو إكرامية.</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Unavailable: %1</source>
         <translation>تبرع</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>إكرامية</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>التحقق من التحديثات</translation>
     </message>
@@ -626,8 +630,36 @@ Unavailable: %1</source>
         <translation>فتح إضافة التطوير</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>طريقة التثبيت</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>لم تُنشر إضافة المتصفح بعد.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>دليل المستخدم</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome وEdge وBrave (إعداد يدوي)
+1. من إعدادات أداة شريط المهام &gt; صورة المتصفح، اختر متصفحك ثم اضغط تثبيت إضافة المتصفح.
+2. فعّل وضع المطوّر في صفحة إضافات المتصفح.
+3. اضغط تحميل إضافة غير مضغوطة واختر مجلد chromium المفتوح (وليس manifest.json).
+4. وافق على تحذير المتصفح. أبقِ MediaFlyouts في المجلد نفسه؛ وإذا نقلته فأعِد هذه الخطوات.
+
+Firefox: اختر Firefox واضغط تثبيت إضافة المتصفح، ثم أكّد الإضافة في Mozilla Add-ons.
+
+تعرض الإضافة رمز الموقع عند غياب صورة الغلاف، كما يوقف زر إيقاف الكل الوسائط في علامات التبويب التي تصدر صوتًا. تُرسل عناوين علامات التبويب والرموز المصغرة إلى MediaFlyouts على جهازك فقط، ولا تُرسل إلى المطوّر.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Unavailable: %1</source>
         <translation>عند الاتصال</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>اللغة والمظهر واللون والاختصارات والتركيز وإمكانية الوصول.</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>التنبيه عند اتصال جهاز طرفي.</translation>
     </message>
@@ -1288,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>الحصول على %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>دليل إضافة المتصفح</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>شكرًا على الإكرامية!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>تعذر إتمام الإكرامية. حاول مرة أخرى لاحقًا.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>ادعم MediaFlyouts</translation>
     </message>
@@ -1784,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>نسخ</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>اترك إكرامية عبر Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>الإكراميات عمليات شراء لمرة واحدة عبر Microsoft Store. وتتولى Microsoft معالجة الدفع.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>إكرامية %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>إكرامية</translation>
     </message>
 </context>
 <context>

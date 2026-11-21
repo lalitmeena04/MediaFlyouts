@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>アプリのフィルター</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>ユーザーガイドを読み込めませんでした。</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>フライアウト</translation>
     </message>
@@ -178,11 +182,15 @@ Unavailable: %1</source>
         <translation>その他の設定</translation>
     </message>
     <message>
+        <source>Language, theme, accent, startup, tray and settings backup.</source>
+        <translation>言語、テーマ、アクセントカラー、スタートアップ、トレイ、設定のバックアップ。</translation>
+    </message>
+    <message>
         <source>Support</source>
         <translation>サポート</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>寄付やチップで感謝を伝えましょう。</translation>
     </message>
     <message>
@@ -478,10 +486,6 @@ Unavailable: %1</source>
         <translation>寄付</translation>
     </message>
     <message>
-        <source>Tip</source>
-        <translation>チップ</translation>
-    </message>
-    <message>
         <source>Check for updates</source>
         <translation>更新を確認</translation>
     </message>
@@ -626,8 +630,36 @@ Unavailable: %1</source>
         <translation>開発用拡張機能を開く</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>インストール方法</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>ブラウザー拡張機能はまだ公開されていません。</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>ユーザーガイド</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome、Edge、Brave（手動設定）
+1. タスクバーウィジェット &gt; ブラウザーの画像でブラウザーを選び、「ブラウザー拡張機能をインストール」をクリックします。
+2. ブラウザーの拡張機能ページで「デベロッパーモード」をオンにします。
+3. 「パッケージ化されていない拡張機能を読み込む」をクリックし、開いた chromium フォルダーを選びます（manifest.json ではありません）。
+4. 警告を確認します。MediaFlyouts のフォルダーを移動した場合は、この手順をやり直してください。
+
+Firefox：Firefox を選んで「ブラウザー拡張機能をインストール」をクリックし、Mozilla Add-ons で追加を確認します。
+
+メディアのアートワークがない場合、拡張機能はタブのサイトアイコンを表示できます。「すべて一時停止」で音の出ているタブを一時停止することもできます。タブのタイトルとファビコンは端末上の MediaFlyouts にのみ送信され、開発者には送信されません。</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -1018,10 +1050,6 @@ Unavailable: %1</source>
         <translation>接続時</translation>
     </message>
     <message>
-        <source>Language, theme, accent, shortcuts, focus mode and accessibility.</source>
-        <translation>言語、テーマ、アクセント、ショートカット、集中モード、アクセシビリティ。</translation>
-    </message>
-    <message>
         <source>Announce a peripheral when it connects.</source>
         <translation>周辺機器の接続時に通知します。</translation>
     </message>
@@ -1288,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>%1 を入手</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>ブラウザー拡張機能ガイド</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1722,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>チップをありがとうございます！</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>チップを完了できませんでした。後でもう一度お試しください。</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts を支援する</translation>
     </message>
@@ -1784,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>コピー</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Microsoft Store からチップを送る</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>チップは Microsoft Store での一回限りの購入です。決済は Microsoft が処理します。</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 のチップ</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>チップ</translation>
     </message>
 </context>
 <context>

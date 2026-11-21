@@ -11,7 +11,6 @@ class DonationController : public QObject {
         Q_OBJECT
         Q_PROPERTY(bool available READ available CONSTANT)
         Q_PROPERTY(bool showDirect READ showDirect CONSTANT)
-        Q_PROPERTY(bool showStoreTips READ showStoreTips CONSTANT)
         Q_PROPERTY(bool hasPage READ hasPage CONSTANT)
         Q_PROPERTY(bool hasUpi READ hasUpi CONSTANT)
         Q_PROPERTY(bool hasBank READ hasBank CONSTANT)
@@ -26,12 +25,10 @@ class DonationController : public QObject {
         Q_PROPERTY(QString bankHolder READ bankHolder CONSTANT)
 
     public:
-        DonationController(const mf::DonationConfig& config, mf::InstallKind install, bool storeTipsConfigured,
-                           QObject* parent = nullptr);
+        DonationController(const mf::DonationConfig& config, mf::InstallKind install, QObject* parent = nullptr);
 
         bool available() const;
         bool showDirect() const;
-        bool showStoreTips() const;
         bool hasPage() const;
         bool hasUpi() const;
         bool hasBank() const;
@@ -53,5 +50,4 @@ class DonationController : public QObject {
     private:
         mf::DonationConfig m_config;
         mf::DonationLayout m_layout;
-        bool m_storeTipsConfigured;
 };
