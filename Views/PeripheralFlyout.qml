@@ -33,6 +33,8 @@ FlyoutBase {
     }
 
     function showFlyout(pending) {
+        if(settings.focusMode)
+            return
         if(!settings.onboardingCompleted)
             return
         if(!pro.peripheralFlyoutEnabled || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.peripheralFlyoutMonitor))

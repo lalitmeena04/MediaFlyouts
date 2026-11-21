@@ -32,6 +32,7 @@ class DonationController;
 class WhatsNewController;
 
 #ifdef Q_OS_WIN
+class GlobalShortcutController;
 class WinMediaProvider;
 class VolumeController;
 class NativeFlyoutSuppressor;
@@ -97,6 +98,7 @@ class MainControllerClass {
         AlbumArtProvider* m_artProvider = nullptr; // Owned by QML engine.
 
 #ifdef Q_OS_WIN
+        std::unique_ptr<GlobalShortcutController> m_globalShortcuts;
         std::unique_ptr<WinMediaProvider> m_provider;
         std::unique_ptr<StoreLicensing> m_storeLicensing;
         std::unique_ptr<VolumeController> m_volumeController;

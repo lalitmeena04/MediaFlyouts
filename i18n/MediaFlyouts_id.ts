@@ -162,6 +162,10 @@ Tidak tersedia: %1</translation>
         <translation>Filter Aplikasi</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>Panduan pengguna tidak dapat dimuat.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>Flyout</translation>
     </message>
@@ -179,15 +183,15 @@ Tidak tersedia: %1</translation>
     </message>
     <message>
         <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>Bahasa, tema, warna aksen, mulai otomatis, baki, dan cadangan pengaturan.</translation>
+        <translation>Bahasa, tema, aksen, startup, baki sistem, dan pencadangan pengaturan.</translation>
     </message>
     <message>
         <source>Support</source>
         <translation>Dukungan</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
-        <translation>Ucapkan terima kasih dengan donasi atau tip.</translation>
+        <source>Say thanks with a donation.</source>
+        <translation>Ucapkan terima kasih dengan donasi.</translation>
     </message>
     <message>
         <source>About</source>
@@ -334,6 +338,10 @@ Tidak tersedia: %1</translation>
         <translation>Tumpuk</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>Ukuran widget</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>Lapisan jeda</translation>
     </message>
@@ -414,6 +422,46 @@ Tidak tersedia: %1</translation>
         <translation>Ikon Pro</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>Mode fokus</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>Kurangi gerakan</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>Pintasan keyboard</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>Putar / jeda</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>Lagu berikutnya</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Bisukan</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>Buka flyout media</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>Tampilkan / sembunyikan widget media</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>Tampilkan / sembunyikan widget periferal</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>Alihkan mode fokus</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>Jalankan saat mulai</translation>
     </message>
@@ -436,10 +484,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Donate</source>
         <translation>Donasi</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Tip</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Tidak tersedia: %1</translation>
         <translation>Tampilkan nama aplikasi yang memutar media.</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>Pilih ukuran ringkas untuk taskbar kecil atau ukuran lebih besar agar mudah dibaca.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>Ringkas</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>Standar</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Besar</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>Gunakan ikon situs saat sampul album tidak tersedia.</translation>
     </message>
@@ -570,8 +630,36 @@ Tidak tersedia: %1</translation>
         <translation>Buka ekstensi pengembangan</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>Cara memasang</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>Ekstensi browser belum diterbitkan.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>Panduan pengguna</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge, dan Brave (penyiapan manual)
+1. Di Pengaturan Widget Taskbar &gt; Artwork browser, pilih browser lalu klik Instal ekstensi browser.
+2. Aktifkan Mode pengembang di halaman ekstensi browser.
+3. Klik Muat yang belum dipaketkan dan pilih folder chromium yang terbuka (bukan manifest.json).
+4. Konfirmasi peringatan browser. Biarkan MediaFlyouts di folder yang sama; ulangi langkah ini jika dipindahkan.
+
+Firefox: pilih Firefox dan klik Instal ekstensi browser, lalu konfirmasi di Mozilla Add-ons.
+
+Ekstensi menampilkan ikon situs saat artwork media tidak tersedia dan memungkinkan Jeda semua menghentikan tab yang bersuara. Judul tab dan favicon hanya dikirim ke MediaFlyouts di perangkat Anda, bukan ke pengembang.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Tidak tersedia: %1</translation>
         <translation>Baca bilah tugas di sebelah widget dan beralih antara teks terang dan gelap. Menjaga widget tetap terbaca di atas bilah tugas transparan atau wallpaper bergerak.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>Tampilkan spektrum langsung audio sistem di belakang widget.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>Gaya visualizer</translation>
     </message>
@@ -1062,6 +1146,10 @@ Tidak tersedia: %1</translation>
         <translation>Berapa lama flyout pengisi daya tetap di layar.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>Tampilkan spektrum audio sistem di belakang widget. Disembunyikan saat Kurangi gerakan aktif.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>Nonaktif menampilkan semua aplikasi. Daftar hitam menyembunyikan aplikasi yang tercantum; daftar putih hanya menampilkan aplikasi yang tercantum.</translation>
     </message>
@@ -1150,6 +1238,38 @@ Tidak tersedia: %1</translation>
         <translation>Pilih warna…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>Bungkam flyout otomatis dan sembunyikan widget taskbar hingga mode dimatikan. Flyout media tetap dapat dibuka secara manual.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>Gunakan transisi yang lebih singkat dan hentikan gerakan dekoratif. Secara default, ikuti pengaturan animasi Windows.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>Tetapkan satu tombol pengubah dan satu tombol. Pintasan berfungsi saat MediaFlyouts berjalan di latar belakang. Pintasan yang digunakan aplikasi lain akan dilaporkan di bawah.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>Belum diatur</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Hapus</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>Atur pintasan untuk %1</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>Tekan satu tombol pengubah dan satu tombol. Tekan Escape untuk membatalkan.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>Menunggu tombol…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>Jalankan MediaFlyouts secara otomatis saat Anda masuk.</translation>
     </message>
@@ -1196,6 +1316,10 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Get %1</source>
         <translation>Dapatkan %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>Panduan ekstensi browser</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>Laporan disimpan dengan %1 berkas.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>Pintasan dijeda saat menetapkan tombol.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: pintasan tidak didukung</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: pintasan sudah digunakan</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>Pintasan aktif: %1.</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Tidak tersedia: %1</translation>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>Terima kasih atas tipnya!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>Tip tidak dapat diselesaikan. Coba lagi nanti.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>Dukung MediaFlyouts</translation>
     </message>
@@ -1673,22 +1808,6 @@ Tidak tersedia: %1</translation>
     <message>
         <source>Copy</source>
         <translation>Salin</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Beri tip melalui Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>Tip adalah pembelian sekali bayar di Microsoft Store. Pembayaran ditangani oleh Microsoft.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>Tip %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Tip</translation>
     </message>
 </context>
 <context>

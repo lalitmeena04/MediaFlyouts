@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>ऐप फ़िल्टर</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>उपयोगकर्ता मार्गदर्शिका लोड नहीं हो सकी।</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>फ़्लाईआउट</translation>
     </message>
@@ -186,7 +190,7 @@ Unavailable: %1</source>
         <translation>सहयोग</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>दान या टिप देकर धन्यवाद कहें।</translation>
     </message>
     <message>
@@ -334,6 +338,10 @@ Unavailable: %1</source>
         <translation>स्टैक</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>विजेट का आकार</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>पॉज़ ओवरले</translation>
     </message>
@@ -414,6 +422,46 @@ Unavailable: %1</source>
         <translation>प्रो आइकन</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>फोकस मोड</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>गतिविधि कम करें</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>कीबोर्ड शॉर्टकट</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>चलाएँ / रोकें</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>अगला ट्रैक</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>म्यूट करें</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>मीडिया फ़्लायआउट खोलें</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>मीडिया विजेट दिखाएँ / छिपाएँ</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>पेरिफेरल विजेट दिखाएँ / छिपाएँ</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>फ़ोकस मोड टॉगल करें</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>स्टार्टअप पर चलाएँ</translation>
     </message>
@@ -436,10 +484,6 @@ Unavailable: %1</source>
     <message>
         <source>Donate</source>
         <translation>दान करें</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>टिप</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Unavailable: %1</source>
         <translation>मीडिया चला रहे ऐप का नाम दिखाएँ।</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>छोटे टास्कबार के लिए कॉम्पैक्ट या आसानी से पढ़ने के लिए बड़ा आकार चुनें।</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>कॉम्पैक्ट</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>मानक</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>बड़ा</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>एल्बम चित्र उपलब्ध न होने पर वेबसाइट का आइकन दिखाएँ।</translation>
     </message>
@@ -570,8 +630,36 @@ Unavailable: %1</source>
         <translation>डेवलपमेंट एक्सटेंशन खोलें</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>इंस्टॉल करने का तरीका</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>ब्राउज़र एक्सटेंशन अभी प्रकाशित नहीं हुआ है।</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>उपयोगकर्ता मार्गदर्शिका</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge और Brave (मैन्युअल सेटअप)
+1. टास्कबार विजेट &gt; ब्राउज़र आर्टवर्क में ब्राउज़र चुनें और ब्राउज़र एक्सटेंशन इंस्टॉल करें पर क्लिक करें।
+2. ब्राउज़र के एक्सटेंशन पेज पर डेवलपर मोड चालू करें।
+3. अनपैक्ड एक्सटेंशन लोड करें पर क्लिक करें और खुला हुआ chromium फ़ोल्डर चुनें (manifest.json नहीं)।
+4. ब्राउज़र की चेतावनी स्वीकार करें। MediaFlyouts फ़ोल्डर को न बदलें; बदलने पर ये चरण फिर करें।
+
+Firefox: Firefox चुनें, ब्राउज़र एक्सटेंशन इंस्टॉल करें पर क्लिक करें और Mozilla Add-ons में पुष्टि करें।
+
+कवर आर्ट न होने पर एक्सटेंशन टैब का वेबसाइट आइकन दिखाता है और Pause all से आवाज़ वाले टैब रोके जा सकते हैं। टैब शीर्षक और फ़ेविकॉन केवल आपके डिवाइस पर MediaFlyouts को भेजे जाते हैं, डेवलपर को नहीं।</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Unavailable: %1</source>
         <translation>विजेट के पास का टास्कबार पढ़ें और हल्के व गहरे टेक्स्ट के बीच बदलें। पारदर्शी टास्कबार या लाइव वॉलपेपर पर विजेट पढ़ने योग्य रहते हैं।</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>विजेट के पीछे सिस्टम ऑडियो का लाइव स्पेक्ट्रम दिखाएँ।</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>विज़ुअलाइज़र शैली</translation>
     </message>
@@ -1062,6 +1146,10 @@ Unavailable: %1</source>
         <translation>चार्जर फ़्लाईआउट स्क्रीन पर कितनी देर रहे।</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>विजेट के पीछे सिस्टम ऑडियो का लाइव स्पेक्ट्रम दिखाएँ। गतिविधि कम होने पर छिपा रहता है।</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>“बंद” सभी ऐप दिखाता है। ब्लैकलिस्ट सूचीबद्ध ऐप छिपाती है; व्हाइटलिस्ट केवल सूचीबद्ध ऐप दिखाती है।</translation>
     </message>
@@ -1150,6 +1238,38 @@ Unavailable: %1</source>
         <translation>रंग चुनें…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>स्वचालित फ़्लायआउट रोकें और मोड बंद होने तक टास्कबार विजेट छिपाएँ। मीडिया फ़्लायआउट को मैन्युअल रूप से खोला जा सकता है।</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>छोटे ट्रांज़िशन का उपयोग करें और सजावटी गति रोकें। डिफ़ॉल्ट रूप से Windows की एनीमेशन सेटिंग का पालन होता है।</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>एक मॉडिफ़ायर और एक कुंजी चुनें। MediaFlyouts बैकग्राउंड में होने पर भी शॉर्टकट काम करते हैं। किसी दूसरे ऐप में पहले से उपयोग हो रहा शॉर्टकट नीचे दिखेगा।</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>सेट नहीं है</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>हटाएँ</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>%1 के लिए शॉर्टकट सेट करें</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>एक मॉडिफ़ायर और एक कुंजी दबाएँ। रद्द करने के लिए Escape दबाएँ।</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>कुंजी की प्रतीक्षा…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>साइन इन करने पर MediaFlyouts अपने आप शुरू करें।</translation>
     </message>
@@ -1196,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>%1 प्राप्त करें</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>ब्राउज़र एक्सटेंशन गाइड</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>रिपोर्ट %1 फ़ाइलों के साथ सहेजी गई।</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>कुंजी सेट करते समय शॉर्टकट रोक दिए गए हैं।</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: असमर्थित शॉर्टकट</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: शॉर्टकट पहले से उपयोग में है</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>सक्रिय शॉर्टकट: %1.</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>टिप के लिए धन्यवाद!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>टिप पूरी नहीं हो सकी। बाद में पुनः प्रयास करें।</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts का सहयोग करें</translation>
     </message>
@@ -1673,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>कॉपी करें</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Microsoft Store के माध्यम से टिप दें</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>टिप Microsoft Store की एकमुश्त खरीदारी है। भुगतान Microsoft संभालता है।</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 टिप</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>टिप</translation>
     </message>
 </context>
 <context>

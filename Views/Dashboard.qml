@@ -26,6 +26,7 @@ Window {
 
     property int currentIndex: 0
     property int browserIndex: 0
+    property string userGuideContent: ""
     readonly property var browserIds: ["chrome", "msedge", "firefox", "brave"]
     onCurrentIndexChanged: pageScroll.contentItem.contentY = 0
     // Pages are found by their stable key, not their translated name.
@@ -67,6 +68,14 @@ Window {
                 pageScroll.contentItem.contentHeight - pageScroll.availableHeight))
         })
     }
+    function showUserGuide() {
+        userGuideContent = userGuideText
+        if(userGuideContent === "") {
+            console.warn("Could not load the bundled user guide.")
+            userGuideContent = qsTr("Could not load the user guide.")
+        }
+        userGuideDialog.open()
+    }
     readonly property var wirelessDevices: batteryStatus.devices.filter(function(device) {
         return device.connectionKind !== "usb"
     })
@@ -96,7 +105,7 @@ Window {
         { "icon": Fluent.musicNote, "key": "taskbarWidget", "name": qsTr("Taskbar Widget"), "desc": qsTr("Configure the media and peripheral widgets docked on the taskbar.") },
         { "icon": Fluent.filter,    "key": "filtering",   "name": qsTr("App Filtering"), "desc": qsTr("Choose which media apps are allowed to show flyouts.") },
         { "icon": Fluent.settings,  "key": "additional",  "name": qsTr("Additional Settings"), "desc": qsTr("Language, theme, accent, startup, tray and settings backup.") },
-        { "icon": Fluent.flash,     "key": "support",     "name": qsTr("Support"),      "desc": qsTr("Say thanks with a donation or a tip.") },
+        { "icon": Fluent.flash,     "key": "support",     "name": qsTr("Support"),      "desc": qsTr("Say thanks with a donation.") },
         { "icon": Fluent.info,      "key": "about",       "name": qsTr("About"),        "desc": qsTr("App info, updates and error reports.") }
     ]
 
@@ -118,6 +127,7 @@ Window {
         { "label": qsTr("Media widget"), "page": 2 }, { "label": qsTr("Widget controls"), "page": 2 },
         { "label": qsTr("Widget alignment"), "page": 2 }, { "label": qsTr("Widget offset"), "page": 2 },
         { "label": qsTr("Widget layout"), "page": 2 }, { "label": qsTr("Stack"), "page": 2 },
+        { "label": qsTr("Widget size"), "page": 2 },
         { "label": qsTr("Pause overlay"), "page": 2 }, { "label": qsTr("Scroll long titles"), "page": 2 },
         { "label": qsTr("Audio visualizer"), "page": 2 },
         { "label": qsTr("Peripheral flyout"), "page": 1, "section": "peripheral" }, { "label": qsTr("Low battery warning"), "page": 1, "section": "peripheral" },
@@ -130,10 +140,17 @@ Window {
         { "label": qsTr("Whitelist"), "page": 3 }, { "label": qsTr("Filter mode"), "page": 3 },
         { "label": qsTr("Language"), "page": 4 },
         { "label": qsTr("Theme"), "page": 4 }, { "label": qsTr("Accent color"), "page": 4 }, { "label": qsTr("Pro icon"), "page": 4 },
+        { "label": qsTr("Focus mode"), "page": 4 }, { "label": qsTr("Reduce motion"), "page": 4 },
+        { "label": qsTr("Keyboard shortcuts"), "page": 4 }, { "label": qsTr("Play / pause"), "page": 4 },
+        { "label": qsTr("Next track"), "page": 4 }, { "label": qsTr("Mute"), "page": 4 },
+        { "label": qsTr("Open media flyout"), "page": 4 },
+        { "label": qsTr("Show / hide media widget"), "page": 4 },
+        { "label": qsTr("Show / hide peripheral widget"), "page": 4 },
+        { "label": qsTr("Toggle focus mode"), "page": 4 },
         { "label": qsTr("Launch on startup"), "page": 4 }, { "label": qsTr("Hide tray icon"), "page": 4 },
         { "label": qsTr("Export settings"), "page": 4 }, { "label": qsTr("Import settings"), "page": 4 },
         { "label": qsTr("Restore default settings"), "page": 4 },
-        { "label": qsTr("Donate"), "page": 5 }, { "label": qsTr("Tip"), "page": 5 },
+        { "label": qsTr("Donate"), "page": 5 },
         { "label": qsTr("Check for updates"), "page": 6 }, { "label": qsTr("Version"), "page": 6 },
         { "label": qsTr("What's new"), "page": 6 },
         { "label": qsTr("Report a problem"), "page": 6 }, { "label": qsTr("Error report"), "page": 6 }
@@ -168,7 +185,7 @@ Window {
             color: theme.sidebar
 
             Behavior on width {
-                NumberAnimation { duration: 140; easing.type: Easing.OutQuad }
+                NumberAnimation { duration: Anim.moveMs; easing.type: Easing.OutQuad }
             }
 
             Item {
@@ -1538,6 +1555,14 @@ Window {
                     }
                     SettingCombo {
                         width: parent.width
+                        label: qsTr("Widget size")
+                        description: qsTr("Choose a compact size for small taskbars or a larger size for easier reading.")
+                        model: [qsTr("Compact"), qsTr("Standard"), qsTr("Large")]
+                        currentIndex: settings.taskbarWidgetSize
+                        onActivated: settings.taskbarWidgetSize = index
+                    }
+                    SettingCombo {
+                        width: parent.width
                         label: qsTr("Widget monitor")
                         description: qsTr("Which display's taskbar the widget docks to.")
                         model: monitors.names
@@ -1598,6 +1623,10 @@ Window {
                                     text: qsTr("Open development extension")
                                     onClicked: browserIntegration.openExtensionSetup(dash.browserIds[dash.browserIndex])
                                 }
+                            }
+                            Button {
+                                text: qsTr("How to install")
+                                onClicked: browserGuideDialog.open()
                             }
                             Text {
                                 width: parent.width
@@ -1662,7 +1691,7 @@ Window {
                             SettingRow {
                                 width: parent.width
                                 label: qsTr("Audio visualizer")
-                                description: qsTr("Show a live spectrum of the system audio behind the widget.")
+                                description: qsTr("Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.")
                                 available: capabilities.audioAvailable
                                 unavailableNote: qsTr("Unavailable: no audio output device was detected.")
                                 value: settings.taskbarVisualizerEnabled
@@ -1966,6 +1995,173 @@ Window {
                     }
                     SettingRow {
                         width: parent.width
+                        label: qsTr("Focus mode")
+                        description: qsTr("Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.")
+                        value: settings.focusMode
+                        onToggled: settings.focusMode = value
+                    }
+                    SettingRow {
+                        width: parent.width
+                        label: qsTr("Reduce motion")
+                        description: qsTr("Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.")
+                        value: settings.reduceMotion
+                        onToggled: settings.reduceMotion = value
+                    }
+
+                    Text {
+                        text: qsTr("Keyboard shortcuts")
+                        color: theme.textPrimary
+                        font.pixelSize: 15
+                        font.bold: true
+                        topPadding: 8
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: qsTr("Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.")
+                        color: theme.textSecondary
+                        font.pixelSize: 13
+                    }
+                    Repeater {
+                        model: [
+                            { "label": qsTr("Play / pause"), "setting": "shortcutPlayPause" },
+                            { "label": qsTr("Next track"), "setting": "shortcutNext" },
+                            { "label": qsTr("Mute"), "setting": "shortcutToggleMute" },
+                            { "label": qsTr("Open media flyout"), "setting": "shortcutOpenFlyout" },
+                            { "label": qsTr("Show / hide media widget"), "setting": "shortcutToggleWidget" },
+                            { "label": qsTr("Show / hide peripheral widget"), "setting": "shortcutTogglePeripheralsWidget" },
+                            { "label": qsTr("Toggle focus mode"), "setting": "shortcutToggleFocusMode" }
+                        ]
+                        delegate: Row {
+                            required property var modelData
+                            width: parent.width
+                            spacing: 8
+
+                            Text {
+                                width: 210
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: modelData.label
+                                color: theme.textPrimary
+                                font.pixelSize: 13
+                                elide: Text.ElideRight
+                            }
+                            Button {
+                                text: settings[modelData.setting] || qsTr("Not set")
+                                onClicked: {
+                                    shortcutDialog.settingName = modelData.setting
+                                    shortcutDialog.actionLabel = modelData.label
+                                    shortcutDialog.open()
+                                }
+                            }
+                            Button {
+                                visible: settings[modelData.setting] !== ""
+                                text: qsTr("Clear")
+                                onClicked: settings[modelData.setting] = ""
+                            }
+                        }
+                    }
+                    Text {
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        text: globalShortcuts.status
+                        color: theme.textTertiary
+                        font.pixelSize: 12
+                    }
+
+                    Dialog {
+                        id: shortcutDialog
+                        property string settingName: ""
+                        property string actionLabel: ""
+                        modal: true
+                        title: qsTr("Set shortcut for %1").arg(actionLabel)
+                        standardButtons: Dialog.Cancel
+                        onOpened: {
+                            globalShortcuts.setCaptureMode(true)
+                            shortcutCapture.forceActiveFocus()
+                        }
+                        onClosed: globalShortcuts.setCaptureMode(false)
+                        contentItem: Column {
+                            width: 340
+                            spacing: 10
+                            Text {
+                                width: parent.width
+                                wrapMode: Text.WordWrap
+                                text: qsTr("Press a modifier and one key. Press Escape to cancel.")
+                                color: theme.textSecondary
+                            }
+                            Item {
+                                id: shortcutCapture
+                                width: parent.width
+                                height: 44
+                                focus: true
+                                Keys.onPressed: function(event) {
+                                    if(event.key === Qt.Key_Escape && event.modifiers === Qt.NoModifier) {
+                                        shortcutDialog.reject()
+                                        event.accepted = true
+                                        return
+                                    }
+                                    if(event.key === Qt.Key_Control || event.key === Qt.Key_Alt
+                                        || event.key === Qt.Key_Shift || event.key === Qt.Key_Meta) {
+                                        event.accepted = true
+                                        return
+                                    }
+                                    var keyName = ""
+                                    if(event.key >= Qt.Key_A && event.key <= Qt.Key_Z)
+                                        keyName = String.fromCharCode(event.key)
+                                    else if(event.key >= Qt.Key_0 && event.key <= Qt.Key_9)
+                                        keyName = String.fromCharCode(event.key)
+                                    else if(event.key >= Qt.Key_F1 && event.key <= Qt.Key_F24)
+                                        keyName = "F" + (event.key - Qt.Key_F1 + 1)
+                                    else {
+                                        var names = ({})
+                                        names[Qt.Key_Space] = "Space"
+                                        names[Qt.Key_Tab] = "Tab"
+                                        names[Qt.Key_Backspace] = "Backspace"
+                                        names[Qt.Key_Return] = "Return"
+                                        names[Qt.Key_Enter] = "Enter"
+                                        names[Qt.Key_Insert] = "Insert"
+                                        names[Qt.Key_Delete] = "Delete"
+                                        names[Qt.Key_Home] = "Home"
+                                        names[Qt.Key_End] = "End"
+                                        names[Qt.Key_PageUp] = "PgUp"
+                                        names[Qt.Key_PageDown] = "PgDown"
+                                        names[Qt.Key_Left] = "Left"
+                                        names[Qt.Key_Up] = "Up"
+                                        names[Qt.Key_Right] = "Right"
+                                        names[Qt.Key_Down] = "Down"
+                                        keyName = names[event.key] || ""
+                                    }
+                                    if(keyName === "" || event.modifiers === Qt.NoModifier) {
+                                        event.accepted = true
+                                        return
+                                    }
+                                    var parts = []
+                                    if(event.modifiers & Qt.ControlModifier) parts.push("Ctrl")
+                                    if(event.modifiers & Qt.AltModifier) parts.push("Alt")
+                                    if(event.modifiers & Qt.ShiftModifier) parts.push("Shift")
+                                    if(event.modifiers & Qt.MetaModifier) parts.push("Meta")
+                                    parts.push(keyName)
+                                    settings[shortcutDialog.settingName] = parts.join("+")
+                                    shortcutDialog.accept()
+                                    event.accepted = true
+                                }
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: 6
+                                    color: theme.card
+                                    border.color: shortcutCapture.activeFocus ? theme.accent : theme.border
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: qsTr("Waiting for a key…")
+                                        color: theme.textMuted
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    SettingRow {
+                        width: parent.width
                         label: qsTr("Launch on startup")
                         description: qsTr("Start MediaFlyouts automatically when you sign in.")
                         value: settings.launchOnStartup
@@ -2097,6 +2293,11 @@ Window {
                             color: updateChecker.updateAvailable ? theme.accent : theme.textTertiary
                             font.pixelSize: 13
                         }
+                    }
+
+                    Button {
+                        text: qsTr("User guide")
+                        onClicked: dash.showUserGuide()
                     }
 
                     Text {
@@ -2240,6 +2441,111 @@ Window {
         id: accentDialog
         title: qsTr("Choose accent color")
         onAccepted: settings.customAccent = selectedColor
+    }
+
+    Popup {
+        id: browserGuideDialog
+        anchors.centerIn: parent
+        width: Math.min(580, dash.width - 40)
+        height: Math.min(500, dash.height - 40)
+        modal: true
+        focus: true
+        padding: 20
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 12
+
+            Text {
+                text: qsTr("Browser extension guide")
+                color: theme.textPrimary
+                font.pixelSize: 17
+                font.bold: true
+            }
+            ScrollView {
+                id: browserGuideScroll
+                width: parent.width
+                height: browserGuideDialog.height - 116
+                clip: true
+
+                Text {
+                    width: browserGuideScroll.availableWidth
+                    wrapMode: Text.WordWrap
+                    text: qsTr("Chrome, Edge, and Brave (manual setup)\n1. Under Taskbar Widget > Browser artwork, select your browser and click Install browser extension.\n2. Turn on Developer mode on the browser extensions page.\n3. Click Load unpacked and select the opened chromium folder (not manifest.json).\n4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.\n\nFirefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.\n\nThe extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.")
+                    color: theme.textSecondary
+                    font.pixelSize: 13
+                }
+            }
+            Item {
+                width: parent.width
+                height: guideClose.implicitHeight
+                Button {
+                    id: guideClose
+                    text: qsTr("Cancel")
+                    anchors.right: parent.right
+                    onClicked: browserGuideDialog.close()
+                }
+            }
+        }
+    }
+
+    Popup {
+        id: userGuideDialog
+        anchors.centerIn: parent
+        width: Math.min(700, dash.width - 40)
+        height: Math.min(560, dash.height - 40)
+        modal: true
+        focus: true
+        padding: 20
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        background: Rectangle {
+            radius: 8
+            color: theme.card
+            border.color: theme.border
+        }
+        contentItem: Column {
+            spacing: 12
+
+            Text {
+                text: qsTr("User guide")
+                color: theme.textPrimary
+                font.pixelSize: 17
+                font.bold: true
+            }
+            ScrollView {
+                id: userGuideScroll
+                width: parent.width
+                height: userGuideDialog.height - 116
+                clip: true
+
+                Text {
+                    width: userGuideScroll.availableWidth
+                    wrapMode: Text.WordWrap
+                    textFormat: Text.MarkdownText
+                    text: dash.userGuideContent
+                    color: theme.textSecondary
+                    font.pixelSize: 13
+                    onLinkActivated: function(link) {
+                        if(link.startsWith("https://") || link.startsWith("http://"))
+                            Qt.openUrlExternally(link)
+                    }
+                }
+            }
+            Item {
+                width: parent.width
+                height: userGuideClose.implicitHeight
+                Button {
+                    id: userGuideClose
+                    text: qsTr("Cancel")
+                    anchors.right: parent.right
+                    onClicked: userGuideDialog.close()
+                }
+            }
+        }
     }
 
     property string resetStatus: ""

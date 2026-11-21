@@ -55,6 +55,15 @@ TEST_F(SettingsTest, Defaults) {
     EXPECT_TRUE(s.trayLeftClickShowsFlyout());
     EXPECT_TRUE(s.taskbarWidgetEnabled());
     EXPECT_TRUE(s.taskbarWidgetControlsEnabled());
+    EXPECT_FALSE(s.focusMode());
+    EXPECT_EQ(s.taskbarWidgetSize(), 1);
+    EXPECT_TRUE(s.shortcutPlayPause().isEmpty());
+    EXPECT_TRUE(s.shortcutNext().isEmpty());
+    EXPECT_TRUE(s.shortcutToggleMute().isEmpty());
+    EXPECT_TRUE(s.shortcutOpenFlyout().isEmpty());
+    EXPECT_TRUE(s.shortcutToggleWidget().isEmpty());
+    EXPECT_TRUE(s.shortcutTogglePeripheralsWidget().isEmpty());
+    EXPECT_TRUE(s.shortcutToggleFocusMode().isEmpty());
     EXPECT_EQ(s.flyoutPosition(), 4);
     EXPECT_EQ(s.flyoutMonitor(), 0);
     EXPECT_EQ(s.flyoutDuration(), 4500);
@@ -227,6 +236,38 @@ TEST_F(SettingsTest, ValuesPersistAcrossInstances) {
     EXPECT_FALSE(second.overrideNativeOsd());
     EXPECT_TRUE(second.launchOnStartup());
     EXPECT_FALSE(second.flyoutSwipeDismissEnabled());
+}
+
+TEST_F(SettingsTest, PhaseOnePreferencesPersistAndWidgetSizeIsBounded) {
+    {
+        Settings first;
+        first.setFocusMode(true);
+        first.setReduceMotion(true);
+        first.setTaskbarWidgetSize(0);
+        first.setShortcutPlayPause(QStringLiteral("Ctrl+Alt+P"));
+        first.setShortcutNext(QStringLiteral("Ctrl+Alt+N"));
+        first.setShortcutToggleMute(QStringLiteral("Ctrl+Alt+M"));
+        first.setShortcutOpenFlyout(QStringLiteral("Ctrl+Alt+O"));
+        first.setShortcutToggleWidget(QStringLiteral("Ctrl+Alt+W"));
+        first.setShortcutTogglePeripheralsWidget(QStringLiteral("Ctrl+Alt+P"));
+        first.setShortcutToggleFocusMode(QStringLiteral("Ctrl+Alt+F"));
+        first.setTaskbarWidgetSize(-1);
+        EXPECT_EQ(first.taskbarWidgetSize(), 0);
+        first.setTaskbarWidgetSize(3);
+        EXPECT_EQ(first.taskbarWidgetSize(), 2);
+    }
+
+    Settings restored;
+    EXPECT_TRUE(restored.focusMode());
+    EXPECT_TRUE(restored.reduceMotion());
+    EXPECT_EQ(restored.taskbarWidgetSize(), 2);
+    EXPECT_EQ(restored.shortcutPlayPause(), QStringLiteral("Ctrl+Alt+P"));
+    EXPECT_EQ(restored.shortcutNext(), QStringLiteral("Ctrl+Alt+N"));
+    EXPECT_EQ(restored.shortcutToggleMute(), QStringLiteral("Ctrl+Alt+M"));
+    EXPECT_EQ(restored.shortcutOpenFlyout(), QStringLiteral("Ctrl+Alt+O"));
+    EXPECT_EQ(restored.shortcutToggleWidget(), QStringLiteral("Ctrl+Alt+W"));
+    EXPECT_EQ(restored.shortcutTogglePeripheralsWidget(), QStringLiteral("Ctrl+Alt+P"));
+    EXPECT_EQ(restored.shortcutToggleFocusMode(), QStringLiteral("Ctrl+Alt+F"));
 }
 
 TEST_F(SettingsTest, TaskbarWidgetSideIsSeededOnceThenPinned) {

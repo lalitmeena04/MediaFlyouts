@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>تصفية التطبيقات</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>تعذر تحميل دليل المستخدم.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>النوافذ المنبثقة</translation>
     </message>
@@ -179,14 +183,14 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>اللغة والسمة ولون التمييز وبدء التشغيل وعلبة النظام والنسخ الاحتياطي للإعدادات.</translation>
+        <translation>اللغة والمظهر واللون المميز وبدء التشغيل وعلبة النظام ونسخ الإعدادات احتياطيًا.</translation>
     </message>
     <message>
         <source>Support</source>
         <translation>الدعم</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>قل شكرًا بتبرع أو إكرامية.</translation>
     </message>
     <message>
@@ -334,6 +338,10 @@ Unavailable: %1</source>
         <translation>مكدّس</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>حجم عنصر واجهة المستخدم</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>طبقة الإيقاف المؤقت</translation>
     </message>
@@ -414,6 +422,46 @@ Unavailable: %1</source>
         <translation>أيقونة برو</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>وضع التركيز</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>تقليل الحركة</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>اختصارات لوحة المفاتيح</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>تشغيل / إيقاف مؤقت</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>المقطع التالي</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>كتم الصوت</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>فتح نافذة الوسائط</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>إظهار / إخفاء عنصر الوسائط</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>إظهار / إخفاء عنصر الأجهزة الطرفية</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>تبديل وضع التركيز</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>التشغيل عند بدء النظام</translation>
     </message>
@@ -436,10 +484,6 @@ Unavailable: %1</source>
     <message>
         <source>Donate</source>
         <translation>تبرع</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>إكرامية</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Unavailable: %1</source>
         <translation>إظهار اسم التطبيق الذي يشغّل الوسائط.</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>اختر حجماً صغيراً لأشرطة المهام الضيقة أو حجماً أكبر لقراءة أسهل.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>صغير</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>قياسي</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>كبير</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>استخدام أيقونة الموقع عند عدم توفر صورة الألبوم.</translation>
     </message>
@@ -570,8 +630,36 @@ Unavailable: %1</source>
         <translation>فتح إضافة التطوير</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>طريقة التثبيت</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>لم تُنشر إضافة المتصفح بعد.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>دليل المستخدم</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome وEdge وBrave (إعداد يدوي)
+1. من إعدادات أداة شريط المهام &gt; صورة المتصفح، اختر متصفحك ثم اضغط تثبيت إضافة المتصفح.
+2. فعّل وضع المطوّر في صفحة إضافات المتصفح.
+3. اضغط تحميل إضافة غير مضغوطة واختر مجلد chromium المفتوح (وليس manifest.json).
+4. وافق على تحذير المتصفح. أبقِ MediaFlyouts في المجلد نفسه؛ وإذا نقلته فأعِد هذه الخطوات.
+
+Firefox: اختر Firefox واضغط تثبيت إضافة المتصفح، ثم أكّد الإضافة في Mozilla Add-ons.
+
+تعرض الإضافة رمز الموقع عند غياب صورة الغلاف، كما يوقف زر إيقاف الكل الوسائط في علامات التبويب التي تصدر صوتًا. تُرسل عناوين علامات التبويب والرموز المصغرة إلى MediaFlyouts على جهازك فقط، ولا تُرسل إلى المطوّر.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Unavailable: %1</source>
         <translation>قراءة شريط المهام بجوار الأدوات والتبديل بين النص الفاتح والداكن. يُبقي الأدوات مقروءة فوق شريط مهام شفاف أو خلفية متحركة.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>إظهار طيف مباشر لصوت النظام خلف الأداة.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>نمط المُصوِّر</translation>
     </message>
@@ -1062,6 +1146,10 @@ Unavailable: %1</source>
         <translation>مدة بقاء نافذة الشاحن على الشاشة.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>عرض طيف مباشر لصوت النظام خلف العنصر. يُخفى عند تفعيل تقليل الحركة.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>«معطّل» يعرض كل التطبيقات. قائمة الحظر تخفي التطبيقات المدرجة؛ وقائمة السماح تعرض التطبيقات المدرجة فقط.</translation>
     </message>
@@ -1150,6 +1238,38 @@ Unavailable: %1</source>
         <translation>اختيار لون…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>إيقاف النوافذ المنبثقة التلقائية وإخفاء عناصر شريط المهام حتى إيقاف الوضع. يظل فتح نافذة الوسائط يدوياً متاحاً.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>استخدم انتقالات أقصر وأوقف الحركة الزخرفية. الإعداد الافتراضي يتبع إعداد الحركة في Windows.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>عيّن مفتاح تعديل ومفتاحاً واحداً. تعمل الاختصارات عندما يكون MediaFlyouts في الخلفية. سيظهر أدناه تنبيه إذا كان تطبيق آخر يستخدم الاختصار.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>غير معيّن</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>مسح</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>تعيين اختصار لـ %1</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>اضغط مفتاح تعديل ومفتاحاً واحداً. اضغط Escape للإلغاء.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>بانتظار مفتاح…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>تشغيل MediaFlyouts تلقائيًا عند تسجيل الدخول.</translation>
     </message>
@@ -1196,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>الحصول على %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>دليل إضافة المتصفح</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>تم حفظ التقرير مع %1 ملفات.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>توقفت الاختصارات مؤقتاً أثناء تعيين مفتاح.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: اختصار غير مدعوم</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: الاختصار مستخدم بالفعل</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>الاختصارات النشطة: %1.</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>شكرًا على الإكرامية!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>تعذر إتمام الإكرامية. حاول مرة أخرى لاحقًا.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>ادعم MediaFlyouts</translation>
     </message>
@@ -1673,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>نسخ</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>اترك إكرامية عبر Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>الإكراميات عمليات شراء لمرة واحدة عبر Microsoft Store. وتتولى Microsoft معالجة الدفع.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>إكرامية %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>إكرامية</translation>
     </message>
 </context>
 <context>

@@ -265,11 +265,26 @@ TEST(QmlContractTest, DashboardOffersBrowserArtworkSetup) {
     expectContains(source, QStringLiteral("browserIntegration.install(dash.browserIds[dash.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.manualSetupAvailable(dash.browserIds[dash.browserIndex])"));
     expectContains(source, QStringLiteral("browserIntegration.openExtensionSetup(dash.browserIds[dash.browserIndex])"));
+    expectContains(source, QStringLiteral("text: qsTr(\"How to install\")"));
+    expectContains(source, QStringLiteral("onClicked: browserGuideDialog.open()"));
     const int flyoutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 1"));
     const int taskbarPage = source.indexOf(QStringLiteral("id: taskbarWidgetPage"));
     const int browserSetting =
         source.indexOf(QStringLiteral("label: qsTr(\"Browser artwork\")"), flyoutPage);
     EXPECT_GT(browserSetting, taskbarPage);
+    expectContains(source, QStringLiteral("text: qsTr(\"Browser extension guide\")"));
+    expectContains(source, QStringLiteral("text: qsTr(\"Chrome, Edge, and Brave (manual setup)"));
+    expectContains(source, QStringLiteral("Firefox"));
+    const int aboutPage = source.indexOf(QStringLiteral("visible: dash.currentIndex === 6"));
+    const int aboutGuideButton = source.indexOf(QStringLiteral("text: qsTr(\"User guide\")"), aboutPage);
+    EXPECT_GT(aboutGuideButton, aboutPage);
+    expectContains(source, QStringLiteral("id: browserGuideDialog"));
+    expectContains(source, QStringLiteral("modal: true"));
+    expectContains(source, QStringLiteral("id: userGuideDialog"));
+    expectContains(source, QStringLiteral("userGuideContent = userGuideText"));
+    expectContains(source, QStringLiteral("Could not load the bundled user guide."));
+    EXPECT_EQ(source.count(QStringLiteral("XMLHttpRequest")), 0);
+    expectContains(source, QStringLiteral("textFormat: Text.MarkdownText"));
 }
 
 TEST(QmlContractTest, OnboardingOffersBrowserExtensionSetup) {
@@ -935,7 +950,8 @@ TEST(QmlContractTest, TaskbarWidgetOffersPauseAllWithOptionalPlayAll) {
     expectContains(widget, QStringLiteral("id: pauseAllButton"));
     expectContains(widget, QStringLiteral("anchors.right: parent.right"));
     expectContains(widget, QStringLiteral("anchors.rightMargin: 3 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
-    expectContains(widget, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(widget, QStringLiteral("(root.compact ? 184 : (root.large ? 260 : 220))"));
+    expectContains(widget, QStringLiteral("+ (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     expectContains(widget, QStringLiteral("pauseAllButtonShown: root.pauseAllVisible"));
     expectContains(widget, QStringLiteral("&& (pro.taskbarWidgetPlayAllEnabled || !nowPlaying.canResumeAll)"));
     expectContains(widget, QStringLiteral("opacity: root.pauseAllButtonShown ? 1 : 0"));
@@ -994,10 +1010,38 @@ TEST(QmlContractTest, WidgetStackUsesOneFrameSizedToTheLargestWidget) {
     }
 
     const QString media = loadSource("Views/TaskbarWidget.qml");
-    expectContains(media, QStringLiteral("naturalWidth: 220 + (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
+    expectContains(media, QStringLiteral("(root.compact ? 184 : (root.large ? 260 : 220))"));
+    expectContains(media, QStringLiteral("+ (root.pauseAllVisible ? root.pauseAllSlot : 0)"));
     const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
     expectContains(peripherals, QStringLiteral("function sectionWidth(section)"));
     expectContains(peripherals, QStringLiteral("widest = Math.max(widest, sectionWidth(deviceSections[i]))"));
+}
+
+TEST(QmlContractTest, PhaseOneControlsWireFocusMotionSizingAndGlobalShortcuts) {
+    const QString dashboard = loadSource("Views/Dashboard.qml");
+    expectContains(dashboard, QStringLiteral("onToggled: settings.focusMode = value"));
+    expectContains(dashboard, QStringLiteral("onToggled: settings.reduceMotion = value"));
+    expectContains(dashboard, QStringLiteral("onActivated: settings.taskbarWidgetSize = index"));
+    expectContains(dashboard, QStringLiteral("globalShortcuts.setCaptureMode(true)"));
+    expectContains(dashboard, QStringLiteral("settings[shortcutDialog.settingName] = parts.join(\"+\")"));
+    expectContains(dashboard, QStringLiteral("shortcutTogglePeripheralsWidget"));
+    expectContains(dashboard, QStringLiteral("shortcutToggleFocusMode"));
+
+    const QString app = loadSource("Views/App.qml");
+    expectContains(app, QStringLiteral("flyout.showFlyout(true)"));
+    expectContains(app, QStringLiteral("taskbarWidget.toggleVisibility()"));
+    expectContains(app, QStringLiteral("peripheralsWidget.toggleVisibility()"));
+    expectContains(app, QStringLiteral("settings.focusMode = !settings.focusMode"));
+
+    const QString taskbar = loadSource("Views/TaskbarWidget.qml");
+    expectContains(taskbar, QStringLiteral("nowPlaying.hasMedia && !settings.focusMode && !root.userHidden"));
+    expectContains(taskbar, QStringLiteral("&& !root.userHidden && !root.blocked"));
+    expectContains(taskbar, QStringLiteral("settings.taskbarWidgetSize === 0"));
+    expectContains(taskbar, QStringLiteral("!settings.reduceMotion && pro.taskbarWidgetScrollingEnabled"));
+
+    const QString peripherals = loadSource("Views/PeripheralsWidget.qml");
+    expectContains(peripherals, QStringLiteral("&& devices.length > 0 && !settings.focusMode && !root.userHidden"));
+    expectContains(peripherals, QStringLiteral("function toggleVisibility()"));
 }
 
 TEST(QmlContractTest, WidgetTransitionsSlideAndFade) {
@@ -1429,13 +1473,10 @@ TEST(QmlContractTest, UpgradeCardIsClickableAndOwnedByTheDashboard) {
 TEST(QmlContractTest, SupportPageFollowsTheInstallKindAndStorePolicy) {
     const QString page = loadSource("Views/SupportPage.qml");
     expectContains(page, QStringLiteral("visible: donate.showDirect"));
-    expectContains(page, QStringLiteral("visible: donate.showStoreTips"));
     expectContains(page, QStringLiteral("visible: donate.hasPage"));
     expectContains(page, QStringLiteral("source: donate.upiQrSource"));
     expectContains(page, QStringLiteral("onClicked: donate.openPage()"));
     expectContains(page, QStringLiteral("page.copy(donate.upiId)"));
-    expectContains(page, QStringLiteral("model: entitlement.tipAddOnStoreIds"));
-    expectContains(page, QStringLiteral("entitlement.purchaseAddOn(modelData, page.ownerWindow)"));
     expectContains(page, QStringLiteral("Microsoft is not the fundraiser or sponsor"));
     expectContains(page, QStringLiteral("Donations are voluntary and unlock nothing."));
 

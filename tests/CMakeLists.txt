@@ -111,6 +111,7 @@ add_executable(mediaflyout_gtest
     Model/TaskbarLayoutTest.cpp
     Model/TrackInfoTest.cpp
     Model/WhatsNewTest.cpp
+    Model/UserGuideTest.cpp
     Model/WiredPeripheralRulesTest.cpp
     Model/WindowScalePolicyTest.cpp
     Packaging/IconAssetsTest.cpp
@@ -143,6 +144,8 @@ add_test(NAME gtest_all COMMAND mediaflyout_gtest)
 # Windows-only audio/DWM controllers get default-state smoke tests
 if(WIN32)
     target_sources(mediaflyout_gtest PRIVATE
+        ${CMAKE_SOURCE_DIR}/Controllers/GlobalShortcutController.cpp
+        ${CMAKE_SOURCE_DIR}/Controllers/GlobalShortcutController.h
         ${CMAKE_SOURCE_DIR}/Controllers/AudioCapture.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothClassicBatteryProvider.cpp
         ${CMAKE_SOURCE_DIR}/Controllers/BatteryProviders/BluetoothLeBatteryProvider.cpp
@@ -169,6 +172,7 @@ if(WIN32)
         ${CMAKE_SOURCE_DIR}/Controllers/WindowEffects.cpp
         Controllers/BatteryStatusControllerTest.cpp
         Controllers/DevNodeHelpersTest.cpp
+        Controllers/GlobalShortcutControllerTest.cpp
         Controllers/HidCollectionsTest.cpp
         Controllers/MonitorMapperTest.cpp
         Controllers/PeripheralAlertsTest.cpp

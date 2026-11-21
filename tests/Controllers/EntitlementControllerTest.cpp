@@ -47,7 +47,6 @@ ProBuildConfig gatedConfig() {
     c.proAddOnStoreId = kProId;
     c.policy.cutover = kCutover;
     c.policy.trialDays = 15;
-    c.tipAddOnStoreIds = {QStringLiteral("9NTIP001")};
     return c;
 }
 
@@ -472,20 +471,6 @@ TEST_F(EntitlementControllerTest, PurchaseWithoutAnAddOnIdReportsNotConfigured) 
     ASSERT_EQ(finished.count(), 1);
     EXPECT_EQ(finished.at(0).at(1).toString(), mf::purchase::kNotConfigured);
     EXPECT_TRUE(gateway.purchases.isEmpty());
-}
-
-TEST_F(EntitlementControllerTest, TipPurchaseUsesTheGivenId) {
-    FakeStoreGateway gateway;
-    auto c = make(InstallKind::Store, gatedConfig(), &gateway);
-    c->start();
-    gateway.answer(storeAnswer(kNow.addDays(-20), true));
-    ASSERT_EQ(c->tipAddOnStoreIds(), QStringList{QStringLiteral("9NTIP001")});
-    c->purchaseAddOn(QStringLiteral("9NTIP001"));
-    EXPECT_EQ(gateway.purchases, QStringList{QStringLiteral("9NTIP001")});
-    QSignalSpy finished(c.get(), &EntitlementController::purchaseFinished);
-    gateway.finishPurchase(QStringLiteral("9NTIP001"), true, mf::purchase::kSucceeded);
-    ASSERT_EQ(finished.count(), 1);
-    EXPECT_EQ(finished.at(0).at(2).toString(), QStringLiteral("9NTIP001"));
 }
 
 // --- features and override -------------------------------------------------

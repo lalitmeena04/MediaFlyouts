@@ -162,6 +162,10 @@ Indisponible : %1</translation>
         <translation>Filtrage des applications</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>Impossible de charger le guide de l’utilisateur.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>Volets</translation>
     </message>
@@ -179,14 +183,14 @@ Indisponible : %1</translation>
     </message>
     <message>
         <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>Langue, thème, couleur d&apos;accentuation, démarrage, zone de notification et sauvegarde des paramètres.</translation>
+        <translation>Langue, thème, couleur d’accentuation, démarrage, zone de notification et sauvegarde des paramètres.</translation>
     </message>
     <message>
         <source>Support</source>
         <translation>Soutenir</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>Dites merci avec un don ou un pourboire.</translation>
     </message>
     <message>
@@ -334,6 +338,10 @@ Indisponible : %1</translation>
         <translation>Empilé</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>Taille du widget</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>Superposition de pause</translation>
     </message>
@@ -414,6 +422,46 @@ Indisponible : %1</translation>
         <translation>Icône Pro</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>Mode concentration</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>Réduire les mouvements</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>Raccourcis clavier</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>Lecture / pause</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>Piste suivante</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Couper le son</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>Ouvrir le panneau média</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>Afficher / masquer le widget média</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>Afficher / masquer le widget des périphériques</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>Activer/désactiver le mode concentration</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>Lancer au démarrage</translation>
     </message>
@@ -436,10 +484,6 @@ Indisponible : %1</translation>
     <message>
         <source>Donate</source>
         <translation>Faire un don</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Pourboire</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Indisponible : %1</translation>
         <translation>Afficher le nom de l&apos;application qui lit le média.</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>Choisissez une taille compacte pour les petites barres des tâches ou une taille supérieure pour une meilleure lisibilité.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>Compact</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>Standard</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>Grand</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>Utiliser l&apos;icône du site lorsque la pochette est indisponible.</translation>
     </message>
@@ -570,8 +630,36 @@ Indisponible : %1</translation>
         <translation>Ouvrir l&apos;extension de développement</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>Comment installer</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>L&apos;extension du navigateur n&apos;est pas encore publiée.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>Guide de l’utilisateur</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge et Brave (installation manuelle)
+1. Dans Paramètres du widget de la barre des tâches &gt; Illustration du navigateur, choisissez votre navigateur et cliquez sur Installer l’extension de navigateur.
+2. Activez le mode développeur sur la page des extensions du navigateur.
+3. Cliquez sur Charger l’extension non empaquetée et sélectionnez le dossier chromium ouvert (pas manifest.json).
+4. Confirmez l’avertissement. Gardez MediaFlyouts dans le même dossier ; répétez ces étapes si vous le déplacez.
+
+Firefox : sélectionnez Firefox et cliquez sur Installer l’extension de navigateur, puis confirmez sur Mozilla Add-ons.
+
+L’extension affiche l’icône du site quand la pochette est absente et permet à Tout mettre en pause d’arrêter les onglets audibles. Les titres des onglets et les favicons sont envoyés uniquement à MediaFlyouts sur votre appareil, pas au développeur.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Indisponible : %1</translation>
         <translation>Analyse la barre des tâches à côté des widgets et bascule entre texte clair et foncé. Garde les widgets lisibles sur une barre transparente ou un fond d&apos;écran animé.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>Afficher un spectre en direct de l&apos;audio système derrière le widget.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>Style du visualiseur</translation>
     </message>
@@ -1062,6 +1146,10 @@ Indisponible : %1</translation>
         <translation>Durée d&apos;affichage du volet du chargeur.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>Affiche le spectre audio du système derrière le widget. Masqué lorsque la réduction des mouvements est activée.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>« Désactivé » affiche toutes les applications. La liste noire masque les applications listées ; la liste blanche n&apos;affiche que les applications listées.</translation>
     </message>
@@ -1150,6 +1238,38 @@ Indisponible : %1</translation>
         <translation>Choisir une couleur…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>Bloque les panneaux automatiques et masque les widgets de la barre des tâches jusqu’à la désactivation du mode. Le panneau média reste accessible manuellement.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>Utilise des transitions plus courtes et arrête les mouvements décoratifs. Par défaut, suit le réglage d’animation de Windows.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>Attribuez une touche modificatrice et une autre touche. Les raccourcis fonctionnent lorsque MediaFlyouts est en arrière-plan. Un raccourci déjà utilisé par une autre application sera signalé ci-dessous.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>Non défini</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Effacer</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>Définir le raccourci pour %1</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>Appuyez sur une touche modificatrice et une autre touche. Échap pour annuler.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>En attente d’une touche…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>Démarrer MediaFlyouts automatiquement à l&apos;ouverture de session.</translation>
     </message>
@@ -1196,6 +1316,10 @@ Indisponible : %1</translation>
     <message>
         <source>Get %1</source>
         <translation>Obtenir %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>Guide de l’extension de navigateur</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Indisponible : %1</translation>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>Rapport enregistré avec %1 fichiers.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>Les raccourcis sont suspendus pendant l’attribution d’une touche.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1 : raccourci non pris en charge</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1 : raccourci déjà utilisé</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>Raccourcis actifs : %1.</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Indisponible : %1</translation>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>Merci pour le pourboire !</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>Le pourboire n’a pas pu être finalisé. Réessayez plus tard.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>Soutenir MediaFlyouts</translation>
     </message>
@@ -1673,22 +1808,6 @@ Indisponible : %1</translation>
     <message>
         <source>Copy</source>
         <translation>Copier</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Laisser un pourboire via le Microsoft Store</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>Les pourboires sont des achats uniques sur le Microsoft Store. Microsoft gère le paiement.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>Pourboire de %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>Pourboire</translation>
     </message>
 </context>
 <context>

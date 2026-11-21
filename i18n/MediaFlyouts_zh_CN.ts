@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>应用过滤</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>无法加载用户指南。</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>弹窗</translation>
     </message>
@@ -179,14 +183,14 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>语言、主题、强调色、开机启动、托盘和设置备份。</translation>
+        <translation>语言、主题、强调色、启动、系统托盘和设置备份。</translation>
     </message>
     <message>
         <source>Support</source>
         <translation>支持</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>通过捐赠或打赏表达感谢。</translation>
     </message>
     <message>
@@ -334,6 +338,10 @@ Unavailable: %1</source>
         <translation>堆叠</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>小组件大小</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>暂停遮罩</translation>
     </message>
@@ -414,6 +422,46 @@ Unavailable: %1</source>
         <translation>专业版图标</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>专注模式</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>减少动态效果</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>键盘快捷键</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>播放 / 暂停</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>下一曲</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>静音</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>打开媒体弹出窗</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>显示 / 隐藏媒体小组件</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>显示 / 隐藏外围设备小组件</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>切换专注模式</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>开机启动</translation>
     </message>
@@ -436,10 +484,6 @@ Unavailable: %1</source>
     <message>
         <source>Donate</source>
         <translation>捐赠</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>打赏</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Unavailable: %1</source>
         <translation>显示正在播放媒体的应用名称。</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>任务栏空间较小时选择紧凑尺寸，需要更易阅读时选择较大尺寸。</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>紧凑</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>标准</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>大</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>没有专辑封面时使用网站图标。</translation>
     </message>
@@ -570,8 +630,36 @@ Unavailable: %1</source>
         <translation>打开开发版扩展</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>安装方法</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>浏览器扩展尚未发布。</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>用户指南</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome、Edge 和 Brave（手动设置）
+1. 在“任务栏小组件”&gt;“浏览器艺术图”中选择浏览器，然后点击“安装浏览器扩展”。
+2. 在浏览器扩展页面启用“开发者模式”。
+3. 点击“加载已解压的扩展程序”，选择已打开的 chromium 文件夹（不要选 manifest.json）。
+4. 确认浏览器警告。请勿移动 MediaFlyouts 文件夹；若移动，请重复这些步骤。
+
+Firefox：选择 Firefox 并点击“安装浏览器扩展”，然后在 Mozilla Add-ons 中确认安装。
+
+没有媒体封面时，扩展可显示标签页网站图标；“全部暂停”也可暂停正在发声的标签页。标签页标题和网站图标只发送到本机的 MediaFlyouts，不会发送给开发者。</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Unavailable: %1</source>
         <translation>读取小组件旁的任务栏颜色，并在浅色和深色文字之间切换。在透明任务栏或动态壁纸上保持小组件清晰可读。</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>在小组件后方显示系统音频的实时频谱。</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>可视化样式</translation>
     </message>
@@ -1062,6 +1146,10 @@ Unavailable: %1</source>
         <translation>充电器弹窗在屏幕上停留的时间。</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>在小组件后显示系统音频频谱。启用“减少动态效果”时隐藏。</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>“关”显示所有应用。黑名单隐藏列出的应用；白名单仅显示列出的应用。</translation>
     </message>
@@ -1150,6 +1238,38 @@ Unavailable: %1</source>
         <translation>选择颜色…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>抑制自动弹出窗并隐藏任务栏小组件，直到关闭此模式。仍可手动打开媒体弹出窗。</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>使用更短的过渡效果并停止装饰性动画。默认遵循 Windows 动画设置。</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>设置一个修饰键和一个按键。MediaFlyouts 在后台运行时快捷键仍可用。若快捷键已被其他应用使用，会在下方提示。</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>未设置</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>设置 %1 快捷键</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>按下一个修饰键和一个按键。按 Escape 取消。</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>等待按键…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>登录时自动启动 MediaFlyouts。</translation>
     </message>
@@ -1196,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>获取 %1</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>浏览器扩展指南</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>报告已保存，包含 %1 个文件。</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>设置按键时快捷键会暂停。</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1：不支持的快捷键</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1：快捷键已被占用</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>已启用 %1 个快捷键。</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>感谢您的打赏！</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>无法完成打赏。请稍后重试。</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>支持 MediaFlyouts</translation>
     </message>
@@ -1673,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>复制</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>通过 Microsoft Store 打赏</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>打赏是 Microsoft Store 的一次性购买。付款由 Microsoft 处理。</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>打赏 %1</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>打赏</translation>
     </message>
 </context>
 <context>

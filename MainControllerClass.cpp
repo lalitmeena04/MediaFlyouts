@@ -34,6 +34,7 @@
 #include "ThemeController.h"
 #include "TrayController.h"
 #include "UpdateChecker.h"
+#include "UserGuide.h"
 #include "Version.h"
 #include "WhatsNewController.h"
 #include "WindowScaleRefresher.h"
@@ -43,6 +44,7 @@
 #include "AudioCapture.h"
 #include "BatteryStatusController.h"
 #include "FullscreenDetector.h"
+#include "GlobalShortcutController.h"
 #include "LockKeysController.h"
 #include "MediaKeyController.h"
 #include "NativeFlyoutSuppressor.h"
@@ -152,8 +154,7 @@ void MainControllerClass::buildCoreSubsystems() {
     m_entitlement = std::make_unique<EntitlementController>(mf::detectInstallKind(), mf::proBuildConfig(),
                                                             std::make_unique<mf::EntitlementStore>());
     m_proGate = std::make_unique<ProGate>(m_settings.get(), m_entitlement.get());
-    m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind(),
-                                                      !mf::proBuildConfig().tipAddOnStoreIds.isEmpty());
+    m_donation = std::make_unique<DonationController>(mf::donationConfig(), m_entitlement->installKind());
     m_whatsNew = std::make_unique<WhatsNewController>(m_settings.get());
     m_whatsNew->start();
 
@@ -188,8 +189,7 @@ void MainControllerClass::buildCoreSubsystems() {
 
 #ifdef Q_OS_WIN
 void MainControllerClass::buildPlatformSubsystems() {
-    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId,
-                                                        mf::proBuildConfig().tipAddOnStoreIds);
+    m_storeLicensing = std::make_unique<StoreLicensing>(mf::proBuildConfig().proAddOnStoreId);
     m_entitlement->setGateway(m_storeLicensing.get());
 
     m_provider = std::make_unique<WinMediaProvider>();
@@ -210,19 +210,20 @@ void MainControllerClass::buildPlatformSubsystems() {
                      [this] { m_capabilities->setAudioAvailable(m_volumeController->available()); });
 
     m_nativeSuppressor = std::make_unique<NativeFlyoutSuppressor>();
-    if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted())
+    if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted() && !m_settings->focusMode())
         m_nativeSuppressor->start();
 
     m_fullscreen = std::make_unique<FullscreenDetector>(m_monitors.get());
     QObject::connect(m_volumeController.get(), &VolumeController::volumeChangedExternally, m_nativeSuppressor.get(),
                      [this] {
                          if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted()
+                            && !m_settings->focusMode()
                             && !m_fullscreen->shouldBlock(m_settings->disableOnFullscreen(),
                                                           m_settings->volumeFlyoutMonitor()))
                              m_nativeSuppressor->arm();
                      });
     QObject::connect(m_settings.get(), &Settings::changed, m_nativeSuppressor.get(), [this] {
-        if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted())
+        if(m_settings->overrideNativeOsd() && m_settings->onboardingCompleted() && !m_settings->focusMode())
             m_nativeSuppressor->arm();
         else
             m_nativeSuppressor->restore();
@@ -264,13 +265,25 @@ void MainControllerClass::buildPlatformSubsystems() {
     QObject::connect(m_mediaKeys.get(), &MediaKeyController::availabilityChanged, m_capabilities.get(),
                      [this] { m_capabilities->setMediaKeysAvailable(m_mediaKeys->available()); });
 
+    m_globalShortcuts = std::make_unique<GlobalShortcutController>(m_settings.get());
+    QObject::connect(m_globalShortcuts.get(), &GlobalShortcutController::actionTriggered, m_globalShortcuts.get(),
+                     [this](const QString& action) {
+                         if(action == QStringLiteral("playPause"))
+                             m_nowPlaying->playPause();
+                         else if(action == QStringLiteral("next"))
+                             m_nowPlaying->next();
+                         else if(action == QStringLiteral("toggleMute"))
+                             m_volumeController->toggleMute();
+                     });
+
     m_batteryStatus = std::make_unique<BatteryStatusController>();
 
     m_peripheralAlerts = std::make_unique<PeripheralAlerts>(m_batteryStatus.get());
 
     QObject::connect(m_peripheralAlerts.get(), &PeripheralAlerts::lowBattery, m_tray.get(),
                      [this](const QString& device, int percent, bool veryLow) {
-                         if(!m_proGate->peripheralLowBatteryToast() || !m_settings->onboardingCompleted())
+                         if(!m_proGate->peripheralLowBatteryToast() || !m_settings->onboardingCompleted()
+                            || m_settings->focusMode())
                              return;
                          if(!m_settings->peripheralSelected(device))
                              return;
@@ -291,6 +304,7 @@ void MainControllerClass::buildPlatformSubsystems() {
 
 void MainControllerClass::registerContextProperties() {
     QQmlContext* ctx = m_engine->rootContext();
+    ctx->setContextProperty("userGuideText", mf::userGuideText());
     ctx->setContextProperty("log", m_qmlLog.get());
     ctx->setContextProperty("nowPlaying", m_nowPlaying.get());
     ctx->setContextProperty("browserIntegration", m_browserIntegration.get());
@@ -311,6 +325,7 @@ void MainControllerClass::registerContextProperties() {
     ctx->setContextProperty("tray", m_tray.get());
     ctx->setContextProperty("i18n", m_translator.get());
 #ifdef Q_OS_WIN
+    ctx->setContextProperty("globalShortcuts", m_globalShortcuts.get());
     ctx->setContextProperty("volumeController", m_volumeController.get());
     ctx->setContextProperty("fullscreen", m_fullscreen.get());
     ctx->setContextProperty("lockKeys", m_lockKeys.get());

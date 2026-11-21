@@ -7,25 +7,18 @@
 
 #include "Logging.h"
 
-DonationController::DonationController(const mf::DonationConfig& config, mf::InstallKind install,
-                                       bool storeTipsConfigured, QObject* parent)
-    : QObject(parent), m_config(config), m_layout(mf::donationLayoutFor(install)),
-      m_storeTipsConfigured(storeTipsConfigured) {
-    TRC_INFO("donation: layout={} page={} upi={} bank={} tips={}",
-             m_layout == mf::DonationLayout::Direct ? "direct" : "storeLink", hasPage(), hasUpi(), hasBank(),
-             showStoreTips());
+DonationController::DonationController(const mf::DonationConfig& config, mf::InstallKind install, QObject* parent)
+    : QObject(parent), m_config(config), m_layout(mf::donationLayoutFor(install)) {
+    TRC_INFO("donation: layout={} page={} upi={} bank={}",
+             m_layout == mf::DonationLayout::Direct ? "direct" : "storeLink", hasPage(), hasUpi(), hasBank());
 }
 
 bool DonationController::available() const {
-    return hasPage() || showDirect() || showStoreTips();
+    return hasPage() || showDirect();
 }
 
 bool DonationController::showDirect() const {
     return m_layout == mf::DonationLayout::Direct && (hasUpi() || hasBank());
-}
-
-bool DonationController::showStoreTips() const {
-    return m_layout == mf::DonationLayout::StoreLink && m_storeTipsConfigured;
 }
 
 bool DonationController::hasPage() const {

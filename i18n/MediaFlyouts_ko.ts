@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>앱 필터</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>사용자 가이드를 불러올 수 없습니다.</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>플라이아웃</translation>
     </message>
@@ -179,14 +183,14 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>언어, 테마, 강조 색, 시작 프로그램, 트레이, 설정 백업입니다.</translation>
+        <translation>언어, 테마, 강조 색상, 시작 프로그램, 시스템 트레이 및 설정 백업.</translation>
     </message>
     <message>
         <source>Support</source>
         <translation>후원</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>기부나 팁으로 감사를 전하세요.</translation>
     </message>
     <message>
@@ -334,6 +338,10 @@ Unavailable: %1</source>
         <translation>스택</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>위젯 크기</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>일시 정지 오버레이</translation>
     </message>
@@ -414,6 +422,46 @@ Unavailable: %1</source>
         <translation>프로 아이콘</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>집중 모드</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>동작 줄이기</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>키보드 바로 가기</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>재생 / 일시 정지</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>다음 트랙</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>음소거</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>미디어 플라이아웃 열기</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>미디어 위젯 표시 / 숨기기</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>주변 장치 위젯 표시 / 숨기기</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>집중 모드 전환</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>로그인 시 시작</translation>
     </message>
@@ -436,10 +484,6 @@ Unavailable: %1</source>
     <message>
         <source>Donate</source>
         <translation>기부</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>팁</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Unavailable: %1</source>
         <translation>미디어를 재생 중인 앱 이름을 표시합니다.</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>작업 표시줄이 좁으면 작은 크기를, 읽기 편하게 하려면 큰 크기를 선택하세요.</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>작게</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>표준</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>크게</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>앨범 아트가 없으면 웹사이트 아이콘을 사용합니다.</translation>
     </message>
@@ -570,8 +630,36 @@ Unavailable: %1</source>
         <translation>개발용 확장 프로그램 열기</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>설치 방법</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>브라우저 확장 프로그램이 아직 게시되지 않았습니다.</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>사용자 가이드</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome, Edge, Brave (수동 설정)
+1. 작업 표시줄 위젯 &gt; 브라우저 아트워크에서 브라우저를 선택하고 브라우저 확장 프로그램 설치를 누릅니다.
+2. 브라우저 확장 프로그램 페이지에서 개발자 모드를 켭니다.
+3. 압축해제된 확장 프로그램 로드를 누르고 열린 chromium 폴더를 선택합니다(manifest.json은 선택하지 마세요).
+4. 브라우저 경고를 확인합니다. MediaFlyouts 폴더를 이동하면 이 단계를 다시 수행하세요.
+
+Firefox: Firefox를 선택하고 브라우저 확장 프로그램 설치를 누른 다음 Mozilla Add-ons에서 추가를 확인합니다.
+
+미디어 아트워크가 없을 때 확장 프로그램은 탭의 사이트 아이콘을 표시합니다. 모두 일시 중지를 사용하면 소리가 나는 탭도 일시 중지할 수 있습니다. 탭 제목과 파비콘은 개발자가 아닌 기기의 MediaFlyouts에만 전송됩니다.</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Unavailable: %1</source>
         <translation>위젯 옆 작업 표시줄을 읽어 밝은 텍스트와 어두운 텍스트를 전환합니다. 투명한 작업 표시줄이나 움직이는 배경화면 위에서도 위젯을 읽기 쉽게 유지합니다.</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>위젯 뒤에 시스템 오디오의 실시간 스펙트럼을 표시합니다.</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>시각화 스타일</translation>
     </message>
@@ -1062,6 +1146,10 @@ Unavailable: %1</source>
         <translation>충전기 플라이아웃이 화면에 유지되는 시간입니다.</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>위젯 뒤에 시스템 오디오 스펙트럼을 표시합니다. 동작 줄이기가 켜져 있으면 숨깁니다.</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>&apos;꺼짐&apos;은 모든 앱을 표시합니다. 차단 목록은 나열된 앱을 숨기고, 허용 목록은 나열된 앱만 표시합니다.</translation>
     </message>
@@ -1150,6 +1238,38 @@ Unavailable: %1</source>
         <translation>색 선택…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>자동 플라이아웃을 억제하고 모드를 끌 때까지 작업 표시줄 위젯을 숨깁니다. 미디어 플라이아웃은 직접 열 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>짧은 전환을 사용하고 장식 동작을 중지합니다. 기본값은 Windows 애니메이션 설정을 따릅니다.</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>보조 키 하나와 일반 키 하나를 지정하세요. MediaFlyouts가 백그라운드에 있어도 바로 가기가 작동합니다. 다른 앱에서 사용 중인 바로 가기는 아래에 표시됩니다.</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>설정 안 됨</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>지우기</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>%1 바로 가기 설정</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>보조 키 하나와 일반 키 하나를 누르세요. 취소하려면 Escape를 누르세요.</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>키 입력 대기 중…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>로그인할 때 MediaFlyouts를 자동으로 시작합니다.</translation>
     </message>
@@ -1196,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>%1 받기</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>브라우저 확장 프로그램 안내</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>파일 %1개와 함께 보고서를 저장했습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>키를 지정하는 동안 바로 가기가 일시 중지됩니다.</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: 지원되지 않는 바로 가기</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: 바로 가기가 이미 사용 중입니다</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>활성 바로 가기: %1.</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>팁 감사합니다!</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>팁을 완료하지 못했습니다. 나중에 다시 시도하세요.</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts 후원하기</translation>
     </message>
@@ -1673,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>복사</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Microsoft Store를 통해 팁 남기기</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>팁은 Microsoft Store의 일회성 구매입니다. 결제는 Microsoft가 처리합니다.</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 팁</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>팁</translation>
     </message>
 </context>
 <context>

@@ -162,6 +162,10 @@ Unavailable: %1</source>
         <translation>アプリのフィルター</translation>
     </message>
     <message>
+        <source>Could not load the user guide.</source>
+        <translation>ユーザーガイドを読み込めませんでした。</translation>
+    </message>
+    <message>
         <source>Flyouts</source>
         <translation>フライアウト</translation>
     </message>
@@ -179,14 +183,14 @@ Unavailable: %1</source>
     </message>
     <message>
         <source>Language, theme, accent, startup, tray and settings backup.</source>
-        <translation>言語、テーマ、アクセント、自動起動、トレイ、設定のバックアップ。</translation>
+        <translation>言語、テーマ、アクセントカラー、スタートアップ、トレイ、設定のバックアップ。</translation>
     </message>
     <message>
         <source>Support</source>
         <translation>サポート</translation>
     </message>
     <message>
-        <source>Say thanks with a donation or a tip.</source>
+        <source>Say thanks with a donation.</source>
         <translation>寄付やチップで感謝を伝えましょう。</translation>
     </message>
     <message>
@@ -334,6 +338,10 @@ Unavailable: %1</source>
         <translation>スタック</translation>
     </message>
     <message>
+        <source>Widget size</source>
+        <translation>ウィジェットのサイズ</translation>
+    </message>
+    <message>
         <source>Pause overlay</source>
         <translation>一時停止オーバーレイ</translation>
     </message>
@@ -414,6 +422,46 @@ Unavailable: %1</source>
         <translation>プロ版アイコン</translation>
     </message>
     <message>
+        <source>Focus mode</source>
+        <translation>集中モード</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>動きを減らす</translation>
+    </message>
+    <message>
+        <source>Keyboard shortcuts</source>
+        <translation>キーボード ショートカット</translation>
+    </message>
+    <message>
+        <source>Play / pause</source>
+        <translation>再生 / 一時停止</translation>
+    </message>
+    <message>
+        <source>Next track</source>
+        <translation>次のトラック</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>ミュート</translation>
+    </message>
+    <message>
+        <source>Open media flyout</source>
+        <translation>メディア フライアウトを開く</translation>
+    </message>
+    <message>
+        <source>Show / hide media widget</source>
+        <translation>メディア ウィジェットの表示 / 非表示</translation>
+    </message>
+    <message>
+        <source>Show / hide peripheral widget</source>
+        <translation>周辺機器ウィジェットの表示 / 非表示</translation>
+    </message>
+    <message>
+        <source>Toggle focus mode</source>
+        <translation>集中モードの切り替え</translation>
+    </message>
+    <message>
         <source>Launch on startup</source>
         <translation>サインイン時に起動</translation>
     </message>
@@ -436,10 +484,6 @@ Unavailable: %1</source>
     <message>
         <source>Donate</source>
         <translation>寄付</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>チップ</translation>
     </message>
     <message>
         <source>Check for updates</source>
@@ -558,6 +602,22 @@ Unavailable: %1</source>
         <translation>メディアを再生しているアプリの名前を表示します。</translation>
     </message>
     <message>
+        <source>Choose a compact size for small taskbars or a larger size for easier reading.</source>
+        <translation>小さいタスクバーにはコンパクト、読みやすさを重視する場合は大きいサイズを選びます。</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation>コンパクト</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>標準</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>大</translation>
+    </message>
+    <message>
         <source>Use the website icon when album art is unavailable.</source>
         <translation>アルバムアートがない場合はサイトのアイコンを使用します。</translation>
     </message>
@@ -570,8 +630,36 @@ Unavailable: %1</source>
         <translation>開発用拡張機能を開く</translation>
     </message>
     <message>
+        <source>How to install</source>
+        <translation>インストール方法</translation>
+    </message>
+    <message>
         <source>The browser extension is not published yet.</source>
         <translation>ブラウザー拡張機能はまだ公開されていません。</translation>
+    </message>
+    <message>
+        <source>User guide</source>
+        <translation>ユーザーガイド</translation>
+    </message>
+    <message>
+        <source>Chrome, Edge, and Brave (manual setup)
+1. Under Taskbar Widget &gt; Browser artwork, select your browser and click Install browser extension.
+2. Turn on Developer mode on the browser extensions page.
+3. Click Load unpacked and select the opened chromium folder (not manifest.json).
+4. Confirm the warning. Keep MediaFlyouts in the same folder; repeat setup if it moves.
+
+Firefox: Select Firefox and click Install browser extension, then confirm in Mozilla Add-ons.
+
+The extension shows tab icons when artwork is missing and lets Pause all pause audible tabs. Tab titles and favicons go to MediaFlyouts on your device, not the developer.</source>
+        <translation>Chrome、Edge、Brave（手動設定）
+1. タスクバーウィジェット &gt; ブラウザーの画像でブラウザーを選び、「ブラウザー拡張機能をインストール」をクリックします。
+2. ブラウザーの拡張機能ページで「デベロッパーモード」をオンにします。
+3. 「パッケージ化されていない拡張機能を読み込む」をクリックし、開いた chromium フォルダーを選びます（manifest.json ではありません）。
+4. 警告を確認します。MediaFlyouts のフォルダーを移動した場合は、この手順をやり直してください。
+
+Firefox：Firefox を選んで「ブラウザー拡張機能をインストール」をクリックし、Mozilla Add-ons で追加を確認します。
+
+メディアのアートワークがない場合、拡張機能はタブのサイトアイコンを表示できます。「すべて一時停止」で音の出ているタブを一時停止することもできます。タブのタイトルとファビコンは端末上の MediaFlyouts にのみ送信され、開発者には送信されません。</translation>
     </message>
     <message>
         <source>Tint the flyout accents using the current album art&apos;s dominant color.</source>
@@ -862,10 +950,6 @@ Unavailable: %1</source>
         <translation>ウィジェットの隣のタスクバーを読み取り、明るい文字と暗い文字を切り替えます。透明なタスクバーや動く壁紙の上でもウィジェットを読みやすく保ちます。</translation>
     </message>
     <message>
-        <source>Show a live spectrum of the system audio behind the widget.</source>
-        <translation>ウィジェットの背後にシステムオーディオのリアルタイムスペクトルを表示します。</translation>
-    </message>
-    <message>
         <source>Visualizer style</source>
         <translation>ビジュアライザーのスタイル</translation>
     </message>
@@ -1062,6 +1146,10 @@ Unavailable: %1</source>
         <translation>充電器フライアウトを画面に表示する時間。</translation>
     </message>
     <message>
+        <source>Show a live spectrum of the system audio behind the widget. Hidden while Reduce motion is on.</source>
+        <translation>ウィジェットの背後にシステム音声のスペクトラムを表示します。動きを減らす設定中は非表示です。</translation>
+    </message>
+    <message>
         <source>Off shows every app. Blacklist hides the listed apps; whitelist shows only the listed apps.</source>
         <translation>「オフ」はすべてのアプリを表示します。ブラックリストは登録したアプリを隠し、ホワイトリストは登録したアプリのみを表示します。</translation>
     </message>
@@ -1150,6 +1238,38 @@ Unavailable: %1</source>
         <translation>色を選択…</translation>
     </message>
     <message>
+        <source>Suppress automatic flyouts and hide taskbar widgets until turned off. Manual media flyout access still works.</source>
+        <translation>自動フライアウトを抑え、モードを解除するまでタスクバー ウィジェットを非表示にします。メディア フライアウトは手動で開けます。</translation>
+    </message>
+    <message>
+        <source>Use shorter transitions and stop decorative motion. The default follows the Windows animation setting.</source>
+        <translation>短いトランジションを使い、装飾的な動きを停止します。既定では Windows のアニメーション設定に従います。</translation>
+    </message>
+    <message>
+        <source>Assign a modifier and one key. Shortcuts work while MediaFlyouts is in the background. A shortcut already used by another app will be reported below.</source>
+        <translation>修飾キーと通常のキーを 1 つずつ割り当てます。MediaFlyouts がバックグラウンドでも使えます。他のアプリが使用中のショートカットは下に表示されます。</translation>
+    </message>
+    <message>
+        <source>Not set</source>
+        <translation>未設定</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>クリア</translation>
+    </message>
+    <message>
+        <source>Set shortcut for %1</source>
+        <translation>%1 のショートカットを設定</translation>
+    </message>
+    <message>
+        <source>Press a modifier and one key. Press Escape to cancel.</source>
+        <translation>修飾キーとキーを 1 つずつ押します。キャンセルするには Escape を押します。</translation>
+    </message>
+    <message>
+        <source>Waiting for a key…</source>
+        <translation>キー入力待ち…</translation>
+    </message>
+    <message>
         <source>Start MediaFlyouts automatically when you sign in.</source>
         <translation>サインイン時に MediaFlyouts を自動的に起動します。</translation>
     </message>
@@ -1196,6 +1316,10 @@ Unavailable: %1</source>
     <message>
         <source>Get %1</source>
         <translation>%1 を入手</translation>
+    </message>
+    <message>
+        <source>Browser extension guide</source>
+        <translation>ブラウザー拡張機能ガイド</translation>
     </message>
     <message>
         <source>This copy updates through the Microsoft Store.</source>
@@ -1298,6 +1422,25 @@ Unavailable: %1</source>
     <message>
         <source>Report saved with %1 files.</source>
         <translation>%1 個のファイルを含むレポートを保存しました。</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutController</name>
+    <message>
+        <source>Shortcuts are paused while assigning a key.</source>
+        <translation>キーの割り当て中はショートカットを一時停止します。</translation>
+    </message>
+    <message>
+        <source>%1: unsupported shortcut</source>
+        <translation>%1: 対応していないショートカット</translation>
+    </message>
+    <message>
+        <source>%1: shortcut is already in use</source>
+        <translation>%1: ショートカットは既に使用されています</translation>
+    </message>
+    <message>
+        <source>%1 shortcut(s) active.</source>
+        <translation>有効なショートカット: %1。</translation>
     </message>
 </context>
 <context>
@@ -1611,14 +1754,6 @@ Unavailable: %1</source>
 <context>
     <name>SupportPage</name>
     <message>
-        <source>Thank you for the tip!</source>
-        <translation>チップをありがとうございます！</translation>
-    </message>
-    <message>
-        <source>The tip could not be completed. Try again later.</source>
-        <translation>チップを完了できませんでした。後でもう一度お試しください。</translation>
-    </message>
-    <message>
         <source>Support MediaFlyouts</source>
         <translation>MediaFlyouts を支援する</translation>
     </message>
@@ -1673,22 +1808,6 @@ Unavailable: %1</source>
     <message>
         <source>Copy</source>
         <translation>コピー</translation>
-    </message>
-    <message>
-        <source>Leave a tip through the Microsoft Store</source>
-        <translation>Microsoft Store からチップを送る</translation>
-    </message>
-    <message>
-        <source>Tips are one-time Microsoft Store purchases. Microsoft handles the payment.</source>
-        <translation>チップは Microsoft Store での一回限りの購入です。決済は Microsoft が処理します。</translation>
-    </message>
-    <message>
-        <source>Tip %1</source>
-        <translation>%1 のチップ</translation>
-    </message>
-    <message>
-        <source>Tip</source>
-        <translation>チップ</translation>
     </message>
 </context>
 <context>

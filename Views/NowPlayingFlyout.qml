@@ -14,7 +14,9 @@ FlyoutBase {
     Text { id: titleMetrics; visible: false; text: nowPlaying.title; font.pixelSize: 15; font.bold: true }
     Text { id: artistMetrics; visible: false; text: nowPlaying.artist; font.pixelSize: 12 }
 
-    function showFlyout() {
+    function showFlyout(force) {
+        if(settings.focusMode && force !== true)
+            return
         if(!settings.onboardingCompleted)
             return
         if(!settings.nextUpEnabled || !capabilities.mediaSessionAvailable || !nowPlaying.hasMedia || fullscreen.shouldBlock(settings.disableOnFullscreen, settings.flyoutMonitor))
