@@ -14,17 +14,9 @@
 #include "Logging.h"
 #include "MonitorMapper.h"
 #include "TaskbarLayout.h"
+#include "Win32Util.h"
 
 namespace {
-
-QRect nativeWindowRect(HWND hwnd) {
-    if(!hwnd)
-        return QRect();
-    RECT r{};
-    if(!GetWindowRect(hwnd, &r))
-        return QRect();
-    return QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
-}
 
 // Each monitor draws its own taskbar. Secondary ones use a different class.
 HWND taskbarWindowForMonitor(HMONITOR monitor) {
@@ -51,14 +43,6 @@ HWND trayChildOf(HWND taskbar) {
     return FindWindowExW(taskbar, nullptr, L"ClockButton", nullptr);
 }
 
-template <typename T> struct ComRelease {
-        void operator()(T* p) const {
-            if(p)
-                p->Release();
-        }
-};
-template <typename T> using ComPtr = std::unique_ptr<T, ComRelease<T>>;
-
 // Windows 11 secondary taskbars have no Win32 tray child. The clock and
 // notification button are XAML controls. Only UI Automation exposes their bounds.
 // Every tray control shares the SystemTrayIcon automation id.
@@ -72,12 +56,12 @@ QRect trayRectViaAutomation(HWND taskbar) {
        !rawAutomation) {
         return QRect();
     }
-    ComPtr<IUIAutomation> automation(rawAutomation);
+    mf::ComPtr<IUIAutomation> automation(rawAutomation);
 
     IUIAutomationElement* rawRoot = nullptr;
     if(FAILED(automation->ElementFromHandle(taskbar, &rawRoot)) || !rawRoot)
         return QRect();
-    ComPtr<IUIAutomationElement> root(rawRoot);
+    mf::ComPtr<IUIAutomationElement> root(rawRoot);
 
     VARIANT idValue;
     VariantInit(&idValue);
@@ -88,12 +72,12 @@ QRect trayRectViaAutomation(HWND taskbar) {
     VariantClear(&idValue);
     if(FAILED(condHr) || !rawCondition)
         return QRect();
-    ComPtr<IUIAutomationCondition> condition(rawCondition);
+    mf::ComPtr<IUIAutomationCondition> condition(rawCondition);
 
     IUIAutomationElementArray* rawFound = nullptr;
     if(FAILED(root->FindAll(TreeScope_Descendants, condition.get(), &rawFound)) || !rawFound)
         return QRect();
-    ComPtr<IUIAutomationElementArray> found(rawFound);
+    mf::ComPtr<IUIAutomationElementArray> found(rawFound);
 
     int count = 0;
     found->get_Length(&count);
@@ -102,7 +86,7 @@ QRect trayRectViaAutomation(HWND taskbar) {
         IUIAutomationElement* rawItem = nullptr;
         if(FAILED(found->GetElement(i, &rawItem)) || !rawItem)
             continue;
-        ComPtr<IUIAutomationElement> item(rawItem);
+        mf::ComPtr<IUIAutomationElement> item(rawItem);
         RECT r{};
         if(FAILED(item->get_CurrentBoundingRectangle(&r)))
             continue;
@@ -115,7 +99,7 @@ QRect trayRectViaAutomation(HWND taskbar) {
 }
 
 QRect trayRectOf(HWND taskbar) {
-    const QRect win32 = nativeWindowRect(trayChildOf(taskbar));
+    const QRect win32 = mf::windowRect(trayChildOf(taskbar));
     if(!win32.isEmpty())
         return win32;
     return trayRectViaAutomation(taskbar);
@@ -185,7 +169,7 @@ mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
 
     reserve.trailing = MonitorMapper::toLogical(monitor, trayRectOf(taskbar));
     reserve.leading =
-        MonitorMapper::toLogical(monitor, nativeWindowRect(FindWindowExW(taskbar, nullptr, L"Start", nullptr)));
+        MonitorMapper::toLogical(monitor, mf::windowRect(FindWindowExW(taskbar, nullptr, L"Start", nullptr)));
     // A null monitor handle falls back to the primary taskbar. Its chrome may lie off this screen.
     reserve = mf::reserveOnScreen(monitor.logicalRect, reserve);
     TRC_DEBUG("taskbar reserve: monitor={} leading=({},{} {}x{}) trailing=({},{} {}x{})", monitor.index,
@@ -202,7 +186,7 @@ mf::TaskbarReserve TaskbarInfo::reserveFor(const MonitorEntry& monitor) const {
 
 mf::TaskbarEdge TaskbarInfo::edgeFor(const MonitorEntry& monitor) const {
     const HWND taskbar = taskbarWindowForMonitor(static_cast<HMONITOR>(monitor.nativeHandle));
-    const QRect window = MonitorMapper::toLogical(monitor, nativeWindowRect(taskbar));
+    const QRect window = MonitorMapper::toLogical(monitor, mf::windowRect(taskbar));
     const mf::TaskbarEdge edge = mf::detectTaskbarEdge(monitor.logicalRect, monitor.availableRect, window);
     auto& last = m_lastEdge[monitor.index];
     if(!last.has_value() || *last != edge) {

@@ -34,47 +34,36 @@ constexpr DEVPROPKEY kBluetoothClassOfDeviceKey = {
 QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
     QVector<BatteryDeviceInfo> result;
 
-    // Enumerate BTHENUM. Bluetooth setup class can miss profile sub-nodes.
-    ULONG len = 0;
-    if(CM_Get_Device_ID_List_SizeW(&len, L"BTHENUM", CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS || len < 2)
-        return result;
-
-    std::vector<wchar_t> ids(len);
-    if(CM_Get_Device_ID_ListW(L"BTHENUM", ids.data(), len, CM_GETIDLIST_FILTER_ENUMERATOR) != CR_SUCCESS)
-        return result;
-
     // Device can expose battery on more than one profile sub-node. Keep first hit.
     QSet<QString> seenContainers;
     QSet<QString> seenNames;
 
-    for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
-        DEVINST devInst = 0;
-        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
-            continue;
+    // Bluetooth setup class can miss profile sub-nodes, so enumerate BTHENUM.
+    forEachDevNode(L"BTHENUM", [&](DEVINST devInst, const QString&) {
         if(!devNodeIsActive(devInst))
-            continue;
+            return;
         if(!bluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
-            continue;
+            return;
 
         DEVPROPTYPE type = 0;
         BYTE percent = 0;
         ULONG size = sizeof(percent);
         if(CM_Get_DevNode_PropertyW(devInst, &kBluetoothBatteryKey, &type, &percent, &size, 0) != CR_SUCCESS)
-            continue;
+            return;
         if(type != DEVPROP_TYPE_BYTE)
-            continue;
+            return;
 
         const QString containerId = devNodeContainerId(devInst);
         if(!containerId.isEmpty()) {
             if(seenContainers.contains(containerId))
-                continue;
+                return;
             seenContainers.insert(containerId);
         }
 
         const QString name =
             BatteryUtils::cleanBluetoothProfileSuffix(devNodeStringProperty(devInst, DEVPKEY_Device_FriendlyName));
         if(name.isEmpty())
-            continue;
+            return;
         seenNames.insert(name);
 
         DEVPROPTYPE codType = 0;
@@ -87,28 +76,25 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
             category = BatteryUtils::categoryFromClassOfDevice(classOfDevice);
 
         result.append({name, static_cast<int>(percent), QStringLiteral("bluetooth"), category});
-    }
+    });
 
-    for(const wchar_t* id = ids.data(); *id; id += wcslen(id) + 1) {
-        DEVINST devInst = 0;
-        if(CM_Locate_DevNodeW(&devInst, const_cast<DEVINSTID_W>(id), CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS)
-            continue;
+    forEachDevNode(L"BTHENUM", [&](DEVINST devInst, const QString&) {
         if(!devNodeIsActive(devInst))
-            continue;
+            return;
         if(!bluetoothAddressConnected(devNodeStringProperty(devInst, kBluetoothDeviceAddressKey)))
-            continue;
+            return;
 
         const QString containerId = devNodeContainerId(devInst);
         if(!containerId.isEmpty()) {
             if(seenContainers.contains(containerId))
-                continue;
+                return;
             seenContainers.insert(containerId);
         }
 
         const QString name =
             BatteryUtils::cleanBluetoothProfileSuffix(devNodeStringProperty(devInst, DEVPKEY_Device_FriendlyName));
         if(name.isEmpty() || seenNames.contains(name))
-            continue;
+            return;
         seenNames.insert(name);
 
         DEVPROPTYPE codType = 0;
@@ -121,7 +107,7 @@ QVector<BatteryDeviceInfo> BluetoothClassicBatteryProvider::poll() {
             category = BatteryUtils::categoryFromClassOfDevice(classOfDevice);
 
         result.append({name, -1, QStringLiteral("bluetooth"), category});
-    }
+    });
 
     return result;
 }

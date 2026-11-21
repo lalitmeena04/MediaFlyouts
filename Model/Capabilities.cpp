@@ -49,42 +49,30 @@ QString Capabilities::statusSummary() const {
     return tr("MediaFlyouts\nUnavailable: %1").arg(names.join(QStringLiteral(", ")));
 }
 
-void Capabilities::setAudioAvailable(bool available) {
-    if(m_audioAvailable == available)
+void Capabilities::update(bool& field, bool available, const char* name) {
+    if(field == available)
         return;
-    m_audioAvailable = available;
-    TRC_INFO("capability audioAvailable -> {}", available);
+    field = available;
+    TRC_INFO("capability {} -> {}", name, available);
     emit changed();
+}
+
+void Capabilities::setAudioAvailable(bool available) {
+    update(m_audioAvailable, available, "audioAvailable");
 }
 
 void Capabilities::setMediaSessionAvailable(bool available) {
-    if(m_mediaSessionAvailable == available)
-        return;
-    m_mediaSessionAvailable = available;
-    TRC_INFO("capability mediaSessionAvailable -> {}", available);
-    emit changed();
+    update(m_mediaSessionAvailable, available, "mediaSessionAvailable");
 }
 
 void Capabilities::setLockKeysAvailable(bool available) {
-    if(m_lockKeysAvailable == available)
-        return;
-    m_lockKeysAvailable = available;
-    TRC_INFO("capability lockKeysAvailable -> {}", available);
-    emit changed();
+    update(m_lockKeysAvailable, available, "lockKeysAvailable");
 }
 
 void Capabilities::setMediaKeysAvailable(bool available) {
-    if(m_mediaKeysAvailable == available)
-        return;
-    m_mediaKeysAvailable = available;
-    TRC_INFO("capability mediaKeysAvailable -> {}", available);
-    emit changed();
+    update(m_mediaKeysAvailable, available, "mediaKeysAvailable");
 }
 
 void Capabilities::setChargerAvailable(bool available) {
-    if(m_chargerAvailable == available)
-        return;
-    m_chargerAvailable = available;
-    TRC_INFO("capability chargerAvailable -> {}", available);
-    emit changed();
+    update(m_chargerAvailable, available, "chargerAvailable");
 }

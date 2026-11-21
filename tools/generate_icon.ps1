@@ -133,9 +133,10 @@ $master.Dispose()
 # --- multi-resolution .ico ------------------------------------------------
 # 20 px covers the 125 % tray. 256 px is the Explorer large-icon size.
 $icoSizes = 16, 20, 24, 32, 48, 64, 128, 256
+$iconFill = 0.88
 $pngs = @{}
 foreach ($s in $icoSizes) {
-    $tile = New-Tile $mark $s $s
+    $tile = New-Tile $mark $s $s $iconFill
     $pngs[$s] = Get-PngBytes $tile
     $tile.Dispose()
 }

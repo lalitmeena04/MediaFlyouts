@@ -39,6 +39,8 @@ class Capabilities : public QObject {
         void changed();
 
     private:
+        void update(bool& field, bool available, const char* name);
+
         bool m_audioAvailable = true;
         bool m_mediaSessionAvailable = true;
         bool m_lockKeysAvailable = true;

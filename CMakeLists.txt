@@ -468,6 +468,7 @@ if (WIN32)
         Controllers/TaskbarBackdrop.h
         Controllers/TaskbarInfo.cpp
         Controllers/TaskbarInfo.h
+        Controllers/Win32Util.h
         Controllers/VolumeController.cpp
         Controllers/VolumeController.h
         Controllers/VolumeMixer.cpp
