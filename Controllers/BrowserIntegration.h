@@ -26,6 +26,7 @@ class BrowserIntegration : public QObject {
         static QString externalExtensionRegistryPath(const QString& browser, const QString& chromiumId);
         static QUrl externalExtensionUpdateUrl(const QString& browser);
         static QString nativeHostRegistryPath(const QString& browser);
+        static QString prepareExtensionSetupFolder(const QString& browser);
 
     signals:
         void statusChanged();
