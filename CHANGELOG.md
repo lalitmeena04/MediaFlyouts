@@ -5,8 +5,17 @@ All notable changes to MediaFlyouts are documented here. This project follows
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-11-21
+
+MediaFlyouts adds a common monitor choice for all flyouts, a shortcut center,
+and bundled setup guides. This release also prepares the Store listing and
+localized showcase assets for the next update.
+
 ### Added
 
+- **Common flyout monitor.** A **Use common monitor** toggle under shared
+  Flyout settings makes all flyouts use the selected display. Turn it off to
+  keep the Volume, Peripheral and Charger flyout monitor choices independent.
 - **Global shortcut center.** Additional Settings gains configurable system-wide
   shortcuts for play/pause, next track, mute, opening the media flyout,
   toggling the media or peripheral widget, and toggling focus mode. Invalid,
@@ -34,8 +43,8 @@ All notable changes to MediaFlyouts are documented here. This project follows
 - **Support and Store links.** The Microsoft Store consumable-tip flow is
   removed. The Support page now leads only to voluntary donations or direct
   web support, and the app no longer exposes Store tip purchase controls.
-- **Store listing for 2.1.0.** `tools/store/make_listing_csv.py` carries the
-  2.1.0 release notes in all eleven languages, matching `WHATS_NEW.md`, and
+- **Store listing for 2.2.0.** `tools/store/make_listing_csv.py` carries the
+  2.2.0 release notes in all eleven languages, matching `WHATS_NEW.md`, and
   gives every language nine screenshots: its eight posters and its dashboard
   capture. New `--replace-screenshots` option replaces every screenshot slot;
   `--screenshots-only` does the same and leaves the other text as exported.
@@ -631,6 +640,7 @@ written from scratch in Qt 6 / C++ / QML.
 [1.4.1]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.1
 [1.4.2]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.4.2
 [1.5.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.5.0
+[2.2.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v2.2.0
 [2.1.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v2.1.0
 [2.0.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v2.0.0
 [1.7.0]: https://github.com/lalitmeena04/MediaFlyouts-Releases/releases/tag/v1.7.0

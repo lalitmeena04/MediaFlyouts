@@ -1,6 +1,6 @@
-Version 2.1.0
+Version 2.2.0
 
-- Tidier settings. The Media, Volume, Lock Keys, Peripheral and Charger flyouts now share one Flyouts page. Each has its own expandable card with the on/off switch in the header. The Taskbar Widget page groups the Media Widget and the Peripheral Widget the same way. Search and the Home shortcuts open the right card.
-- Pause all reaches more browser tabs. A browser shows Windows one playing tab at a time. The Pause all button on the taskbar widget now keeps pausing as the browser hands over the next tab.
-- The taskbar widget follows the taskbar. With the taskbar at the top of the screen the widget now sits inside it. On a left or right taskbar the widget hides, because it does not fit there.
-- Browser artwork, coming soon. Taskbar Widget settings show a new Browser artwork option. It belongs to an optional browser extension that supplies the website icon when a tab has no album art. The extension is not in the browser stores yet, so the install button stays disabled for now.
+- Common flyout monitor. Turn on Use common monitor on the Flyouts page to show every flyout on the same display. You can keep each flyout on its own monitor when the toggle is off.
+- More shortcuts. Additional Settings lets you configure system-wide shortcuts for playback, mute, opening flyouts, widget visibility and focus mode.
+- Better setup guides. About includes the bundled user guide, and Taskbar Widget includes browser-extension setup steps.
+- Store listing and screen previews. The app includes updated localized listings and eight showcase posters for each shipped language.
