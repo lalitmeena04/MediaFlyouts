@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -40,6 +41,39 @@ bool validChromiumId(const QString& id) {
 bool isChromiumBrowser(const QString& browser) {
     return browser == QStringLiteral("chrome") || browser == QStringLiteral("msedge") ||
            browser == QStringLiteral("brave");
+}
+
+bool copyDirectoryContents(const QString& sourcePath, const QString& destinationPath) {
+    QDir source(sourcePath);
+    if(!source.exists()) {
+        TRC_WARN("browser extension setup: source folder is missing: {}", sourcePath.toStdString());
+        return false;
+    }
+
+    QDir destination(destinationPath);
+    if(!destination.exists() && !destination.mkpath(destination.absolutePath())) {
+        TRC_WARN("browser extension setup: could not create folder: {}", destination.absolutePath().toStdString());
+        return false;
+    }
+
+    const QFileInfoList entries =
+        source.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+    for(const QFileInfo& entry : entries) {
+        const QString target = destination.filePath(entry.fileName());
+        if(entry.isDir()) {
+            if(!copyDirectoryContents(entry.absoluteFilePath(), target)) {
+                TRC_WARN("browser extension setup: could not copy folder: {}", entry.absoluteFilePath().toStdString());
+                return false;
+            }
+        } else {
+            QFile::remove(target);
+            if(!QFile::copy(entry.absoluteFilePath(), target)) {
+                TRC_WARN("browser extension setup: could not copy file: {}", entry.absoluteFilePath().toStdString());
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 bool openBrowserUrl(const QString& browser, const QUrl& url) {
@@ -130,6 +164,25 @@ QString BrowserIntegration::nativeHostRegistryPath(const QString& browser) {
     else
         return {};
     return QStringLiteral("Software\\%1\\NativeMessagingHosts\\%2").arg(vendor, kHostName);
+}
+
+QString BrowserIntegration::prepareExtensionSetupFolder(const QString& browser) {
+    const bool firefox = browser == QStringLiteral("firefox");
+    if(!firefox && !isChromiumBrowser(browser))
+        return {};
+
+    const QString kind = firefox ? QStringLiteral("firefox") : QStringLiteral("chromium");
+    const QString source = QDir(QCoreApplication::applicationDirPath())
+                               .filePath(QStringLiteral("browser-extensions/%1").arg(kind));
+    const QString base = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    if(base.isEmpty())
+        return {};
+
+    const QString destination = QDir(base).filePath(QStringLiteral("browser-extensions/%1").arg(kind));
+    QDir(destination).removeRecursively();
+    if(!QDir().mkpath(destination) || !copyDirectoryContents(source, destination))
+        return {};
+    return destination;
 }
 
 QJsonObject BrowserIntegration::nativeManifest(const QString& browser, const QString& hostPath,
@@ -261,10 +314,7 @@ void BrowserIntegration::openExtensionSetup(const QString& browser) {
         return;
     }
 
-    const QString folder =
-        QDir(QCoreApplication::applicationDirPath())
-            .filePath(firefox ? QStringLiteral("browser-extensions/firefox")
-                              : QStringLiteral("browser-extensions/chromium"));
+    const QString folder = prepareExtensionSetupFolder(browser);
     const QString extensionId = firefox ? QString() : kDevelopmentId;
     if(!QFileInfo::exists(QDir(folder).filePath(QStringLiteral("manifest.json"))) ||
        !registerHost(browser, extensionId)) {

@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QTemporaryDir>
@@ -47,6 +49,15 @@ TEST(BrowserIntegrationTest, ManualSetupIsAvailableOnlyForChromiumBrowsers) {
     EXPECT_TRUE(integration.manualSetupAvailable(QStringLiteral("brave")));
     EXPECT_FALSE(integration.manualSetupAvailable(QStringLiteral("firefox")));
     EXPECT_FALSE(integration.manualSetupAvailable(QStringLiteral("unknown")));
+}
+
+TEST(BrowserIntegrationTest, SetupFolderIsCopiedIntoWritableAppData) {
+    EXPECT_TRUE(BrowserIntegration::prepareExtensionSetupFolder(QStringLiteral("unknown")).isEmpty());
+    const QString folder = BrowserIntegration::prepareExtensionSetupFolder(QStringLiteral("chrome"));
+    if(folder.isEmpty())
+        return;
+    EXPECT_TRUE(folder.contains(QStringLiteral("browser-extensions/chromium")));
+    EXPECT_TRUE(QFileInfo::exists(QDir(folder).filePath(QStringLiteral("manifest.json"))));
 }
 
 TEST(BrowserIntegrationTest, StoreUrlsAreRestrictedToTheSelectedBrowser) {

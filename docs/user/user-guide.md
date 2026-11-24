@@ -71,6 +71,9 @@ for you.
 4. Click **Load unpacked**.
 5. In the folder picker, select the `chromium` folder that MediaFlyouts opened.
    Select the folder itself, not `manifest.json`.
+   MediaFlyouts copies the extension into a writable App Data folder first.
+   This works for Microsoft Store installations because WindowsApps is not
+   directly usable for manual extension setup.
 6. Confirm any browser warning and check that **MediaFlyouts Browser
    Integration** appears enabled in the extensions list.
 
